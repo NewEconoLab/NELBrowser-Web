@@ -5,21 +5,28 @@ import {PageUtil as PageUtil} from "./Entitys";
 
 export class Trasction{
     private ajax :Ajax = new Ajax();
-    constructor(){}
-    public async updateTrasctions(pageUtil:PageUtil){
+    constructor(){
+        $("#TxType").change(()=>{
+        let pageUtil:PageUtil = new PageUtil(100000,15);
+        let ts:Trasction = new Trasction();
+        ts.updateTrasctions(pageUtil,<string>$("#TxType").val());
+        });
+    }
+    public async updateTrasctions(pageUtil:PageUtil,txType:string){
         //分页查询交易记录
-        let txs:Tx[] = await this.ajax.post('getrawtransactions',[pageUtil.pageSize,pageUtil.currentPage]);
+        let txs:Tx[] = await this.ajax.post('getrawtransactions',[pageUtil.pageSize,pageUtil.currentPage,txType]);
+        $("#transactions").empty();
         txs.forEach((tx)=>{
             console.log(tx);
             let html:string="";
             html+="<tr>"
             html+="<td><a href='./txInfo.html?txid="+tx.txid+"'>"+tx.txid
             html+="</a></td>"
+            html+="<td><a href='./blcokInfo.html?index="+tx.blockindex+"'>"+tx.blockindex
+            html+="</a></td>"
             html+="<td>"+tx.type
             html+="</td>"
-            html+="<td>"+(tx.gas==undefined?'':tx.gas)
-            html+="</td>"
-            html+="<td><a href='./blcokInfo.html?index="+tx.blockindex+"'"+tx.blockindex
+            html+="<td>"+(tx.gas==undefined?'0':tx.gas)
             html+="</td>"
             html+="<td>"+tx.size
             html+="</td>"

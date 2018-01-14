@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 2);
+/******/ 	return __webpack_require__(__webpack_require__.s = 3);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -10405,6 +10405,73 @@ function test() {
 
 "use strict";
 
+Object.defineProperty(exports, "__esModule", { value: true });
+class PageUtil {
+    /**
+     *
+     * @param total 总记录数
+     * @param pageSize 每页条数
+     */
+    constructor(total, pageSize) {
+        this._currentPage = 1;
+        this._totalCount = total;
+        this._pageSize = pageSize;
+        this._totalPage = total % pageSize == 0 ? total / pageSize : Math.ceil((total / pageSize));
+    }
+    ;
+    /**
+     * currentPage 返回当前页码
+     */
+    get currentPage() {
+        return this._currentPage;
+    }
+    /**
+     *
+     */
+    set currentPage(currentPage) {
+        this._currentPage = currentPage;
+    }
+    /**
+     * pageSize 每页条数
+     */
+    get pageSize() {
+        return this._pageSize;
+    }
+    /**
+     * set count
+     */
+    set pageSize(pageSize) {
+        this._pageSize = pageSize;
+    }
+    /**
+     * pageSize 每页条数
+     */
+    get totalCount() {
+        return this._totalCount;
+    }
+    /**
+     * set count
+     */
+    set totalCount(totalCount) {
+        this._totalCount = totalCount;
+    }
+    /**
+ * pageSize 总页数
+ */
+    get totalPage() {
+        this._totalPage = this._totalCount % this._pageSize == 0 ? this._totalCount / this._pageSize : Math.ceil(this._totalCount / this._pageSize);
+        return this._totalPage;
+    }
+}
+exports.PageUtil = PageUtil;
+
+
+/***/ }),
+/* 3 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     return new (P || (P = Promise))(function (resolve, reject) {
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
@@ -10416,7 +10483,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const $ = __webpack_require__(0);
 const Ajax_1 = __webpack_require__(1);
-const Entitys_1 = __webpack_require__(3);
+const Entitys_1 = __webpack_require__(2);
 const blocks_1 = __webpack_require__(4);
 const Trasction_1 = __webpack_require__(5);
 let ajax = new Ajax_1.Ajax();
@@ -10507,7 +10574,7 @@ $(() => {
     if (page === 'transction') {
         let pageUtil = new Entitys_1.PageUtil(100000, 15);
         let ts = new Trasction_1.Trasction();
-        ts.updateTrasctions(pageUtil);
+        ts.updateTrasctions(pageUtil, "");
     }
     if (page === 'txInfo') {
         let txid = GetQueryString("txid");
@@ -10518,9 +10585,6 @@ $(() => {
         let index = Number(GetQueryString("index"));
         let block = new blocks_1.Block();
         block.queryBlock(index);
-        $("#searchBtn").click(() => {
-            window.location.href = './blockInfo.html?index=' + $("#searchText").val();
-        });
     }
 });
 /**
@@ -10537,73 +10601,6 @@ function GetQueryString(name) {
     // parameter cannot be found
     return "";
 }
-
-
-/***/ }),
-/* 3 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-Object.defineProperty(exports, "__esModule", { value: true });
-class PageUtil {
-    /**
-     *
-     * @param total 总记录数
-     * @param pageSize 每页条数
-     */
-    constructor(total, pageSize) {
-        this._currentPage = 1;
-        this._totalCount = total;
-        this._pageSize = pageSize;
-        this._totalPage = total % pageSize == 0 ? total / pageSize : Math.ceil((total / pageSize));
-    }
-    ;
-    /**
-     * currentPage 返回当前页码
-     */
-    get currentPage() {
-        return this._currentPage;
-    }
-    /**
-     *
-     */
-    set currentPage(currentPage) {
-        this._currentPage = currentPage;
-    }
-    /**
-     * pageSize 每页条数
-     */
-    get pageSize() {
-        return this._pageSize;
-    }
-    /**
-     * set count
-     */
-    set pageSize(pageSize) {
-        this._pageSize = pageSize;
-    }
-    /**
-     * pageSize 每页条数
-     */
-    get totalCount() {
-        return this._totalCount;
-    }
-    /**
-     * set count
-     */
-    set totalCount(totalCount) {
-        this._totalCount = totalCount;
-    }
-    /**
- * pageSize 总页数
- */
-    get totalPage() {
-        this._totalPage = this._totalCount % this._pageSize == 0 ? this._totalCount / this._pageSize : Math.ceil(this._totalCount / this._pageSize);
-        return this._totalPage;
-    }
-}
-exports.PageUtil = PageUtil;
 
 
 /***/ }),
@@ -10624,7 +10621,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const $ = __webpack_require__(0);
 const Ajax_1 = __webpack_require__(1);
 class Block {
-    constructor() { }
+    constructor() {
+        $("#searchBtn").click(() => {
+            window.location.href = './blockInfo.html?index=' + $("#searchText").val();
+        });
+    }
     updateBlocks(pageUtil) {
         return __awaiter(this, void 0, void 0, function* () {
             let ajax = new Ajax_1.Ajax();
@@ -10694,25 +10695,32 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const $ = __webpack_require__(0);
 const Ajax_1 = __webpack_require__(1);
+const Entitys_1 = __webpack_require__(2);
 class Trasction {
     constructor() {
         this.ajax = new Ajax_1.Ajax();
+        $("#TxType").change(() => {
+            let pageUtil = new Entitys_1.PageUtil(100000, 15);
+            let ts = new Trasction();
+            ts.updateTrasctions(pageUtil, $("#TxType").val());
+        });
     }
-    updateTrasctions(pageUtil) {
+    updateTrasctions(pageUtil, txType) {
         return __awaiter(this, void 0, void 0, function* () {
             //分页查询交易记录
-            let txs = yield this.ajax.post('getrawtransactions', [pageUtil.pageSize, pageUtil.currentPage]);
+            let txs = yield this.ajax.post('getrawtransactions', [pageUtil.pageSize, pageUtil.currentPage, txType]);
+            $("#transactions").empty();
             txs.forEach((tx) => {
                 console.log(tx);
                 let html = "";
                 html += "<tr>";
                 html += "<td><a href='./txInfo.html?txid=" + tx.txid + "'>" + tx.txid;
                 html += "</a></td>";
+                html += "<td><a href='./blcokInfo.html?index=" + tx.blockindex + "'>" + tx.blockindex;
+                html += "</a></td>";
                 html += "<td>" + tx.type;
                 html += "</td>";
-                html += "<td>" + (tx.gas == undefined ? '' : tx.gas);
-                html += "</td>";
-                html += "<td><a href='./blcokInfo.html?index=" + tx.blockindex + "'" + tx.blockindex;
+                html += "<td>" + (tx.gas == undefined ? '0' : tx.gas);
                 html += "</td>";
                 html += "<td>" + tx.size;
                 html += "</td>";

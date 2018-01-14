@@ -107,7 +107,7 @@ $(()=>{
     if(page==='transction'){
         let pageUtil:PageUtil = new PageUtil(100000,15);
         let ts:Trasction = new Trasction();
-        ts.updateTrasctions(pageUtil);
+        ts.updateTrasctions(pageUtil,"");
     }
     if(page==='txInfo'){
         let txid:string = GetQueryString("txid");
@@ -118,9 +118,6 @@ $(()=>{
         let index:number = Number(GetQueryString("index"));
         let block:Block = new Block();
         block.queryBlock(index);
-        $("#searchBtn").click(()=>{
-            window.location.href='./blockInfo.html?index='+$("#searchText").val();
-        });
     }
 });
 

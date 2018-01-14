@@ -3,7 +3,11 @@ import {Ajax as Ajax} from "./Ajax";
 import {PageUtil as PageUtil} from "./Entitys";
 
 export class Block{
-    constructor(){}
+    constructor(){
+        $("#searchBtn").click(()=>{
+            window.location.href='./blockInfo.html?index='+$("#searchText").val();
+        });
+    }
     public async updateBlocks(pageUtil:PageUtil){
         let ajax:Ajax = new Ajax();
         let blocks = await ajax.post('getblocks',[pageUtil.pageSize,pageUtil.currentPage]);

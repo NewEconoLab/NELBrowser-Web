@@ -13,6 +13,7 @@
 
     <!-- Bootstrap core CSS -->
     <link href="../css/bootstrap.min.css" rel="stylesheet">
+    <link href="../css/mystyle.css" rel="stylesheet">
 
     <!-- Custom styles for this template -->
     <!-- <link href="navbar.css" rel="stylesheet"> -->
@@ -66,14 +67,30 @@
           </div><!--/.nav-collapse -->
         </div><!--/.container-fluid -->
       </nav>
-
-      <caption><h2>交易</h2></caption>
+    <div class="row">
+      <div class="col-md-2"><h2 class="title">交易</h2></div>
+      <div class="col-md-2">
+        <select id="TxType" class="form-control">
+          <option>Any</option>
+          <option value="EnrollmentTransaction">Enrollment</option>
+          <option value="PublishTransaction">Publish</option>
+          <option value="InvocationTransaction">Invocation</option>
+          <option value="ClaimTransaction">Claim</option>
+          <option value="MinerTransaction">Miner</option>
+          <option value="RegisterTransaction">Register</option>
+          <option value="IssueTransaction">Issue</option>
+          <option value="ContractTransaction">Contract</option>
+        </select>
+      </div>
+    </div>
       <table class="table table-striped" style="background-color: #ffffff;">
         <thead>
           <tr>
+            <th>TXID</th>
             <th>高度</th>
+            <th>类型</th>
+            <th>费用</th>
             <th>大小</th>
-            <th>时间</th>
           </tr>
         </thead>
         <tbody id="transactions"></tbody>
@@ -93,6 +110,8 @@
     <!-- Placed at the end of the document so the pages load faster -->
     <input id="page" value="transction" hidden>
     <script src="../dist/app.js"></script>
+    <script src="http://cdn.static.runoob.com/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
   </body>
 </html>
