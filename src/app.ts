@@ -63,12 +63,9 @@ async function blocksPage(){
     let blockCount = await ajax.post('getblockcount',[]);
     //分页查询区块数据
     $("#blocks").empty();
-    
     let pageUtil:PageUtil = new PageUtil(blockCount[0]['blockcount'],15);
-
     let block:Block = new Block();
     block.updateBlocks(pageUtil);
-    
     //监听下一页
     $("#next").click(()=>{
         if(pageUtil.currentPage==pageUtil.totalPage){
