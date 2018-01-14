@@ -6,9 +6,10 @@ import {PageUtil as PageUtil} from "./Entitys";
 export class Trasction{
     private ajax :Ajax = new Ajax();
     constructor(){
-        $("#TxType").change(()=>{
         let pageUtil:PageUtil = new PageUtil(100000,15);
         let ts:Trasction = new Trasction();
+        ts.updateTrasctions(pageUtil,<string>$("#TxType").val());
+        $("#TxType").change(()=>{
         ts.updateTrasctions(pageUtil,<string>$("#TxType").val());
         });
     }

@@ -10572,9 +10572,7 @@ $(() => {
         });
     }
     if (page === 'transction') {
-        let pageUtil = new Entitys_1.PageUtil(100000, 15);
         let ts = new Trasction_1.Trasction();
-        ts.updateTrasctions(pageUtil, "");
     }
     if (page === 'txInfo') {
         let txid = GetQueryString("txid");
@@ -10699,9 +10697,10 @@ const Entitys_1 = __webpack_require__(2);
 class Trasction {
     constructor() {
         this.ajax = new Ajax_1.Ajax();
+        let pageUtil = new Entitys_1.PageUtil(100000, 15);
+        let ts = new Trasction();
+        ts.updateTrasctions(pageUtil, $("#TxType").val());
         $("#TxType").change(() => {
-            let pageUtil = new Entitys_1.PageUtil(100000, 15);
-            let ts = new Trasction();
             ts.updateTrasctions(pageUtil, $("#TxType").val());
         });
     }

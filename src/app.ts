@@ -105,9 +105,7 @@ $(()=>{
         });
     }
     if(page==='transction'){
-        let pageUtil:PageUtil = new PageUtil(100000,15);
         let ts:Trasction = new Trasction();
-        ts.updateTrasctions(pageUtil,"");
     }
     if(page==='txInfo'){
         let txid:string = GetQueryString("txid");
