@@ -10698,10 +10698,9 @@ class Trasction {
     constructor() {
         this.ajax = new Ajax_1.Ajax();
         let pageUtil = new Entitys_1.PageUtil(100000, 15);
-        let ts = new Trasction();
-        ts.updateTrasctions(pageUtil, $("#TxType").val());
+        this.updateTrasctions(pageUtil, $("#TxType").val());
         $("#TxType").change(() => {
-            ts.updateTrasctions(pageUtil, $("#TxType").val());
+            this.updateTrasctions(pageUtil, $("#TxType").val());
         });
     }
     updateTrasctions(pageUtil, txType) {

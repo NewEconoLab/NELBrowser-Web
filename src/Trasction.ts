@@ -7,10 +7,9 @@ export class Trasction{
     private ajax :Ajax = new Ajax();
     constructor(){
         let pageUtil:PageUtil = new PageUtil(100000,15);
-        let ts:Trasction = new Trasction();
-        ts.updateTrasctions(pageUtil,<string>$("#TxType").val());
+        this.updateTrasctions(pageUtil,<string>$("#TxType").val());
         $("#TxType").change(()=>{
-        ts.updateTrasctions(pageUtil,<string>$("#TxType").val());
+        this.updateTrasctions(pageUtil,<string>$("#TxType").val());
         });
     }
     public async updateTrasctions(pageUtil:PageUtil,txType:string){
