@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 3);
+/******/ 	return __webpack_require__(__webpack_require__.s = 4);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -10484,8 +10484,90 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const $ = __webpack_require__(0);
 const Ajax_1 = __webpack_require__(1);
 const Entitys_1 = __webpack_require__(2);
-const blocks_1 = __webpack_require__(4);
-const Trasction_1 = __webpack_require__(5);
+class Trasctions {
+    constructor() {
+        this.ajax = new Ajax_1.Ajax();
+        //初始化交易列表
+        let pageUtil = new Entitys_1.PageUtil(100000, 15);
+        this.updateTrasctions(pageUtil, $("#TxType").val());
+        //监听交易列表选择框
+        $("#TxType").change(() => {
+            this.updateTrasctions(pageUtil, $("#TxType").val());
+        });
+    }
+    updateTrasctions(pageUtil, txType) {
+        return __awaiter(this, void 0, void 0, function* () {
+            //分页查询交易记录
+            let txs = yield this.ajax.post('getrawtransactions', [pageUtil.pageSize, pageUtil.currentPage, txType]);
+            $("#transactions").empty();
+            txs.forEach((tx) => {
+                console.log(tx);
+                let html = "";
+                html += "<tr>";
+                html += "<td><a href='./txInfo.html?txid=" + tx.txid + "'>" + tx.txid;
+                html += "</a></td>";
+                html += "<td><a href='./blcokInfo.html?index=" + tx.blockindex + "'>" + tx.blockindex;
+                html += "</a></td>";
+                html += "<td>" + tx.type;
+                html += "</td>";
+                html += "<td>" + (tx.gas == undefined ? '0' : tx.gas);
+                html += "</td>";
+                html += "<td>" + tx.size + " bytes";
+                html += "</td>";
+                html += "</tr>";
+                $("#transactions").append(html);
+            });
+        });
+    }
+}
+exports.Trasctions = Trasctions;
+class TrasctionInfo {
+    constructor() {
+        this.ajax = new Ajax_1.Ajax();
+    }
+    updateTxInfo(txid) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let txInfos = yield this.ajax.post('getrawtransaction', [txid]);
+            let txInfo = txInfos[0];
+            $("#txInfo").text(txInfo.type + " | Hash: " + txInfo.txid);
+            $("#index").text(txInfo.blockindex);
+            $("#size").text(txInfo.size + " bytes");
+            txInfo.vin.forEach((vin, index, arry) => __awaiter(this, void 0, void 0, function* () {
+                let txInfos = yield this.ajax.post('getrawtransaction', [vin.txid]);
+                let address = txInfos[0].vout[vin.vout].address;
+                let value = txInfos[0].vout[vin.vout].value;
+                $("#from").append('<li class="list-group-item">' + address + ' ' + value + ' NEO</li>');
+            }));
+            txInfo.vout.forEach(vout => {
+                $("#to").append('<li class="list-group-item">' + vout.address + ' ' + vout.value + ' NEO</li>');
+            });
+        });
+    }
+}
+exports.TrasctionInfo = TrasctionInfo;
+
+
+/***/ }),
+/* 4 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const $ = __webpack_require__(0);
+const Ajax_1 = __webpack_require__(1);
+const Entitys_1 = __webpack_require__(2);
+const blocks_1 = __webpack_require__(5);
+const Trasction_1 = __webpack_require__(3);
+const Trasction_2 = __webpack_require__(3);
 let ajax = new Ajax_1.Ajax();
 //主页
 function indexPage() {
@@ -10572,11 +10654,11 @@ $(() => {
         });
     }
     if (page === 'transction') {
-        let ts = new Trasction_1.Trasction();
+        let ts = new Trasction_1.Trasctions();
     }
     if (page === 'txInfo') {
         let txid = GetQueryString("txid");
-        let ts = new Trasction_1.Trasction();
+        let ts = new Trasction_2.TrasctionInfo();
         ts.updateTxInfo(txid);
     }
     if (page === 'blockInfo') {
@@ -10602,7 +10684,7 @@ function GetQueryString(name) {
 
 
 /***/ }),
-/* 4 */
+/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -10674,80 +10756,6 @@ class Block {
     }
 }
 exports.Block = Block;
-
-
-/***/ }),
-/* 5 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-const $ = __webpack_require__(0);
-const Ajax_1 = __webpack_require__(1);
-const Entitys_1 = __webpack_require__(2);
-class Trasction {
-    constructor() {
-        this.ajax = new Ajax_1.Ajax();
-        let pageUtil = new Entitys_1.PageUtil(100000, 15);
-        this.updateTrasctions(pageUtil, $("#TxType").val());
-        $("#TxType").change(() => {
-            this.updateTrasctions(pageUtil, $("#TxType").val());
-        });
-    }
-    updateTrasctions(pageUtil, txType) {
-        return __awaiter(this, void 0, void 0, function* () {
-            //分页查询交易记录
-            let txs = yield this.ajax.post('getrawtransactions', [pageUtil.pageSize, pageUtil.currentPage, txType]);
-            $("#transactions").empty();
-            txs.forEach((tx) => {
-                console.log(tx);
-                let html = "";
-                html += "<tr>";
-                html += "<td><a href='./txInfo.html?txid=" + tx.txid + "'>" + tx.txid;
-                html += "</a></td>";
-                html += "<td><a href='./blcokInfo.html?index=" + tx.blockindex + "'>" + tx.blockindex;
-                html += "</a></td>";
-                html += "<td>" + tx.type;
-                html += "</td>";
-                html += "<td>" + (tx.gas == undefined ? '0' : tx.gas);
-                html += "</td>";
-                html += "<td>" + tx.size;
-                html += "</td>";
-                html += "</tr>";
-                $("#transactions").append(html);
-            });
-        });
-    }
-    updateTxInfo(txid) {
-        return __awaiter(this, void 0, void 0, function* () {
-            let txInfos = yield this.ajax.post('getrawtransaction', [txid]);
-            let txInfo = txInfos[0];
-            $("#txInfo").text(txInfo.type + " | Hash: " + txInfo.txid);
-            // $().text(txInfo[0].vin[0].txid)
-            $("#index").text(txInfo.blockindex);
-            $("#size").text(txInfo.size + " bytes");
-            txInfo.vin.forEach((vin, index, arry) => __awaiter(this, void 0, void 0, function* () {
-                let txInfos = yield this.ajax.post('getrawtransaction', [vin.txid]);
-                let address = txInfos[0].vout[vin.vout].address;
-                let value = txInfos[0].vout[vin.vout].value;
-                $("#from").append('<li class="list-group-item">' + address + ' ' + value + ' NEO</li>');
-            }));
-            txInfo.vout.forEach(vout => {
-                $("#to").append('<li class="list-group-item">' + vout.address + ' ' + vout.value + ' NEO</li>');
-            });
-        });
-    }
-}
-exports.Trasction = Trasction;
 
 
 /***/ })

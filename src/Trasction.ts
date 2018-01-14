@@ -3,11 +3,13 @@ import {Ajax as Ajax} from "./Ajax";
 import {Tx as Tx} from "./Entitys";
 import {PageUtil as PageUtil} from "./Entitys";
 
-export class Trasction{
+export class Trasctions{
     private ajax :Ajax = new Ajax();
     constructor(){
+        //初始化交易列表
         let pageUtil:PageUtil = new PageUtil(100000,15);
         this.updateTrasctions(pageUtil,<string>$("#TxType").val());
+        //监听交易列表选择框
         $("#TxType").change(()=>{
         this.updateTrasctions(pageUtil,<string>$("#TxType").val());
         });
@@ -28,18 +30,22 @@ export class Trasction{
             html+="</td>"
             html+="<td>"+(tx.gas==undefined?'0':tx.gas)
             html+="</td>"
-            html+="<td>"+tx.size
+            html+="<td>"+tx.size+" bytes"
             html+="</td>"
             html+="</tr>"
             $("#transactions").append(html);
         });
     }
+}
 
+export class TrasctionInfo{
+    private ajax :Ajax = new Ajax();
+    constructor(){
+    }
     public async updateTxInfo(txid:string){
         let txInfos:Tx[] = await this.ajax.post('getrawtransaction',[txid]);
         let txInfo:Tx = txInfos[0];
         $("#txInfo").text(txInfo.type+" | Hash: "+txInfo.txid);
-        // $().text(txInfo[0].vin[0].txid)
         $("#index").text(txInfo.blockindex);
         $("#size").text(txInfo.size+" bytes");
         
@@ -53,4 +59,5 @@ export class Trasction{
             $("#to").append('<li class="list-group-item">'+vout.address+' '+vout.value+' NEO</li>');
         });
     }
+
 }

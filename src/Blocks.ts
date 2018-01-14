@@ -1,6 +1,6 @@
 import * as $ from "jquery";
 import {Ajax as Ajax} from "./Ajax";
-import {PageUtil as PageUtil} from "./Entitys";
+import { PageUtil as PageUtil, Tx as Tx } from './Entitys';
 
 export class Block{
     constructor(){
@@ -46,21 +46,10 @@ export class Block{
         $("#time").text(newDate.toLocaleString());
         $("#version").text(block['version']);
         $("#index").text(block['index']);
-        let txs:{
-            attributes:any[],
-            net_fee:string,
-            nonce:number,
-            scripts:any[],
-            size:number,
-            sys_fee:string,
-            txid:string,
-            type:string,
-            version:number
-        }[] = block['tx']
+        let txs:Tx[] = block['tx'];
         txs.forEach(tx => {
             $("#txs").append('<tr><td><a href="./txInfo.html?txid='+tx.txid+'">'+tx.txid+'</a></td><td>'+tx.type+'</td><td>'+tx.size+' bytes</td><td>'+tx.version+'</td></tr>');
         });
-
 
     }
 }

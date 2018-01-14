@@ -3,7 +3,8 @@ import * as bootstrap from "bootstrap";
 import {Ajax as Ajax} from "./Ajax";
 import {PageUtil as PageUtil} from "./Entitys";
 import {Block as Block}from "./blocks";
-import {Trasction as Trasction}from "./Trasction";
+import {Trasctions as Trasctions}from "./Trasction";
+import {TrasctionInfo as TrasctionInfo}from "./Trasction";
 
 let ajax:Ajax = new Ajax();
 
@@ -105,11 +106,11 @@ $(()=>{
         });
     }
     if(page==='transction'){
-        let ts:Trasction = new Trasction();
+        let ts:Trasctions = new Trasctions();
     }
     if(page==='txInfo'){
         let txid:string = GetQueryString("txid");
-        let ts:Trasction = new Trasction();
+        let ts:TrasctionInfo = new TrasctionInfo();
         ts.updateTxInfo(txid);
     }
     if(page==='blockInfo'){
