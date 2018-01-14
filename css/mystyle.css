@@ -1,0 +1,16 @@
+.table.cool{
+    background-color: #999999;
+}
+.table.cool>tbody>tr{    
+    border-bottom:7px solid #222;
+    border-top: 7px solid #222;
+}
+.table.cool.caption>h2{
+    color: #fff;
+}
+.jumbotron{
+    background-color:#222;
+}
+.jumbotron.cool{
+    color: #fff;
+}

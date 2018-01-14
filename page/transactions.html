@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <!-- <link rel="icon" href="../../favicon.ico"> -->
+
+    <title>NEL NewEconnolab</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="../css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <!-- <link href="navbar.css" rel="stylesheet"> -->
+
+    <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://cdn.bootcss.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+      <script src="https://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+
+    <div class="container">
+
+      <!-- Static navbar -->
+      <nav class="navbar navbar-default">
+        <div class="container-fluid">
+          <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+              <span class="sr-only">Toggle navigation</span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">NEL</a>
+          </div>
+          <div id="navbar" class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+              <li><a href="../index.html">概览</a></li>
+              <li class="active"><a href="#">交易</a></li>
+              <li><a href="#">地址</a></li>
+              <li><a href="./blocks.html">区块</a></li>
+              <li><a href="#">合约</a></li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+              <li>
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">语言 <span class="caret"></span></a>
+                <ul class="dropdown-menu">
+                  <li><a href="#">中文</a></li>
+                  <li><a href="#">English</a></li>
+                </ul>
+              </li>
+            </ul>          
+            <form class="navbar-form navbar-right input-append">
+              <input id="searchText" type="text" class="form-control" placeholder="交易哈希/钱包地址/区块高度">
+              <button id="searchBtn" class="btn" type="button">Go!</button>
+            </form>
+          </div><!--/.nav-collapse -->
+        </div><!--/.container-fluid -->
+      </nav>
+
+      <caption><h2>交易</h2></caption>
+      <table class="table table-striped" style="background-color: #ffffff;">
+        <thead>
+          <tr>
+            <th>高度</th>
+            <th>大小</th>
+            <th>时间</th>
+          </tr>
+        </thead>
+        <tbody id="transactions"></tbody>
+      </table>
+      <ul class="pager">
+          <li id="previous" class="previous disabled"><a>&larr; Older</a></li>
+          <a>当前页 第1页，共200页</a>
+          <li id="next" class="next"><a>Newer &rarr;</a></li>
+      </ul>
+      <!-- Main component for a primary marketing message or call to action -->
+
+    </div> <!-- /container -->
+
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <input id="page" value="transction" hidden>
+    <script src="../dist/app.js"></script>
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+  </body>
+</html>

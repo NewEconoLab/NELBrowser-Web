@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <!-- <link rel="icon" href="../../favicon.ico"> -->
+
+    <title>NEL NewEconnolab</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="../css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <!-- <link href="navbar.css" rel="stylesheet"> -->
+
+    <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://cdn.bootcss.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+      <script src="https://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+
+    <div class="container">
+
+      <!-- Static navbar -->
+      <nav class="navbar navbar-default">
+        <div class="container-fluid">
+          <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+              <span class="sr-only">Toggle navigation</span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+              <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">NEL</a>
+          </div>
+          <div id="navbar" class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+              <li><a href="../index.html">概览</a></li>
+              <li class="active"><a href="#">交易</a></li>
+              <li><a href="#">地址</a></li>
+              <li><a href="./blocks.html">区块</a></li>
+              <li><a href="#">合约</a></li>
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+              <li>
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">语言 <span class="caret"></span></a>
+                <ul class="dropdown-menu">
+                  <li><a href="#">中文</a></li>
+                  <li><a href="#">English</a></li>
+                </ul>
+              </li>
+            </ul>          
+            <form class="navbar-form navbar-right input-append">
+              <input id="searchText" type="text" class="form-control" placeholder="交易哈希/钱包地址/区块高度">
+              <button id="searchBtn" class="btn" type="button">Go!</button>
+            </form>
+          </div><!--/.nav-collapse -->
+        </div><!--/.container-fluid -->
+      </nav>
+
+      <!-- Main component for a primary marketing message or call to action -->
+      <div class="jumbotron">
+        <caption><h2>交易详情</h2></caption>
+        <h4 id="txInfo"></h4>
+        <div class="container">
+          <div class="row">
+             <div class="col-md-4">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">
+                          区块索引
+                        </h3>
+                    </div>
+                    <div id="index" class="panel-body" style="word-break:break-all;">
+                    </div>
+                </div> 
+              </div>
+              <div class="col-md-4">
+                 <div class="panel panel-default" style="height:100%">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">
+                            大小
+                        </h3>
+                    </div>
+                     <div id="size" class="panel-body" style="word-break:break-all;">
+                     </div>
+                 </div> 
+               </div>
+               <div class="col-md-4">
+                  <div class="panel panel-default">
+                      <div class="panel-heading">
+                          <h3 class="panel-title">
+                              日期
+                          </h3>
+                      </div>
+                      <div id="time" class="panel-body" style="word-break:break-all;">
+                      </div>
+                  </div> 
+                </div>
+          </div>
+          <div class="row">
+             <div class="col-md-6">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">
+                          来自
+                        </h3>
+                    </div>
+                    <ul id="from" class="list-group">
+                    </ul>
+                </div> 
+              </div>
+              <div class="col-md-6">
+                 <div class="panel panel-default" style="height:100%">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">
+                            发给
+                        </h3>
+                    </div>
+                    <ul id="to" class="list-group">
+                    </ul>
+                 </div> 
+               </div>
+          </div>
+       </div>
+      </div>
+
+    </div> <!-- /container -->
+
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <input id="page" value="txInfo" hidden>
+    <script src="../dist/app.js"></script>
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+  </body>
+</html>
