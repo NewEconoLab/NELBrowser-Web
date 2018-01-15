@@ -89,7 +89,8 @@ async function blocksPage(){
 $(()=>{
     let page = $('#page').val();
     let location:LocationUtil = new LocationUtil();
-    alert(location.getRootPath_web())
+    alert(location.getRootPath_web());
+    alert(location.getRootPath_dc());
     
     $("#searchBtn").click(()=>{
         window.location.href='./blockInfo.html?index='+$("#searchText").val();
