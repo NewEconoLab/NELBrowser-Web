@@ -10390,13 +10390,20 @@ class Ajax {
     }
 }
 exports.Ajax = Ajax;
-function test() {
-    return __awaiter(this, void 0, void 0, function* () {
-        let ajax = new Ajax();
-        let test = yield ajax.get();
-        console.log(test);
-    });
+class ParameterUtil {
+    constructor() {
+        this.LocString = String(location.href);
+    }
+    GetQueryString(name) {
+        let rs = new RegExp("(^|)" + name + "=([^&]*)(&|$)", "gi").exec(this.LocString), tmp;
+        if (tmp = rs) {
+            return decodeURI(tmp[2]);
+        }
+        // parameter cannot be found
+        return "";
+    }
 }
+exports.ParameterUtil = ParameterUtil;
 
 
 /***/ }),
@@ -10488,11 +10495,14 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const $ = __webpack_require__(0);
-const Ajax_1 = __webpack_require__(1);
+const Util_1 = __webpack_require__(1);
 const Entitys_1 = __webpack_require__(2);
+/**
+ * @class 交易记录
+ */
 class Trasctions {
     constructor() {
-        this.ajax = new Ajax_1.Ajax();
+        this.ajax = new Util_1.Ajax();
         //初始化交易列表
         let pageUtil = new Entitys_1.PageUtil(100000, 15);
         this.updateTrasctions(pageUtil, $("#TxType").val());
@@ -10501,6 +10511,7 @@ class Trasctions {
             this.updateTrasctions(pageUtil, $("#TxType").val());
         });
     }
+    //更新交易记录
     updateTrasctions(pageUtil, txType) {
         return __awaiter(this, void 0, void 0, function* () {
             //分页查询交易记录
@@ -10527,9 +10538,12 @@ class Trasctions {
     }
 }
 exports.Trasctions = Trasctions;
+/**
+ * @class 交易详情
+ */
 class TrasctionInfo {
     constructor() {
-        this.ajax = new Ajax_1.Ajax();
+        this.ajax = new Util_1.Ajax();
     }
     updateTxInfo(txid) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -10569,12 +10583,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const $ = __webpack_require__(0);
-const Ajax_1 = __webpack_require__(1);
+const Util_1 = __webpack_require__(1);
 const Entitys_1 = __webpack_require__(2);
 const blocks_1 = __webpack_require__(5);
 const Trasction_1 = __webpack_require__(3);
 const Trasction_2 = __webpack_require__(3);
-let ajax = new Ajax_1.Ajax();
+let ajax = new Util_1.Ajax();
 //主页
 function indexPage() {
     return __awaiter(this, void 0, void 0, function* () {
@@ -10705,7 +10719,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const $ = __webpack_require__(0);
-const Ajax_1 = __webpack_require__(1);
+const Util_1 = __webpack_require__(1);
 class BlockPage {
     constructor() {
         $("#searchBtn").click(() => {
@@ -10714,7 +10728,7 @@ class BlockPage {
     }
     updateBlocks(pageUtil) {
         return __awaiter(this, void 0, void 0, function* () {
-            let ajax = new Ajax_1.Ajax();
+            let ajax = new Util_1.Ajax();
             let blocks = yield ajax.post('getblocks', [pageUtil.pageSize, pageUtil.currentPage]);
             $("#blocks").empty();
             if (pageUtil.totalPage - pageUtil.currentPage) {
@@ -10729,13 +10743,13 @@ class BlockPage {
             else {
                 $("#previous").addClass('disabled');
             }
+            let newDate = new Date();
             blocks.forEach((item, index, input) => {
-                var newDate = new Date();
-                newDate.setTime(item['time'] * 1000);
+                newDate.setTime(item.time * 1000);
                 let html;
                 html += '<tr><td>';
-                html += '<a href="../page/blockInfo.html?index=' + item['index'] + '">';
-                html += item['index'] + '</a></td><td>' + item['size'];
+                html += '<a href="../page/blockInfo.html?index=' + item.index + '">';
+                html += item.index + '</a></td><td>' + item.size;
                 html += ' bytes</td><td>' + newDate.toLocaleString() + '</td></tr>';
                 $("#blocks").append(html);
             });
@@ -10743,7 +10757,7 @@ class BlockPage {
     }
     queryBlock(index) {
         return __awaiter(this, void 0, void 0, function* () {
-            let ajax = new Ajax_1.Ajax();
+            let ajax = new Util_1.Ajax();
             let newDate = new Date();
             let blocks = yield ajax.post('getblock', [index]);
             let block = blocks[0];

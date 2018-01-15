@@ -1,6 +1,6 @@
 import * as $ from "jquery";
 import * as bootstrap from "bootstrap";
-import {Ajax as Ajax} from "./Ajax";
+import {Ajax as Ajax,ParameterUtil as ParameterUtil} from "./Util";
 import {PageUtil as PageUtil} from "./Entitys";
 import {BlockPage as BlockPage}from "./blocks";
 import {Trasctions as Trasctions}from "./Trasction";

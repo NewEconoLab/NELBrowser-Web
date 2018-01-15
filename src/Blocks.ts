@@ -1,5 +1,5 @@
 import * as $ from "jquery";
-import {Ajax as Ajax} from "./Ajax";
+import {Ajax as Ajax} from "./Util";
 import { PageUtil as PageUtil, Tx as Tx,Block as Block } from './Entitys';
 
 export class BlockPage{
@@ -10,7 +10,7 @@ export class BlockPage{
     }
     public async updateBlocks(pageUtil:PageUtil){
         let ajax:Ajax = new Ajax();
-        let blocks = await ajax.post('getblocks',[pageUtil.pageSize,pageUtil.currentPage]);
+        let blocks:Block[] = await ajax.post('getblocks',[pageUtil.pageSize,pageUtil.currentPage]);
         $("#blocks").empty();
         if(pageUtil.totalPage-pageUtil.currentPage){
             $("#next").removeClass('disabled');
@@ -22,13 +22,13 @@ export class BlockPage{
         }else{
             $("#previous").addClass('disabled');
         }
+        let newDate = new Date();
         blocks.forEach((item,index,input)=>{
-            var newDate = new Date();
-            newDate.setTime(item['time'] * 1000);
+            newDate.setTime(item.time * 1000);
             let html:string;
             html+='<tr><td>'
-            html+='<a href="../page/blockInfo.html?index='+item['index']+'">';
-            html+=item['index']+'</a></td><td>'+item['size'];
+            html+='<a href="../page/blockInfo.html?index='+item.index+'">';
+            html+=item.index+'</a></td><td>'+item.size;
             html+=' bytes</td><td>'+newDate.toLocaleString()+'</td></tr>';
             $("#blocks").append(html);
         });

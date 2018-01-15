@@ -1,10 +1,14 @@
 import * as $ from "jquery";
-import {Ajax as Ajax} from "./Ajax";
+import {Ajax as Ajax} from "./Util";
 import {Tx as Tx} from "./Entitys";
 import {PageUtil as PageUtil} from "./Entitys";
 
+/**
+ * @class 交易记录
+ */
 export class Trasctions{
     private ajax :Ajax = new Ajax();
+
     constructor(){
         //初始化交易列表
         let pageUtil:PageUtil = new PageUtil(100000,15);
@@ -14,6 +18,8 @@ export class Trasctions{
         this.updateTrasctions(pageUtil,<string>$("#TxType").val());
         });
     }
+
+    //更新交易记录
     public async updateTrasctions(pageUtil:PageUtil,txType:string){
         //分页查询交易记录
         let txs:Tx[] = await this.ajax.post('getrawtransactions',[pageUtil.pageSize,pageUtil.currentPage,txType]);
@@ -38,6 +44,9 @@ export class Trasctions{
     }
 }
 
+/**
+ * @class 交易详情
+ */
 export class TrasctionInfo{
     private ajax :Ajax = new Ajax();
     constructor(){
