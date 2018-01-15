@@ -46,9 +46,9 @@
           <div id="navbar" class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
               <li><a href="../index.html">概览</a></li>
-              <li class="active"><a href="./transactions.html">交易</a></li>
-              <li><a href="./address.html">地址</a></li>
-              <li><a href="./blocks.html">区块</a></li>
+              <li><a href="./transactions.html">交易</a></li>
+              <li class="active"><a href="./address.html">地址</a></li>
+              <li><a href="#">区块</a></li>
               <li><a href="#">合约</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
@@ -67,41 +67,7 @@
           </div><!--/.nav-collapse -->
         </div><!--/.container-fluid -->
       </nav>
-    <div class="jumbotron">
-    <div class="row">
-      <div class="col-md-2"><caption><h2 class="title">交易</h2></caption></div>
-      <div class="col-md-2">
-        <select id="TxType" class="form-control">
-          <option value="">Any</option>
-          <option value="EnrollmentTransaction">Enrollment</option>
-          <option value="PublishTransaction">Publish</option>
-          <option value="InvocationTransaction">Invocation</option>
-          <option value="ClaimTransaction">Claim</option>
-          <option value="MinerTransaction">Miner</option>
-          <option value="RegisterTransaction">Register</option>
-          <option value="IssueTransaction">Issue</option>
-          <option value="ContractTransaction">Contract</option>
-        </select>
-      </div>
-    </div>
-      <table class="table cool table-hover">
-        <thead>
-          <tr>
-            <th>TXID</th>
-            <th>高度</th>
-            <th>类型</th>
-            <th>费用</th>
-            <th>大小</th>
-          </tr>
-        </thead>
-        <tbody id="transactions"></tbody>
-      </table>
-      <ul class="pager">
-          <li id="previous" class="previous disabled"><a>&larr; Older</a></li>
-          <a>当前页 第1页，共200页</a>
-          <li id="next" class="next"><a>Newer &rarr;</a></li>
-      </ul>
-    </div>
+      <h1 style="color:red">为提供API接口</h1>
       <!-- Main component for a primary marketing message or call to action -->
 
     </div> <!-- /container -->
@@ -110,10 +76,8 @@
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
-    <input id="page" value="transction" hidden>
+    <input id="page" value="blocks" hidden>
     <script src="../dist/app.js"></script>
-    <script src="http://cdn.static.runoob.com/libs/jquery/2.1.1/jquery.min.js"></script>
-    <script src="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
   </body>
 </html>
