@@ -14,7 +14,7 @@
 .jumbotron.cool{
     color: #fff;
 }
-.jumbotron>h2{
+.jumbotron>*>h2{
     color: #fff;
 }
 .title {    
