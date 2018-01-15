@@ -10419,7 +10419,7 @@ class LocationUtil {
         console.log(projectName);
         return (localhostPaht + projectName);
     }
-    getRootPath_dc() {
+    getRootPath() {
         var pathName = window.location.pathname.substring(1);
         var webName = pathName == '' ? '' : pathName.substring(0, pathName.indexOf('/'));
         if (webName == "") {
@@ -10611,8 +10611,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const $ = __webpack_require__(0);
 const Util_1 = __webpack_require__(1);
+const PagesController_1 = __webpack_require__(5);
 const Entitys_1 = __webpack_require__(2);
-const blocks_1 = __webpack_require__(5);
+const blocks_1 = __webpack_require__(6);
 const Trasction_1 = __webpack_require__(3);
 const Trasction_2 = __webpack_require__(3);
 let ajax = new Util_1.Ajax();
@@ -10684,16 +10685,10 @@ function blocksPage() {
         });
     });
 }
-//jquery $()
 $(() => {
     let page = $('#page').val();
     let location = new Util_1.LocationUtil();
-    alert(location.getRootPath_web());
-    alert(location.getRootPath_dc());
-    $("#searchBtn").click(() => {
-        window.location.href = './blockInfo.html?index=' + $("#searchText").val();
-        window.location.href = './blockInfo.html?index=' + $("#searchText").val();
-    });
+    new PagesController_1.SearchController();
     if (page === 'index') {
         indexPage();
     }
@@ -10719,6 +10714,46 @@ $(() => {
 
 /***/ }),
 /* 5 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const $ = __webpack_require__(0);
+const Util_1 = __webpack_require__(1);
+class SearchController {
+    constructor() {
+        this.locationUtil = new Util_1.LocationUtil();
+        let page = $('#page').val();
+        let url = "";
+        if (page == 'index') {
+            url = './page/';
+        }
+        else {
+            url = './';
+        }
+        $("#searchBtn").click(() => {
+            let search = $("#searchText").val();
+            if (search.length == 34) {
+                window.location.href = url + 'address.html?index=' + search;
+            }
+            search = search.replace('0x', '');
+            if (search.length == 64) {
+                window.location.href = url + 'txInfo.html?txid=' + search;
+            }
+            if (!isNaN(Number(search))) {
+                window.location.href = url + 'blockInfo.html?index=' + search;
+            }
+            // window.location.href='./blockInfo.html?index='+$("#searchText").val();
+            // window.location.href='./txInfo.html?txid='+$("#searchText").val();
+        });
+    }
+}
+exports.SearchController = SearchController;
+
+
+/***/ }),
+/* 6 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";

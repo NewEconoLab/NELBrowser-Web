@@ -79,7 +79,7 @@ export class LocationUtil {
         console.log(projectName);
         return (localhostPaht + projectName);
     }
-    getRootPath_dc() {
+    getRootPath() {
         var pathName = window.location.pathname.substring(1);
         var webName = pathName == '' ? '' : pathName.substring(0, pathName.indexOf('/'));
         if (webName == "") {

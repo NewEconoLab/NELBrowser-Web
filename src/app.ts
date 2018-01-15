@@ -1,6 +1,7 @@
 import * as $ from "jquery";
 import * as bootstrap from "bootstrap";
 import {Ajax as Ajax,LocationUtil as LocationUtil} from "./Util";
+import {SearchController as SearchController} from "./PagesController";
 import {PageUtil as PageUtil} from "./Entitys";
 import {BlockPage as BlockPage}from "./blocks";
 import {Trasctions as Trasctions}from "./Trasction";
@@ -85,17 +86,12 @@ async function blocksPage(){
     });
 }
 
-//jquery $()
+
 $(()=>{
     let page = $('#page').val();
     let location:LocationUtil = new LocationUtil();
-    alert(location.getRootPath_web());
-    alert(location.getRootPath_dc());
-    
-    $("#searchBtn").click(()=>{
-        window.location.href='./blockInfo.html?index='+$("#searchText").val();
-        window.location.href='./blockInfo.html?index='+$("#searchText").val();
-    });
+
+    new SearchController();
 
     if(page==='index'){
         indexPage();
