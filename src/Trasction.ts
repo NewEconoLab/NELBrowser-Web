@@ -19,7 +19,7 @@ export class Trasctions{
         let txs:Tx[] = await this.ajax.post('getrawtransactions',[pageUtil.pageSize,pageUtil.currentPage,txType]);
         $("#transactions").empty();
         txs.forEach((tx)=>{
-            console.log(tx);
+            // console.log(tx);
             let html:string="";
             html+="<tr>"
             html+="<td><a href='./txInfo.html?txid="+tx.txid+"'>"+tx.txid

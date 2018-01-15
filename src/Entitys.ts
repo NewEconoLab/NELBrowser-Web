@@ -1,3 +1,9 @@
+/**
+ * @private currentPage 当前页
+ * @private pageSize 每页条数
+ * @private totalCount 总记录数
+ * @private currentPage 当前页
+ */
 export class PageUtil{
     private _currentPage:number;// 当前页
     private _pageSize:number;// 每页大小
@@ -59,6 +65,7 @@ export class PageUtil{
         return this._totalPage;
     }
 }
+
 export interface Tx {
     txid:string;
     size:number;
@@ -77,3 +84,21 @@ export interface Tx {
         value:string;
     }[];   
 }
+
+export interface Block{
+    hash:string;
+    size:number;
+    version:number;
+    previousblockhash:string;
+    merkleroot:string;
+    time:number;
+    index:number;
+    nonce:string;
+    nextconsensus:string;
+    script:{
+        invocation:string;
+        verification:string;
+    };
+    tx:Tx[];
+}
+

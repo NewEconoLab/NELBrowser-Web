@@ -1,8 +1,8 @@
 import * as $ from "jquery";
 import {Ajax as Ajax} from "./Ajax";
-import { PageUtil as PageUtil, Tx as Tx } from './Entitys';
+import { PageUtil as PageUtil, Tx as Tx,Block as Block } from './Entitys';
 
-export class Block{
+export class BlockPage{
     constructor(){
         $("#searchBtn").click(()=>{
             window.location.href='./blockInfo.html?index='+$("#searchText").val();
@@ -36,17 +36,17 @@ export class Block{
 
     public async queryBlock(index:number){
         let ajax:Ajax = new Ajax();
-        var newDate = new Date();
-        let result = await ajax.post('getblock',[index]);
-        let block = result[0];
+        let newDate = new Date();
+        let blocks:Block[] = await ajax.post('getblock',[index]);
+        let block:Block = blocks[0];
         console.log(block);
-        newDate.setTime(block['time'] * 1000);
-        $("#hash").text(block['hash']);
-        $("#size").text(block['size']+' byte');
+        newDate.setTime(block.time * 1000);
+        $("#hash").text(block.hash);
+        $("#size").text(block.size+' byte');
         $("#time").text(newDate.toLocaleString());
-        $("#version").text(block['version']);
-        $("#index").text(block['index']);
-        let txs:Tx[] = block['tx'];
+        $("#version").text(block.version);
+        $("#index").text(block.index);
+        let txs:Tx[] = block.tx;
         txs.forEach(tx => {
             $("#txs").append('<tr><td><a href="./txInfo.html?txid='+tx.txid+'">'+tx.txid+'</a></td><td>'+tx.type+'</td><td>'+tx.size+' bytes</td><td>'+tx.version+'</td></tr>');
         });

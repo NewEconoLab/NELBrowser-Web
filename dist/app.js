@@ -10406,6 +10406,12 @@ function test() {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
+/**
+ * @private currentPage 当前页
+ * @private pageSize 每页条数
+ * @private totalCount 总记录数
+ * @private currentPage 当前页
+ */
 class PageUtil {
     /**
      *
@@ -10501,7 +10507,7 @@ class Trasctions {
             let txs = yield this.ajax.post('getrawtransactions', [pageUtil.pageSize, pageUtil.currentPage, txType]);
             $("#transactions").empty();
             txs.forEach((tx) => {
-                console.log(tx);
+                // console.log(tx);
                 let html = "";
                 html += "<tr>";
                 html += "<td><a href='./txInfo.html?txid=" + tx.txid + "'>" + tx.txid;
@@ -10616,7 +10622,7 @@ function blocksPage() {
         //分页查询区块数据
         $("#blocks").empty();
         let pageUtil = new Entitys_1.PageUtil(blockCount[0]['blockcount'], 15);
-        let block = new blocks_1.Block();
+        let block = new blocks_1.BlockPage();
         block.updateBlocks(pageUtil);
         //监听下一页
         $("#next").click(() => {
@@ -10663,7 +10669,7 @@ $(() => {
     }
     if (page === 'blockInfo') {
         let index = Number(GetQueryString("index"));
-        let block = new blocks_1.Block();
+        let block = new blocks_1.BlockPage();
         block.queryBlock(index);
     }
 });
@@ -10700,7 +10706,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const $ = __webpack_require__(0);
 const Ajax_1 = __webpack_require__(1);
-class Block {
+class BlockPage {
     constructor() {
         $("#searchBtn").click(() => {
             window.location.href = './blockInfo.html?index=' + $("#searchText").val();
@@ -10738,24 +10744,24 @@ class Block {
     queryBlock(index) {
         return __awaiter(this, void 0, void 0, function* () {
             let ajax = new Ajax_1.Ajax();
-            var newDate = new Date();
-            let result = yield ajax.post('getblock', [index]);
-            let block = result[0];
+            let newDate = new Date();
+            let blocks = yield ajax.post('getblock', [index]);
+            let block = blocks[0];
             console.log(block);
-            newDate.setTime(block['time'] * 1000);
-            $("#hash").text(block['hash']);
-            $("#size").text(block['size'] + ' byte');
+            newDate.setTime(block.time * 1000);
+            $("#hash").text(block.hash);
+            $("#size").text(block.size + ' byte');
             $("#time").text(newDate.toLocaleString());
-            $("#version").text(block['version']);
-            $("#index").text(block['index']);
-            let txs = block['tx'];
+            $("#version").text(block.version);
+            $("#index").text(block.index);
+            let txs = block.tx;
             txs.forEach(tx => {
                 $("#txs").append('<tr><td><a href="./txInfo.html?txid=' + tx.txid + '">' + tx.txid + '</a></td><td>' + tx.type + '</td><td>' + tx.size + ' bytes</td><td>' + tx.version + '</td></tr>');
             });
         });
     }
 }
-exports.Block = Block;
+exports.BlockPage = BlockPage;
 
 
 /***/ })

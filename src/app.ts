@@ -2,7 +2,7 @@ import * as $ from "jquery";
 import * as bootstrap from "bootstrap";
 import {Ajax as Ajax} from "./Ajax";
 import {PageUtil as PageUtil} from "./Entitys";
-import {Block as Block}from "./blocks";
+import {BlockPage as BlockPage}from "./blocks";
 import {Trasctions as Trasctions}from "./Trasction";
 import {TrasctionInfo as TrasctionInfo}from "./Trasction";
 
@@ -64,7 +64,7 @@ async function blocksPage(){
     //分页查询区块数据
     $("#blocks").empty();
     let pageUtil:PageUtil = new PageUtil(blockCount[0]['blockcount'],15);
-    let block:Block = new Block();
+    let block:BlockPage = new BlockPage();
     block.updateBlocks(pageUtil);
     //监听下一页
     $("#next").click(()=>{
@@ -112,7 +112,7 @@ $(()=>{
     }
     if(page==='blockInfo'){
         let index:number = Number(GetQueryString("index"));
-        let block:Block = new Block();
+        let block:BlockPage = new BlockPage();
         block.queryBlock(index);
     }
 });
