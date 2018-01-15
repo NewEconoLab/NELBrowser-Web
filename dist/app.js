@@ -10390,7 +10390,7 @@ class Ajax {
     }
 }
 exports.Ajax = Ajax;
-class ParameterUtil {
+class LocationUtil {
     constructor() {
         this.LocString = String(location.href);
     }
@@ -10402,8 +10402,20 @@ class ParameterUtil {
         // parameter cannot be found
         return "";
     }
+    getRootPath_web() {
+        //获取当前网址，如： http://localhost:8083/uimcardprj/share/meun.jsp
+        var curWwwPath = location.href;
+        //获取主机地址之后的目录，如： uimcardprj/share/meun.jsp
+        var pathName = location.pathname;
+        var pos = curWwwPath.indexOf(pathName);
+        //获取主机地址，如： http://localhost:8083
+        var localhostPaht = curWwwPath.substring(0, pos);
+        //获取带"/"的项目名，如：/uimcardprj
+        var projectName = pathName.substring(0, pathName.substr(1).indexOf('/') + 1);
+        return (localhostPaht + projectName);
+    }
 }
-exports.ParameterUtil = ParameterUtil;
+exports.LocationUtil = LocationUtil;
 
 
 /***/ }),
@@ -10660,47 +10672,33 @@ function blocksPage() {
 //jquery $()
 $(() => {
     let page = $('#page').val();
+    let location = new Util_1.LocationUtil();
+    alert(location.getRootPath_web());
+    $("#searchBtn").click(() => {
+        window.location.href = './blockInfo.html?index=' + $("#searchText").val();
+        window.location.href = './blockInfo.html?index=' + $("#searchText").val();
+    });
     if (page === 'index') {
         indexPage();
-        $("#searchBtn").click(() => {
-            window.location.href = './page/blockInfo.html?index=' + $("#searchText").val();
-        });
     }
     if (page === 'blocks') {
         let index = 0; //
         blocksPage();
-        $("#searchBtn").click(() => {
-            window.location.href = './blockInfo.html?index=' + $("#searchText").val();
-        });
     }
     if (page === 'transction') {
         let ts = new Trasction_1.Trasctions();
     }
     if (page === 'txInfo') {
-        let txid = GetQueryString("txid");
+        let txid = location.GetQueryString("txid");
         let ts = new Trasction_2.TrasctionInfo();
         ts.updateTxInfo(txid);
     }
     if (page === 'blockInfo') {
-        let index = Number(GetQueryString("index"));
+        let index = Number(location.GetQueryString("index"));
         let block = new blocks_1.BlockPage();
         block.queryBlock(index);
     }
 });
-/**
- * 页面获取参数方法
- * @param name
- * @returns
- */
-var LocString = String(location.href);
-function GetQueryString(name) {
-    var rs = new RegExp("(^|)" + name + "=([^&]*)(&|$)", "gi").exec(LocString), tmp;
-    if (tmp = rs) {
-        return decodeURI(tmp[2]);
-    }
-    // parameter cannot be found
-    return "";
-}
 
 
 /***/ }),

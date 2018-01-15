@@ -42,7 +42,11 @@
             </button>
             <a class="navbar-brand" href="#">NEL</a>
           </div>
-          <div id="navbar" class="navbar-collapse collapse">
+          <div id="navbar" class="navbar-collapse collapse">        
+            <form class="navbar-form navbar-left input-append">
+              <input id="searchText" type="text" class="form-control" placeholder="交易哈希/钱包地址/区块高度">
+              <button id="searchBtn" class="btn" type="button">Go!</button>
+            </form>
             <ul class="nav navbar-nav">
               <li class="active"><a href="#">概览</a></li>
               <li><a href="./page/transactions.html">交易</a></li>
@@ -58,11 +62,7 @@
                   <li><a href="#">English</a></li>
                 </ul>
               </li>
-            </ul>          
-            <form class="navbar-form navbar-right input-append">
-              <input id="searchText" type="text" class="form-control" placeholder="交易哈希/钱包地址/区块高度">
-              <button id="searchBtn" class="btn" type="button">Go!</button>
-            </form>
+            </ul>  
           </div><!--/.nav-collapse -->
         </div><!--/.container-fluid -->
       </nav>

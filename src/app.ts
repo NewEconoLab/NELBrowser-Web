@@ -1,6 +1,6 @@
 import * as $ from "jquery";
 import * as bootstrap from "bootstrap";
-import {Ajax as Ajax,ParameterUtil as ParameterUtil} from "./Util";
+import {Ajax as Ajax,LocationUtil as LocationUtil} from "./Util";
 import {PageUtil as PageUtil} from "./Entitys";
 import {BlockPage as BlockPage}from "./blocks";
 import {Trasctions as Trasctions}from "./Trasction";
@@ -88,46 +88,33 @@ async function blocksPage(){
 //jquery $()
 $(()=>{
     let page = $('#page').val();
+    let location:LocationUtil = new LocationUtil();
+    alert(location.getRootPath_web())
+    
+    $("#searchBtn").click(()=>{
+        window.location.href='./blockInfo.html?index='+$("#searchText").val();
+        window.location.href='./blockInfo.html?index='+$("#searchText").val();
+    });
+
     if(page==='index'){
         indexPage();
-        $("#searchBtn").click(()=>{
-            window.location.href='./page/blockInfo.html?index='+$("#searchText").val();
-        });
     }
     
     if(page==='blocks'){
         let index:number = 0;      //
         blocksPage();
-        $("#searchBtn").click(()=>{
-            window.location.href='./blockInfo.html?index='+$("#searchText").val();
-        });
     }
     if(page==='transction'){
         let ts:Trasctions = new Trasctions();
     }
     if(page==='txInfo'){
-        let txid:string = GetQueryString("txid");
+        let txid:string = location.GetQueryString("txid");
         let ts:TrasctionInfo = new TrasctionInfo();
         ts.updateTxInfo(txid);
     }
     if(page==='blockInfo'){
-        let index:number = Number(GetQueryString("index"));
+        let index:number = Number(location.GetQueryString("index"));
         let block:BlockPage = new BlockPage();
         block.queryBlock(index);
     }
 });
-
-/**
- * 页面获取参数方法
- * @param name
- * @returns
- */
-var LocString = String(location.href);
-function GetQueryString(name):string {
-    var rs = new RegExp("(^|)" + name + "=([^&]*)(&|$)", "gi").exec(LocString), tmp;
-    if (tmp = rs) {
-        return decodeURI(tmp[2]);
-    }
-    // parameter cannot be found
-    return "";
-}

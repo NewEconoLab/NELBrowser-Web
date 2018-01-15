@@ -50,7 +50,7 @@ export class Ajax{
     }
 }
 
-export class ParameterUtil {
+export class LocationUtil {
     public LocString = String(location.href);
     constructor(){}
     GetQueryString(name:string):string {
@@ -60,5 +60,18 @@ export class ParameterUtil {
         }
         // parameter cannot be found
         return "";
+    }
+
+    getRootPath_web() {
+        //获取当前网址，如： http://localhost:8083/uimcardprj/share/meun.jsp
+        var curWwwPath = location.href
+        //获取主机地址之后的目录，如： uimcardprj/share/meun.jsp
+        var pathName = location.pathname;
+        var pos = curWwwPath.indexOf(pathName);
+        //获取主机地址，如： http://localhost:8083
+        var localhostPaht = curWwwPath.substring(0, pos);
+        //获取带"/"的项目名，如：/uimcardprj
+        var projectName = pathName.substring(0, pathName.substr(1).indexOf('/') + 1);
+        return (localhostPaht + projectName);
     }
 }
