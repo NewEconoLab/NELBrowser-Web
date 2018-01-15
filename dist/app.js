@@ -10613,7 +10613,7 @@ const $ = __webpack_require__(0);
 const Util_1 = __webpack_require__(1);
 const PagesController_1 = __webpack_require__(5);
 const Entitys_1 = __webpack_require__(2);
-const blocks_1 = __webpack_require__(6);
+const blocks_1 = __webpack_require__(7);
 const Trasction_1 = __webpack_require__(3);
 const Trasction_2 = __webpack_require__(3);
 let ajax = new Util_1.Ajax();
@@ -10709,6 +10709,12 @@ $(() => {
         let block = new blocks_1.BlockPage();
         block.queryBlock(index);
     }
+    if (page === 'addressInfo') {
+        let address = location.GetQueryString("index");
+        console.log(address);
+        let addControll = new PagesController_1.AddressControll(address);
+        addControll.addressInfo();
+    }
 });
 
 
@@ -10718,9 +10724,18 @@ $(() => {
 
 "use strict";
 
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const $ = __webpack_require__(0);
 const Util_1 = __webpack_require__(1);
+const PageViews_1 = __webpack_require__(6);
 class SearchController {
     constructor() {
         this.locationUtil = new Util_1.LocationUtil();
@@ -10744,16 +10759,71 @@ class SearchController {
             if (!isNaN(Number(search))) {
                 window.location.href = url + 'blockInfo.html?index=' + search;
             }
-            // window.location.href='./blockInfo.html?index='+$("#searchText").val();
-            // window.location.href='./txInfo.html?txid='+$("#searchText").val();
         });
     }
 }
 exports.SearchController = SearchController;
+class AddressControll {
+    constructor(address) {
+        this.ajax = new Util_1.Ajax();
+        this.address = address;
+    }
+    addressInfo() {
+        return __awaiter(this, void 0, void 0, function* () {
+            let balance = yield this.ajax.post('getbalance', [this.address]);
+            let utxo = yield this.ajax.post('getutxo', [this.address]);
+            let addInfo = new PageViews_1.AddressInfoView(balance, utxo, this.address);
+        });
+    }
+}
+exports.AddressControll = AddressControll;
 
 
 /***/ }),
 /* 6 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", { value: true });
+const $ = __webpack_require__(0);
+class AddressInfoView {
+    constructor(balances, utxo, address) {
+        $("#address").text('address | ' + address);
+        let html = '';
+        balances.forEach((balance) => {
+            let name = balance.name.find(i => i.lang == 'zh-CN').name;
+            html += '<div class="col-md-6">';
+            html += '<div class="panel panel-default" style="height:100%">';
+            html += '<div class="panel-heading">';
+            html += '<h3 class="panel-title">' + name + '</h3>';
+            html += '</div>';
+            html += '<div id="size" class="panel-body" style="word-break:break-all;">';
+            html += balance.balance;
+            html += '</div></div></div>';
+            $("#balance").append(html);
+        });
+        utxo.forEach((utxo) => {
+            html = '';
+            html += "<tr>";
+            html += "<td><a class='code' href='./txInfo.html?txid=" + utxo.txid + "'>" + utxo.txid;
+            html += "</a></td>";
+            html += "<td><a href='./blcokInfo.html?index=" + utxo.n + "'>" + utxo.n;
+            html += "</a></td>";
+            html += "<td>" + utxo.value;
+            html += "</td>";
+            html += "<td class='code'>" + utxo.asset;
+            html += "</td>";
+            html += "</tr>";
+            $("#utxos").append(html);
+        });
+    }
+}
+exports.AddressInfoView = AddressInfoView;
+
+
+/***/ }),
+/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";

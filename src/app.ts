@@ -1,7 +1,7 @@
 import * as $ from "jquery";
 import * as bootstrap from "bootstrap";
 import {Ajax as Ajax,LocationUtil as LocationUtil} from "./Util";
-import {SearchController as SearchController} from "./PagesController";
+import { SearchController as SearchController, AddressControll } from './PagesController';
 import {PageUtil as PageUtil} from "./Entitys";
 import {BlockPage as BlockPage}from "./blocks";
 import {Trasctions as Trasctions}from "./Trasction";
@@ -113,5 +113,11 @@ $(()=>{
         let index:number = Number(location.GetQueryString("index"));
         let block:BlockPage = new BlockPage();
         block.queryBlock(index);
+    }
+    if(page==='addressInfo'){
+        let address:string = location.GetQueryString("index");
+        console.log(address);
+        let addControll:AddressControll = new AddressControll(address);
+        addControll.addressInfo();
     }
 });

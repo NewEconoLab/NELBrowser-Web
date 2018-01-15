@@ -102,3 +102,20 @@ export interface Block{
     tx:Tx[];
 }
 
+export interface Utxo{
+    addr: string;
+    txid: string;
+    n: number;
+    asset: string;
+    value: string;
+    used: string;
+}
+
+export interface Balance{
+    asset: string;
+    balance: number;
+    name: {
+        lang: string;
+        name: string;
+    }[]
+}

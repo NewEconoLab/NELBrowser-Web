@@ -71,13 +71,35 @@
       </nav>
       <!-- Main component for a primary marketing message or call to action -->
 
+      <div class="jumbotron">
+        <div class="container">
+          <h2>地址详情</h2>
+          <h4 id="address"></h4>
+          <div id="balance" class="row">
+          </div>
+        </div>
+        
+        <table class="table table-striped" >
+          <caption><h3>UTXO</h3></caption>
+          <thead>
+            <tr>
+              <th>txid</th>
+              <th>n</th>
+              <th>number</th>
+              <th>asset</th>
+            </tr>
+          </thead>
+          <tbody id="utxos"></tbody>
+      </table>
+      </div>
+
     </div> <!-- /container -->
 
 
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
-    <input id="page" value="blocks" hidden>
+    <input id="page" value="addressInfo" hidden>
     <script src="../dist/app.js"></script>
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
   </body>

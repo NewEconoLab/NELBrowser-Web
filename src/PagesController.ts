@@ -1,5 +1,7 @@
 import * as $ from "jquery";
-import { Ajax as Ajax, LocationUtil as LocationUtil} from './Util';
+import { Ajax , LocationUtil} from './Util';
+import { Utxo, Balance } from './Entitys';
+import { AddressInfoView } from './PageViews';
 
 export class SearchController{
     public locationUtil:LocationUtil=new LocationUtil();
@@ -23,8 +25,19 @@ export class SearchController{
             if(!isNaN(Number(search))){
                 window.location.href=url+'blockInfo.html?index='+search;
             }
-            // window.location.href='./blockInfo.html?index='+$("#searchText").val();
-            // window.location.href='./txInfo.html?txid='+$("#searchText").val();
         });
+    }
+}
+
+export class AddressControll{
+    private ajax:Ajax = new Ajax();
+    private address:string;
+    constructor(address:string){
+        this.address = address;
+    }
+    public async addressInfo(){
+        let balance:Balance[] = await this.ajax.post('getbalance',[this.address]);
+        let utxo:Utxo[] = await this.ajax.post('getutxo',[this.address]);
+        let addInfo:AddressInfoView = new AddressInfoView(balance,utxo,this.address);
     }
 }
