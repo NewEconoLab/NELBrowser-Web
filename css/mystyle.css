@@ -14,12 +14,8 @@
 .jumbotron.cool{
     color: #fff;
 }
-.title {
+.title {    
+    margin: 0;
+    padding: 0;
     color: #fff;
   }
-caption{
-    margin:0;
-    padding:0;
-    color:#fff;
-    text-align:left;
-}
