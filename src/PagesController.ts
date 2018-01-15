@@ -39,5 +39,6 @@ export class AddressControll{
         let balance:Balance[] = await this.ajax.post('getbalance',[this.address]);
         let utxo:Utxo[] = await this.ajax.post('getutxo',[this.address]);
         let addInfo:AddressInfoView = new AddressInfoView(balance,utxo,this.address);
+        addInfo.loadView(); //加载页面
     }
 }

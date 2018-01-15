@@ -10773,6 +10773,7 @@ class AddressControll {
             let balance = yield this.ajax.post('getbalance', [this.address]);
             let utxo = yield this.ajax.post('getutxo', [this.address]);
             let addInfo = new PageViews_1.AddressInfoView(balance, utxo, this.address);
+            addInfo.loadView(); //加载页面
         });
     }
 }
@@ -10789,9 +10790,18 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const $ = __webpack_require__(0);
 class AddressInfoView {
     constructor(balances, utxo, address) {
-        $("#address").text('address | ' + address);
-        let html = '';
-        balances.forEach((balance) => {
+        this.balances = balances;
+        this.address = address;
+        this.utxo = utxo;
+    }
+    /**
+     * loadView
+     */
+    loadView() {
+        $("#address").text('address | ' + this.address);
+        console.log(this.balances);
+        this.balances.forEach((balance) => {
+            let html = '';
             let name = balance.name.find(i => i.lang == 'zh-CN').name;
             html += '<div class="col-md-6">';
             html += '<div class="panel panel-default" style="height:100%">';
@@ -10803,8 +10813,8 @@ class AddressInfoView {
             html += '</div></div></div>';
             $("#balance").append(html);
         });
-        utxo.forEach((utxo) => {
-            html = '';
+        this.utxo.forEach((utxo) => {
+            let html = '';
             html += "<tr>";
             html += "<td><a class='code' href='./txInfo.html?txid=" + utxo.txid + "'>" + utxo.txid;
             html += "</a></td>";

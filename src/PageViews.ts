@@ -1,10 +1,22 @@
 import * as $ from "jquery";
 import { Balance, Utxo } from './Entitys';
 export class AddressInfoView{
+    public balances:Balance[];
+    public utxo:Utxo[];
+    public address:string;
     constructor(balances:Balance[],utxo:Utxo[],address:string){
-        $("#address").text('address | '+address);
-        let html ='';
-        balances.forEach((balance:Balance)=>{
+        this.balances = balances;
+        this.address = address;
+        this.utxo = utxo;
+    }
+    /**
+     * loadView
+     */
+    public loadView() {
+        $("#address").text('address | '+this.address);
+        console.log(this.balances);
+        this.balances.forEach((balance:Balance)=>{
+            let html ='';
             let name = balance.name.find(i => i.lang == 'zh-CN').name;
             html += '<div class="col-md-6">';
             html += '<div class="panel panel-default" style="height:100%">';
@@ -16,8 +28,8 @@ export class AddressInfoView{
             html += '</div></div></div>';
            $("#balance").append(html);
         });
-        utxo.forEach((utxo:Utxo)=>{
-            html = '';
+        this.utxo.forEach((utxo:Utxo)=>{
+            let html ='';
             html+="<tr>"
             html+="<td><a class='code' href='./txInfo.html?txid="+utxo.txid+"'>"+utxo.txid
             html+="</a></td>"
