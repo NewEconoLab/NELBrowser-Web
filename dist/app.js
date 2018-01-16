@@ -10711,9 +10711,13 @@ $(() => {
     }
     if (page === 'addressInfo') {
         let address = location.GetQueryString("index");
-        console.log(address);
         let addControll = new PagesController_1.AddressControll(address);
         addControll.addressInfo();
+    }
+    if (page === 'assets') {
+        //启动asset管理器
+        let assetControll = new PagesController_1.AssetControll();
+        assetControll.allAsset();
     }
 });
 
@@ -10778,6 +10782,20 @@ class AddressControll {
     }
 }
 exports.AddressControll = AddressControll;
+//资产页面管理器
+class AssetControll {
+    constructor() {
+        this.ajax = new Util_1.Ajax();
+    }
+    allAsset() {
+        return __awaiter(this, void 0, void 0, function* () {
+            let allAsset = yield this.ajax.post('getallasset', []);
+            let assetView = new PageViews_1.AssetsView(allAsset);
+            assetView.loadView(); //调用loadView方法渲染页面
+        });
+    }
+}
+exports.AssetControll = AssetControll;
 
 
 /***/ }),
@@ -10808,7 +10826,7 @@ class AddressInfoView {
             html += '<div class="panel-heading">';
             html += '<h3 class="panel-title">' + name + '</h3>';
             html += '</div>';
-            html += '<div id="size" class="panel-body" style="word-break:break-all;">';
+            html += '<div id="size" class="panel-body code">';
             html += balance.balance;
             html += '</div></div></div>';
             $("#balance").append(html);
@@ -10830,6 +10848,46 @@ class AddressInfoView {
     }
 }
 exports.AddressInfoView = AddressInfoView;
+class AssetsView {
+    constructor(allAsset) {
+        this.assets = allAsset;
+    }
+    /**
+     * loadView 页面展现
+     */
+    loadView() {
+        console.log(this.assets);
+        this.assets.forEach((asset) => {
+            let html = '';
+            let name = asset.name.map((name) => { return name.name; });
+            let names = name.join("|");
+            html += '<div class="col-md-4">';
+            html += '<div class="panel panel-default" style="height:100%">';
+            html += '<div class="panel-heading">';
+            html += '<h3 class="panel-title">' + names + '</h3>';
+            html += '</div>';
+            html += '<ul id="size" class="list-group" >';
+            html += '<li class="list-group-item"> 类型: ';
+            html += asset.type;
+            html += '</li>';
+            html += '<li class="list-group-item"> 总量: ';
+            html += asset.amount;
+            html += '</li>';
+            html += '<li class="list-group-item code"> id: ';
+            html += asset.id;
+            html += '</li>';
+            html += '<li class="list-group-item code"> admin: ';
+            html += asset.admin;
+            html += '</li>';
+            html += '<li class="list-group-item ">';
+            html += asset.amount;
+            html += '</li>';
+            html += '</ul></div></div>';
+            $("#assets").append(html);
+        });
+    }
+}
+exports.AssetsView = AssetsView;
 
 
 /***/ }),

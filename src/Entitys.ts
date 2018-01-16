@@ -117,5 +117,18 @@ export interface Balance{
     name: {
         lang: string;
         name: string;
-    }[]
+    }[];
+}
+
+export interface Asset{
+    type:string;
+    name: {
+        lang: string;
+        name: string;
+    }[];
+    amount:string;
+    precision:number;
+    owner:string;
+    admin:string;
+    id:number;
 }

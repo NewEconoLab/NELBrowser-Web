@@ -1,7 +1,7 @@
 import * as $ from "jquery";
 import { Ajax , LocationUtil} from './Util';
-import { Utxo, Balance } from './Entitys';
-import { AddressInfoView } from './PageViews';
+import { Utxo, Balance, Asset } from './Entitys';
+import { AddressInfoView,AssetsView } from './PageViews';
 
 export class SearchController{
     public locationUtil:LocationUtil=new LocationUtil();
@@ -41,4 +41,16 @@ export class AddressControll{
         let addInfo:AddressInfoView = new AddressInfoView(balance,utxo,this.address);
         addInfo.loadView(); //加载页面
     }
+}
+
+//资产页面管理器
+export class AssetControll{
+    private ajax:Ajax = new Ajax();
+    constructor(){}
+    public async allAsset(){
+        let allAsset:Asset[] = await this.ajax.post('getallasset',[]);
+        let assetView : AssetsView = new AssetsView(allAsset);
+        assetView.loadView();   //调用loadView方法渲染页面
+    }
+    
 }
