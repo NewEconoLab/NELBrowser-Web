@@ -51,21 +51,19 @@
             </div>
             <ul class="nav navbar-nav">
               <li class="active"><a href="#">概览</a></li>
-              <li><a href="./page/transactions.html">交易</a></li>
-              <li><a href="./page/address.html">地址</a></li>
-              <li><a href="./page/blocks.html">区块</a></li>
-              <li><a href="./page/assets.html">资产</a></li>
+              <li class="dropdown">
+                  <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                    浏览 <b class="caret"></b>
+                  </a>
+                  <ul class="dropdown-menu">
+                      <li><a href="./page/transactions.html">交易</a></li>
+                      <li><a href="./page/address.html">地址</a></li>
+                      <li><a href="./page/blocks.html">区块</a></li>
+                      <li><a href="./page/assets.html">资产</a></li>
+                  </ul>
+                </li>
               <li><a href="#">合约</a></li>
             </ul>
-            <ul class="nav navbar-nav navbar-right">
-              <li>
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">语言 <span class="caret"></span></a>
-                <ul class="dropdown-menu">
-                  <li><a href="#">中文</a></li>
-                  <li><a href="#">English</a></li>
-                </ul>
-              </li>
-            </ul>  
           </div><!--/.nav-collapse -->
         </div><!--/.container-fluid -->
       </nav>
@@ -144,6 +142,8 @@
     <!-- <script src="./dist/jquery.js"></script> -->
     <!-- <script src="./dist/bootstrap-table.js"></script> -->
     <script src="./dist/app.js"></script>
+    <script src="http://cdn.static.runoob.com/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
   </body>
 </html>

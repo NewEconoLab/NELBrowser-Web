@@ -28,7 +28,7 @@ export class Trasctions{
             // console.log(tx);
             let html:string="";
             html+="<tr>"
-            html+="<td><a href='./txInfo.html?txid="+tx.txid+"'>"+tx.txid
+            html+="<td><a class='code' href='./txInfo.html?txid="+tx.txid+"'>"+tx.txid
             html+="</a></td>"
             html+="<td><a href='./blcokInfo.html?index="+tx.blockindex+"'>"+tx.blockindex
             html+="</a></td>"

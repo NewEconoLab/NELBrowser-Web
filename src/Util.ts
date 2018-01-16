@@ -16,8 +16,13 @@ export class Ajax{
                     "params": params,
                     "id": 1
                   }),
-                success: (data,status)=>{
-                    resolve(data['result']);
+                success: (data:Object,status)=>{
+                    if('result' in data){          
+                        // console.log(data['result']);              
+                        resolve(data['result']);
+                    }else if('error' in data){
+                        resolve(data['error']);
+                    }
                 },
                 error:()=>{
                     reject("请求失败");

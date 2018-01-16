@@ -52,11 +52,18 @@
             </div>
             <ul class="nav navbar-nav">
               <li><a href="../index.html">概览</a></li>
-              <li class="active"><a href="#">交易</a></li>
-              <li><a href="./address.html">地址</a></li>
-              <li><a href="./blocks.html">区块</a></li>
-              <li><a href="./assets.html">资产</a></li>
-              <li><a href="#">合约</a></li>
+              <li class="dropdown">
+                  <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                    浏览 <b class="caret"></b>
+                  </a>
+                  <ul class="dropdown-menu">
+                      <li class="active"><a href="#">交易</a></li>
+                      <li><a href="./address.html">地址</a></li>
+                      <li><a href="./blocks.html">区块</a></li>
+                      <li><a href="./assets.html">资产</a></li>
+                  </ul>
+                </li>
+                <li><a href="#">合约</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
               <li>
@@ -74,7 +81,7 @@
       <!-- Main component for a primary marketing message or call to action -->
       <div class="jumbotron">
         <caption><h2>交易详情</h2></caption><a class="btn" href="./transactions.html">返回交易列表</a>
-        <h4 id="txInfo"></h4>
+        <h4 id="txInfo" class="code"></h4>
         <div class="container">
           <div class="row">
              <div class="col-md-4">
@@ -84,7 +91,7 @@
                           区块索引
                         </h3>
                     </div>
-                    <div id="index" class="panel-body" style="word-break:break-all;">
+                    <div id="index" class="panel-body code" style="word-break:break-all;">
                     </div>
                 </div> 
               </div>
@@ -99,17 +106,6 @@
                      </div>
                  </div> 
                </div>
-               <div class="col-md-4">
-                  <div class="panel panel-default">
-                      <div class="panel-heading">
-                          <h3 class="panel-title">
-                              日期
-                          </h3>
-                      </div>
-                      <div id="time" class="panel-body" style="word-break:break-all;">
-                      </div>
-                  </div> 
-                </div>
           </div>
           <div class="row">
              <div class="col-md-6">
@@ -146,6 +142,8 @@
     <!-- Placed at the end of the document so the pages load faster -->
     <input id="page" value="txInfo" hidden>
     <script src="../dist/app.js"></script>
+    <script src="http://cdn.static.runoob.com/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
   </body>
 </html>

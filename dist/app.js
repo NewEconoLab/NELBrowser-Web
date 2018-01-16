@@ -10358,7 +10358,13 @@ class Ajax {
                         "id": 1
                     }),
                     success: (data, status) => {
-                        resolve(data['result']);
+                        if ('result' in data) {
+                            // console.log(data['result']);              
+                            resolve(data['result']);
+                        }
+                        else if ('error' in data) {
+                            resolve(data['error']);
+                        }
                     },
                     error: () => {
                         reject("请求失败");
@@ -10548,7 +10554,7 @@ class Trasctions {
                 // console.log(tx);
                 let html = "";
                 html += "<tr>";
-                html += "<td><a href='./txInfo.html?txid=" + tx.txid + "'>" + tx.txid;
+                html += "<td><a class='code' href='./txInfo.html?txid=" + tx.txid + "'>" + tx.txid;
                 html += "</a></td>";
                 html += "<td><a href='./blcokInfo.html?index=" + tx.blockindex + "'>" + tx.blockindex;
                 html += "</a></td>";
@@ -10888,6 +10894,34 @@ class AssetsView {
     }
 }
 exports.AssetsView = AssetsView;
+/**
+ * @class 交易记录
+ */
+class Trasctions {
+    constructor() { }
+    //更新交易记录
+    loadView(txs) {
+        $("#transactions").empty();
+        txs.forEach((tx) => {
+            // console.log(tx);
+            let html = "";
+            html += "<tr>";
+            html += "<td><a class='code' href='./txInfo.html?txid=" + tx.txid + "'>" + tx.txid;
+            html += "</a></td>";
+            html += "<td><a href='./blcokInfo.html?index=" + tx.blockindex + "'>" + tx.blockindex;
+            html += "</a></td>";
+            html += "<td>" + tx.type;
+            html += "</td>";
+            html += "<td>" + (tx.gas == undefined ? '0' : tx.gas);
+            html += "</td>";
+            html += "<td>" + tx.size + " bytes";
+            html += "</td>";
+            html += "</tr>";
+            $("#transactions").append(html);
+        });
+    }
+}
+exports.Trasctions = Trasctions;
 
 
 /***/ }),

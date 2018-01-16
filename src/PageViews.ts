@@ -1,5 +1,5 @@
 import * as $ from "jquery";
-import { Balance, Utxo, Asset } from './Entitys';
+import { Balance, Utxo, Asset, PageUtil, Tx } from './Entitys';
 export class AddressInfoView{
     public balances:Balance[];
     public utxo:Utxo[];
@@ -83,6 +83,34 @@ export class AssetsView{
             html += '</li>'
             html += '</ul></div></div>';
            $("#assets").append(html);
+        });
+    }
+}
+
+/**
+ * @class 交易记录
+ */
+export class Trasctions{
+    constructor(){}
+    //更新交易记录
+    public loadView(txs:Tx[]){
+        $("#transactions").empty();
+        txs.forEach((tx)=>{
+            // console.log(tx);
+            let html:string="";
+            html+="<tr>"
+            html+="<td><a class='code' href='./txInfo.html?txid="+tx.txid+"'>"+tx.txid
+            html+="</a></td>"
+            html+="<td><a href='./blcokInfo.html?index="+tx.blockindex+"'>"+tx.blockindex
+            html+="</a></td>"
+            html+="<td>"+tx.type
+            html+="</td>"
+            html+="<td>"+(tx.gas==undefined?'0':tx.gas)
+            html+="</td>"
+            html+="<td>"+tx.size+" bytes"
+            html+="</td>"
+            html+="</tr>"
+            $("#transactions").append(html);
         });
     }
 }
