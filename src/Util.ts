@@ -21,6 +21,9 @@ export class Ajax{
                         // console.log(data['result']);              
                         resolve(data['result']);
                     }else if('error' in data){
+                        if(data['error']['code']==-1){
+                            resolve([]);
+                        }
                         resolve(data['error']);
                     }
                 },

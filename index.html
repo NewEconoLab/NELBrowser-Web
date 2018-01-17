@@ -100,38 +100,43 @@
         </div>
         <br>
       </div>
-      <div class="jumbotron">
-        <table class="table table-striped cool" id="blocks">
-            <caption><h2>最新的十个区块</h2></caption>
-            <thead>
-              <tr>
-                <th>高度</th>
-                <th>大小</th>
-                <th>时间</th>
-              </tr>
-            </thead>
-            <tbody></tbody>
-        </table>
-        <a class="btn btn-default" href="./page/blocks.html" role="button">查看更多区块</a>
+      <div class="row">
+        <div class="col-md-6">
+          <div class="jumbotron">
+            <table class="table table-striped cool" id="blocks">
+                <caption><h2>最新的十个区块</h2></caption>
+                <thead>
+                  <tr>
+                    <th>高度</th>
+                    <th>大小</th>
+                    <th>时间</th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+            <a class="btn btn-default" href="./page/blocks.html" role="button">查看更多区块</a>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="jumbotron">
+            <table class="table cool table-striped" id="transactions">
+                <caption><h2>最近的十笔交易</h2></caption>
+                <thead>
+                  <tr>
+                    <th>交易ID</th>
+                    <th>交易类型</th>
+                    <th>GAS</th>
+                    <th>区块索引</th>
+                    <th>大小</th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+            <a class="btn btn-default" href="./page/transactions.html" role="button">查看更多交易</a>
+          </div>
+        </div>
       </div>
       
-      <div class="jumbotron">
-        <table class="table cool table-striped" id="transactions">
-            <caption><h2>最近的十笔交易</h2></caption>
-            <thead>
-              <tr>
-                <th>交易ID</th>
-                <th>交易类型</th>
-                <th>GAS</th>
-                <th>区块索引</th>
-                <th>大小</th>
-              </tr>
-            </thead>
-            <tbody></tbody>
-        </table>
-        <a class="btn btn-default" href="./page/transactions.html" role="button">查看更多交易</a>
-      </div>
-      <table id="table"></table>
     </div> <!-- /container -->
 
 
@@ -141,6 +146,7 @@
     <input id="page" value="index" hidden>
     <!-- <script src="./dist/jquery.js"></script> -->
     <!-- <script src="./dist/bootstrap-table.js"></script> -->
+    <script src="./lib/neo-ts.js"></script>
     <script src="./dist/app.js"></script>
     <script src="http://cdn.static.runoob.com/libs/jquery/2.1.1/jquery.min.js"></script>
     <script src="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/js/bootstrap.min.js"></script>

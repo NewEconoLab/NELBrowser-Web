@@ -10363,6 +10363,9 @@ class Ajax {
                             resolve(data['result']);
                         }
                         else if ('error' in data) {
+                            if (data['error']['code'] == -1) {
+                                resolve([]);
+                            }
                             resolve(data['error']);
                         }
                     },
@@ -10510,6 +10513,11 @@ class PageUtil {
     }
 }
 exports.PageUtil = PageUtil;
+var AssetEnum;
+(function (AssetEnum) {
+    AssetEnum["NEO"] = "0xc56f33fc6ecfcd0c225c4ab356fee59390af8560be0e930faebe74a6daff7c9b";
+    AssetEnum["GAS"] = "0x602c79718b16e442de58778e148d0b1084e3b2dffd5de6b7b16cee7969282de7";
+})(AssetEnum = exports.AssetEnum || (exports.AssetEnum = {}));
 
 
 /***/ }),
@@ -10615,6 +10623,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+///<reference path="../lib/neo-ts.d.ts"/>
 const $ = __webpack_require__(0);
 const Util_1 = __webpack_require__(1);
 const PagesController_1 = __webpack_require__(5);
@@ -10623,6 +10632,14 @@ const blocks_1 = __webpack_require__(7);
 const Trasction_1 = __webpack_require__(3);
 const Trasction_2 = __webpack_require__(3);
 let ajax = new Util_1.Ajax();
+var array = Neo.Cryptography.Base58.decode("ALjSnMZidJqd18iQaoCgFun6iqWRm2cVtj");
+var hexstr = array.toHexString();
+var salt = array.subarray(0, 1);
+var hash = array.subarray(1, 1 + 20);
+var check = array.subarray(21, 21 + 4);
+console.log(salt.toHexString());
+console.log(hash.toHexString());
+console.log(check.toHexString());
 //主页
 function indexPage() {
     return __awaiter(this, void 0, void 0, function* () {
@@ -10639,14 +10656,14 @@ function indexPage() {
         blocks.forEach((item, index, input) => {
             var newDate = new Date();
             newDate.setTime(item['time'] * 1000);
-            $("#blocks").append('<tr><td><a href="./page/blockInfo.html?index=' + item['index'] + '">' + item['index'] + '</a></td><td>' + item['size'] + ' bytes</td><td>' + newDate.toLocaleString() + '</td></tr>');
+            $("#blocks").append('<tr><td><a class="code" href="./page/blockInfo.html?index=' + item['index'] + '">' + item['index'] + '</a></td><td>' + item['size'] + ' bytes</td><td>' + newDate.toLocaleString() + '</td></tr>');
         });
         //分页查询交易记录
         let txs = yield ajax.post('getrawtransactions', [10, 1]);
         txs.forEach((tx) => {
             let html = "";
             html += "<tr>";
-            html += "<td><a href='./page/txInfo.html?txid=" + tx.txid + "'>" + tx.txid + "</a>";
+            html += "<td><a class='code' href='./page/txInfo.html?txid=" + tx.txid + "'>" + tx.txid + "</a>";
             html += "</td>";
             html += "<td>" + tx.type;
             html += "</td>";
@@ -10745,6 +10762,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const $ = __webpack_require__(0);
 const Util_1 = __webpack_require__(1);
+const Entitys_1 = __webpack_require__(2);
 const PageViews_1 = __webpack_require__(6);
 class SearchController {
     constructor() {
@@ -10780,9 +10798,17 @@ class AddressControll {
     }
     addressInfo() {
         return __awaiter(this, void 0, void 0, function* () {
-            let balance = yield this.ajax.post('getbalance', [this.address]);
+            let balances = yield this.ajax.post('getbalance', [this.address]);
             let utxo = yield this.ajax.post('getutxo', [this.address]);
-            let addInfo = new PageViews_1.AddressInfoView(balance, utxo, this.address);
+            balances.map((balance) => {
+                if (balance.asset == Entitys_1.AssetEnum.NEO) {
+                    balance.name = [{ lang: 'en', name: 'NEO' }];
+                }
+                if (balance.asset == Entitys_1.AssetEnum.GAS) {
+                    balance.name = [{ lang: 'en', name: "GAS" }];
+                }
+            });
+            let addInfo = new PageViews_1.AddressInfoView(balances, utxo, this.address);
             addInfo.loadView(); //加载页面
         });
     }
@@ -10796,6 +10822,14 @@ class AssetControll {
     allAsset() {
         return __awaiter(this, void 0, void 0, function* () {
             let allAsset = yield this.ajax.post('getallasset', []);
+            allAsset.map((asset) => {
+                if (asset.id == Entitys_1.AssetEnum.NEO) {
+                    asset.name = [{ lang: 'en', name: 'NEO' }];
+                }
+                if (asset.id == Entitys_1.AssetEnum.GAS) {
+                    asset.name = [{ lang: 'en', name: "GAS" }];
+                }
+            });
             let assetView = new PageViews_1.AssetsView(allAsset);
             assetView.loadView(); //调用loadView方法渲染页面
         });
@@ -10823,10 +10857,10 @@ class AddressInfoView {
      */
     loadView() {
         $("#address").text('address | ' + this.address);
-        console.log(this.balances);
+        // console.log(this.balances);
         this.balances.forEach((balance) => {
             let html = '';
-            let name = balance.name.find(i => i.lang == 'zh-CN').name;
+            let name = balance.name.map((name) => { return name.name; }).join('|');
             html += '<div class="col-md-6">';
             html += '<div class="panel panel-default" style="height:100%">';
             html += '<div class="panel-heading">';

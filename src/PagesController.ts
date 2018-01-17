@@ -1,6 +1,6 @@
 import * as $ from "jquery";
 import { Ajax , LocationUtil} from './Util';
-import { Utxo, Balance, Asset } from './Entitys';
+import { Utxo, Balance, Asset, AssetEnum } from './Entitys';
 import { AddressInfoView,AssetsView } from './PageViews';
 
 export class SearchController{
@@ -36,9 +36,17 @@ export class AddressControll{
         this.address = address;
     }
     public async addressInfo(){
-        let balance:Balance[] = await this.ajax.post('getbalance',[this.address]);
+        let balances:Balance[] = await this.ajax.post('getbalance',[this.address]);
         let utxo:Utxo[] = await this.ajax.post('getutxo',[this.address]);
-        let addInfo:AddressInfoView = new AddressInfoView(balance,utxo,this.address);
+        balances.map((balance)=>{
+            if(balance.asset==AssetEnum.NEO){
+                balance.name=[{lang:'en',name:'NEO'}];
+            }
+            if(balance.asset==AssetEnum.GAS){
+                balance.name=[{lang:'en',name:"GAS"}];
+            }
+        });
+        let addInfo:AddressInfoView = new AddressInfoView(balances,utxo,this.address);
         addInfo.loadView(); //加载页面
     }
 }
@@ -49,6 +57,14 @@ export class AssetControll{
     constructor(){}
     public async allAsset(){
         let allAsset:Asset[] = await this.ajax.post('getallasset',[]);
+        allAsset.map((asset)=>{
+            if(asset.id==AssetEnum.NEO){
+                asset.name=[{lang:'en',name:'NEO'}];
+            }
+            if(asset.id==AssetEnum.GAS){
+                asset.name=[{lang:'en',name:"GAS"}];
+            }
+        });
         let assetView : AssetsView = new AssetsView(allAsset);
         assetView.loadView();   //调用loadView方法渲染页面
     }

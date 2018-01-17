@@ -14,10 +14,11 @@ export class AddressInfoView{
      */
     public loadView() {
         $("#address").text('address | '+this.address);
-        console.log(this.balances);
+        // console.log(this.balances);
         this.balances.forEach((balance:Balance)=>{
+            
             let html ='';
-            let name = balance.name.find(i => i.lang == 'zh-CN').name;
+            let name = balance.name.map((name)=>{ return name.name}).join('|');
             html += '<div class="col-md-6">';
             html += '<div class="panel panel-default" style="height:100%">';
             html += '<div class="panel-heading">';
@@ -114,3 +115,5 @@ export class Trasctions{
         });
     }
 }
+
+
