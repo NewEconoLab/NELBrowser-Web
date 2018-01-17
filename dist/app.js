@@ -10632,14 +10632,6 @@ const blocks_1 = __webpack_require__(7);
 const Trasction_1 = __webpack_require__(3);
 const Trasction_2 = __webpack_require__(3);
 let ajax = new Util_1.Ajax();
-var array = Neo.Cryptography.Base58.decode("ALjSnMZidJqd18iQaoCgFun6iqWRm2cVtj");
-var hexstr = array.toHexString();
-var salt = array.subarray(0, 1);
-var hash = array.subarray(1, 1 + 20);
-var check = array.subarray(21, 21 + 4);
-console.log(salt.toHexString());
-console.log(hash.toHexString());
-console.log(check.toHexString());
 //主页
 function indexPage() {
     return __awaiter(this, void 0, void 0, function* () {
@@ -10655,15 +10647,22 @@ function indexPage() {
         let blocks = yield ajax.post('getblocks', [10, 1]);
         blocks.forEach((item, index, input) => {
             var newDate = new Date();
-            newDate.setTime(item['time'] * 1000);
-            $("#blocks").append('<tr><td><a class="code" href="./page/blockInfo.html?index=' + item['index'] + '">' + item['index'] + '</a></td><td>' + item['size'] + ' bytes</td><td>' + newDate.toLocaleString() + '</td></tr>');
+            newDate.setTime(item.time * 1000);
+            let html = '';
+            html += '<tr><td><a class="code" href="./page/blockInfo.html?index=' + item.index + '">';
+            html += item.index + '</a></td><td>' + item.size + ' bytes</td><td>';
+            html += newDate.toLocaleString() + '</td>';
+            html += '<td>' + item.tx.length + '</td></tr>';
+            $("#blocks").append(html);
         });
         //分页查询交易记录
         let txs = yield ajax.post('getrawtransactions', [10, 1]);
         txs.forEach((tx) => {
+            let txid = tx.txid;
+            txid = txid.substring(0, 6) + '...' + txid.substring(txid.length - 6);
             let html = "";
             html += "<tr>";
-            html += "<td><a class='code' href='./page/txInfo.html?txid=" + tx.txid + "'>" + tx.txid + "</a>";
+            html += "<td><a class='code' href='./page/txInfo.html?txid=" + txid + "'>" + txid + "</a>";
             html += "</td>";
             html += "<td>" + tx.type;
             html += "</td>";
