@@ -10338,6 +10338,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+///<reference path="../lib/neo-ts.d.ts"/>
 const $ = __webpack_require__(0);
 class Ajax {
     constructor() { }
@@ -10440,6 +10441,30 @@ class LocationUtil {
     }
 }
 exports.LocationUtil = LocationUtil;
+class NeoUtil {
+    constructor() { }
+    verifyPublicKey(publicKey) {
+        var array = Neo.Cryptography.Base58.decode(publicKey);
+        //var hexstr = array.toHexString();
+        //var salt = array.subarray(0, 1);
+        //var hash = array.subarray(1, 1 + 20);
+        var check = array.subarray(21, 21 + 4); //
+        var checkdata = array.subarray(0, 21); //
+        var hashd = Neo.Cryptography.Sha256.computeHash(checkdata); //
+        hashd = Neo.Cryptography.Sha256.computeHash(hashd); //
+        var hashd = hashd.slice(0, 4); //
+        var checked = new Uint8Array(hashd); //
+        var error = false;
+        for (var i = 0; i < 4; i++) {
+            if (checked[i] != check[i]) {
+                error = true;
+                break;
+            }
+        }
+        return !error;
+    }
+}
+exports.NeoUtil = NeoUtil;
 
 
 /***/ }),
@@ -10768,6 +10793,7 @@ class SearchController {
         this.locationUtil = new Util_1.LocationUtil();
         let page = $('#page').val();
         let url = "";
+        let neoUtil = new Util_1.NeoUtil();
         if (page == 'index') {
             url = './page/';
         }
@@ -10777,7 +10803,12 @@ class SearchController {
         $("#searchBtn").click(() => {
             let search = $("#searchText").val();
             if (search.length == 34) {
-                window.location.href = url + 'address.html?index=' + search;
+                if (neoUtil.verifyPublicKey(search)) {
+                    window.location.href = url + 'address.html?index=' + search;
+                }
+                else {
+                    alert('请输入正确的地址');
+                }
             }
             search = search.replace('0x', '');
             if (search.length == 64) {

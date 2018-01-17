@@ -1,3 +1,4 @@
+///<reference path="../lib/neo-ts.d.ts"/>
 import * as $ from "jquery";
 export class Ajax{
     constructor(){}
@@ -97,4 +98,32 @@ export class LocationUtil {
             return window.location.protocol + '//' + window.location.host + '/' + webName;
         }
     }
+}
+
+export class NeoUtil{
+    constructor(){}
+    public verifyPublicKey(publicKey:string){
+        
+        var array: Uint8Array = Neo.Cryptography.Base58.decode(publicKey);
+        //var hexstr = array.toHexString();
+        //var salt = array.subarray(0, 1);
+        //var hash = array.subarray(1, 1 + 20);
+        var check = array.subarray(21, 21 + 4); //
+
+        var checkdata = array.subarray(0, 21);//
+        var hashd = Neo.Cryptography.Sha256.computeHash(checkdata);//
+        hashd = Neo.Cryptography.Sha256.computeHash(hashd);//
+        var hashd = hashd.slice(0, 4);//
+        var checked = new Uint8Array(hashd);//
+
+        var error = false;
+        for (var i = 0; i < 4; i++) {
+            if (checked[i] != check[i]) {
+                error = true;
+                break;
+            }
+        }
+        return !error;
+    }
+    
 }

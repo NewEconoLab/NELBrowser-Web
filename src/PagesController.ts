@@ -1,5 +1,5 @@
 import * as $ from "jquery";
-import { Ajax , LocationUtil} from './Util';
+import { Ajax, LocationUtil, NeoUtil } from './Util';
 import { Utxo, Balance, Asset, AssetEnum } from './Entitys';
 import { AddressInfoView,AssetsView } from './PageViews';
 
@@ -8,6 +8,7 @@ export class SearchController{
     constructor(){
         let page:string = $('#page').val() as string;
         let url:string = ""; 
+        let neoUtil: NeoUtil = new NeoUtil();
         if(page =='index'){
             url = './page/';
         }else{
@@ -16,7 +17,11 @@ export class SearchController{
         $("#searchBtn").click(()=>{
             let search:string= $("#searchText").val() as string;
             if(search.length==34){
-                window.location.href=url+'address.html?index='+search;
+                if(neoUtil.verifyPublicKey(search)){
+                    window.location.href=url+'address.html?index='+search;
+                }else{
+                    alert('请输入正确的地址');
+                }
             }
             search = search.replace('0x','');
             if(search.length==64){
