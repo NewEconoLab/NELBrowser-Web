@@ -363,8 +363,6 @@ function indexPage() {
             html += "</td>";
             html += "<td>" + tx.type;
             html += "</td>";
-            html += "<td>" + (tx.gas == undefined ? '' : tx.gas);
-            html += "</td>";
             html += "<td>" + tx.blockindex;
             html += "</td>";
             html += "<td>" + tx.size + " bytes";
