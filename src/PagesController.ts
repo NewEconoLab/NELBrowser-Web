@@ -1,7 +1,8 @@
-import * as $ from "jquery";
-import { Ajax, LocationUtil, NeoUtil } from './Util';
-import { Utxo, Balance, Asset, AssetEnum } from './Entitys';
-import { AddressInfoView,AssetsView } from './PageViews';
+/// <reference types="jquery" />
+// import * as $ from "jquery";
+import { Ajax, LocationUtil, NeoUtil, pageCut } from './Util';
+import { Utxo, Balance, Asset, AssetEnum, PageUtil, Addr } from './Entitys';
+import { AddressInfoView,AssetsView, AddrlistView } from './PageViews';
 
 export class SearchController{
     public locationUtil:LocationUtil=new LocationUtil();
@@ -18,7 +19,7 @@ export class SearchController{
             let search:string= $("#searchText").val() as string;
             if(search.length==34){
                 if(neoUtil.verifyPublicKey(search)){
-                    window.location.href=url+'address.html?index='+search;
+                    window.location.href=url+'address.html?addr='+search;
                 }else{
                     alert('请输入正确的地址');
                 }
@@ -41,8 +42,15 @@ export class AddressControll{
         this.address = address;
     }
     public async addressInfo(){
-        let balances:Balance[] = await this.ajax.post('getbalance',[this.address]);
-        let utxo:Utxo[] = await this.ajax.post('getutxo',[this.address]);
+        let balances:Balance[] = await this.ajax.post('getbalance',[this.address]).catch((e)=>{
+            alert(e);
+        });;
+        let utxo:Utxo[] = await this.ajax.post('getutxo',[this.address]).catch((e)=>{
+            alert(e);
+        });
+        if(balances.length<1){
+            alert("当前地址余额为零");
+        }
         balances.map((balance)=>{
             if(balance.asset==AssetEnum.NEO){
                 balance.name=[{lang:'en',name:'NEO'}];
@@ -53,6 +61,62 @@ export class AddressControll{
         });
         let addInfo:AddressInfoView = new AddressInfoView(balances,utxo,this.address);
         addInfo.loadView(); //加载页面
+    }
+}
+//地址列表
+export class addrlistControll{
+    private pageUtil:PageUtil;
+    private ajax:Ajax = new Ajax();
+    constructor(){        
+        $("#next").click(()=>{
+            if(this.pageUtil.currentPage==this.pageUtil.totalPage){
+                alert('当前页已经是最后一页了');
+                return;
+            }else{
+                this.pageUtil.currentPage +=1;
+                this.addrlistInit();
+            }
+        });
+        $("#previous").click(()=>{
+            if(this.pageUtil.currentPage <=1){
+                alert('当前已经是第一页了');
+                return;
+            }else{
+                this.pageUtil.currentPage -=1;
+                this.addrlistInit();
+            }
+        });
+    }
+    /**
+     * addrlistInit
+     */
+    public async addrlistInit() {
+        let addrcount = await this.ajax.post('getaddrcount',[]).catch((e)=>{
+            alert(e);
+        });
+        if(addrcount.length==0){
+            alert('此地址余额为空，utxo为空');
+        }
+        this.pageUtil.totalCount = addrcount[0]['addrcount'];
+        let addrlist:Addr[] = await this.ajax.post('getaddrs',[this.pageUtil.pageSize,this.pageUtil.currentPage]);        
+        let newDate:Date = new Date();
+        addrlist.map((item)=>{
+            newDate.setTime(item.firstuse.blocktime.$date);
+            item.firstDate=newDate.toLocaleString();
+            newDate.setTime(item.lastuse.blocktime.$date);
+            item.lastDate=newDate.toLocaleString();
+        });
+        let view:AddrlistView = new AddrlistView();
+        view.loadView(addrlist);
+        pageCut(this.pageUtil);
+    }
+    /**
+     * start
+     */
+    public async start() {
+        let prom = await this.ajax.post('getaddrcount',[]);            
+        this.pageUtil = new PageUtil(prom[0]['addrcount'],15);
+        this.addrlistInit();
     }
 }
 

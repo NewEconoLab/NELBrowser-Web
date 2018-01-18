@@ -120,6 +120,23 @@ export interface Balance{
     }[];
 }
 
+export interface Addr{
+    addr:string;
+    firstDate:string;
+    lastDate:string;
+    firstuse:{
+        txid:string;
+        blockindex:number;
+        blocktime:{$date:number;};
+    };
+    lastuse:{
+        txid:string;
+        blockindex:number;
+        blocktime:{$date:number;};
+    };
+    txcount:number;
+}
+
 export interface Asset{
     type:string;
     name: {

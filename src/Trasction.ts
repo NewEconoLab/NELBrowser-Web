@@ -1,4 +1,5 @@
-import * as $ from "jquery";
+// import * as $ from "jquery";
+/// <reference types="jquery" />
 import {Ajax as Ajax} from "./Util";
 import {Tx as Tx} from "./Entitys";
 import {PageUtil as PageUtil} from "./Entitys";

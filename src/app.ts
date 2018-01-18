@@ -1,8 +1,9 @@
 ///<reference path="../lib/neo-ts.d.ts"/>
-import * as $ from "jquery";
+/// <reference types="jquery" />
+// import * as $ from "jquery";
 import * as bootstrap from "bootstrap";
 import {Ajax as Ajax,LocationUtil as LocationUtil} from "./Util";
-import { SearchController, AddressControll, AssetControll } from './PagesController';
+import { SearchController, AddressControll, AssetControll, addrlistControll } from './PagesController';
 import { PageUtil, Block } from './Entitys';
 import {BlockPage}from "./blocks";
 import {Trasctions}from "./Trasction";
@@ -45,10 +46,10 @@ async function indexPage(){
     }[] = await ajax.post('getrawtransactions',[10,1]);
     txs.forEach((tx)=>{
         let txid : string = tx.txid;
-        txid = txid.substring(0,6)+'...'+txid.substring(txid.length-6);
+        txid = txid.substring(0,5)+'...'+txid.substring(txid.length-5);
         let html:string="";
         html+="<tr>"
-        html+="<td><a class='code' href='./page/txInfo.html?txid="+txid+"'>"+txid+"</a>"
+        html+="<td><a class='code' href='./page/txInfo.html?txid="+tx.txid+"'>"+txid+"</a>"
         html+="</td>"
         html+="<td>"+tx.type
         html+="</td>"
@@ -120,14 +121,18 @@ $(()=>{
         let block:BlockPage = new BlockPage();
         block.queryBlock(index);
     }
-    if(page==='addressInfo'){
-        let address:string = location.GetQueryString("index");
-        let addControll:AddressControll = new AddressControll(address);
-        addControll.addressInfo();
+    if(page==='addrlist'){
+        let addrlist:addrlistControll = new addrlistControll();
+        addrlist.start();
     }
     if(page==='assets'){
         //启动asset管理器
         let assetControll:AssetControll = new AssetControll();
         assetControll.allAsset();
+    }
+    if(page==='addrInfo'){
+        let addr:string = location.GetQueryString("addr");
+        let addrInfo:AddressControll = new AddressControll(addr);
+        addrInfo.addressInfo();
     }
 });

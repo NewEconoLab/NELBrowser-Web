@@ -1,5 +1,6 @@
-import * as $ from "jquery";
-import { Balance, Utxo, Asset, PageUtil, Tx } from './Entitys';
+// import * as $ from "jquery";
+/// <reference types="jquery" />
+import { Balance, Utxo, Asset, PageUtil, Tx, Addr } from './Entitys';
 export class AddressInfoView{
     public balances:Balance[];
     public utxo:Utxo[];
@@ -13,10 +14,11 @@ export class AddressInfoView{
      * loadView
      */
     public loadView() {
+        $("#balance").empty();
+        $("#utxos").empty();
         $("#address").text('address | '+this.address);
         // console.log(this.balances);
         this.balances.forEach((balance:Balance)=>{
-            
             let html ='';
             let name = balance.name.map((name)=>{ return name.name}).join('|');
             html += '<div class="col-md-6">';
@@ -46,6 +48,27 @@ export class AddressInfoView{
     }
 }
 
+export class AddrlistView{
+    constructor(){}
+
+    /**
+     * loadView
+     */
+    public loadView(addrlist:Addr[]) {
+        $("#addrlist").empty();
+        let html = '';
+        addrlist.forEach(item => {
+            html+='<tr>';
+            html+='<td><a class="code" href="./address.html?addr='+item.addr+'">'+item.addr+'</td>';
+            html+='<td>'+item.firstDate+'</td>';
+            html+='<td>'+item.lastDate+'</td>';
+            html+='<td>'+item.txcount+'</td>';
+            html+='</tr>';
+        });
+        $('#addrlist').append(html);
+    }
+}
+
 export class AssetsView{
     private assets:Asset[];
     constructor(allAsset:Asset[]){
@@ -56,7 +79,7 @@ export class AssetsView{
      * loadView 页面展现
      */
     public loadView() {
-        console.log(this.assets);
+        $("#assets").empty();
         this.assets.forEach((asset:Asset)=>{
             let html ='';
             let name = asset.name.map((name)=>{ return name.name})

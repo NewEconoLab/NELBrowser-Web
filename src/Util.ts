@@ -1,5 +1,6 @@
 ///<reference path="../lib/neo-ts.d.ts"/>
-import * as $ from "jquery";
+/// <reference types="jquery" />
+import { PageUtil } from "./Entitys";
 export class Ajax{
     constructor(){}
     /**
@@ -10,13 +11,14 @@ export class Ajax{
             $.ajax({
                 type: 'POST',
                 url: 'http://47.96.168.8:81/api/testnet',
-                dataType: 'json',
                 data: JSON.stringify({
                     "jsonrpc": "2.0",
                     "method": method,
                     "params": params,
                     "id": 1
                   }),
+                contentType: "application/json; charset=utf-8", 
+                dataType: "json", 
                 success: (data:Object,status)=>{
                     if('result' in data){          
                         // console.log(data['result']);              
@@ -24,8 +26,11 @@ export class Ajax{
                     }else if('error' in data){
                         if(data['error']['code']==-1){
                             resolve([]);
+                        }else{
+                            resolve([]);
+                            reject("参数出错 code:-100");
                         }
-                        resolve(data['error']);
+                        
                     }
                 },
                 error:()=>{
@@ -126,4 +131,17 @@ export class NeoUtil{
         return !error;
     }
     
+}
+
+export function pageCut(pageUtil:PageUtil){        
+    if(pageUtil.totalPage-pageUtil.currentPage){
+        $("#next").removeClass('disabled');
+    }else{
+        $("#next").addClass('disabled');
+    }
+    if(pageUtil.currentPage-1){
+        $("#previous").removeClass('disabled');
+    }else{
+        $("#previous").addClass('disabled');
+    }
 }

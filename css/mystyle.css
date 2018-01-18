@@ -23,5 +23,5 @@
     color: #fff;
 }
 .code{
-    word-break:break-all;
+    word-break:break-all;font-family:monospace,monospace;font-size:1em;
 }

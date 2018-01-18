@@ -7,7 +7,7 @@
     <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
     <meta name="description" content="">
     <meta name="author" content="">
-    <!-- <link rel="icon" href="../../favicon.ico"> -->
+    <link rel="icon" href="./img/log.png">
 
     <title>NEL NewEconnolab</title>
 
@@ -40,7 +40,7 @@
               <span class="icon-bar"></span>
               <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="#">NEL</a>
+            <a class="navbar-brand" href="./img/log.png">NEL</a>
           </div>
           <div id="navbar" class="navbar-collapse collapse">        
             <div class="navbar-form navbar-left input-append">
@@ -57,7 +57,7 @@
                   </a>
                   <ul class="dropdown-menu">
                       <li><a href="./page/transactions.html">交易</a></li>
-                      <li><a href="./page/address.html">地址</a></li>
+                      <li><a href="./page/addrlist.html">地址</a></li>
                       <li><a href="./page/blocks.html">区块</a></li>
                       <li><a href="./page/assets.html">资产</a></li>
                   </ul>
@@ -124,10 +124,10 @@
                 <caption><h2>最近的十笔交易</h2></caption>
                 <thead>
                   <tr>
-                    <th>交易ID</th>
-                    <th>交易类型</th>
+                    <th>TXID</th>
+                    <th>类型</th>
                     <th>GAS</th>
-                    <th>区块索引</th>
+                    <th>区块</th>
                     <th>大小</th>
                   </tr>
                 </thead>
@@ -147,9 +147,9 @@
     <input id="page" value="index" hidden>
     <!-- <script src="./dist/jquery.js"></script> -->
     <!-- <script src="./dist/bootstrap-table.js"></script> -->
+    <script src="./lib/jquery.min.js"></script>
     <script src="./lib/neo-ts.js"></script>
     <script src="./dist/app.js"></script>
-    <script src="http://cdn.static.runoob.com/libs/jquery/2.1.1/jquery.min.js"></script>
     <script src="http://cdn.static.runoob.com/libs/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
   </body>

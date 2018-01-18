@@ -79,16 +79,9 @@
       </nav>
       <!-- Main component for a primary marketing message or call to action -->
 
-      <div class="jumbotron">
-        <div class="container">
-          <h2>地址详情</h2>
-          <h4 id="address"></h4>
-          <div id="balance" class="row">
-          </div>
-        </div>
-        
+      <div class="jumbotron">      
         <table class="table table-striped" >
-          <caption><h3>UTXO</h3></caption>
+          <caption><h3>地址概览</h3></caption>
           <thead>
             <tr>
               <th>txid</th>
@@ -97,8 +90,13 @@
               <th>asset</th>
             </tr>
           </thead>
-          <tbody id="utxos"></tbody>
+          <tbody id="addrlist"></tbody>
       </table>
+      <ul class="pager">
+          <li id="previous" class="previous disabled"><a>&larr; Older</a></li>
+          <a>当前页 第1页，共200页</a>
+          <li id="next" class="next"><a>Newer &rarr;</a></li>
+      </ul>
       </div>
 
     </div> <!-- /container -->
@@ -107,7 +105,7 @@
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
-    <input id="page" value="addrInfo" hidden>
+    <input id="page" value="addrlist" hidden>
     <script src="../lib/neo-ts.js"></script>
     <script src="../lib/jquery.min.js"></script>
     <script src="../dist/app.js"></script>
