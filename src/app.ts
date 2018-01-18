@@ -46,7 +46,7 @@ async function indexPage(){
     }[] = await ajax.post('getrawtransactions',[10,1]);
     txs.forEach((tx)=>{
         let txid : string = tx.txid;
-        txid = txid.substring(0,5)+'...'+txid.substring(txid.length-5);
+        txid = txid.substring(0,4)+'...'+txid.substring(txid.length-4);
         let html:string="";
         html+="<tr>"
         html+="<td><a class='code' href='./page/txInfo.html?txid="+tx.txid+"'>"+txid+"</a>"
