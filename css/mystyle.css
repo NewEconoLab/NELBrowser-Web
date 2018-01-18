@@ -5,13 +5,17 @@
     border-bottom:7px solid #222;
     border-top: 7px solid #222;
 }
-.table.cool.caption>h2{
+.table .cool .caption>h2{
     color: #fff;
 }
 .jumbotron{
     background-color:#222;
 }
-.jumbotron.cool{
+.jumbotron.cool{color: #fff};
+.jumbotron .cool{
+    color: #fff;
+}
+.jumbotron>h2{
     color: #fff;
 }
 .jumbotron>*>h2{
