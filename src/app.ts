@@ -1,14 +1,11 @@
 ///<reference path="../lib/neo-ts.d.ts"/>
 /// <reference types="jquery" />
-// import * as $ from "jquery";
-import * as bootstrap from "bootstrap";
+/// <reference types="bootstrap" />
 import {Ajax as Ajax,LocationUtil as LocationUtil} from "./Util";
 import { SearchController, AddressControll, AssetControll, addrlistControll } from './PagesController';
 import { PageUtil, Block } from './Entitys';
 import {BlockPage}from "./blocks";
-import {Trasctions}from "./Trasction";
-import {TrasctionInfo}from "./Trasction";
-
+import {Trasctions,TrasctionInfo}from "./Trasction";
 let ajax:Ajax = new Ajax();
 //主页
 async function indexPage(){

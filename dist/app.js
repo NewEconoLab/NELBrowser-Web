@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 3);
+/******/ 	return __webpack_require__(__webpack_require__.s = 2);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -317,101 +317,14 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-// import * as $ from "jquery";
+///<reference path="../lib/neo-ts.d.ts"/>
 /// <reference types="jquery" />
+/// <reference types="bootstrap" />
 const Util_1 = __webpack_require__(0);
+const PagesController_1 = __webpack_require__(3);
 const Entitys_1 = __webpack_require__(1);
-/**
- * @class 交易记录
- */
-class Trasctions {
-    constructor() {
-        this.ajax = new Util_1.Ajax();
-        //初始化交易列表
-        let pageUtil = new Entitys_1.PageUtil(100000, 15);
-        this.updateTrasctions(pageUtil, $("#TxType").val());
-        //监听交易列表选择框
-        $("#TxType").change(() => {
-            this.updateTrasctions(pageUtil, $("#TxType").val());
-        });
-    }
-    //更新交易记录
-    updateTrasctions(pageUtil, txType) {
-        return __awaiter(this, void 0, void 0, function* () {
-            //分页查询交易记录
-            let txs = yield this.ajax.post('getrawtransactions', [pageUtil.pageSize, pageUtil.currentPage, txType]);
-            $("#transactions").empty();
-            txs.forEach((tx) => {
-                // console.log(tx);
-                let html = "";
-                html += "<tr>";
-                html += "<td><a class='code' href='./txInfo.html?txid=" + tx.txid + "'>" + tx.txid;
-                html += "</a></td>";
-                html += "<td><a href='./blcokInfo.html?index=" + tx.blockindex + "'>" + tx.blockindex;
-                html += "</a></td>";
-                html += "<td>" + tx.type;
-                html += "</td>";
-                html += "<td>" + (tx.gas == undefined ? '0' : tx.gas);
-                html += "</td>";
-                html += "<td>" + tx.size + " bytes";
-                html += "</td>";
-                html += "</tr>";
-                $("#transactions").append(html);
-            });
-        });
-    }
-}
-exports.Trasctions = Trasctions;
-/**
- * @class 交易详情
- */
-class TrasctionInfo {
-    constructor() {
-        this.ajax = new Util_1.Ajax();
-    }
-    updateTxInfo(txid) {
-        return __awaiter(this, void 0, void 0, function* () {
-            let txInfos = yield this.ajax.post('getrawtransaction', [txid]);
-            let txInfo = txInfos[0];
-            $("#txInfo").text(txInfo.type + " | Hash: " + txInfo.txid);
-            $("#index").text(txInfo.blockindex);
-            $("#size").text(txInfo.size + " bytes");
-            txInfo.vin.forEach((vin, index, arry) => __awaiter(this, void 0, void 0, function* () {
-                let txInfos = yield this.ajax.post('getrawtransaction', [vin.txid]);
-                let address = txInfos[0].vout[vin.vout].address;
-                let value = txInfos[0].vout[vin.vout].value;
-                $("#from").append('<li class="list-group-item">' + address + ' ' + value + ' NEO </br> txid: <a class="code" href="./txInfo.html?txid=' + vin.txid + '">' + vin.txid + '</a> </br>n:' + vin.vout + ' </li>');
-            }));
-            txInfo.vout.forEach(vout => {
-                $("#to").append('<li class="list-group-item">' + vout.address + ' ' + vout.value + ' NEO</br>n :' + vout.n + '</li>');
-            });
-        });
-    }
-}
-exports.TrasctionInfo = TrasctionInfo;
-
-
-/***/ }),
-/* 3 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-const Util_1 = __webpack_require__(0);
-const PagesController_1 = __webpack_require__(4);
-const Entitys_1 = __webpack_require__(1);
-const blocks_1 = __webpack_require__(6);
-const Trasction_1 = __webpack_require__(2);
-const Trasction_2 = __webpack_require__(2);
+const blocks_1 = __webpack_require__(5);
+const Trasction_1 = __webpack_require__(6);
 let ajax = new Util_1.Ajax();
 //主页
 function indexPage() {
@@ -426,7 +339,6 @@ function indexPage() {
         $("#txcount").text(txCount.toLocaleString()); //显示在页面
         //查询地址总数
         let addrCount = yield ajax.post('getaddrcount', []);
-        console.log(addrCount);
         $("#addrCount").text(addrCount[0]['addrcount']);
         //分页查询区块数据
         let blocks = yield ajax.post('getblocks', [10, 1]);
@@ -508,7 +420,7 @@ $(() => {
     }
     if (page === 'txInfo') {
         let txid = location.GetQueryString("txid");
-        let ts = new Trasction_2.TrasctionInfo();
+        let ts = new Trasction_1.TrasctionInfo();
         ts.updateTxInfo(txid);
     }
     if (page === 'blockInfo') {
@@ -534,7 +446,7 @@ $(() => {
 
 
 /***/ }),
-/* 4 */
+/* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -552,7 +464,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 // import * as $ from "jquery";
 const Util_1 = __webpack_require__(0);
 const Entitys_1 = __webpack_require__(1);
-const PageViews_1 = __webpack_require__(5);
+const PageViews_1 = __webpack_require__(4);
 class SearchController {
     constructor() {
         this.locationUtil = new Util_1.LocationUtil();
@@ -704,7 +616,7 @@ exports.AssetControll = AssetControll;
 
 
 /***/ }),
-/* 5 */
+/* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -845,7 +757,7 @@ exports.Trasctions = Trasctions;
 
 
 /***/ }),
-/* 6 */
+/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -918,6 +830,96 @@ class BlockPage {
     }
 }
 exports.BlockPage = BlockPage;
+
+
+/***/ }),
+/* 6 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+// import * as $ from "jquery";
+/// <reference types="jquery" />
+const Util_1 = __webpack_require__(0);
+const Entitys_1 = __webpack_require__(1);
+/**
+ * @class 交易记录
+ */
+class Trasctions {
+    constructor() {
+        this.ajax = new Util_1.Ajax();
+        //初始化交易列表
+        let pageUtil = new Entitys_1.PageUtil(100000, 15);
+        this.updateTrasctions(pageUtil, $("#TxType").val());
+        //监听交易列表选择框
+        $("#TxType").change(() => {
+            this.updateTrasctions(pageUtil, $("#TxType").val());
+        });
+    }
+    //更新交易记录
+    updateTrasctions(pageUtil, txType) {
+        return __awaiter(this, void 0, void 0, function* () {
+            //分页查询交易记录
+            let txs = yield this.ajax.post('getrawtransactions', [pageUtil.pageSize, pageUtil.currentPage, txType]);
+            $("#transactions").empty();
+            txs.forEach((tx) => {
+                let txid = tx.txid;
+                txid = txid.substring(0, 6) + '...' + txid.substring(txid.length - 6);
+                let html = "";
+                html += "<tr>";
+                html += "<td><a class='code' href='./txInfo.html?txid=" + tx.txid + "'>" + txid;
+                html += "</a></td>";
+                html += "<td><a href='./blcokInfo.html?index=" + tx.blockindex + "'>" + tx.blockindex;
+                html += "</a></td>";
+                html += "<td>" + tx.type;
+                html += "</td>";
+                html += "<td>" + (tx.gas == undefined ? '0' : tx.gas);
+                html += "</td>";
+                html += "<td>" + tx.size + " bytes";
+                html += "</td>";
+                html += "</tr>";
+                $("#transactions").append(html);
+            });
+        });
+    }
+}
+exports.Trasctions = Trasctions;
+/**
+ * @class 交易详情
+ */
+class TrasctionInfo {
+    constructor() {
+        this.ajax = new Util_1.Ajax();
+    }
+    updateTxInfo(txid) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let txInfos = yield this.ajax.post('getrawtransaction', [txid]);
+            let txInfo = txInfos[0];
+            $("#txInfo").text(txInfo.type + " | Hash: " + txInfo.txid);
+            $("#index").text(txInfo.blockindex);
+            $("#size").text(txInfo.size + " bytes");
+            txInfo.vin.forEach((vin, index, arry) => __awaiter(this, void 0, void 0, function* () {
+                let txInfos = yield this.ajax.post('getrawtransaction', [vin.txid]);
+                let address = txInfos[0].vout[vin.vout].address;
+                let value = txInfos[0].vout[vin.vout].value;
+                $("#from").append('<li class="list-group-item">' + address + ' ' + value + ' NEO </br> txid: <a class="code" href="./txInfo.html?txid=' + vin.txid + '">' + vin.txid + '</a> </br>n:' + vin.vout + ' </li>');
+            }));
+            txInfo.vout.forEach(vout => {
+                $("#to").append('<li class="list-group-item">' + vout.address + ' ' + vout.value + ' NEO</br>n :' + vout.n + '</li>');
+            });
+        });
+    }
+}
+exports.TrasctionInfo = TrasctionInfo;
 
 
 /***/ })

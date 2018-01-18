@@ -26,10 +26,11 @@ export class Trasctions{
         let txs:Tx[] = await this.ajax.post('getrawtransactions',[pageUtil.pageSize,pageUtil.currentPage,txType]);
         $("#transactions").empty();
         txs.forEach((tx)=>{
-            // console.log(tx);
+            let txid = tx.txid;
+            txid = txid.substring(0,6)+'...'+txid.substring(txid.length-6);
             let html:string="";
             html+="<tr>"
-            html+="<td><a class='code' href='./txInfo.html?txid="+tx.txid+"'>"+tx.txid
+            html+="<td><a class='code' href='./txInfo.html?txid="+tx.txid+"'>"+txid
             html+="</a></td>"
             html+="<td><a href='./blcokInfo.html?index="+tx.blockindex+"'>"+tx.blockindex
             html+="</a></td>"
