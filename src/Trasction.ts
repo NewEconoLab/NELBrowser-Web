@@ -63,10 +63,10 @@ export class TrasctionInfo{
             let txInfos:Tx[] = await this.ajax.post('getrawtransaction',[vin.txid]);
             let address:string = txInfos[0].vout[vin.vout].address;
             let value :string = txInfos[0].vout[vin.vout].value;
-            $("#from").append('<li class="list-group-item">'+address+' '+value+' NEO</li>');
+            $("#from").append('<li class="list-group-item">'+address+' '+value+' NEO </br> txid: <a class="code" href="./txInfo.html?txid='+vin.txid+'">'+vin.txid+'</a> </br>n:'+vin.vout+' </li>');
         });
         txInfo.vout.forEach(vout=>{
-            $("#to").append('<li class="list-group-item">'+vout.address+' '+vout.value+' NEO</li>');
+            $("#to").append('<li class="list-group-item">'+vout.address+' '+vout.value+' NEO</br>n :'+vout.n+'</li>');
         });
     }
 
