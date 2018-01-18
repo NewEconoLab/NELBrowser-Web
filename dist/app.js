@@ -421,9 +421,13 @@ function indexPage() {
         let blockHeight = blockCount[0]['blockcount'] - 1;
         $("#blockHeight").text(blockHeight.toLocaleString()); //显示在页面
         //查询交易数量
-        let txcount = yield ajax.post('gettxcount', []);
-        txcount = txcount[0]['txcount'];
-        $("#txcount").text(txcount.toLocaleString()); //显示在页面
+        let txCount = yield ajax.post('gettxcount', []);
+        txCount = txCount[0]['txcount'];
+        $("#txcount").text(txCount.toLocaleString()); //显示在页面
+        //查询地址总数
+        let addrCount = yield ajax.post('getaddrcount', []);
+        console.log(addrCount);
+        $("#addrCount").text(addrCount[0]['addrcount']);
         //分页查询区块数据
         let blocks = yield ajax.post('getblocks', [10, 1]);
         blocks.forEach((item, index, input) => {

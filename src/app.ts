@@ -18,9 +18,13 @@ async function indexPage(){
     $("#blockHeight").text(blockHeight.toLocaleString());//显示在页面
     
     //查询交易数量
-    let txcount = await ajax.post('gettxcount',[]);
-    txcount = txcount[0]['txcount'];
-    $("#txcount").text(txcount.toLocaleString());//显示在页面
+    let txCount = await ajax.post('gettxcount',[]);
+    txCount = txCount[0]['txcount'];
+    $("#txcount").text(txCount.toLocaleString());//显示在页面
+
+    //查询地址总数
+    let addrCount = await ajax.post('getaddrcount',[])
+    $("#addrCount").text(addrCount[0]['addrcount']);
 
     //分页查询区块数据
     let blocks:Block[] = await ajax.post('getblocks',[10,1]);

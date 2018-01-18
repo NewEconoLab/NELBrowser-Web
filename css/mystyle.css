@@ -25,3 +25,8 @@
 .code{
     word-break:break-all;font-family:monospace,monospace;font-size:1em;
 }
+
+.general-view{
+    background-color: #999;padding-top: 30px;padding-bottom: 30px;
+}
+.general-view>div{ MARGIN-RIGHT: auto; MARGIN-LEFT: auto;}
