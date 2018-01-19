@@ -868,12 +868,30 @@ const Entitys_2 = __webpack_require__(1);
 class Trasctions {
     constructor() {
         this.ajax = new Util_1.Ajax();
-        //初始化交易列表
-        let pageUtil = new Entitys_2.PageUtil(100000, 15);
-        this.updateTrasctions(pageUtil, $("#TxType").val());
+        this.start();
         //监听交易列表选择框
         $("#TxType").change(() => {
-            this.updateTrasctions(pageUtil, $("#TxType").val());
+            this.updateTrasctions(this.pageUtil, $("#TxType").val());
+        });
+        $("#next").click(() => {
+            if (this.pageUtil.currentPage == this.pageUtil.totalPage) {
+                alert('当前页已经是最后一页了');
+                return;
+            }
+            else {
+                this.pageUtil.currentPage += 1;
+                this.updateTrasctions(this.pageUtil, $("#TxType").val());
+            }
+        });
+        $("#previous").click(() => {
+            if (this.pageUtil.currentPage <= 1) {
+                alert('当前已经是第一页了');
+                return;
+            }
+            else {
+                this.pageUtil.currentPage -= 1;
+                this.updateTrasctions(this.pageUtil, $("#TxType").val());
+            }
         });
     }
     //更新交易记录
@@ -900,6 +918,19 @@ class Trasctions {
                 html += "</tr>";
                 $("#transactions").append(html);
             });
+            Util_1.pageCut(this.pageUtil);
+        });
+    }
+    /**
+     * async start
+     */
+    start() {
+        return __awaiter(this, void 0, void 0, function* () {
+            let txCount = yield this.ajax.post('gettxcount', []);
+            txCount = txCount[0]['txcount'];
+            //初始化交易列表
+            this.pageUtil = new Entitys_2.PageUtil(txCount, 15);
+            this.updateTrasctions(this.pageUtil, $("#TxType").val());
         });
     }
 }

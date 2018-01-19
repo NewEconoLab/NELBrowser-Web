@@ -1,6 +1,6 @@
 // import * as $ from "jquery";
 /// <reference types="jquery" />
-import {Ajax as Ajax} from "./Util";
+import {Ajax as Ajax, pageCut} from "./Util";
 import {Tx as Tx, Asset, AssetEnum} from "./Entitys";
 import {PageUtil as PageUtil} from "./Entitys";
 
@@ -9,15 +9,33 @@ import {PageUtil as PageUtil} from "./Entitys";
  */
 export class Trasctions{
     private ajax :Ajax = new Ajax();
-
+    private pageUtil:PageUtil;
     constructor(){
-        //初始化交易列表
-        let pageUtil:PageUtil = new PageUtil(100000,15);
-        this.updateTrasctions(pageUtil,<string>$("#TxType").val());
+        this.start();
         //监听交易列表选择框
         $("#TxType").change(()=>{
-        this.updateTrasctions(pageUtil,<string>$("#TxType").val());
+        this.updateTrasctions(this.pageUtil,<string>$("#TxType").val());
         });
+        
+        $("#next").click(()=>{
+            if(this.pageUtil.currentPage==this.pageUtil.totalPage){
+                alert('当前页已经是最后一页了');
+                return;
+            }else{
+                this.pageUtil.currentPage +=1;
+                this.updateTrasctions(this.pageUtil,<string>$("#TxType").val());
+            }
+        });
+        $("#previous").click(()=>{
+            if(this.pageUtil.currentPage <=1){
+                alert('当前已经是第一页了');
+                return;
+            }else{
+                this.pageUtil.currentPage -=1;
+                this.updateTrasctions(this.pageUtil,<string>$("#TxType").val());
+            }
+        });
+        
     }
 
     //更新交易记录
@@ -43,7 +61,18 @@ export class Trasctions{
             html+="</tr>"
             $("#transactions").append(html);
         });
+        pageCut(this.pageUtil);
     }
+    /**
+     * async start
+     */
+    public async start() {
+        let txCount = await this.ajax.post('gettxcount',[]);
+        txCount = txCount[0]['txcount'];
+        //初始化交易列表
+        this.pageUtil = new PageUtil(txCount,15);
+        this.updateTrasctions(this.pageUtil,<string>$("#TxType").val());
+    } 
 }
 
 /**
@@ -51,8 +80,7 @@ export class Trasctions{
  */
 export class TrasctionInfo{
     private ajax :Ajax = new Ajax();
-    constructor(){
-    }
+    constructor(){}
     public async updateTxInfo(txid:string){
         let txInfos:Tx[] = await this.ajax.post('getrawtransaction',[txid]);
         let txInfo:Tx = txInfos[0];
