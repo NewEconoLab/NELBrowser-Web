@@ -1,7 +1,7 @@
 // import * as $ from "jquery";
 /// <reference types="jquery" />
 import {Ajax as Ajax} from "./Util";
-import {Tx as Tx} from "./Entitys";
+import {Tx as Tx, Asset, AssetEnum} from "./Entitys";
 import {PageUtil as PageUtil} from "./Entitys";
 
 /**
@@ -60,14 +60,27 @@ export class TrasctionInfo{
         $("#index").text(txInfo.blockindex);
         $("#size").text(txInfo.size+" bytes");
         
+        let allAsset:Asset[] = await this.ajax.post('getallasset',[]);
+        allAsset.map((asset)=>{
+            if(asset.id==AssetEnum.NEO){
+                asset.name=[{lang:'en',name:'NEO'}];
+            }
+            if(asset.id==AssetEnum.GAS){
+                asset.name=[{lang:'en',name:"GAS"}];
+            }
+        });
+
         txInfo.vin.forEach(async (vin,index,arry)=>{
             let txInfos:Tx[] = await this.ajax.post('getrawtransaction',[vin.txid]);
-            let address:string = txInfos[0].vout[vin.vout].address;
-            let value :string = txInfos[0].vout[vin.vout].value;
-            $("#from").append('<li class="list-group-item">'+address+' '+value+' NEO </br> txid: <a class="code" href="./txInfo.html?txid='+vin.txid+'">'+vin.txid+'</a> </br>n:'+vin.vout+' </li>');
+            let vout = txInfos[0].vout[vin.vout]
+            let address:string = vout.address;
+            let value :string = vout.value;            
+            let name = allAsset.find(val=>val.id==vout.asset).name.map(name=>{return name.name}).join("|");
+            $("#from").append('<li class="list-group-item">'+address+' '+value+' '+name+' </br> txid: <a class="code" href="./txInfo.html?txid='+vin.txid+'">'+vin.txid+'</a> </br>n:'+vin.vout+' </li>');
         });
         txInfo.vout.forEach(vout=>{
-            $("#to").append('<li class="list-group-item">'+vout.address+' '+vout.value+' NEO</br>n :'+vout.n+'</li>');
+            let name = allAsset.find(val=>val.id==vout.asset).name.map(name=>name.name).join("|");
+            $("#to").append('<li class="list-group-item">'+vout.address+' '+vout.value+' '+name+'</br>n :'+vout.n+'</li>');
         });
     }
 

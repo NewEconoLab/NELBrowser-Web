@@ -45,9 +45,7 @@ export class AddressControll{
         let balances:Balance[] = await this.ajax.post('getbalance',[this.address]).catch((e)=>{
             alert(e);
         });;
-        let utxo:Utxo[] = await this.ajax.post('getutxo',[this.address]).catch((e)=>{
-            alert(e);
-        });
+
         if(balances.length<1){
             alert("当前地址余额为零");
         }
@@ -59,6 +57,25 @@ export class AddressControll{
                 balance.name=[{lang:'en',name:"GAS"}];
             }
         });
+        
+        let utxo:Utxo[] = await this.ajax.post('getutxo',[this.address]).catch((e)=>{
+            alert(e);
+        });
+        
+        let allAsset:Asset[] = await this.ajax.post('getallasset',[]);
+        allAsset.map((asset)=>{
+            if(asset.id==AssetEnum.NEO){
+                asset.name=[{lang:'en',name:'NEO'}];
+            }
+            if(asset.id==AssetEnum.GAS){
+                asset.name=[{lang:'en',name:"GAS"}];
+            }
+        });
+
+        utxo.map((item)=>{
+            item.asset = allAsset.find(val => val.id==item.asset).name.map((name)=>{ return name.name}).join("|");
+        })
+
         let addInfo:AddressInfoView = new AddressInfoView(balances,utxo,this.address);
         addInfo.loadView(); //加载页面
     }

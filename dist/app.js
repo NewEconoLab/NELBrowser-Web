@@ -507,9 +507,6 @@ class AddressControll {
                 alert(e);
             });
             ;
-            let utxo = yield this.ajax.post('getutxo', [this.address]).catch((e) => {
-                alert(e);
-            });
             if (balances.length < 1) {
                 alert("当前地址余额为零");
             }
@@ -520,6 +517,21 @@ class AddressControll {
                 if (balance.asset == Entitys_1.AssetEnum.GAS) {
                     balance.name = [{ lang: 'en', name: "GAS" }];
                 }
+            });
+            let utxo = yield this.ajax.post('getutxo', [this.address]).catch((e) => {
+                alert(e);
+            });
+            let allAsset = yield this.ajax.post('getallasset', []);
+            allAsset.map((asset) => {
+                if (asset.id == Entitys_1.AssetEnum.NEO) {
+                    asset.name = [{ lang: 'en', name: 'NEO' }];
+                }
+                if (asset.id == Entitys_1.AssetEnum.GAS) {
+                    asset.name = [{ lang: 'en', name: "GAS" }];
+                }
+            });
+            utxo.map((item) => {
+                item.asset = allAsset.find(val => val.id == item.asset).name.map((name) => { return name.name; }).join("|");
             });
             let addInfo = new PageViews_1.AddressInfoView(balances, utxo, this.address);
             addInfo.loadView(); //加载页面
@@ -849,6 +861,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference types="jquery" />
 const Util_1 = __webpack_require__(0);
 const Entitys_1 = __webpack_require__(1);
+const Entitys_2 = __webpack_require__(1);
 /**
  * @class 交易记录
  */
@@ -856,7 +869,7 @@ class Trasctions {
     constructor() {
         this.ajax = new Util_1.Ajax();
         //初始化交易列表
-        let pageUtil = new Entitys_1.PageUtil(100000, 15);
+        let pageUtil = new Entitys_2.PageUtil(100000, 15);
         this.updateTrasctions(pageUtil, $("#TxType").val());
         //监听交易列表选择框
         $("#TxType").change(() => {
@@ -905,14 +918,26 @@ class TrasctionInfo {
             $("#txInfo").text(txInfo.type + " | Hash: " + txInfo.txid);
             $("#index").text(txInfo.blockindex);
             $("#size").text(txInfo.size + " bytes");
+            let allAsset = yield this.ajax.post('getallasset', []);
+            allAsset.map((asset) => {
+                if (asset.id == Entitys_1.AssetEnum.NEO) {
+                    asset.name = [{ lang: 'en', name: 'NEO' }];
+                }
+                if (asset.id == Entitys_1.AssetEnum.GAS) {
+                    asset.name = [{ lang: 'en', name: "GAS" }];
+                }
+            });
             txInfo.vin.forEach((vin, index, arry) => __awaiter(this, void 0, void 0, function* () {
                 let txInfos = yield this.ajax.post('getrawtransaction', [vin.txid]);
-                let address = txInfos[0].vout[vin.vout].address;
-                let value = txInfos[0].vout[vin.vout].value;
-                $("#from").append('<li class="list-group-item">' + address + ' ' + value + ' NEO </br> txid: <a class="code" href="./txInfo.html?txid=' + vin.txid + '">' + vin.txid + '</a> </br>n:' + vin.vout + ' </li>');
+                let vout = txInfos[0].vout[vin.vout];
+                let address = vout.address;
+                let value = vout.value;
+                let name = allAsset.find(val => val.id == vout.asset).name.map(name => { return name.name; }).join("|");
+                $("#from").append('<li class="list-group-item">' + address + ' ' + value + ' ' + name + ' </br> txid: <a class="code" href="./txInfo.html?txid=' + vin.txid + '">' + vin.txid + '</a> </br>n:' + vin.vout + ' </li>');
             }));
             txInfo.vout.forEach(vout => {
-                $("#to").append('<li class="list-group-item">' + vout.address + ' ' + vout.value + ' NEO</br>n :' + vout.n + '</li>');
+                let name = allAsset.find(val => val.id == vout.asset).name.map(name => name.name).join("|");
+                $("#to").append('<li class="list-group-item">' + vout.address + ' ' + vout.value + ' ' + name + '</br>n :' + vout.n + '</li>');
             });
         });
     }
