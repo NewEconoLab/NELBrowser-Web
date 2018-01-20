@@ -20,8 +20,9 @@ async function indexPage(){
     $("#txcount").text(txCount.toLocaleString());//显示在页面
 
     //查询地址总数
-    let addrCount = await ajax.post('getaddrcount',[])
-    $("#addrCount").text(addrCount[0]['addrcount']);
+    let addrCount:number = await ajax.post('getaddrcount',[])
+    addrCount = addrCount[0]['addrcount'];
+    $("#addrCount").text(addrCount.toLocaleString());
 
     //分页查询区块数据
     let blocks:Block[] = await ajax.post('getblocks',[10,1]);
