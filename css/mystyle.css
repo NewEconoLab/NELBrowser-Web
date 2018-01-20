@@ -1,45 +1,95 @@
-.table.cool{
-    background-color: #999999;
-}
-.table.cool>tbody>tr{    
-    border-bottom:7px solid #222;
-    border-top: 7px solid #222;
-}
-.table .cool .caption>h2{
-    color: #fff;
-}
-.jumbotron{
-    background-color:#222;
-}
-.jumbotron.cool{color: #fff};
-.jumbotron .cool{
-    color: #fff;
-}
-.jumbotron>h2{
-    color: #fff;
-}
-.jumbotron>*>h2{
-    color: #fff;
-}
-.title {    
-    margin: 0;
-    padding: 0;
-    color: #fff;
-}
-.code{
-    word-break:break-all;font-family:monospace,monospace;font-size:1em;text-decoration:none;
+body {
+    font-family: "Helvetica Neue", Helvetica, Arial, "Hiragino Sans GB", "Hiragino Sans GB W3", "WenQuanYi Micro Hei", sans-serif
 }
 
-.general-view{
-    background-color: #999;padding-top: 30px;padding-bottom: 30px;
+.h1,
+.h2,
+.h3,
+.h4,
+.lead,
+h1,
+h2,
+h3,
+h4 {
+    font-family: "Helvetica Neue", Helvetica, Arial, "Hiragino Sans GB", "Hiragino Sans GB W3", "Microsoft YaHei UI", "Microsoft YaHei", "WenQuanYi Micro Hei", sans-serif
 }
-.general-view>div{ MARGIN-RIGHT: auto; MARGIN-LEFT: auto;}
-#searchText{
-    padding: 15px 30px !important;
-    height: 100%;
-    border: 0 !important;
-    /* border-radius: 0; */
-    background: #3C3C3C;
+
+body {
+    padding-top: 30px
 }
-a {font-size:16px}   
-a:hover { text-decoration:none;}  
+
+@media (min-width:768px) {
+    .navbar {
+        min-height: 40px
+    }
+    .navbar-nav>li>a {
+        font-size: 14px;
+        padding-top: 11px;
+        padding-bottom: 11px
+    }
+    .navbar-brand {
+        padding-top: 0;
+        padding-bottom: 0;
+        line-height: 42px;
+        height: 42px
+    }
+}
+
+body {
+    position: relative;
+    padding: 40px 0;
+    text-align: center;
+    text-shadow: 0 1px 3px rgba(0, 0, 0, .4), 0 0 30px rgba(0, 0, 0, .075);
+    background: #020031;
+    background: -webkit-gradient(linear, left bottom, right top, color-stop(0, #020031), color-stop(100%, #6d3353));
+    background: -webkit-linear-gradient(45deg, #020031 0, #6d3353 100%);
+    background: -o-linear-gradient(45deg, #020031 0, #6d3353 100%);
+    background: linear-gradient(45deg, #020031 0, #6d3353 100%);
+    -webkit-box-shadow: inset 0 3px 7px rgba(0, 0, 0, .2), inset 0 -3px 7px rgba(0, 0, 0, .2);
+    box-shadow: inset 0 3px 7px rgba(0, 0, 0, .2), inset 0 -3px 7px rgba(0, 0, 0, .2)
+}
+
+.jumbotron .jumbotron {
+    color: #fff;
+}
+
+.code {
+    word-break: break-all
+}
+
+.panel {
+    color: black;
+}
+
+.jumbotron aa:hover {
+    color: #fff;
+    text-shadow: 0 0 10px rgba(255, 255, 255, .25)
+}
+
+.jumbotron {}
+
+.container {
+    position: relative;
+    z-index: 2
+}
+
+body:after {
+    content: '';
+    display: block;
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background: url(../img/bs-docs-masthead-pattern.png) repeat center center;
+    opacity: .4
+}
+
+@media only screen and (-webkit-min-device-pixel-ratio:2),
+only screen and (min--moz-device-pixel-ratio:2),
+only screen and (-o-min-device-pixel-ratio:2/1) {
+    .jumbotron:after {
+        -webkit-background-size: 150px 150px;
+        background-size: 150px 150px
+    }
+}
