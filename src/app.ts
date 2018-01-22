@@ -122,6 +122,7 @@ $("#addrs-btn").click(()=>{redirect("#addrs-page")})
 $("#blocks-btn").click(()=>{redirect("#blocks-page")})
 $("#asset-btn").click(()=>{redirect("#asset-page")})
 $("#index-btn").click(()=>{redirect("")});
+$("#wallet-btn").click(()=>{redirect("#wallet-page")});
 
 function redirect(page:string){
     if(page===''){
@@ -158,6 +159,11 @@ function redirect(page:string){
         $(page).show();
     }else{
         $('#asset-page').hide();
+    }
+    if(page=="#wallet-page"){
+        $(page).show();
+    }else{
+        $("#wallet-page").hide();
     }
 }
 

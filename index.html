@@ -63,6 +63,7 @@
                             </ul>
                         </li>
                         <li><a href="#">合约</a></li>
+                        <li><a href="#wallet-page" id="wallet-btn">钱包</a></li>
                     </ul>
                     <div style="padding-right:100px">
                         <ul class="nav navbar-nav navbar-right">
@@ -234,26 +235,120 @@
         <div id="addrs-page" class="jumbotron container" hidden>
             <caption><h2>地址概览</h2></caption>
             <table class="table table-hover cool" >
-            <thead>
-                <tr>
-                <th>地址</th>
-                <th>首次交易时间</th>
-                <th>最后交易时间</th>
-                <th>交易数量</th>
-                </tr>
-            </thead>
-            <tbody id="addrlist"></tbody>
-        </table>
-        <ul class="pager">
-            <li id="previous" class="previous disabled"><a>&larr; Older</a></li>
-            <a>当前页 第1页，共200页</a>
-            <li id="next" class="next"><a>Newer &rarr;</a></li>
-        </ul>
+                <thead>
+                    <tr>
+                    <th>地址</th>
+                    <th>首次交易时间</th>
+                    <th>最后交易时间</th>
+                    <th>交易数量</th>
+                    </tr>
+                </thead>
+                <tbody id="addrlist"></tbody>
+            </table>
+            <ul class="pager">
+                <li id="previous" class="previous disabled"><a>&larr; Older</a></li>
+                <a>当前页 第1页，共200页</a>
+                <li id="next" class="next"><a>Newer &rarr;</a></li>
+            </ul>
         </div>
-
+        <!-- 钱包 -->
+        <div id="wallet-page" hidden>
+            <div class="jumbotron masthead">
+                <caption>
+                    <h2>wallet</h2>
+                </caption>
+                <div>
+                    <div class="form-group">
+                            <label for="exampleInputPassword1">选择您的钱包</label>
+                        <select class="form-control">
+                            <option>AZVNQApJ3U3bK46Xs5u8QBq1khWydSJWd3</option>
+                            <option>AdsNmzKPPG7HfmQpacZ4ixbv9XJHJs2ACz</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <button class="btn btn-info" id="wallet-new" >新建钱包</button>
+                        <button class="btn btn-info" id="wallet-open">导入钱包</button>
+                    </div>
+                </div>
+            </div>
+            <div class="jumbotron masthead">
+                <caption><h3>Transfer</h3></caption>
+                <div >
+                    <div class="form-group">
+                        <label for="exampleInputPassword1">To Address</label>
+                        <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleInputPassword1">Amount</label>
+                        <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
+                    </div>
+                    <div class=" form-group">
+                        <button class="btn btn-info">Send</button>
+                    </div>
+                </div>
+            </div>
+            <div class="jumbotron masthead">
+                <caption><h3>Details</h3></caption>
+            </div>
+        </div>
     </div>
     <!-- /container -->
+    <!-- modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">New Wallet</h4>
+            </div>
+            <div class="modal-body">
+                <form>
+                <div class="form-group">
+                    <label for="recipient-name" class="control-label">password:</label>
+                    <input type="password" class="form-control" id="recipient-name">
+                </div>
+                <div class="form-group">
+                    <label for="message-text" class="control-label">password:</label>
+                    <input type="password" class="form-control" id="recipient-name">
+                </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Send message</button>
+            </div>
+            </div>
+        </div>
+    </div>
 
+    
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="exampleModalLabel">New Wallet</h4>
+            </div>
+            <div class="modal-body">
+                <form>
+                <div class="form-group">
+                    <label for="recipient-name" class="control-label">password:</label>
+                    <input type="password" class="form-control" id="recipient-name">
+                </div>
+                <div class="form-group">
+                    <label for="message-text" class="control-label">password:</label>
+                    <input type="password" class="form-control" id="recipient-name">
+                </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Send message</button>
+            </div>
+            </div>
+        </div>
+    </div>
+    <!-- /modal -->
 
     <!-- Bootstrap core JavaScript
     ================================================== -->
