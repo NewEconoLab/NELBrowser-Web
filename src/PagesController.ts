@@ -1,8 +1,8 @@
 /// <reference types="jquery" />
 // import * as $ from "jquery";
 import { Ajax, LocationUtil, NeoUtil, pageCut } from './Util';
-import { Utxo, Balance, Asset, AssetEnum, PageUtil, Addr } from './Entitys';
-import { AddressInfoView,AssetsView, AddrlistView } from './PageViews';
+import { Utxo, Balance, Asset, AssetEnum, PageUtil, Addr, Block, TableMode } from './Entitys';
+import { AddressInfoView,AssetsView, AddrlistView, BlocksView } from './PageViews';
 
 export class SearchController{
     public locationUtil:LocationUtil=new LocationUtil();
@@ -155,4 +155,102 @@ export class AssetControll{
         assetView.loadView();   //调用loadView方法渲染页面
     }
     
+}
+
+export class BlocksControll{
+    private ajax:Ajax = new Ajax();
+    private pageUtil:PageUtil;
+    private ul:HTMLUListElement;
+    private previous:HTMLLIElement;
+    private next:HTMLLIElement;
+    private older:HTMLAnchorElement;
+    private newer:HTMLAnchorElement;
+    private text:HTMLAnchorElement;
+    constructor(){
+        
+        this.previous=document.createElement("li");
+        this.next=document.createElement("li");
+        this.ul = document.createElement("ul");
+        this.ul.className="pager";
+        this.previous.className="previous disabled";
+        this.next.className = "next";
+        this.older = document.createElement("a");
+        this.newer = document.createElement("a");
+        this.text = document.createElement("a");
+        this.previous.appendChild(this.older);
+        this.next.appendChild(this.newer);
+        this.older.text="← Older";
+        this.newer.text="Newer →";
+        this.ul.appendChild(this.previous);
+        this.ul.appendChild(this.text);
+        this.ul.appendChild(this.next);
+
+        let div = document.getElementById("blocks-page");
+        div.appendChild(this.ul);
+
+        this.next.onclick = () => {
+            if(this.pageUtil.currentPage==this.pageUtil.totalPage){
+                alert('当前页已经是最后一页了');
+                return;
+            }else{
+                this.pageUtil.currentPage +=1;
+                this.blocksInit()
+            }
+        }
+        this.previous.onclick = () => {
+            if(this.pageUtil.currentPage <=1){
+                alert('当前已经是第一页了');
+                return;
+            }else{
+                this.pageUtil.currentPage -=1;
+                this.blocksInit()
+            }
+        }
+    }
+    /**
+     * blocksInit
+     */
+    private async blocksInit() {
+        //分页查询区块数据
+        let blocks:Block[] = await this.ajax.post(
+            'getblocks',
+            [
+                this.pageUtil.pageSize,
+                this.pageUtil.currentPage
+            ]
+        ); 
+        let ths:Map<string,any> = new Map();
+        let tds:Array<Map<string,any>> = new Array<Map<string,any>>();
+        
+        ths.set('index','index');
+        ths.set('size','size');
+        ths.set('time','time');
+        ths.set('txnumber','txnumber');
+        let newDate = new Date();
+        blocks.forEach((block:Block)=>{
+            let td:Map<string,any> = new Map();
+            newDate.setTime(block.time * 1000);
+            let a:string ='<a href="./page/blockInfo.html?index='+block.index+'">';
+            a+=block.index+'</a>';
+            td.set('index',a);
+            td.set('size',block.size);
+            td.set('time',newDate.toLocaleString());
+            td.set('txnumber',block.tx.length);
+            tds.push(td);
+        });
+        
+        let tbmode:TableMode = new TableMode(ths,tds,"blocklist");
+        let blocksView:BlocksView = new BlocksView(tbmode,this.next,this.previous,this.text);
+        blocksView.loadView(this.pageUtil);
+    }
+
+    /**
+     * start
+     */
+    public async start() {
+        //查询区块数量
+        let blockCount = await this.ajax.post('getblockcount',[]);
+        this.pageUtil = new PageUtil(blockCount[0]['blockcount'],15);
+        this.blocksInit();
+    }
 }

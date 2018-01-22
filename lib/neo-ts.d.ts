@@ -1,57 +1,3 @@
-declare type Func<T, TResult> = (arg: T) => TResult;
-declare type Action<T> = Func<T, void>;
-interface Array<T> {
-    fill(value: T, start?: number, end?: number): any;
-}
-interface ArrayConstructor {
-    copy<T>(src: ArrayLike<T>, srcOffset: number, dst: ArrayLike<T>, dstOffset: number, count: number): void;
-    fromArray<T>(arr: ArrayLike<T>): Array<T>;
-}
-interface String {
-    hexToBytes(): Uint8Array;
-}
-interface Uint8Array {
-    toHexString(): string;
-}
-interface Uint8ArrayConstructor {
-    fromArrayBuffer(buffer: ArrayBuffer | ArrayBufferView): Uint8Array;
-}
-declare class NeoMap<TKey, TValue> {
-    private _map;
-    private _size;
-    readonly size: number;
-    clear(): void;
-    delete(key: TKey): boolean;
-    forEach(callback: (value: TValue, key: TKey, map: NeoMap<TKey, TValue>) => void): void;
-    get(key: TKey): TValue;
-    has(key: TKey): boolean;
-    set(key: TKey, value: TValue): void;
-}
-declare type PromiseExecutor<T> = (resolve: Action<T | PromiseLike<T>>, reject: Action<any>) => void;
-declare enum PromiseState {
-    pending = 0,
-    fulfilled = 1,
-    rejected = 2,
-}
-declare class NeoPromise<T> implements PromiseLike<T> {
-    private _state;
-    private _callback_attached;
-    private _value;
-    private _reason;
-    private _onFulfilled;
-    private _onRejected;
-    private _next_promise;
-    private _tag;
-    constructor(executor: PromiseExecutor<T>);
-    static all(iterable: NeoPromise<any>[]): NeoPromise<any[]>;
-    catch<TResult>(onRejected: Func<any, TResult | PromiseLike<TResult>>): PromiseLike<TResult>;
-    private checkState();
-    private reject(reason);
-    static reject(reason: any): PromiseLike<any>;
-    private resolve(value);
-    static resolve<T>(value: T | PromiseLike<T>): PromiseLike<T>;
-    then<TResult>(onFulfilled?: Func<T, TResult | PromiseLike<TResult>>, onRejected?: Func<any, TResult | PromiseLike<TResult>>): PromiseLike<TResult>;
-}
 declare namespace Neo {
     abstract class UintVariable {
         protected _bits: Uint32Array;
@@ -170,6 +116,60 @@ declare namespace Neo {
         deserialize(reader: IO.BinaryReader): void;
         serialize(writer: IO.BinaryWriter): void;
     }
+}
+declare type Func<T, TResult> = (arg: T) => TResult;
+declare type Action<T> = Func<T, void>;
+interface Array<T> {
+    fill(value: T, start?: number, end?: number): any;
+}
+interface ArrayConstructor {
+    copy<T>(src: ArrayLike<T>, srcOffset: number, dst: ArrayLike<T>, dstOffset: number, count: number): void;
+    fromArray<T>(arr: ArrayLike<T>): Array<T>;
+}
+interface String {
+    hexToBytes(): Uint8Array;
+}
+interface Uint8Array {
+    toHexString(): string;
+}
+interface Uint8ArrayConstructor {
+    fromArrayBuffer(buffer: ArrayBuffer | ArrayBufferView): Uint8Array;
+}
+declare class NeoMap<TKey, TValue> {
+    private _map;
+    private _size;
+    readonly size: number;
+    clear(): void;
+    delete(key: TKey): boolean;
+    forEach(callback: (value: TValue, key: TKey, map: NeoMap<TKey, TValue>) => void): void;
+    get(key: TKey): TValue;
+    has(key: TKey): boolean;
+    set(key: TKey, value: TValue): void;
+}
+declare type PromiseExecutor<T> = (resolve: Action<T | PromiseLike<T>>, reject: Action<any>) => void;
+declare enum PromiseState {
+    pending = 0,
+    fulfilled = 1,
+    rejected = 2,
+}
+declare class NeoPromise<T> implements PromiseLike<T> {
+    private _state;
+    private _callback_attached;
+    private _value;
+    private _reason;
+    private _onFulfilled;
+    private _onRejected;
+    private _next_promise;
+    private _tag;
+    constructor(executor: PromiseExecutor<T>);
+    static all(iterable: NeoPromise<any>[]): NeoPromise<any[]>;
+    catch<TResult>(onRejected: Func<any, TResult | PromiseLike<TResult>>): PromiseLike<TResult>;
+    private checkState();
+    private reject(reason);
+    static reject(reason: any): PromiseLike<any>;
+    private resolve(value);
+    static resolve<T>(value: T | PromiseLike<T>): PromiseLike<T>;
+    then<TResult>(onFulfilled?: Func<T, TResult | PromiseLike<TResult>>, onRejected?: Func<any, TResult | PromiseLike<TResult>>): PromiseLike<TResult>;
 }
 declare namespace Neo {
     class Uint160 extends UintVariable {
@@ -532,5 +532,190 @@ declare namespace Neo.IO.Caching {
         Added = 1,
         Changed = 2,
         Deleted = 3,
+    }
+}
+declare namespace ThinNeo {
+    class Base64 {
+        static lookup: any[];
+        static revLookup: any[];
+        static code: string;
+        static binited: boolean;
+        static init(): void;
+        static placeHoldersCount(b64: string): number;
+        static byteLength(b64: string): number;
+        static toByteArray(b64: string): Uint8Array;
+        static tripletToBase64(num: any): any;
+        static encodeChunk(uint8: any, start: any, end: any): string;
+        static fromByteArray(uint8: Uint8Array): string;
+    }
+}
+declare module ThinNeo {
+    class Helper {
+        static GetPrivateKeyFromWIF(wif: string): Uint8Array;
+        static GetWifFromPrivateKey(prikey: Uint8Array): string;
+        static GetPublicKeyFromPrivateKey(privateKey: Uint8Array): Uint8Array;
+        static Hash160(data: Uint8Array): Uint8Array;
+        static GetAddressCheckScriptFromPublicKey(publicKey: Uint8Array): Uint8Array;
+        static GetPublicKeyScriptHashFromPublicKey(publicKey: Uint8Array): Uint8Array;
+        static GetAddressFromScriptHash(scripthash: Uint8Array): string;
+        static GetAddressFromPublicKey(publicKey: Uint8Array): string;
+        static GetPublicKeyScriptHash_FromAddress(address: string): Uint8Array;
+        static Sign(message: Uint8Array, privateKey: Uint8Array): Uint8Array;
+        static VerifySignature(message: Uint8Array, signature: Uint8Array, pubkey: Uint8Array): boolean;
+        static Aes256Encrypt(src: string, key: string): string;
+        static Aes256Encrypt_u8(src: Uint8Array, key: Uint8Array): Uint8Array;
+        static Aes256Decrypt_u8(encryptedkey: Uint8Array, key: Uint8Array): Uint8Array;
+        static GetNep2FromPrivateKey(prikey: Uint8Array, passphrase: string, n: number, r: number, p: number, callback: (info: string, result: string) => void): void;
+        static GetPrivateKeyFromNep2(nep2: string, passphrase: string, n: number, r: number, p: number, callback: (info: string, result: string | Uint8Array) => void): void;
+    }
+}
+declare module ThinNeo {
+    enum OpCode {
+        PUSH0 = 0,
+        PUSHF = 0,
+        PUSHBYTES1 = 1,
+        PUSHBYTES75 = 75,
+        PUSHDATA1 = 76,
+        PUSHDATA2 = 77,
+        PUSHDATA4 = 78,
+        PUSHM1 = 79,
+        PUSH1 = 81,
+        PUSHT = 81,
+        PUSH2 = 82,
+        PUSH3 = 83,
+        PUSH4 = 84,
+        PUSH5 = 85,
+        PUSH6 = 86,
+        PUSH7 = 87,
+        PUSH8 = 88,
+        PUSH9 = 89,
+        PUSH10 = 90,
+        PUSH11 = 91,
+        PUSH12 = 92,
+        PUSH13 = 93,
+        PUSH14 = 94,
+        PUSH15 = 95,
+        PUSH16 = 96,
+        NOP = 97,
+        JMP = 98,
+        JMPIF = 99,
+        JMPIFNOT = 100,
+        CALL = 101,
+        RET = 102,
+        APPCALL = 103,
+        SYSCALL = 104,
+        TAILCALL = 105,
+        DUPFROMALTSTACK = 106,
+        TOALTSTACK = 107,
+        FROMALTSTACK = 108,
+        XDROP = 109,
+        XSWAP = 114,
+        XTUCK = 115,
+        DEPTH = 116,
+        DROP = 117,
+        DUP = 118,
+        NIP = 119,
+        OVER = 120,
+        PICK = 121,
+        ROLL = 122,
+        ROT = 123,
+        SWAP = 124,
+        TUCK = 125,
+        CAT = 126,
+        SUBSTR = 127,
+        LEFT = 128,
+        RIGHT = 129,
+        SIZE = 130,
+        INVERT = 131,
+        AND = 132,
+        OR = 133,
+        XOR = 134,
+        EQUAL = 135,
+        INC = 139,
+        DEC = 140,
+        SIGN = 141,
+        NEGATE = 143,
+        ABS = 144,
+        NOT = 145,
+        NZ = 146,
+        ADD = 147,
+        SUB = 148,
+        MUL = 149,
+        DIV = 150,
+        MOD = 151,
+        SHL = 152,
+        SHR = 153,
+        BOOLAND = 154,
+        BOOLOR = 155,
+        NUMEQUAL = 156,
+        NUMNOTEQUAL = 158,
+        LT = 159,
+        GT = 160,
+        LTE = 161,
+        GTE = 162,
+        MIN = 163,
+        MAX = 164,
+        WITHIN = 165,
+        SHA1 = 167,
+        SHA256 = 168,
+        HASH160 = 169,
+        HASH256 = 170,
+        CSHARPSTRHASH32 = 171,
+        JAVAHASH32 = 173,
+        CHECKSIG = 172,
+        CHECKMULTISIG = 174,
+        ARRAYSIZE = 192,
+        PACK = 193,
+        UNPACK = 194,
+        PICKITEM = 195,
+        SETITEM = 196,
+        NEWARRAY = 197,
+        NEWSTRUCT = 198,
+        SWITCH = 208,
+        THROW = 240,
+        THROWIFNOT = 241,
+    }
+}
+declare module ThinNeo.Compiler {
+    class Avm2Asm {
+        static Trans(script: Uint8Array): Op[];
+    }
+}
+declare module ThinNeo.Compiler {
+    class ByteReader {
+        constructor(data: Uint8Array);
+        data: Uint8Array;
+        addr: number;
+        ReadOP(): OpCode;
+        ReadBytes(count: number): Uint8Array;
+        ReadByte(): number;
+        ReadUInt16(): number;
+        ReadInt16(): number;
+        ReadUInt32(): number;
+        ReadInt32(): number;
+        ReadUInt64(): number;
+        ReadVarBytes(): Uint8Array;
+        ReadVarInt(): number;
+        readonly End: boolean;
+    }
+}
+declare module ThinNeo.Compiler {
+    enum ParamType {
+        None = 0,
+        ByteArray = 1,
+        String = 2,
+        Addr = 3,
+    }
+    class Op {
+        addr: number;
+        error: boolean;
+        code: ThinNeo.OpCode;
+        paramData: Uint8Array;
+        paramType: ParamType;
+        toString(): string;
+        AsHexString(): string;
+        AsString(): string;
+        AsAddr(): number;
+        getCodeName(): string;
     }
 }

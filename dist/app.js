@@ -222,6 +222,38 @@ function pageCut(pageUtil) {
     }
 }
 exports.pageCut = pageCut;
+class TableView {
+    constructor(divId, tableMode) {
+        this._tableMode = tableMode;
+        this.divId = divId;
+        let html = "<table id='" + tableMode.tablId + "'>"
+            + "<thead><head></head></thead><tbody></tbody></table>";
+        $("#" + this.divId).append(html);
+    }
+    update() {
+        this._tableMode.ths.forEach((th) => {
+            $("#blocklist").children('thead').append('<th>' + th + '</th>');
+        });
+        let tbody = $("#blocklist").children('tbody');
+        let tr = '';
+        this._tableMode.tds.forEach((tdMap) => {
+            let td = "";
+            this._tableMode.ths.forEach((val, key) => {
+                td += "<td>" + tdMap.get(key) + "</td>";
+            });
+            tr += "<tr>" + td + "</tr>";
+        });
+        tbody.empty();
+        tbody.append(tr);
+    }
+    set className(className) {
+        $("#" + this._tableMode.tablId).addClass(className);
+    }
+    set tableMode(tableMode) {
+        this._tableMode = tableMode;
+    }
+}
+exports.TableView = TableView;
 
 
 /***/ }),
@@ -300,6 +332,14 @@ var AssetEnum;
     AssetEnum["NEO"] = "0xc56f33fc6ecfcd0c225c4ab356fee59390af8560be0e930faebe74a6daff7c9b";
     AssetEnum["GAS"] = "0x602c79718b16e442de58778e148d0b1084e3b2dffd5de6b7b16cee7969282de7";
 })(AssetEnum = exports.AssetEnum || (exports.AssetEnum = {}));
+class TableMode {
+    constructor(ths, tds, tableId) {
+        this.ths = ths;
+        this.tds = tds;
+        this.tablId = tableId;
+    }
+}
+exports.TableMode = TableMode;
 
 
 /***/ }),
@@ -341,6 +381,7 @@ function indexPage() {
         let addrCount = yield ajax.post('getaddrcount', []);
         addrCount = addrCount[0]['addrcount'];
         $("#addrCount").text(addrCount.toLocaleString());
+        $("#index-page").find("#blocks").children("tbody").empty();
         //分页查询区块数据
         let blocks = yield ajax.post('getblocks', [10, 1]);
         blocks.forEach((item, index, input) => {
@@ -351,10 +392,11 @@ function indexPage() {
             html += item.index + '</a></td><td>' + item.size + ' bytes</td><td>';
             html += newDate.toLocaleString() + '</td>';
             html += '<td>' + item.tx.length + '</td></tr>';
-            $("#blocks").append(html);
+            $("#index-page").find("#blocks").append(html);
         });
         //分页查询交易记录
         let txs = yield ajax.post('getrawtransactions', [10, 1]);
+        $("#index-page").find("#transactions").children("tbody").empty();
         txs.forEach((tx) => {
             let txid = tx.txid;
             txid = txid.substring(0, 4) + '...' + txid.substring(txid.length - 4);
@@ -369,7 +411,7 @@ function indexPage() {
             html += "<td>" + tx.size + " bytes";
             html += "</td>";
             html += "</tr>";
-            $("#transactions").append(html);
+            $("#index-page").find("#transactions").children("tbody").append(html);
         });
     });
 }
@@ -380,12 +422,11 @@ function blocksPage() {
         //查询区块数量
         let blockCount = yield ajax.post('getblockcount', []);
         //分页查询区块数据
-        $("#blocks").empty();
         let pageUtil = new Entitys_1.PageUtil(blockCount[0]['blockcount'], 15);
         let block = new blocks_1.BlockPage();
         block.updateBlocks(pageUtil);
         //监听下一页
-        $("#next").click(() => {
+        $("#blocks-page").find("#next").click(() => {
             if (pageUtil.currentPage == pageUtil.totalPage) {
                 alert('当前页已经是最后一页了');
                 return;
@@ -393,7 +434,7 @@ function blocksPage() {
             pageUtil.currentPage += 1;
             block.updateBlocks(pageUtil);
         });
-        $("#previous").click(() => {
+        $("#blocks-page").find("#previous").click(() => {
             if (pageUtil.currentPage <= 1) {
                 alert('当前已经是第一页了');
                 return;
@@ -405,42 +446,75 @@ function blocksPage() {
 }
 $(() => {
     let page = $('#page').val();
-    let location = new Util_1.LocationUtil();
+    let locationutil = new Util_1.LocationUtil();
+    let hash = location.hash;
+    redirect(hash);
     new PagesController_1.SearchController();
-    if (page === 'index') {
-        indexPage();
-    }
-    if (page === 'blocks') {
-        let index = 0; //
-        blocksPage();
-    }
-    if (page === 'transction') {
-        let ts = new Trasction_1.Trasctions();
-    }
     if (page === 'txInfo') {
-        let txid = location.GetQueryString("txid");
+        let txid = locationutil.GetQueryString("txid");
         let ts = new Trasction_1.TrasctionInfo();
         ts.updateTxInfo(txid);
     }
     if (page === 'blockInfo') {
-        let index = Number(location.GetQueryString("index"));
+        let index = Number(locationutil.GetQueryString("index"));
         let block = new blocks_1.BlockPage();
         block.queryBlock(index);
     }
-    if (page === 'addrlist') {
-        let addrlist = new PagesController_1.addrlistControll();
-        addrlist.start();
-    }
-    if (page === 'assets') {
-        //启动asset管理器
-        let assetControll = new PagesController_1.AssetControll();
-        assetControll.allAsset();
-    }
     if (page === 'addrInfo') {
-        let addr = location.GetQueryString("addr");
+        let addr = locationutil.GetQueryString("addr");
         let addrInfo = new PagesController_1.AddressControll(addr);
         addrInfo.addressInfo();
     }
+});
+$("#txlist-btn").click(() => { redirect('#txlist-page'); });
+$("#addrs-btn").click(() => { redirect("#addrs-page"); });
+$("#blocks-btn").click(() => { redirect("#blocks-page"); });
+$("#asset-btn").click(() => { redirect("#asset-page"); });
+$("#index-btn").click(() => { redirect(""); });
+function redirect(page) {
+    if (page === '') {
+        indexPage();
+        $('#index-page').show();
+    }
+    else {
+        $('#index-page').hide();
+    }
+    if (page === '#blocks-page') {
+        // let blocks=new BlocksControll();
+        // blocks.start();
+        blocksPage();
+        $(page).show();
+    }
+    else {
+        $('#blocks-page').hide();
+    }
+    if (page === '#txlist-page') {
+        let ts = new Trasction_1.Trasctions();
+        $(page).show();
+    }
+    else {
+        $('#txlist-page').hide();
+    }
+    if (page === '#addrs-page') {
+        let addrlist = new PagesController_1.addrlistControll();
+        addrlist.start();
+        $(page).show();
+    }
+    else {
+        $('#addrs-page').hide();
+    }
+    if (page === '#asset-page') {
+        //启动asset管理器
+        let assetControll = new PagesController_1.AssetControll();
+        assetControll.allAsset();
+        $(page).show();
+    }
+    else {
+        $('#asset-page').hide();
+    }
+}
+$("#wallet-new").click(() => {
+    $('#exampleModal').modal('show');
 });
 
 
@@ -624,6 +698,94 @@ class AssetControll {
     }
 }
 exports.AssetControll = AssetControll;
+class BlocksControll {
+    constructor() {
+        this.ajax = new Util_1.Ajax();
+        this.previous = document.createElement("li");
+        this.next = document.createElement("li");
+        this.ul = document.createElement("ul");
+        this.ul.className = "pager";
+        this.previous.className = "previous disabled";
+        this.next.className = "next";
+        this.older = document.createElement("a");
+        this.newer = document.createElement("a");
+        this.text = document.createElement("a");
+        this.previous.appendChild(this.older);
+        this.next.appendChild(this.newer);
+        this.older.text = "← Older";
+        this.newer.text = "Newer →";
+        this.ul.appendChild(this.previous);
+        this.ul.appendChild(this.text);
+        this.ul.appendChild(this.next);
+        let div = document.getElementById("blocks-page");
+        div.appendChild(this.ul);
+        this.next.onclick = () => {
+            if (this.pageUtil.currentPage == this.pageUtil.totalPage) {
+                alert('当前页已经是最后一页了');
+                return;
+            }
+            else {
+                this.pageUtil.currentPage += 1;
+                this.blocksInit();
+            }
+        };
+        this.previous.onclick = () => {
+            if (this.pageUtil.currentPage <= 1) {
+                alert('当前已经是第一页了');
+                return;
+            }
+            else {
+                this.pageUtil.currentPage -= 1;
+                this.blocksInit();
+            }
+        };
+    }
+    /**
+     * blocksInit
+     */
+    blocksInit() {
+        return __awaiter(this, void 0, void 0, function* () {
+            //分页查询区块数据
+            let blocks = yield this.ajax.post('getblocks', [
+                this.pageUtil.pageSize,
+                this.pageUtil.currentPage
+            ]);
+            let ths = new Map();
+            let tds = new Array();
+            ths.set('index', 'index');
+            ths.set('size', 'size');
+            ths.set('time', 'time');
+            ths.set('txnumber', 'txnumber');
+            let newDate = new Date();
+            blocks.forEach((block) => {
+                let td = new Map();
+                newDate.setTime(block.time * 1000);
+                let a = '<a href="./page/blockInfo.html?index=' + block.index + '">';
+                a += block.index + '</a>';
+                td.set('index', a);
+                td.set('size', block.size);
+                td.set('time', newDate.toLocaleString());
+                td.set('txnumber', block.tx.length);
+                tds.push(td);
+            });
+            let tbmode = new Entitys_1.TableMode(ths, tds, "blocklist");
+            let blocksView = new PageViews_1.BlocksView(tbmode, this.next, this.previous, this.text);
+            blocksView.loadView(this.pageUtil);
+        });
+    }
+    /**
+     * start
+     */
+    start() {
+        return __awaiter(this, void 0, void 0, function* () {
+            //查询区块数量
+            let blockCount = yield this.ajax.post('getblockcount', []);
+            this.pageUtil = new Entitys_1.PageUtil(blockCount[0]['blockcount'], 15);
+            this.blocksInit();
+        });
+    }
+}
+exports.BlocksControll = BlocksControll;
 
 
 /***/ }),
@@ -633,6 +795,7 @@ exports.AssetControll = AssetControll;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", { value: true });
+const Util_1 = __webpack_require__(0);
 class AddressInfoView {
     constructor(balances, utxo, address) {
         this.balances = balances;
@@ -765,6 +928,36 @@ class Trasctions {
     }
 }
 exports.Trasctions = Trasctions;
+class BlocksView {
+    constructor(tbmode, next, previous, text) {
+        this.next = next;
+        this.previous = previous;
+        this.text = text;
+        this.tbview = new Util_1.TableView("blocks-page", tbmode);
+        this.tbview.className = "table cool table-hover";
+        this.tbview.update();
+    }
+    /**
+     * loadView()
+     */
+    loadView(pageUtil) {
+        this.text.text = "总记录数:" + pageUtil.totalCount + " 总页数:" + pageUtil.totalPage + " 当前页:" + pageUtil.currentPage;
+        if (pageUtil.totalPage - pageUtil.currentPage) {
+            this.next.classList.remove('disabled');
+        }
+        else {
+            this.next.classList.add('disabled');
+        }
+        if (pageUtil.currentPage - 1) {
+            this.previous.classList.remove('disabled');
+        }
+        else {
+            this.previous.classList.add('disabled');
+        }
+        this.tbview.update();
+    }
+}
+exports.BlocksView = BlocksView;
 
 
 /***/ }),
@@ -795,18 +988,19 @@ class BlockPage {
         return __awaiter(this, void 0, void 0, function* () {
             let ajax = new Util_1.Ajax();
             let blocks = yield ajax.post('getblocks', [pageUtil.pageSize, pageUtil.currentPage]);
-            $("#blocks").empty();
+            console.log("blocks-page");
+            $("#blocks-page").children("table").children("tbody").empty();
             if (pageUtil.totalPage - pageUtil.currentPage) {
-                $("#next").removeClass('disabled');
+                $("#blocks-page").find("#next").removeClass('disabled');
             }
             else {
-                $("#next").addClass('disabled');
+                $("#blocks-page").find("#next").addClass('disabled');
             }
             if (pageUtil.currentPage - 1) {
-                $("#previous").removeClass('disabled');
+                $("#blocks-page").find("#previous").removeClass('disabled');
             }
             else {
-                $("#previous").addClass('disabled');
+                $("#blocks-page").find("#previous").addClass('disabled');
             }
             let newDate = new Date();
             blocks.forEach((item, index, input) => {
@@ -816,7 +1010,7 @@ class BlockPage {
                 html += '<a href="../page/blockInfo.html?index=' + item.index + '">';
                 html += item.index + '</a></td><td>' + item.size;
                 html += ' bytes</td><td>' + newDate.toLocaleString() + '</td></tr>';
-                $("#blocks").append(html);
+                $("#blocks-page").find("tbody").append(html);
             });
         });
     }
@@ -869,12 +1063,13 @@ const Entitys_2 = __webpack_require__(1);
 class Trasctions {
     constructor() {
         this.ajax = new Util_1.Ajax();
+        this.txlist = $("#txlist-page");
         this.start();
         //监听交易列表选择框
         $("#TxType").change(() => {
             this.updateTrasctions(this.pageUtil, $("#TxType").val());
         });
-        $("#next").click(() => {
+        this.txlist.find(".next").click(() => {
             if (this.pageUtil.currentPage == this.pageUtil.totalPage) {
                 alert('当前页已经是最后一页了');
                 return;
@@ -884,7 +1079,7 @@ class Trasctions {
                 this.updateTrasctions(this.pageUtil, $("#TxType").val());
             }
         });
-        $("#previous").click(() => {
+        this.txlist.find(".previous").click(() => {
             if (this.pageUtil.currentPage <= 1) {
                 alert('当前已经是第一页了');
                 return;
@@ -900,7 +1095,7 @@ class Trasctions {
         return __awaiter(this, void 0, void 0, function* () {
             //分页查询交易记录
             let txs = yield this.ajax.post('getrawtransactions', [pageUtil.pageSize, pageUtil.currentPage, txType]);
-            $("#transactions").empty();
+            this.txlist.find("table").children("tbody").empty();
             txs.forEach((tx) => {
                 let txid = tx.txid;
                 txid = txid.substring(0, 6) + '...' + txid.substring(txid.length - 6);
@@ -917,7 +1112,7 @@ class Trasctions {
                 html += "<td>" + tx.size + " bytes";
                 html += "</td>";
                 html += "</tr>";
-                $("#transactions").append(html);
+                this.txlist.find("table").children("tbody").append(html);
             });
             Util_1.pageCut(this.pageUtil);
         });

@@ -12,16 +12,17 @@ export class BlockPage{
     public async updateBlocks(pageUtil:PageUtil){
         let ajax:Ajax = new Ajax();
         let blocks:Block[] = await ajax.post('getblocks',[pageUtil.pageSize,pageUtil.currentPage]);
-        $("#blocks").empty();
+        console.log("blocks-page");
+        $("#blocks-page").children("table").children("tbody").empty();
         if(pageUtil.totalPage-pageUtil.currentPage){
-            $("#next").removeClass('disabled');
+            $("#blocks-page").find("#next").removeClass('disabled');
         }else{
-            $("#next").addClass('disabled');
+            $("#blocks-page").find("#next").addClass('disabled');
         }
         if(pageUtil.currentPage-1){
-            $("#previous").removeClass('disabled');
+            $("#blocks-page").find("#previous").removeClass('disabled');
         }else{
-            $("#previous").addClass('disabled');
+            $("#blocks-page").find("#previous").addClass('disabled');
         }
         let newDate = new Date();
         blocks.forEach((item,index,input)=>{
@@ -31,7 +32,7 @@ export class BlockPage{
             html+='<a href="../page/blockInfo.html?index='+item.index+'">';
             html+=item.index+'</a></td><td>'+item.size;
             html+=' bytes</td><td>'+newDate.toLocaleString()+'</td></tr>';
-            $("#blocks").append(html);
+            $("#blocks-page").find("tbody").append(html);
         });
     }
 

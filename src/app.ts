@@ -2,7 +2,7 @@
 /// <reference types="jquery" />
 /// <reference types="bootstrap" />
 import {Ajax as Ajax,LocationUtil as LocationUtil} from "./Util";
-import { SearchController, AddressControll, AssetControll, addrlistControll } from './PagesController';
+import { SearchController, AddressControll, AssetControll, addrlistControll, BlocksControll } from './PagesController';
 import { PageUtil, Block } from './Entitys';
 import {BlockPage}from "./blocks";
 import {Trasctions,TrasctionInfo}from "./Trasction";
@@ -23,7 +23,7 @@ async function indexPage(){
     let addrCount:number = await ajax.post('getaddrcount',[])
     addrCount = addrCount[0]['addrcount'];
     $("#addrCount").text(addrCount.toLocaleString());
-
+    $("#index-page").find("#blocks").children("tbody").empty();
     //分页查询区块数据
     let blocks:Block[] = await ajax.post('getblocks',[10,1]);
     blocks.forEach((item,index,input)=>{
@@ -34,7 +34,7 @@ async function indexPage(){
         html += item.index+'</a></td><td>'+item.size+' bytes</td><td>';
         html += newDate.toLocaleString()+'</td>';
         html += '<td>'+item.tx.length+'</td></tr>';
-        $("#blocks").append(html);
+        $("#index-page").find("#blocks").append(html);
     });
 
     //分页查询交易记录
@@ -46,6 +46,7 @@ async function indexPage(){
         blockindex:number,
         gas:string,
     }[] = await ajax.post('getrawtransactions',[10,1]);
+    $("#index-page").find("#transactions").children("tbody").empty();   
     txs.forEach((tx)=>{
         let txid : string = tx.txid;
         txid = txid.substring(0,4)+'...'+txid.substring(txid.length-4);
@@ -60,7 +61,7 @@ async function indexPage(){
         html+="<td>"+tx.size+" bytes"
         html+="</td>"
         html+="</tr>"
-        $("#transactions").append(html);
+        $("#index-page").find("#transactions").children("tbody").append(html);
     });
 
 };
@@ -70,12 +71,11 @@ async function blocksPage(){
     //查询区块数量
     let blockCount = await ajax.post('getblockcount',[]);
     //分页查询区块数据
-    $("#blocks").empty();
     let pageUtil:PageUtil = new PageUtil(blockCount[0]['blockcount'],15);
     let block:BlockPage = new BlockPage();
     block.updateBlocks(pageUtil);
     //监听下一页
-    $("#next").click(()=>{
+    $("#blocks-page").find("#next").click(()=>{
         if(pageUtil.currentPage==pageUtil.totalPage){
             alert('当前页已经是最后一页了');
             return;
@@ -83,7 +83,7 @@ async function blocksPage(){
         pageUtil.currentPage +=1;
         block.updateBlocks(pageUtil);
     });
-    $("#previous").click(()=>{
+    $("#blocks-page").find("#previous").click(()=>{
         if(pageUtil.currentPage <=1){
             alert('当前已经是第一页了');
             return;
@@ -96,43 +96,71 @@ async function blocksPage(){
 
 $(()=>{
     let page = $('#page').val();
-    let location:LocationUtil = new LocationUtil();
-
+    let locationutil:LocationUtil = new LocationUtil();
+    let hash = location.hash;
+    redirect(hash);
     new SearchController();
-
-    if(page==='index'){
-        indexPage();
-    }
-    
-    if(page==='blocks'){
-        let index:number = 0;      //
-        blocksPage();
-    }
-    if(page==='transction'){
-        let ts:Trasctions = new Trasctions();
-    }
     if(page==='txInfo'){
-        let txid:string = location.GetQueryString("txid");
+        let txid:string = locationutil.GetQueryString("txid");
         let ts:TrasctionInfo = new TrasctionInfo();
         ts.updateTxInfo(txid);
     }
     if(page==='blockInfo'){
-        let index:number = Number(location.GetQueryString("index"));
+        let index:number = Number(locationutil.GetQueryString("index"));
         let block:BlockPage = new BlockPage();
         block.queryBlock(index);
     }
-    if(page==='addrlist'){
-        let addrlist:addrlistControll = new addrlistControll();
-        addrlist.start();
-    }
-    if(page==='assets'){
-        //启动asset管理器
-        let assetControll:AssetControll = new AssetControll();
-        assetControll.allAsset();
-    }
     if(page==='addrInfo'){
-        let addr:string = location.GetQueryString("addr");
+        let addr:string = locationutil.GetQueryString("addr");
         let addrInfo:AddressControll = new AddressControll(addr);
         addrInfo.addressInfo();
     }
 });
+
+$("#txlist-btn").click(()=>{redirect('#txlist-page')})
+$("#addrs-btn").click(()=>{redirect("#addrs-page")})
+$("#blocks-btn").click(()=>{redirect("#blocks-page")})
+$("#asset-btn").click(()=>{redirect("#asset-page")})
+$("#index-btn").click(()=>{redirect("")});
+
+function redirect(page:string){
+    if(page===''){
+        indexPage();
+        $('#index-page').show();
+    }else{
+        $('#index-page').hide();
+    }
+    if(page==='#blocks-page'){
+        // let blocks=new BlocksControll();
+        // blocks.start();
+        blocksPage();
+        $(page).show();
+    }else{
+        $('#blocks-page').hide();
+    }
+    if(page==='#txlist-page'){
+        let ts:Trasctions = new Trasctions();
+        $(page).show();
+    }else{
+        $('#txlist-page').hide();
+    }
+    if(page==='#addrs-page'){
+        let addrlist:addrlistControll = new addrlistControll();
+        addrlist.start();
+        $(page).show();
+    }else{
+        $('#addrs-page').hide();
+    }
+    if(page==='#asset-page'){
+        //启动asset管理器
+        let assetControll:AssetControll = new AssetControll();
+        assetControll.allAsset();
+        $(page).show();
+    }else{
+        $('#asset-page').hide();
+    }
+}
+
+$("#wallet-new").click(()=>{
+    $('#exampleModal').modal('show');
+})

@@ -1,6 +1,7 @@
 // import * as $ from "jquery";
 /// <reference types="jquery" />
-import { Balance, Utxo, Asset, PageUtil, Tx, Addr } from './Entitys';
+import { Balance, Utxo, Asset, PageUtil, Tx, Addr, TableMode } from './Entitys';
+import { TableView } from './Util';
 export class AddressInfoView{
     public balances:Balance[];
     public utxo:Utxo[];
@@ -140,3 +141,34 @@ export class Trasctions{
 }
 
 
+export class BlocksView{
+    private previous:HTMLLIElement;
+    private next:HTMLLIElement;
+    private text:HTMLAnchorElement;
+    private tbview:TableView;
+    constructor(tbmode:TableMode,next:HTMLLIElement,previous:HTMLLIElement,text:HTMLAnchorElement){
+        this.next=next;
+        this.previous = previous;
+        this.text = text;
+        this.tbview = new TableView("blocks-page",tbmode);
+        this.tbview.className = "table cool table-hover";
+        this.tbview.update();     
+    }
+    /**
+     * loadView()
+     */
+    public loadView(pageUtil:PageUtil) {
+        this.text.text="总记录数:"+pageUtil.totalCount+" 总页数:"+pageUtil.totalPage+" 当前页:"+pageUtil.currentPage;
+        if(pageUtil.totalPage-pageUtil.currentPage){
+            this.next.classList.remove('disabled');
+        }else{
+            this.next.classList.add('disabled');
+        }
+        if(pageUtil.currentPage-1){
+            this.previous.classList.remove('disabled');
+        }else{
+            this.previous.classList.add('disabled');
+        }
+        this.tbview.update();     
+    }
+}

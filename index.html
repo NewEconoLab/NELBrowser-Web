@@ -50,16 +50,16 @@
                         </div>
                     </div>
                     <ul class="nav navbar-nav">
-                        <li class="active"><a href="#">概览</a></li>
+                        <li class="active"><a href="#" id="index-btn">概览</a></li>
                         <li class="dropdown">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                    浏览 <b class="caret"></b>
-                  </a>
+                             浏览 <b class="caret"></b>
+                            </a>
                             <ul class="dropdown-menu">
-                                <li><a href="./page/transactions.html">交易</a></li>
-                                <li><a href="./page/addrlist.html">地址</a></li>
-                                <li><a href="./page/blocks.html">区块</a></li>
-                                <li><a href="./page/assets.html">资产</a></li>
+                                <li><a href="#txlist-page" id="txlist-btn">交易</a></li>
+                                <li><a href="#addrs-page" id="addrs-btn">地址</a></li>
+                                <li><a href="#blocks-page" id="blocks-btn">区块</a></li>
+                                <li><a href="#asset-page" id="asset-btn">资产</a></li>
                             </ul>
                         </li>
                         <li><a href="#">合约</a></li>
@@ -82,88 +82,173 @@
         </nav>
 
         <!-- Main component for a primary marketing message or call to action -->
-        <div class="jumbotron masthead">
-            <div class="container">
-                <h2 class="text-center">NEL(NewEconnolab)</h2>
-                <p class="text-center">NEO生态的中国开发志愿者社区</p>
-                <div class="row">
-                    <div class="col-sm-6 col-md-4 col-lg-4 ">
-                        <div class="thumbnail">
-                            <div class="caption">
-                                <h3>
-                                    交易记录 <br><small id="txcount">0</small>
-                                </h3>
-                                <span class="btn btn-info">查看更多</span>
+        <!-- 首页 -->
+        <div id="index-page" hidden>
+            <div class="jumbotron masthead">
+                <div class="container">
+                    <h2 class="text-center">NEL(NewEconnolab)</h2>
+                    <p class="text-center">NEO生态的中国开发志愿者社区</p>
+                    <div class="row">
+                        <div class="col-sm-6 col-md-4 col-lg-4 ">
+                            <div class="thumbnail">
+                                <div class="caption">
+                                    <h3>
+                                        交易记录 <br><small id="txcount">0</small>
+                                    </h3>
+                                    <span class="btn btn-info">查看更多</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 col-md-4 col-lg-4 ">
+                            <div class="thumbnail">
+                                <div class="caption">
+                                    <h3>
+                                        区块高度 <br><small id="blockHeight">0</small>
+                                    </h3>
+                                    <span class="btn btn-info">查看更多</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-6 col-md-4 col-lg-4 ">
+                            <div class="thumbnail">
+                                <div class="caption">
+                                    <h3>
+                                        地址总数 <br><small id="addrCount">0</small>
+                                    </h3>
+                                    <span class="btn btn-info">查看更多</span>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <div class="col-sm-6 col-md-4 col-lg-4 ">
-                        <div class="thumbnail">
-                            <div class="caption">
-                                <h3>
-                                    区块高度 <br><small id="blockHeight">0</small>
-                                </h3>
-                                <span class="btn btn-info">查看更多</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-sm-6 col-md-4 col-lg-4 ">
-                        <div class="thumbnail">
-                            <div class="caption">
-                                <h3>
-                                    地址总数 <br><small id="addrCount">0</small>
-                                </h3>
-                                <span class="btn btn-info">查看更多</span>
-                            </div>
+                    <br>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="jumbotron">
+                        <div class="container">
+                            <table class="table table-hover cool" id="blocks">
+                                <caption>
+                                    <h2>最新的十个区块</h2>
+                                </caption>
+                                <thead>
+                                    <tr>
+                                        <th>高度</th>
+                                        <th>大小</th>
+                                        <th>时间</th>
+                                        <th>交易量</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                            <a class="btn btn-primary" href="./page/blocks.html" role="button">查看更多区块</a>
                         </div>
                     </div>
                 </div>
-                <br>
+                <div class="col-md-6">
+                    <div class="jumbotron">
+                        <div class="container">
+                            <table class="table cool table-hover" id="transactions">
+                                <caption>
+                                    <h2>最近的十笔交易</h2>
+                                </caption>
+                                <thead>
+                                    <tr>
+                                        <th>TXID</th>
+                                        <th>类型</th>
+                                        <th>区块</th>
+                                        <th>大小</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                            <a class="btn btn-primary" href="./page/transactions.html" role="button">查看更多交易</a>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-        <div class="row">
-            <div class="col-md-6">
-                <div class="jumbotron">
-                    <div class="container">
-                        <table class="table table-hover cool" id="blocks">
-                            <caption>
-                                <h2>最新的十个区块</h2>
-                            </caption>
-                            <thead>
-                                <tr>
-                                    <th>高度</th>
-                                    <th>大小</th>
-                                    <th>时间</th>
-                                    <th>交易量</th>
-                                </tr>
-                            </thead>
-                            <tbody></tbody>
-                        </table>
-                        <a class="btn btn-primary" href="./page/blocks.html" role="button">查看更多区块</a>
-                    </div>
+        <!-- 区块列表页面 -->
+        <div id="blocks-page" class="jumbotron container" hidden>
+            <caption>
+                <h2>区块</h2>
+            </caption>
+            <table class="table table-hover cool">
+              <thead>
+                <tr>
+                  <th>高度</th>
+                  <th>大小</th>
+                  <th>时间</th>
+                </tr>
+              </thead>
+              <tbody id="blocks"></tbody>
+            </table>
+            <ul class="pager">
+                <li id="previous" class="previous disabled"><a>&larr; Older</a></li>
+                <a>当前页 第1页，共200页</a>
+                <li id="next" class="next"><a>Newer &rarr;</a></li>
+            </ul>
+        </div>
+        <!-- 交易列表页面 -->
+        <div id="txlist-page" class="jumbotron container" hidden>
+            <div class="row">
+                <div class="col-md-2"><caption><h2 class="title">交易</h2></caption></div>
+                <div class="col-md-2">
+                  <select id="TxType" class="form-control">
+                    <option value="">Any</option>
+                    <option value="EnrollmentTransaction">Enrollment</option>
+                    <option value="PublishTransaction">Publish</option>
+                    <option value="InvocationTransaction">Invocation</option>
+                    <option value="ClaimTransaction">Claim</option>
+                    <option value="MinerTransaction">Miner</option>
+                    <option value="RegisterTransaction">Register</option>
+                    <option value="IssueTransaction">Issue</option>
+                    <option value="ContractTransaction">Contract</option>
+                  </select>
                 </div>
-            </div>
-            <div class="col-md-6">
-                <div class="jumbotron">
-                    <div class="container">
-                        <table class="table cool table-hover" id="transactions">
-                            <caption>
-                                <h2>最近的十笔交易</h2>
-                            </caption>
-                            <thead>
-                                <tr>
-                                    <th>TXID</th>
-                                    <th>类型</th>
-                                    <th>区块</th>
-                                    <th>大小</th>
-                                </tr>
-                            </thead>
-                            <tbody></tbody>
-                        </table>
-                        <a class="btn btn-primary" href="./page/transactions.html" role="button">查看更多交易</a>
-                    </div>
-                </div>
-            </div>
+              </div>
+            <table class="table cool table-hover">
+                <thead>
+                <tr>
+                    <th>TXID</th>
+                    <th>高度</th>
+                    <th>类型</th>
+                    <th>费用</th>
+                    <th>大小</th>
+                </tr>
+                </thead>
+                <tbody id="transactions"></tbody>
+            </table>
+            <ul class="pager">
+                <li id="previous" class="previous disabled"><a>&larr; Older</a></li>
+                <a>当前页 第1页，共200页</a>
+                <li id="next" class="next"><a>Newer &rarr;</a></li>
+            </ul>
+        </div>
+        <!-- 资产页面 -->
+        <div id="asset-page" class="jumbotron container" hidden>
+            <h2>Assets</h2>
+            <div id="assets" class="row"></div>
+        </div>
+        <!-- 地址页面 -->
+        <div id="addrs-page" class="jumbotron container" hidden>
+            <caption><h2>地址概览</h2></caption>
+            <table class="table table-hover cool" >
+            <thead>
+                <tr>
+                <th>地址</th>
+                <th>首次交易时间</th>
+                <th>最后交易时间</th>
+                <th>交易数量</th>
+                </tr>
+            </thead>
+            <tbody id="addrlist"></tbody>
+        </table>
+        <ul class="pager">
+            <li id="previous" class="previous disabled"><a>&larr; Older</a></li>
+            <a>当前页 第1页，共200页</a>
+            <li id="next" class="next"><a>Newer &rarr;</a></li>
+        </ul>
         </div>
 
     </div>

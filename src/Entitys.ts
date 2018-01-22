@@ -159,3 +159,13 @@ export enum AssetEnum{
     GAS='0x602c79718b16e442de58778e148d0b1084e3b2dffd5de6b7b16cee7969282de7',
 }
 
+export class TableMode{
+    public tablId:string;
+    public ths:Map<string,string>;
+    public tds:Map<string,string>[];
+    constructor(ths:Map<string,string>,tds:Map<string,string>[],tableId:string){
+        this.ths = ths;
+        this.tds = tds;
+        this.tablId = tableId;
+    }
+}

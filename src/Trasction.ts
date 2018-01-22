@@ -10,14 +10,16 @@ import {PageUtil as PageUtil} from "./Entitys";
 export class Trasctions{
     private ajax :Ajax = new Ajax();
     private pageUtil:PageUtil;
+    private txlist:JQuery<HTMLElement>;
     constructor(){
+        this.txlist = $("#txlist-page");
         this.start();
         //监听交易列表选择框
         $("#TxType").change(()=>{
         this.updateTrasctions(this.pageUtil,<string>$("#TxType").val());
         });
         
-        $("#next").click(()=>{
+        this.txlist.find(".next").click(()=>{
             if(this.pageUtil.currentPage==this.pageUtil.totalPage){
                 alert('当前页已经是最后一页了');
                 return;
@@ -26,7 +28,7 @@ export class Trasctions{
                 this.updateTrasctions(this.pageUtil,<string>$("#TxType").val());
             }
         });
-        $("#previous").click(()=>{
+        this.txlist.find(".previous").click(()=>{
             if(this.pageUtil.currentPage <=1){
                 alert('当前已经是第一页了');
                 return;
@@ -42,7 +44,7 @@ export class Trasctions{
     public async updateTrasctions(pageUtil:PageUtil,txType:string){
         //分页查询交易记录
         let txs:Tx[] = await this.ajax.post('getrawtransactions',[pageUtil.pageSize,pageUtil.currentPage,txType]);
-        $("#transactions").empty();
+        this.txlist.find("table").children("tbody").empty();
         txs.forEach((tx)=>{
             let txid = tx.txid;
             txid = txid.substring(0,6)+'...'+txid.substring(txid.length-6);
@@ -59,7 +61,7 @@ export class Trasctions{
             html+="<td>"+tx.size+" bytes"
             html+="</td>"
             html+="</tr>"
-            $("#transactions").append(html);
+            this.txlist.find("table").children("tbody").append(html);
         });
         pageCut(this.pageUtil);
     }

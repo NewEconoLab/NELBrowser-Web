@@ -1,6 +1,6 @@
 ///<reference path="../lib/neo-ts.d.ts"/>
 /// <reference types="jquery" />
-import { PageUtil } from "./Entitys";
+import { PageUtil, TableMode } from "./Entitys";
 export class Ajax{
     constructor(){}
     /**
@@ -143,5 +143,40 @@ export function pageCut(pageUtil:PageUtil){
         $("#previous").removeClass('disabled');
     }else{
         $("#previous").addClass('disabled');
+    }
+}
+
+export class TableView{
+    private _tableMode:TableMode;
+    private divId:string;
+    constructor(divId:string,tableMode:TableMode){
+        this._tableMode = tableMode;
+        this.divId = divId;
+        let html = "<table id='"+tableMode.tablId+"'>"
+        +"<thead><head></head></thead><tbody></tbody></table>";
+        $("#"+this.divId).append(html);
+    }
+    update(){
+        this._tableMode.ths.forEach((th)=>{
+            $("#blocklist").children('thead').append('<th>'+th+'</th>');
+        });
+        let tbody = $("#blocklist").children('tbody');
+        let tr:string ='';
+        this._tableMode.tds.forEach((tdMap)=>{
+            let td="";
+            this._tableMode.ths.forEach((val,key)=>{
+                td += "<td>"+tdMap.get(key)+"</td>";
+            });
+            tr += "<tr>"+td+"</tr>"; 
+        });
+        tbody.empty();
+        tbody.append(tr);
+    }
+    set className(className:string){
+        $("#"+this._tableMode.tablId).addClass(className);
+
+    }
+    set tableMode(tableMode:TableMode){
+        this._tableMode = tableMode;
     }
 }
