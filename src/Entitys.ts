@@ -151,7 +151,11 @@ export interface Asset{
 }
 
 export interface result{
-    
+    res:boolean,decode:{
+        prikey:string,
+        pubkey:string,
+        address:string
+    },err:string
 }
 
 export enum AssetEnum{

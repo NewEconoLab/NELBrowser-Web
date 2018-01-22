@@ -1,9 +1,9 @@
 ///<reference path="../lib/neo-ts.d.ts"/>
 /// <reference types="jquery" />
 /// <reference types="bootstrap" />
-import {Ajax as Ajax,LocationUtil as LocationUtil} from "./Util";
+import { Ajax as Ajax, LocationUtil as LocationUtil, NeoUtil } from './Util';
 import { SearchController, AddressControll, AssetControll, addrlistControll, BlocksControll } from './PagesController';
-import { PageUtil, Block } from './Entitys';
+import { PageUtil, Block, result } from './Entitys';
 import {BlockPage}from "./blocks";
 import {Trasctions,TrasctionInfo}from "./Trasction";
 let ajax:Ajax = new Ajax();
@@ -168,5 +168,20 @@ function redirect(page:string){
 }
 
 $("#wallet-new").click(()=>{
-    $('#exampleModal').modal('show');
+    $('#createWallet').modal('show');
+})
+$('#send-wallet').click(()=>{
+    let wallet:JQuery<HTMLElement> = $('#createWallet');
+    let wif = <string>wallet.find("#wif-input").children('input').val();
+    let neoUtil:NeoUtil = new NeoUtil();
+    try {
+        let result= neoUtil.wifDecode(wif);
+        if (result.res) {
+        }else{
+            wallet.find("#wif-input").addClass("has-error");
+            wallet.find("#wif-input").find(".control-label").text("请输入正确的WIF");
+        }
+    } catch (error) {
+        alert("error")
+    }
 })

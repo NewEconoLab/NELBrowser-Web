@@ -175,14 +175,14 @@
                 <h2>区块</h2>
             </caption>
             <table class="table table-hover cool">
-              <thead>
-                <tr>
-                  <th>高度</th>
-                  <th>大小</th>
-                  <th>时间</th>
-                </tr>
-              </thead>
-              <tbody id="blocks"></tbody>
+                <thead>
+                    <tr>
+                        <th>高度</th>
+                        <th>大小</th>
+                        <th>时间</th>
+                    </tr>
+                </thead>
+                <tbody id="blocks"></tbody>
             </table>
             <ul class="pager">
                 <li id="previous" class="previous disabled"><a>&larr; Older</a></li>
@@ -193,9 +193,13 @@
         <!-- 交易列表页面 -->
         <div id="txlist-page" class="jumbotron container" hidden>
             <div class="row">
-                <div class="col-md-2"><caption><h2 class="title">交易</h2></caption></div>
                 <div class="col-md-2">
-                  <select id="TxType" class="form-control">
+                    <caption>
+                        <h2 class="title">交易</h2>
+                    </caption>
+                </div>
+                <div class="col-md-2">
+                    <select id="TxType" class="form-control">
                     <option value="">Any</option>
                     <option value="EnrollmentTransaction">Enrollment</option>
                     <option value="PublishTransaction">Publish</option>
@@ -207,16 +211,16 @@
                     <option value="ContractTransaction">Contract</option>
                   </select>
                 </div>
-              </div>
+            </div>
             <table class="table cool table-hover">
                 <thead>
-                <tr>
-                    <th>TXID</th>
-                    <th>高度</th>
-                    <th>类型</th>
-                    <th>费用</th>
-                    <th>大小</th>
-                </tr>
+                    <tr>
+                        <th>TXID</th>
+                        <th>高度</th>
+                        <th>类型</th>
+                        <th>费用</th>
+                        <th>大小</th>
+                    </tr>
                 </thead>
                 <tbody id="transactions"></tbody>
             </table>
@@ -233,14 +237,16 @@
         </div>
         <!-- 地址页面 -->
         <div id="addrs-page" class="jumbotron container" hidden>
-            <caption><h2>地址概览</h2></caption>
-            <table class="table table-hover cool" >
+            <caption>
+                <h2>地址概览</h2>
+            </caption>
+            <table class="table table-hover cool">
                 <thead>
                     <tr>
-                    <th>地址</th>
-                    <th>首次交易时间</th>
-                    <th>最后交易时间</th>
-                    <th>交易数量</th>
+                        <th>地址</th>
+                        <th>首次交易时间</th>
+                        <th>最后交易时间</th>
+                        <th>交易数量</th>
                     </tr>
                 </thead>
                 <tbody id="addrlist"></tbody>
@@ -259,28 +265,29 @@
                 </caption>
                 <div>
                     <div class="form-group">
-                            <label for="exampleInputPassword1">选择您的钱包</label>
+                        <label for="exampleInputPassword1">选择您的钱包</label>
                         <select class="form-control">
                             <option>AZVNQApJ3U3bK46Xs5u8QBq1khWydSJWd3</option>
                             <option>AdsNmzKPPG7HfmQpacZ4ixbv9XJHJs2ACz</option>
                         </select>
                     </div>
                     <div class="form-group">
-                        <button class="btn btn-info" id="wallet-new" >新建钱包</button>
-                        <button class="btn btn-info" id="wallet-open">导入钱包</button>
+                        <button class="btn btn-info" id="wallet-new">创建钱包</button>
                     </div>
                 </div>
             </div>
             <div class="jumbotron masthead">
-                <caption><h3>Transfer</h3></caption>
-                <div >
+                <caption>
+                    <h3>Transfer</h3>
+                </caption>
+                <div>
                     <div class="form-group">
                         <label for="exampleInputPassword1">To Address</label>
-                        <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
+                        <input type="text" class="form-control" id="address" placeholder="请输入您要交易的地址">
                     </div>
                     <div class="form-group">
                         <label for="exampleInputPassword1">Amount</label>
-                        <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
+                        <input type="number" class="form-control" id="amount" placeholder="请输入您要交易的金额">
                     </div>
                     <div class=" form-group">
                         <button class="btn btn-info">Send</button>
@@ -288,66 +295,48 @@
                 </div>
             </div>
             <div class="jumbotron masthead">
-                <caption><h3>Details</h3></caption>
+                <caption>
+                    <h3>Details</h3>
+                </caption>
             </div>
         </div>
     </div>
     <!-- /container -->
     <!-- modal -->
-    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal fade" id="createWallet" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="exampleModalLabel">New Wallet</h4>
-            </div>
-            <div class="modal-body">
-                <form>
-                <div class="form-group">
-                    <label for="recipient-name" class="control-label">password:</label>
-                    <input type="password" class="form-control" id="recipient-name">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="exampleModalLabel">New Wallet</h4>
                 </div>
-                <div class="form-group">
-                    <label for="message-text" class="control-label">password:</label>
-                    <input type="password" class="form-control" id="recipient-name">
+                <div class="modal-body">
+                    <form>
+                        <div id="wif-input" class="form-group">
+                            <label for="recipient-name">WIF私钥:</label>
+                            <input type="password" class="form-control" id="recipient-name" placeholder="若您没有WIF私钥，此栏不用填写">
+                            <p class="control-label"></p>
+                        </div>
+                        <div class="form-group">
+                            <label for="recipient-name">登陆密码:</label>
+                            <input type="password" class="form-control" id="recipient-name" placeholder="请输入您的密码">
+                            <p class=" control-label"></p>
+                        </div>
+                        <div class="form-group">
+                            <label for="message-text" class="control-label">重复密码:</label>
+                            <input type="password" class="form-control" id="recipient-name" placeholder="重复上一行密码">
+                            <p class=" control-label"></p>
+                        </div>
+                    </form>
                 </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Send message</button>
-            </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="send-wallet">Send message</button>
+                </div>
             </div>
         </div>
     </div>
 
-    
-    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                <h4 class="modal-title" id="exampleModalLabel">New Wallet</h4>
-            </div>
-            <div class="modal-body">
-                <form>
-                <div class="form-group">
-                    <label for="recipient-name" class="control-label">password:</label>
-                    <input type="password" class="form-control" id="recipient-name">
-                </div>
-                <div class="form-group">
-                    <label for="message-text" class="control-label">password:</label>
-                    <input type="password" class="form-control" id="recipient-name">
-                </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary">Send message</button>
-            </div>
-            </div>
-        </div>
-    </div>
     <!-- /modal -->
 
     <!-- Bootstrap core JavaScript

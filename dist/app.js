@@ -185,6 +185,10 @@ class LocationUtil {
 exports.LocationUtil = LocationUtil;
 class NeoUtil {
     constructor() { }
+    /**
+     * verifyPublicKey验证公钥
+     * @param publicKey 公钥
+     */
     verifyPublicKey(publicKey) {
         var array = Neo.Cryptography.Base58.decode(publicKey);
         //var hexstr = array.toHexString();
@@ -204,6 +208,46 @@ class NeoUtil {
             }
         }
         return !error;
+    }
+    /**
+     * wifDecode wif解码
+     * @param wif wif私钥
+     */
+    wifDecode(wif) {
+        let result = { res: true, err: '', decode: { pubkey: "", prikey: "", address: "" } };
+        var prikey;
+        var pubkey;
+        var address;
+        try {
+            prikey = ThinNeo.Helper.GetPrivateKeyFromWIF(wif);
+            var hexstr = prikey.toHexString();
+            result.decode.prikey = hexstr;
+        }
+        catch (e) {
+            result.res = false;
+            result.err = e.message;
+            return result;
+        }
+        try {
+            pubkey = ThinNeo.Helper.GetPublicKeyFromPrivateKey(prikey);
+            var hexstr = pubkey.toHexString();
+            result.decode.pubkey = hexstr;
+        }
+        catch (e) {
+            result.res = false;
+            result.err = e.message;
+            return result;
+        }
+        try {
+            address = ThinNeo.Helper.GetAddressFromPublicKey(pubkey);
+            result.decode.address = address;
+        }
+        catch (e) {
+            result.res = false;
+            result.err = e.message;
+            return result;
+        }
+        return result;
     }
 }
 exports.NeoUtil = NeoUtil;
@@ -521,7 +565,24 @@ function redirect(page) {
     }
 }
 $("#wallet-new").click(() => {
-    $('#exampleModal').modal('show');
+    $('#createWallet').modal('show');
+});
+$('#send-wallet').click(() => {
+    let wallet = $('#createWallet');
+    let wif = wallet.find("#wif-input").children('input').val();
+    let neoUtil = new Util_1.NeoUtil();
+    try {
+        let result = neoUtil.wifDecode(wif);
+        if (result.res) {
+        }
+        else {
+            wallet.find("#wif-input").addClass("has-error");
+            wallet.find("#wif-input").find(".control-label").text("请输入正确的WIF");
+        }
+    }
+    catch (error) {
+        alert("error");
+    }
 });
 
 

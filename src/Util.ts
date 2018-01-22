@@ -1,6 +1,6 @@
 ///<reference path="../lib/neo-ts.d.ts"/>
 /// <reference types="jquery" />
-import { PageUtil, TableMode } from "./Entitys";
+import { PageUtil, TableMode, result } from './Entitys';
 export class Ajax{
     constructor(){}
     /**
@@ -107,6 +107,10 @@ export class LocationUtil {
 
 export class NeoUtil{
     constructor(){}
+    /**
+     * verifyPublicKey验证公钥
+     * @param publicKey 公钥
+     */
     public verifyPublicKey(publicKey:string){
         
         var array: Uint8Array = Neo.Cryptography.Base58.decode(publicKey);
@@ -129,6 +133,47 @@ export class NeoUtil{
             }
         }
         return !error;
+    }
+    /**
+     * wifDecode wif解码
+     * @param wif wif私钥
+     */
+    public wifDecode(wif:string) {
+        let result:result={res:true,err:'',decode:{pubkey:"",prikey:"",address:""}};
+        
+        var prikey: Uint8Array;
+        var pubkey: Uint8Array;
+        var address: string;
+        try {
+            prikey = ThinNeo.Helper.GetPrivateKeyFromWIF(wif);
+            var hexstr = prikey.toHexString();
+            result.decode.prikey=hexstr;
+        }
+        catch (e) { 
+            result.res=false;
+            result.err=e.message;
+            return result
+        }
+        try {
+            pubkey = ThinNeo.Helper.GetPublicKeyFromPrivateKey(prikey);
+            var hexstr = pubkey.toHexString();
+            result.decode.pubkey=hexstr;
+        }
+        catch (e) {
+            result.res=false;
+            result.err=e.message;
+            return result
+        }
+        try {
+            address = ThinNeo.Helper.GetAddressFromPublicKey(pubkey);
+            result.decode.address=address;
+        }
+        catch (e) {
+            result.res=false;
+            result.err=e.message;
+            return result
+        }
+        return result;
     }
     
 }
