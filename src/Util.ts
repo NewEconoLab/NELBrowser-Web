@@ -108,7 +108,7 @@ export class LocationUtil {
 export class NeoUtil{
     constructor(){}
     /**
-     * verifyPublicKey验证公钥
+     * verifyPublicKey 验证公钥
      * @param publicKey 公钥
      */
     public verifyPublicKey(publicKey:string){
@@ -139,7 +139,7 @@ export class NeoUtil{
      * @param wif wif私钥
      */
     public wifDecode(wif:string) {
-        let result:result={res:true,err:'',decode:{pubkey:"",prikey:"",address:""}};
+        let result:result={err:false,result:{pubkey:"",prikey:"",address:""}};
         
         var prikey: Uint8Array;
         var pubkey: Uint8Array;
@@ -147,33 +147,62 @@ export class NeoUtil{
         try {
             prikey = ThinNeo.Helper.GetPrivateKeyFromWIF(wif);
             var hexstr = prikey.toHexString();
-            result.decode.prikey=hexstr;
+            result.result.prikey=hexstr;
         }
         catch (e) { 
-            result.res=false;
-            result.err=e.message;
+            result.err=true;
+            result.result=e.message;
             return result
         }
         try {
             pubkey = ThinNeo.Helper.GetPublicKeyFromPrivateKey(prikey);
             var hexstr = pubkey.toHexString();
-            result.decode.pubkey=hexstr;
+            result.result.pubkey=hexstr;
         }
         catch (e) {
-            result.res=false;
-            result.err=e.message;
+            result.err=true;
+            result.result=e.message;
             return result
         }
         try {
             address = ThinNeo.Helper.GetAddressFromPublicKey(pubkey);
-            result.decode.address=address;
+            result.result.address=address;
         }
         catch (e) {
-            result.res=false;
-            result.err=e.message;
+            result.err=true;
+            result.result=e.message;
             return result
         }
         return result;
+    }
+    /**
+     * nep2FromWif
+     */
+    public nep2FromWif(wif:string,password:string):result {
+        var prikey: Uint8Array;
+        var pubkey: Uint8Array;
+        var address: string;
+        let res:result={err:false,result:{address:"",nep2:""}};
+        try {
+            prikey = ThinNeo.Helper.GetPrivateKeyFromWIF(wif);
+            var n = 16384;
+            var r = 8;
+            var p = 8
+            ThinNeo.Helper.GetNep2FromPrivateKey(prikey, password, n, r, p, (info, result) => {
+                res.err=false;
+                res.result.nep2 = result;
+                pubkey = ThinNeo.Helper.GetPublicKeyFromPrivateKey(prikey);
+                var hexstr = pubkey.toHexString();
+                address = ThinNeo.Helper.GetAddressFromPublicKey(pubkey);
+                res.result.address = address
+                return res;
+            });
+        }
+        catch (e) {
+            res.err=true;
+            res.result= e.message;
+            return res;
+        }
     }
     
 }
@@ -225,3 +254,17 @@ export class TableView{
         this._tableMode = tableMode;
     }
 }
+
+export class walletStorage{
+    public wallets = localStorage.getItem("Nel_wallets");
+    
+    /**
+     * setWallet
+     */
+    public setWallet(address,nep2) {
+        let json = {address,nep2};  
+        let wallets:any[] = JSON.parse(this.wallets);
+    }
+}
+
+

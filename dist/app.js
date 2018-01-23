@@ -186,7 +186,7 @@ exports.LocationUtil = LocationUtil;
 class NeoUtil {
     constructor() { }
     /**
-     * verifyPublicKey验证公钥
+     * verifyPublicKey 验证公钥
      * @param publicKey 公钥
      */
     verifyPublicKey(publicKey) {
@@ -214,40 +214,69 @@ class NeoUtil {
      * @param wif wif私钥
      */
     wifDecode(wif) {
-        let result = { res: true, err: '', decode: { pubkey: "", prikey: "", address: "" } };
+        let result = { err: false, result: { pubkey: "", prikey: "", address: "" } };
         var prikey;
         var pubkey;
         var address;
         try {
             prikey = ThinNeo.Helper.GetPrivateKeyFromWIF(wif);
             var hexstr = prikey.toHexString();
-            result.decode.prikey = hexstr;
+            result.result.prikey = hexstr;
         }
         catch (e) {
-            result.res = false;
-            result.err = e.message;
+            result.err = true;
+            result.result = e.message;
             return result;
         }
         try {
             pubkey = ThinNeo.Helper.GetPublicKeyFromPrivateKey(prikey);
             var hexstr = pubkey.toHexString();
-            result.decode.pubkey = hexstr;
+            result.result.pubkey = hexstr;
         }
         catch (e) {
-            result.res = false;
-            result.err = e.message;
+            result.err = true;
+            result.result = e.message;
             return result;
         }
         try {
             address = ThinNeo.Helper.GetAddressFromPublicKey(pubkey);
-            result.decode.address = address;
+            result.result.address = address;
         }
         catch (e) {
-            result.res = false;
-            result.err = e.message;
+            result.err = true;
+            result.result = e.message;
             return result;
         }
         return result;
+    }
+    /**
+     * nep2FromWif
+     */
+    nep2FromWif(wif, password) {
+        var prikey;
+        var pubkey;
+        var address;
+        let res = { err: false, result: { address: "", nep2: "" } };
+        try {
+            prikey = ThinNeo.Helper.GetPrivateKeyFromWIF(wif);
+            var n = 16384;
+            var r = 8;
+            var p = 8;
+            ThinNeo.Helper.GetNep2FromPrivateKey(prikey, password, n, r, p, (info, result) => {
+                res.err = false;
+                res.result.nep2 = result;
+                pubkey = ThinNeo.Helper.GetPublicKeyFromPrivateKey(prikey);
+                var hexstr = pubkey.toHexString();
+                address = ThinNeo.Helper.GetAddressFromPublicKey(pubkey);
+                res.result.address = address;
+                return res;
+            });
+        }
+        catch (e) {
+            res.err = true;
+            res.result = e.message;
+            return res;
+        }
     }
 }
 exports.NeoUtil = NeoUtil;
@@ -298,6 +327,19 @@ class TableView {
     }
 }
 exports.TableView = TableView;
+class walletStorage {
+    constructor() {
+        this.wallets = localStorage.getItem("Nel_wallets");
+    }
+    /**
+     * setWallet
+     */
+    setWallet(address, nep2) {
+        let json = { address, nep2 };
+        let wallets = JSON.parse(this.wallets);
+    }
+}
+exports.walletStorage = walletStorage;
 
 
 /***/ }),
@@ -558,6 +600,7 @@ function redirect(page) {
         $('#asset-page').hide();
     }
     if (page == "#wallet-page") {
+        let wallet = new PagesController_1.WalletControll();
         $(page).show();
     }
     else {
@@ -566,28 +609,6 @@ function redirect(page) {
 }
 $("#wallet-new").click(() => {
     $('#createWallet').modal('show');
-});
-$('#send-wallet').click(() => {
-    let wallet = $('#createWallet');
-    let wif = wallet.find("#wif-input").children('input').val();
-    let neoUtil = new Util_1.NeoUtil();
-    if (wif.length) {
-        try {
-            let result = neoUtil.wifDecode(wif);
-            if (result.res) {
-                wallet.find("#wif-input").addClass("has-success");
-            }
-            else {
-                wallet.find("#wif-input").addClass("has-error");
-                wallet.find("#wif-input").children("p").text("请输入正确的WIF");
-            }
-        }
-        catch (error) {
-            alert("error");
-        }
-    }
-    else {
-    }
 });
 
 
@@ -614,7 +635,7 @@ const PageViews_1 = __webpack_require__(4);
 class SearchController {
     constructor() {
         this.locationUtil = new Util_1.LocationUtil();
-        let page = $('#page').val();
+        let page = $('#page').val().toString();
         let url = "";
         let neoUtil = new Util_1.NeoUtil();
         if (page == 'index') {
@@ -624,7 +645,7 @@ class SearchController {
             url = './';
         }
         $("#searchBtn").click(() => {
-            let search = $("#searchText").val();
+            let search = $("#searchText").val().toString();
             if (search.length == 34) {
                 if (neoUtil.verifyPublicKey(search)) {
                     window.location.href = url + 'address.html?addr=' + search;
@@ -859,6 +880,96 @@ class BlocksControll {
     }
 }
 exports.BlocksControll = BlocksControll;
+class WalletControll {
+    constructor() {
+        this.neoUtil = new Util_1.NeoUtil();
+        this.wifInput = $('#createWallet').find("#wif-input").children('input');
+        this.p1Input = $('#password1');
+        this.p2Input = $('#password2');
+        this.wifInput.blur(() => {
+            this.verifWif();
+        });
+        this.p1Input.blur(() => {
+            this.verifpassword();
+        });
+        this.p2Input.blur(() => {
+            this.verifpassword();
+        });
+        $('#send-wallet').click(() => {
+            if (this.verifWif() == 1) {
+                if (this.verifpassword()) {
+                    let res = this.neoUtil.nep2FromWif(this.wifInput.val().toString(), this.p1Input.val().toString());
+                    if (!res.err) {
+                        res.result;
+                    }
+                }
+            }
+            if (this.verifWif() > 1) {
+                this.verifpassword();
+            }
+        });
+    }
+    verifWif() {
+        let wifGroup = $('#createWallet').find("#wif-input");
+        var wif = this.wifInput.val().toString();
+        if (wif.length) {
+            try {
+                let result = this.neoUtil.wifDecode(wif);
+                if (result.err) {
+                    wifGroup.addClass("has-error");
+                    wifGroup.children("p").text("请输入正确的WIF");
+                    return 0;
+                }
+                else {
+                    wifGroup.addClass("has-success");
+                    wifGroup.removeClass("has-error");
+                    wifGroup.children("p").text("");
+                    return 1;
+                }
+            }
+            catch (error) {
+                return 0;
+            }
+        }
+        else {
+            wifGroup.removeClass("has-error has-success");
+            wifGroup.removeClass("has-success");
+            wifGroup.children("p").text("");
+            return 2;
+        }
+    }
+    /**
+     * verif
+     */
+    verifpassword() {
+        let p1Group = $("#p1group");
+        let p2Group = $("#p2group");
+        var p1 = this.p1Input.val().toString();
+        var p2 = this.p2Input.val().toString();
+        let neoUtil = new Util_1.NeoUtil();
+        if (p1.length > 7) {
+            p1Group.addClass("has-success");
+            p1Group.removeClass("has-error");
+            p1Group.children("p").text("");
+            if (p2 === p1) {
+                p2Group.addClass("has-success");
+                p2Group.removeClass("has-error");
+                p2Group.children("p").text("");
+            }
+            else {
+                p2Group.addClass("has-error");
+                p2Group.removeClass("has-success");
+                p2Group.children("p").text("请您输入相同的登陆密码");
+            }
+        }
+        else {
+            p1Group.addClass("has-error");
+            p1Group.removeClass("has-success");
+            p1Group.children("p").text("密码不能小于8位");
+        }
+    }
+}
+exports.WalletControll = WalletControll;
 
 
 /***/ }),

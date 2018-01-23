@@ -2,7 +2,7 @@
 /// <reference types="jquery" />
 /// <reference types="bootstrap" />
 import { Ajax as Ajax, LocationUtil as LocationUtil, NeoUtil } from './Util';
-import { SearchController, AddressControll, AssetControll, addrlistControll, BlocksControll } from './PagesController';
+import { SearchController, AddressControll, AssetControll, addrlistControll, BlocksControll, WalletControll } from './PagesController';
 import { PageUtil, Block, result } from './Entitys';
 import {BlockPage}from "./blocks";
 import {Trasctions,TrasctionInfo}from "./Trasction";
@@ -161,7 +161,10 @@ function redirect(page:string){
         $('#asset-page').hide();
     }
     if(page=="#wallet-page"){
+        let wallet:WalletControll = new WalletControll();
+
         $(page).show();
+
     }else{
         $("#wallet-page").hide();
     }
@@ -169,25 +172,4 @@ function redirect(page:string){
 
 $("#wallet-new").click(()=>{
     $('#createWallet').modal('show');
-})
-$('#send-wallet').click(()=>{
-    let wallet:JQuery<HTMLElement> = $('#createWallet');
-    let wif = <string>wallet.find("#wif-input").children('input').val();
-    let neoUtil:NeoUtil = new NeoUtil();
-    if (wif.length) {   //如果填写了wif则进行验证
-        try {
-            let result= neoUtil.wifDecode(wif);
-            if (result.res) {
-                wallet.find("#wif-input").addClass("has-success");
-            }else{
-                wallet.find("#wif-input").addClass("has-error");
-                wallet.find("#wif-input").children("p").text("请输入正确的WIF");
-            }
-        } catch (error) {
-            alert("error");
-        }
-    }else{  //如果未填写wif则创建新的wif
-
-
-    }
 })
