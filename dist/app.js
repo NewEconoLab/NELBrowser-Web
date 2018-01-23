@@ -571,17 +571,22 @@ $('#send-wallet').click(() => {
     let wallet = $('#createWallet');
     let wif = wallet.find("#wif-input").children('input').val();
     let neoUtil = new Util_1.NeoUtil();
-    try {
-        let result = neoUtil.wifDecode(wif);
-        if (result.res) {
+    if (wif.length) {
+        try {
+            let result = neoUtil.wifDecode(wif);
+            if (result.res) {
+                wallet.find("#wif-input").addClass("has-success");
+            }
+            else {
+                wallet.find("#wif-input").addClass("has-error");
+                wallet.find("#wif-input").children("p").text("请输入正确的WIF");
+            }
         }
-        else {
-            wallet.find("#wif-input").addClass("has-error");
-            wallet.find("#wif-input").find(".control-label").text("请输入正确的WIF");
+        catch (error) {
+            alert("error");
         }
     }
-    catch (error) {
-        alert("error");
+    else {
     }
 });
 

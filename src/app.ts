@@ -174,14 +174,20 @@ $('#send-wallet').click(()=>{
     let wallet:JQuery<HTMLElement> = $('#createWallet');
     let wif = <string>wallet.find("#wif-input").children('input').val();
     let neoUtil:NeoUtil = new NeoUtil();
-    try {
-        let result= neoUtil.wifDecode(wif);
-        if (result.res) {
-        }else{
-            wallet.find("#wif-input").addClass("has-error");
-            wallet.find("#wif-input").find(".control-label").text("请输入正确的WIF");
+    if (wif.length) {   //如果填写了wif则进行验证
+        try {
+            let result= neoUtil.wifDecode(wif);
+            if (result.res) {
+                wallet.find("#wif-input").addClass("has-success");
+            }else{
+                wallet.find("#wif-input").addClass("has-error");
+                wallet.find("#wif-input").children("p").text("请输入正确的WIF");
+            }
+        } catch (error) {
+            alert("error");
         }
-    } catch (error) {
-        alert("error")
+    }else{  //如果未填写wif则创建新的wif
+
+
     }
 })
