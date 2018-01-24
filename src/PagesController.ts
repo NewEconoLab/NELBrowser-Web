@@ -85,7 +85,7 @@ export class addrlistControll{
     private pageUtil:PageUtil;
     private ajax:Ajax = new Ajax();
     constructor(){        
-        $("#next").click(()=>{
+        $("#addrs-page").find("#next").click(()=>{
             if(this.pageUtil.currentPage==this.pageUtil.totalPage){
                 alert('当前页已经是最后一页了');
                 return;
@@ -94,7 +94,7 @@ export class addrlistControll{
                 this.addrlistInit();
             }
         });
-        $("#previous").click(()=>{
+        $("#addrs-page").find("#previous").click(()=>{
             if(this.pageUtil.currentPage <=1){
                 alert('当前已经是第一页了');
                 return;
@@ -311,8 +311,8 @@ export class WalletControll{
             }
         }else{
             wifGroup.removeClass("has-error has-success");
-            wifGroup.removeClass("has-success");
-            wifGroup.children("p").text("");
+            wifGroup.addClass("has-error");
+            wifGroup.children("p").text("不得为空");
             return 2;
         }
     }

@@ -35,10 +35,9 @@ export class AddressInfoView{
         this.utxo.forEach((utxo:Utxo)=>{
             let html ='';
             html+="<tr>"
-            html+="<td><a class='code' href='./txInfo.html?txid="+utxo.txid+"'>"+utxo.txid
+            html+="<td><a class='code' target='_blank' rel='external nofollow' href='./txInfo.html?txid="+utxo.txid+"'>"+utxo.txid
             html+="</a></td>"
-            html+="<td><a href='./blcokInfo.html?index="+utxo.n+"'>"+utxo.n
-            html+="</a></td>"
+            html+="<td>"+utxo.n+"</td>"
             html+="<td>"+utxo.value;
             html+="</td>"
             html+="<td class='code'>"+utxo.asset;
@@ -60,7 +59,7 @@ export class AddrlistView{
         let html = '';
         addrlist.forEach(item => {
             html+='<tr>';
-            html+='<td><a class="code" href="./address.html?addr='+item.addr+'">'+item.addr+'</td>';
+            html+='<td><a class="code" target="_blank" rel="external nofollow" href="./page/address.html?addr='+item.addr+'">'+item.addr+'</a></td>';
             html+='<td>'+item.firstDate+'</td>';
             html+='<td>'+item.lastDate+'</td>';
             html+='<td>'+item.txcount+'</td>';

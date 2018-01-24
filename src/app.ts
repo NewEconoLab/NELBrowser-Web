@@ -117,12 +117,12 @@ $(()=>{
     }
 });
 
-$("#txlist-btn").click(()=>{redirect('#txlist-page')})
-$("#addrs-btn").click(()=>{redirect("#addrs-page")})
-$("#blocks-btn").click(()=>{redirect("#blocks-page")})
-$("#asset-btn").click(()=>{redirect("#asset-page")})
-$("#index-btn").click(()=>{redirect("")});
-$("#wallet-btn").click(()=>{redirect("#wallet-page")});
+// $("#txlist-btn").click(()=>{redirect('#txlist-page')})
+// $("#addrs-btn").click(()=>{redirect("#addrs-page")})
+// $("#blocks-btn").click(()=>{redirect("#blocks-page")})
+// $("#asset-btn").click(()=>{redirect("#asset-page")})
+// $("#index-btn").click(()=>{redirect("")});
+// $("#wallet-btn").click(()=>{redirect("#wallet-page")});
 
 function redirect(page:string){
     if(page===''){
@@ -173,3 +173,10 @@ function redirect(page:string){
 $("#wallet-new").click(()=>{
     $('#createWallet').modal('show');
 })
+
+function onhash(){
+    let hash = location.hash;
+    redirect(hash);
+}
+
+document.getElementsByTagName("body")[0].onhashchange=()=>{onhash()};

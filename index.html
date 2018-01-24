@@ -28,7 +28,7 @@
     <![endif]-->
 </head>
 
-<body>
+<body onhashchange="onhash()">
     <div class="container">
         <!-- Static navbar -->
         <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation" style="padding-left:100px">
@@ -96,7 +96,7 @@
                                     <h3>
                                         交易记录 <br><small id="txcount">0</small>
                                     </h3>
-                                    <span class="btn btn-info">查看更多</span>
+                                    <span class="btn btn-info" href="#txlist-page" id="txlist-btn">查看更多</span>
                                 </div>
                             </div>
                         </div>
@@ -163,7 +163,7 @@
                                 </thead>
                                 <tbody></tbody>
                             </table>
-                            <a class="btn btn-primary" href="./page/transactions.html" role="button">查看更多交易</a>
+                            <a class="btn btn-primary"  href="#txlist-page" id="txlist-btn" role="button">查看更多交易</a>
                         </div>
                     </div>
                 </div>
@@ -185,9 +185,9 @@
                 <tbody id="blocks"></tbody>
             </table>
             <ul class="pager">
-                <li id="previous" class="previous disabled"><a>&larr; Older</a></li>
+                <li id="previous" class="previous disabled"><a class="btn">&larr; Older</a></li>
                 <a>当前页 第1页，共200页</a>
-                <li id="next" class="next"><a>Newer &rarr;</a></li>
+                <li id="next" class="next"><a class="btn">Newer &rarr;</a></li>
             </ul>
         </div>
         <!-- 交易列表页面 -->
@@ -225,9 +225,9 @@
                 <tbody id="transactions"></tbody>
             </table>
             <ul class="pager">
-                <li id="previous" class="previous disabled"><a>&larr; Older</a></li>
+                <li id="previous" class="previous disabled"><a class="btn">&larr; Older</a></li>
                 <a>当前页 第1页，共200页</a>
-                <li id="next" class="next"><a>Newer &rarr;</a></li>
+                <li id="next" class="next"><a class="btn">Newer &rarr;</a></li>
             </ul>
         </div>
         <!-- 资产页面 -->
@@ -252,9 +252,9 @@
                 <tbody id="addrlist"></tbody>
             </table>
             <ul class="pager">
-                <li id="previous" class="previous disabled"><a>&larr; Older</a></li>
+                <li id="previous" class="previous disabled"><a class="btn">&larr; Older</a></li>
                 <a>当前页 第1页，共200页</a>
-                <li id="next" class="next"><a>Newer &rarr;</a></li>
+                <li id="next" class="next"><a class="btn">Newer &rarr;</a></li>
             </ul>
         </div>
         <!-- 钱包 -->
@@ -270,7 +270,7 @@
                         </select>
                     </div>
                     <div class="form-group">
-                        <button class="btn btn-info" id="wallet-new">创建钱包</button>
+                        <button class="btn btn-info" id="wallet-new">导入钱包</button>
                     </div>
                 </div>
             </div>

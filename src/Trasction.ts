@@ -50,7 +50,7 @@ export class Trasctions{
             txid = txid.substring(0,6)+'...'+txid.substring(txid.length-6);
             let html:string="";
             html+="<tr>"
-            html+="<td><a class='code' href='./txInfo.html?txid="+tx.txid+"'>"+txid
+            html+="<td><a class='code' target='_blank' rel='external nofollow' href='./page/txInfo.html?txid="+tx.txid+"'>"+txid 
             html+="</a></td>"
             html+="<td><a href='./blcokInfo.html?index="+tx.blockindex+"'>"+tx.blockindex
             html+="</a></td>"

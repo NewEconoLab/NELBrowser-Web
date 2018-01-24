@@ -29,7 +29,7 @@ export class BlockPage{
             newDate.setTime(item.time * 1000);
             let html:string;
             html+='<tr><td>'
-            html+='<a href="../page/blockInfo.html?index='+item.index+'">';
+            html+='<a href="./page/blockInfo.html?index='+item.index+'">';
             html+=item.index+'</a></td><td>'+item.size;
             html+=' bytes</td><td>'+newDate.toLocaleString()+'</td></tr>';
             $("#blocks-page").find("tbody").append(html);

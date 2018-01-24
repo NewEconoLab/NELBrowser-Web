@@ -552,12 +552,12 @@ $(() => {
         addrInfo.addressInfo();
     }
 });
-$("#txlist-btn").click(() => { redirect('#txlist-page'); });
-$("#addrs-btn").click(() => { redirect("#addrs-page"); });
-$("#blocks-btn").click(() => { redirect("#blocks-page"); });
-$("#asset-btn").click(() => { redirect("#asset-page"); });
-$("#index-btn").click(() => { redirect(""); });
-$("#wallet-btn").click(() => { redirect("#wallet-page"); });
+// $("#txlist-btn").click(()=>{redirect('#txlist-page')})
+// $("#addrs-btn").click(()=>{redirect("#addrs-page")})
+// $("#blocks-btn").click(()=>{redirect("#blocks-page")})
+// $("#asset-btn").click(()=>{redirect("#asset-page")})
+// $("#index-btn").click(()=>{redirect("")});
+// $("#wallet-btn").click(()=>{redirect("#wallet-page")});
 function redirect(page) {
     if (page === '') {
         indexPage();
@@ -610,6 +610,11 @@ function redirect(page) {
 $("#wallet-new").click(() => {
     $('#createWallet').modal('show');
 });
+function onhash() {
+    let hash = location.hash;
+    redirect(hash);
+}
+document.getElementsByTagName("body")[0].onhashchange = () => { onhash(); };
 
 
 /***/ }),
@@ -712,7 +717,7 @@ exports.AddressControll = AddressControll;
 class addrlistControll {
     constructor() {
         this.ajax = new Util_1.Ajax();
-        $("#next").click(() => {
+        $("#addrs-page").find("#next").click(() => {
             if (this.pageUtil.currentPage == this.pageUtil.totalPage) {
                 alert('当前页已经是最后一页了');
                 return;
@@ -722,7 +727,7 @@ class addrlistControll {
                 this.addrlistInit();
             }
         });
-        $("#previous").click(() => {
+        $("#addrs-page").find("#previous").click(() => {
             if (this.pageUtil.currentPage <= 1) {
                 alert('当前已经是第一页了');
                 return;
@@ -933,8 +938,8 @@ class WalletControll {
         }
         else {
             wifGroup.removeClass("has-error has-success");
-            wifGroup.removeClass("has-success");
-            wifGroup.children("p").text("");
+            wifGroup.addClass("has-error");
+            wifGroup.children("p").text("不得为空");
             return 2;
         }
     }
@@ -1010,10 +1015,9 @@ class AddressInfoView {
         this.utxo.forEach((utxo) => {
             let html = '';
             html += "<tr>";
-            html += "<td><a class='code' href='./txInfo.html?txid=" + utxo.txid + "'>" + utxo.txid;
+            html += "<td><a class='code' target='_blank' rel='external nofollow' href='./txInfo.html?txid=" + utxo.txid + "'>" + utxo.txid;
             html += "</a></td>";
-            html += "<td><a href='./blcokInfo.html?index=" + utxo.n + "'>" + utxo.n;
-            html += "</a></td>";
+            html += "<td>" + utxo.n + "</td>";
             html += "<td>" + utxo.value;
             html += "</td>";
             html += "<td class='code'>" + utxo.asset;
@@ -1034,7 +1038,7 @@ class AddrlistView {
         let html = '';
         addrlist.forEach(item => {
             html += '<tr>';
-            html += '<td><a class="code" href="./address.html?addr=' + item.addr + '">' + item.addr + '</td>';
+            html += '<td><a class="code" target="_blank" rel="external nofollow" href="./page/address.html?addr=' + item.addr + '">' + item.addr + '</a></td>';
             html += '<td>' + item.firstDate + '</td>';
             html += '<td>' + item.lastDate + '</td>';
             html += '<td>' + item.txcount + '</td>';
@@ -1191,7 +1195,7 @@ class BlockPage {
                 newDate.setTime(item.time * 1000);
                 let html;
                 html += '<tr><td>';
-                html += '<a href="../page/blockInfo.html?index=' + item.index + '">';
+                html += '<a href="./page/blockInfo.html?index=' + item.index + '">';
                 html += item.index + '</a></td><td>' + item.size;
                 html += ' bytes</td><td>' + newDate.toLocaleString() + '</td></tr>';
                 $("#blocks-page").find("tbody").append(html);
@@ -1285,7 +1289,7 @@ class Trasctions {
                 txid = txid.substring(0, 6) + '...' + txid.substring(txid.length - 6);
                 let html = "";
                 html += "<tr>";
-                html += "<td><a class='code' href='./txInfo.html?txid=" + tx.txid + "'>" + txid;
+                html += "<td><a class='code' target='_blank' rel='external nofollow' href='./page/txInfo.html?txid=" + tx.txid + "'>" + txid;
                 html += "</a></td>";
                 html += "<td><a href='./blcokInfo.html?index=" + tx.blockindex + "'>" + tx.blockindex;
                 html += "</a></td>";
