@@ -841,11 +841,16 @@ class AddressControll {
         return __awaiter(this, void 0, void 0, function* () {
             let getNep5 = new Util_1.GetNep5Info();
             let asset = $("#nep5-text").val().toString();
+            if (asset.length < 1)
+                alert("请输入资产id");
             let res = yield getNep5.getInfo(asset);
             if (!res.err) {
                 let name = res.result["name"];
                 let balance = yield getNep5.getBalance(asset, this.address);
-                if (!balance.err) {
+                if (balance.err) {
+                    alert(res.result);
+                }
+                else {
                     this.addInfo.loadNep5(name, balance.result);
                 }
             }
@@ -1205,6 +1210,7 @@ class AddressInfoView {
      * loadNep5
      */
     loadNep5(name, balance) {
+        $("#nep5balance").empty();
         $("#nep5balance").append('<li class="list-group-item">' + name + ': ' + balance + '</li>');
     }
 }

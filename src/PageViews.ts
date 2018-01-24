@@ -49,6 +49,7 @@ export class AddressInfoView{
      * loadNep5
      */
     public loadNep5(name:string,balance:number) {
+        $("#nep5balance").empty();
         $("#nep5balance").append('<li class="list-group-item">'+name+': '+balance+'</li>');
     }
 }

@@ -51,11 +51,15 @@ export class AddressControll{
     public async nep5Info() {
         let getNep5:GetNep5Info = new GetNep5Info();
         let asset:string = $("#nep5-text").val().toString();
+        if(asset.length<1)
+            alert("请输入资产id");
         let res:result = await getNep5.getInfo(asset);
         if(!res.err){
             let name = res.result["name"];
             let balance:result = await getNep5.getBalance(asset,this.address);
-            if(!balance.err){
+            if(balance.err){
+                alert(res.result);
+            }else{
                 this.addInfo.loadNep5(name,balance.result);
             }
         }

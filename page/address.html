@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
-  <head>
+
+<head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -25,54 +26,57 @@
       <script src="https://cdn.bootcss.com/html5shiv/3.7.3/html5shiv.min.js"></script>
       <script src="https://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
-  </head>
+</head>
 
-  <body>
+<body>
 
     <div class="container">
 
-      <!-- Static navbar -->
-      <!-- Main component for a primary marketing message or call to action -->
+        <!-- Static navbar -->
+        <!-- Main component for a primary marketing message or call to action -->
 
-      <div class="jumbotron">
-        <div class="container">
-          <h2>地址详情</h2>
-          <h4 class="cool" id="address"></h4>
-          <div id="balance" class="row">
-          </div>
-          <div class="row">
-            <div class="col-md-6">
-                <div class="panel panel-default" style="height:100%">
-                    <div class="panel-heading">
-                        <h3 class="panel-title">nep5</h3>
-                    </div>
-                    <div class="panel-body">
-                        <div id="p1group" class="input-group">
-                          <input type="text" class="form-control" name="query-nep5" id="nep5-text">
-                          <span class="glyphicon glyphicon-search input-group-addon" id="nep5-btn"  aria-hidden="true"></span>
+        <div class="jumbotron">
+            <div class="container">
+                <h2>地址详情</h2>
+                <h4 class="cool" id="address"></h4>
+                <div id="balance" class="row">
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="panel panel-default" style="height:100%">
+                            <div class="panel-heading">
+                                <h3 class="panel-title">nep5</h3>
+                            </div>
+                            <div class="panel-body">
+                                <div class="input-group">
+                                    <input type="text" name="query-nep5" id="nep5-text" class="form-control" aria-label="Amount (to the nearest dollar)">
+                                    <span class="input-group-addon btn" id="nep5-btn"><span class="glyphicon glyphicon-search"></span></span>
+                                </div>
+                            </div>
+                            <ul id="nep5balance" class="list-group">
+                            </ul>
                         </div>
                     </div>
-                    <ul id="nep5balance" class="list-group">
-                    </ul>
                 </div>
-              </div>
-          </div>
-        </div>
-        
-        <table class="table table-hover cool" >
-          <caption><h3>UTXO</h3></caption>
-          <thead>
-            <tr>
-              <th>asset</th>
-              <th>number</th>
-              <th>txid</th>
-            </tr>
-          </thead>
-          <tbody id="utxos"></tbody>
-      </table>
-      </div>
+            </div>
 
-    </div> <!-- /container -->
+            <table class="table table-hover cool">
+                <caption>
+                    <h3>UTXO</h3>
+                </caption>
+                <thead>
+                    <tr>
+                        <th>asset</th>
+                        <th>number</th>
+                        <th>txid</th>
+                    </tr>
+                </thead>
+                <tbody id="utxos"></tbody>
+            </table>
+        </div>
+
+    </div>
+    <!-- /container -->
 
 
     <!-- Bootstrap core JavaScript
@@ -84,5 +88,6 @@
     <script src="../lib/bootstrap.min.js"></script>
     <script src="../dist/app.js"></script>
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
-  </body>
+</body>
+
 </html>
