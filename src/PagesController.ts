@@ -1,7 +1,7 @@
 /// <reference types="jquery" />
 // import * as $ from "jquery";
-import { Ajax, LocationUtil, NeoUtil, pageCut } from './Util';
-import { Utxo, Balance, Asset, AssetEnum, PageUtil, Addr, Block, TableMode } from './Entitys';
+import { Ajax, LocationUtil, NeoUtil, pageCut, GetNep5Info } from './Util';
+import { Utxo, Balance, Asset, AssetEnum, PageUtil, Addr, Block, TableMode, result } from './Entitys';
 import { AddressInfoView,AssetsView, AddrlistView, BlocksView } from './PageViews';
 
 export class SearchController{
@@ -38,8 +38,27 @@ export class SearchController{
 export class AddressControll{
     private ajax:Ajax = new Ajax();
     private address:string;
+    private addInfo:AddressInfoView
     constructor(address:string){
         this.address = address;
+        $("#nep5-btn").click(()=>{
+            this.nep5Info();
+        })
+    }
+    /**
+     * nep5Info
+     */
+    public async nep5Info() {
+        let getNep5:GetNep5Info = new GetNep5Info();
+        let asset:string = $("#nep5-text").val().toString();
+        let res:result = await getNep5.getInfo(asset);
+        if(!res.err){
+            let name = res.result["name"];
+            let balance:result = await getNep5.getBalance(asset,this.address);
+            if(!balance.err){
+                this.addInfo.loadNep5(name,balance.result);
+            }
+        }
     }
     public async addressInfo(){
         let balances:Balance[] = await this.ajax.post('getbalance',[this.address]).catch((e)=>{
@@ -76,8 +95,8 @@ export class AddressControll{
             item.asset = allAsset.find(val => val.id==item.asset).name.map((name)=>{ return name.name}).join("|");
         })
 
-        let addInfo:AddressInfoView = new AddressInfoView(balances,utxo,this.address);
-        addInfo.loadView(); //加载页面
+        this.addInfo = new AddressInfoView(balances,utxo,this.address);
+        this.addInfo.loadView(); //加载页面
     }
 }
 //地址列表

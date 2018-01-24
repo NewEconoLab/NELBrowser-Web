@@ -185,6 +185,190 @@ declare namespace Neo {
         static parse(str: string): Uint256;
     }
 }
+declare namespace ThinNeo {
+    class nep6account {
+        address: string;
+        nep2key: string;
+        getPrivateKey(scrypt: nep6ScryptParameters, password: string, callback: (info: string, result: string | Uint8Array) => void): void;
+    }
+    class nep6ScryptParameters {
+        N: number;
+        r: number;
+        p: number;
+    }
+    class nep6wallet {
+        scrypt: nep6ScryptParameters;
+        accounts: nep6account[];
+        fromJsonStr(jsonstr: string): void;
+        toJson(): any;
+    }
+}
+declare namespace ThinNeo {
+    class Base64 {
+        static lookup: any[];
+        static revLookup: any[];
+        static code: string;
+        static binited: boolean;
+        static init(): void;
+        static placeHoldersCount(b64: string): number;
+        static byteLength(b64: string): number;
+        static toByteArray(b64: string): Uint8Array;
+        static tripletToBase64(num: any): any;
+        static encodeChunk(uint8: any, start: any, end: any): string;
+        static fromByteArray(uint8: Uint8Array): string;
+    }
+}
+declare module ThinNeo {
+    class Helper {
+        static GetPrivateKeyFromWIF(wif: string): Uint8Array;
+        static GetWifFromPrivateKey(prikey: Uint8Array): string;
+        static GetPublicKeyFromPrivateKey(privateKey: Uint8Array): Uint8Array;
+        static Hash160(data: Uint8Array): Uint8Array;
+        static GetAddressCheckScriptFromPublicKey(publicKey: Uint8Array): Uint8Array;
+        static GetPublicKeyScriptHashFromPublicKey(publicKey: Uint8Array): Uint8Array;
+        static GetAddressFromScriptHash(scripthash: Uint8Array): string;
+        static GetAddressFromPublicKey(publicKey: Uint8Array): string;
+        static GetPublicKeyScriptHash_FromAddress(address: string): Uint8Array;
+        static Sign(message: Uint8Array, privateKey: Uint8Array): Uint8Array;
+        static VerifySignature(message: Uint8Array, signature: Uint8Array, pubkey: Uint8Array): boolean;
+        static String2Bytes(str: any): Uint8Array;
+        static Bytes2String(_arr: Uint8Array): string;
+        static Aes256Encrypt(src: string, key: string): string;
+        static Aes256Encrypt_u8(src: Uint8Array, key: Uint8Array): Uint8Array;
+        static Aes256Decrypt_u8(encryptedkey: Uint8Array, key: Uint8Array): Uint8Array;
+        static GetNep2FromPrivateKey(prikey: Uint8Array, passphrase: string, n: number, r: number, p: number, callback: (info: string, result: string) => void): void;
+        static GetPrivateKeyFromNep2(nep2: string, passphrase: string, n: number, r: number, p: number, callback: (info: string, result: string | Uint8Array) => void): void;
+    }
+}
+declare module ThinNeo {
+    enum OpCode {
+        PUSH0 = 0,
+        PUSHF = 0,
+        PUSHBYTES1 = 1,
+        PUSHBYTES75 = 75,
+        PUSHDATA1 = 76,
+        PUSHDATA2 = 77,
+        PUSHDATA4 = 78,
+        PUSHM1 = 79,
+        PUSH1 = 81,
+        PUSHT = 81,
+        PUSH2 = 82,
+        PUSH3 = 83,
+        PUSH4 = 84,
+        PUSH5 = 85,
+        PUSH6 = 86,
+        PUSH7 = 87,
+        PUSH8 = 88,
+        PUSH9 = 89,
+        PUSH10 = 90,
+        PUSH11 = 91,
+        PUSH12 = 92,
+        PUSH13 = 93,
+        PUSH14 = 94,
+        PUSH15 = 95,
+        PUSH16 = 96,
+        NOP = 97,
+        JMP = 98,
+        JMPIF = 99,
+        JMPIFNOT = 100,
+        CALL = 101,
+        RET = 102,
+        APPCALL = 103,
+        SYSCALL = 104,
+        TAILCALL = 105,
+        DUPFROMALTSTACK = 106,
+        TOALTSTACK = 107,
+        FROMALTSTACK = 108,
+        XDROP = 109,
+        XSWAP = 114,
+        XTUCK = 115,
+        DEPTH = 116,
+        DROP = 117,
+        DUP = 118,
+        NIP = 119,
+        OVER = 120,
+        PICK = 121,
+        ROLL = 122,
+        ROT = 123,
+        SWAP = 124,
+        TUCK = 125,
+        CAT = 126,
+        SUBSTR = 127,
+        LEFT = 128,
+        RIGHT = 129,
+        SIZE = 130,
+        INVERT = 131,
+        AND = 132,
+        OR = 133,
+        XOR = 134,
+        EQUAL = 135,
+        INC = 139,
+        DEC = 140,
+        SIGN = 141,
+        NEGATE = 143,
+        ABS = 144,
+        NOT = 145,
+        NZ = 146,
+        ADD = 147,
+        SUB = 148,
+        MUL = 149,
+        DIV = 150,
+        MOD = 151,
+        SHL = 152,
+        SHR = 153,
+        BOOLAND = 154,
+        BOOLOR = 155,
+        NUMEQUAL = 156,
+        NUMNOTEQUAL = 158,
+        LT = 159,
+        GT = 160,
+        LTE = 161,
+        GTE = 162,
+        MIN = 163,
+        MAX = 164,
+        WITHIN = 165,
+        SHA1 = 167,
+        SHA256 = 168,
+        HASH160 = 169,
+        HASH256 = 170,
+        CSHARPSTRHASH32 = 171,
+        JAVAHASH32 = 173,
+        CHECKSIG = 172,
+        CHECKMULTISIG = 174,
+        ARRAYSIZE = 192,
+        PACK = 193,
+        UNPACK = 194,
+        PICKITEM = 195,
+        SETITEM = 196,
+        NEWARRAY = 197,
+        NEWSTRUCT = 198,
+        SWITCH = 208,
+        THROW = 240,
+        THROWIFNOT = 241,
+    }
+}
+declare namespace ThinNeo {
+    class ScriptBuilder {
+        writer: number[];
+        Offset: number;
+        constructor();
+        _WriteUint8(num: number): void;
+        _WriteUint16(num: number): void;
+        _WriteUint32(num: number): void;
+        _WriteUint8Array(nums: Uint8Array): void;
+        _ConvertInt16ToBytes(num: number): Uint8Array;
+        Emit(op: OpCode, arg?: Uint8Array): ScriptBuilder;
+        EmitAppCall(scriptHash: Uint8Array, useTailCall?: boolean): ScriptBuilder;
+        EmitJump(op: OpCode, offset: number): ScriptBuilder;
+        EmitPushNumber(number: Neo.BigInteger): ScriptBuilder;
+        EmitPushBool(data: boolean): ScriptBuilder;
+        EmitPushBytes(data: Uint8Array): ScriptBuilder;
+        EmitPushString(data: string): ScriptBuilder;
+        EmitSysCall(api: string): ScriptBuilder;
+        ToArray(): Uint8Array;
+        EmitParamJson(param: any): ScriptBuilder;
+    }
+}
 declare namespace Neo.Cryptography {
     class Aes {
         private static numberOfRounds;
@@ -506,176 +690,6 @@ declare namespace Neo.IO {
         write(buffer: ArrayBuffer, offset: number, count: number): void;
     }
 }
-declare namespace Neo.IO.Caching {
-    interface ITrackable<TKey> {
-        key: TKey;
-        trackState: TrackState;
-    }
-}
-declare namespace Neo.IO.Caching {
-    class TrackableCollection<TKey, TItem extends ITrackable<TKey>> {
-        private _map;
-        constructor(items?: ArrayLike<TItem>);
-        add(item: TItem): void;
-        clear(): void;
-        commit(): void;
-        forEach(callback: (value: TItem, key: TKey, collection: TrackableCollection<TKey, TItem>) => void): void;
-        get(key: TKey): TItem;
-        getChangeSet(): TItem[];
-        has(key: TKey): boolean;
-        remove(key: TKey): void;
-    }
-}
-declare namespace Neo.IO.Caching {
-    enum TrackState {
-        None = 0,
-        Added = 1,
-        Changed = 2,
-        Deleted = 3,
-    }
-}
-declare namespace ThinNeo {
-    class Base64 {
-        static lookup: any[];
-        static revLookup: any[];
-        static code: string;
-        static binited: boolean;
-        static init(): void;
-        static placeHoldersCount(b64: string): number;
-        static byteLength(b64: string): number;
-        static toByteArray(b64: string): Uint8Array;
-        static tripletToBase64(num: any): any;
-        static encodeChunk(uint8: any, start: any, end: any): string;
-        static fromByteArray(uint8: Uint8Array): string;
-    }
-}
-declare module ThinNeo {
-    class Helper {
-        static GetPrivateKeyFromWIF(wif: string): Uint8Array;
-        static GetWifFromPrivateKey(prikey: Uint8Array): string;
-        static GetPublicKeyFromPrivateKey(privateKey: Uint8Array): Uint8Array;
-        static Hash160(data: Uint8Array): Uint8Array;
-        static GetAddressCheckScriptFromPublicKey(publicKey: Uint8Array): Uint8Array;
-        static GetPublicKeyScriptHashFromPublicKey(publicKey: Uint8Array): Uint8Array;
-        static GetAddressFromScriptHash(scripthash: Uint8Array): string;
-        static GetAddressFromPublicKey(publicKey: Uint8Array): string;
-        static GetPublicKeyScriptHash_FromAddress(address: string): Uint8Array;
-        static Sign(message: Uint8Array, privateKey: Uint8Array): Uint8Array;
-        static VerifySignature(message: Uint8Array, signature: Uint8Array, pubkey: Uint8Array): boolean;
-        static Aes256Encrypt(src: string, key: string): string;
-        static Aes256Encrypt_u8(src: Uint8Array, key: Uint8Array): Uint8Array;
-        static Aes256Decrypt_u8(encryptedkey: Uint8Array, key: Uint8Array): Uint8Array;
-        static GetNep2FromPrivateKey(prikey: Uint8Array, passphrase: string, n: number, r: number, p: number, callback: (info: string, result: string) => void): void;
-        static GetPrivateKeyFromNep2(nep2: string, passphrase: string, n: number, r: number, p: number, callback: (info: string, result: string | Uint8Array) => void): void;
-    }
-}
-declare module ThinNeo {
-    enum OpCode {
-        PUSH0 = 0,
-        PUSHF = 0,
-        PUSHBYTES1 = 1,
-        PUSHBYTES75 = 75,
-        PUSHDATA1 = 76,
-        PUSHDATA2 = 77,
-        PUSHDATA4 = 78,
-        PUSHM1 = 79,
-        PUSH1 = 81,
-        PUSHT = 81,
-        PUSH2 = 82,
-        PUSH3 = 83,
-        PUSH4 = 84,
-        PUSH5 = 85,
-        PUSH6 = 86,
-        PUSH7 = 87,
-        PUSH8 = 88,
-        PUSH9 = 89,
-        PUSH10 = 90,
-        PUSH11 = 91,
-        PUSH12 = 92,
-        PUSH13 = 93,
-        PUSH14 = 94,
-        PUSH15 = 95,
-        PUSH16 = 96,
-        NOP = 97,
-        JMP = 98,
-        JMPIF = 99,
-        JMPIFNOT = 100,
-        CALL = 101,
-        RET = 102,
-        APPCALL = 103,
-        SYSCALL = 104,
-        TAILCALL = 105,
-        DUPFROMALTSTACK = 106,
-        TOALTSTACK = 107,
-        FROMALTSTACK = 108,
-        XDROP = 109,
-        XSWAP = 114,
-        XTUCK = 115,
-        DEPTH = 116,
-        DROP = 117,
-        DUP = 118,
-        NIP = 119,
-        OVER = 120,
-        PICK = 121,
-        ROLL = 122,
-        ROT = 123,
-        SWAP = 124,
-        TUCK = 125,
-        CAT = 126,
-        SUBSTR = 127,
-        LEFT = 128,
-        RIGHT = 129,
-        SIZE = 130,
-        INVERT = 131,
-        AND = 132,
-        OR = 133,
-        XOR = 134,
-        EQUAL = 135,
-        INC = 139,
-        DEC = 140,
-        SIGN = 141,
-        NEGATE = 143,
-        ABS = 144,
-        NOT = 145,
-        NZ = 146,
-        ADD = 147,
-        SUB = 148,
-        MUL = 149,
-        DIV = 150,
-        MOD = 151,
-        SHL = 152,
-        SHR = 153,
-        BOOLAND = 154,
-        BOOLOR = 155,
-        NUMEQUAL = 156,
-        NUMNOTEQUAL = 158,
-        LT = 159,
-        GT = 160,
-        LTE = 161,
-        GTE = 162,
-        MIN = 163,
-        MAX = 164,
-        WITHIN = 165,
-        SHA1 = 167,
-        SHA256 = 168,
-        HASH160 = 169,
-        HASH256 = 170,
-        CSHARPSTRHASH32 = 171,
-        JAVAHASH32 = 173,
-        CHECKSIG = 172,
-        CHECKMULTISIG = 174,
-        ARRAYSIZE = 192,
-        PACK = 193,
-        UNPACK = 194,
-        PICKITEM = 195,
-        SETITEM = 196,
-        NEWARRAY = 197,
-        NEWSTRUCT = 198,
-        SWITCH = 208,
-        THROW = 240,
-        THROWIFNOT = 241,
-    }
-}
 declare module ThinNeo.Compiler {
     class Avm2Asm {
         static Trans(script: Uint8Array): Op[];
@@ -717,5 +731,33 @@ declare module ThinNeo.Compiler {
         AsString(): string;
         AsAddr(): number;
         getCodeName(): string;
+    }
+}
+declare namespace Neo.IO.Caching {
+    interface ITrackable<TKey> {
+        key: TKey;
+        trackState: TrackState;
+    }
+}
+declare namespace Neo.IO.Caching {
+    class TrackableCollection<TKey, TItem extends ITrackable<TKey>> {
+        private _map;
+        constructor(items?: ArrayLike<TItem>);
+        add(item: TItem): void;
+        clear(): void;
+        commit(): void;
+        forEach(callback: (value: TItem, key: TKey, collection: TrackableCollection<TKey, TItem>) => void): void;
+        get(key: TKey): TItem;
+        getChangeSet(): TItem[];
+        has(key: TKey): boolean;
+        remove(key: TKey): void;
+    }
+}
+declare namespace Neo.IO.Caching {
+    enum TrackState {
+        None = 0,
+        Added = 1,
+        Changed = 2,
+        Deleted = 3,
     }
 }

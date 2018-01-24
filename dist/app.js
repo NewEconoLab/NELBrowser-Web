@@ -340,6 +340,150 @@ class walletStorage {
     }
 }
 exports.walletStorage = walletStorage;
+class GetNep5Info {
+    constructor() {
+        this.nep5decimals = 0;
+    }
+    //http://47.96.168.8:20332/?jsonrpc=2.0&id=1&method=invokescript&params=[%2200c1046e616d6567056bd94ecab6fe9607014624ef66bbc991dbcc3f%22]
+    makeRpcUrl(url, method, ..._params) {
+        if (url[url.length - 1] != '/')
+            url = url + "/";
+        var urlout = url + "?jsonrpc=2.0&id=1&method=" + method + "&params=[";
+        for (var i = 0; i < _params.length; i++) {
+            urlout += JSON.stringify(_params[i]);
+            if (i != _params.length - 1)
+                urlout += ",";
+        }
+        urlout += "]";
+        return urlout;
+    }
+    getInfo(sid) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let res = { err: false, result: { name: "", symbol: "", decimals: "" } };
+            try {
+                //拼接三次调用
+                var sb = new ThinNeo.ScriptBuilder();
+                sb.EmitParamJson(JSON.parse("[]")); //参数倒序入
+                sb.EmitParamJson("(str)name"); //参数倒序入
+                var shash = sid.hexToBytes();
+                sb.EmitAppCall(shash.reverse()); //nep5脚本
+                sb.EmitParamJson(JSON.parse("[]"));
+                sb.EmitParamJson("(str)symbol");
+                var shash = sid.hexToBytes();
+                sb.EmitAppCall(shash.reverse());
+                sb.EmitParamJson(JSON.parse("[]"));
+                sb.EmitParamJson("(str)decimals");
+                var shash = sid.hexToBytes();
+                sb.EmitAppCall(shash.reverse());
+                var data = sb.ToArray();
+                var url = this.makeRpcUrl("http://47.96.168.8:20332", "invokescript", data.toHexString());
+                let response = yield fetch(url, { "method": "get" });
+                let json = yield response.json();
+                // info1.textContent = JSON.stringify(r);
+                try {
+                    var state = json.result.state;
+                    // info2.textContent = "";
+                    if (state.includes("HALT")) {
+                        // info2.textContent += "Succ\n";
+                        res.err = false;
+                    }
+                    var stack = json.result.stack;
+                    //find name 他的type 有可能是string 或者ByteArray
+                    if (stack[0].type == "String") {
+                        // info2.textContent += "name=" + stack[0].value + "\n";
+                        res.result.name = stack[0].value;
+                    }
+                    else if (stack[0].type == "ByteArray") {
+                        var bs = stack[0].value.hexToBytes();
+                        var str = ThinNeo.Helper.Bytes2String(bs);
+                        // info2.textContent += "name=" + str + "\n";
+                        res.result.name = str;
+                    }
+                    //find symbol 他的type 有可能是string 或者ByteArray
+                    if (stack[1].type == "String") {
+                        // info2.textContent += "symbol=" + stack[1].value + "\n";
+                        res.result.symbol = stack[1].value;
+                    }
+                    else if (stack[1].type == "ByteArray") {
+                        var bs = stack[1].value.hexToBytes();
+                        var str = ThinNeo.Helper.Bytes2String(bs);
+                        // info2.textContent += "symbol=" + str + "\n";
+                        res.result.symbol = str;
+                    }
+                    //find decimals 他的type 有可能是 Integer 或者ByteArray
+                    if (stack[2].type == "Integer") {
+                        this.nep5decimals = (new Neo.BigInteger(stack[2].value)).toInt32();
+                    }
+                    else if (stack[2].type == "ByteArray") {
+                        var bs = stack[2].value.hexToBytes();
+                        var num = new Neo.BigInteger(bs);
+                        this.nep5decimals = num.toInt32();
+                    }
+                    // info2.textContent += "decimals=" + this.nep5decimals + "\n";
+                    res.result.decimals = this.nep5decimals;
+                    return res;
+                }
+                catch (e) {
+                    res.err = true;
+                    res.result = e.message;
+                    return res;
+                }
+            }
+            catch (e) {
+                res.err = true;
+                res.result = e.message;
+                return res;
+            }
+        });
+    }
+    getBalance(sid, addr) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let res = { err: false, result: 0 };
+            var sb = new ThinNeo.ScriptBuilder();
+            sb.EmitParamJson(["(addr)" + addr]); //参数倒序入
+            sb.EmitParamJson("(str)balanceOf"); //参数倒序入 //name//totalSupply//symbol//decimals
+            var shash = sid.hexToBytes();
+            sb.EmitAppCall(shash.reverse()); //nep5脚本
+            var data = sb.ToArray();
+            // info1.textContent = data.toHexString();        
+            try {
+                var url = this.makeRpcUrl("http://47.96.168.8:20332", "invokescript", data.toHexString());
+                let response = yield fetch(url, { "method": "get" });
+                let json = yield response.json();
+                var state = json.result.state;
+                // info2.textContent = "";
+                if (state.includes("HALT")) {
+                    // info2.textContent += "Succ\n";
+                }
+                var stack = json.result.stack;
+                var bnum = new Neo.BigInteger(0);
+                //find decimals 他的type 有可能是 Integer 或者ByteArray
+                if (stack[0].type == "Integer") {
+                    bnum = new Neo.BigInteger(stack[0].value);
+                }
+                else if (stack[0].type == "ByteArray") {
+                    var bs = stack[0].value.hexToBytes();
+                    bnum = new Neo.BigInteger(bs);
+                }
+                var v = 1;
+                for (var i = 0; i < this.nep5decimals; i++) {
+                    v *= 10;
+                }
+                var intv = bnum.divide(v).toInt32();
+                var smallv = bnum.mod(v).toInt32() / v;
+                // info2.textContent += "count=" + (intv + smallv);
+                res.result = intv + smallv;
+            }
+            catch (e) {
+                res.err = true;
+                res.result = e.message;
+                return res;
+            }
+            return res;
+        });
+    }
+}
+exports.GetNep5Info = GetNep5Info;
 
 
 /***/ }),
@@ -474,7 +618,7 @@ function indexPage() {
             var newDate = new Date();
             newDate.setTime(item.time * 1000);
             let html = '';
-            html += '<tr><td><a class="code" href="./page/blockInfo.html?index=' + item.index + '">';
+            html += '<tr><td><a class="code" class="code" target="_blank" rel="external nofollow"  href="./page/blockInfo.html?index=' + item.index + '">';
             html += item.index + '</a></td><td>' + item.size + ' bytes</td><td>';
             html += newDate.toLocaleString() + '</td>';
             html += '<td>' + item.tx.length + '</td></tr>';
@@ -488,7 +632,7 @@ function indexPage() {
             txid = txid.substring(0, 4) + '...' + txid.substring(txid.length - 4);
             let html = "";
             html += "<tr>";
-            html += "<td><a class='code' href='./page/txInfo.html?txid=" + tx.txid + "'>" + txid + "</a>";
+            html += "<td><a class='code' class='code' target='_blank' rel='external nofollow'  href='./page/txInfo.html?txid=" + tx.txid + "'>" + txid + "</a>";
             html += "</td>";
             html += "<td>" + tx.type;
             html += "</td>";
@@ -562,54 +706,66 @@ function redirect(page) {
     if (page === '') {
         indexPage();
         $('#index-page').show();
+        $("#index-btn").addClass("active");
+        $("#brow-btn").removeClass("active");
     }
     else {
         $('#index-page').hide();
+        $("#brow-btn").addClass("active");
+        $("#index-btn").removeClass("active");
     }
     if (page === '#blocks-page') {
         // let blocks=new BlocksControll();
         // blocks.start();
         blocksPage();
         $(page).show();
+        $("#blocks-btn").addClass("active");
     }
     else {
         $('#blocks-page').hide();
+        $("#blocks-btn").removeClass("active");
     }
     if (page === '#txlist-page') {
         let ts = new Trasction_1.Trasctions();
         $(page).show();
+        $("#txlist-btn").addClass("active");
     }
     else {
         $('#txlist-page').hide();
+        $("#txlist-btn").removeClass("active");
     }
     if (page === '#addrs-page') {
         let addrlist = new PagesController_1.addrlistControll();
         addrlist.start();
         $(page).show();
+        $("#addrs-btn").addClass("active");
     }
     else {
         $('#addrs-page').hide();
+        $("#addrs-btn").removeClass("active");
     }
     if (page === '#asset-page') {
         //启动asset管理器
         let assetControll = new PagesController_1.AssetControll();
         assetControll.allAsset();
         $(page).show();
+        $("#asset-btn").addClass("active");
     }
     else {
         $('#asset-page').hide();
+        $("#asset-btn").removeClass("active");
     }
     if (page == "#wallet-page") {
         let wallet = new PagesController_1.WalletControll();
         $(page).show();
+        $("#wallet-btn").addClass("active");
+        $("#brow-btn").removeClass("active");
     }
     else {
         $("#wallet-page").hide();
+        $("#wallet-btn").removeClass("active");
     }
 }
-$("#wallet-new").click(() => {
-    $('#createWallet').modal('show');
-});
 function onhash() {
     let hash = location.hash;
     redirect(hash);
@@ -674,6 +830,26 @@ class AddressControll {
     constructor(address) {
         this.ajax = new Util_1.Ajax();
         this.address = address;
+        $("#nep5-btn").click(() => {
+            this.nep5Info();
+        });
+    }
+    /**
+     * nep5Info
+     */
+    nep5Info() {
+        return __awaiter(this, void 0, void 0, function* () {
+            let getNep5 = new Util_1.GetNep5Info();
+            let asset = $("#nep5-text").val().toString();
+            let res = yield getNep5.getInfo(asset);
+            if (!res.err) {
+                let name = res.result["name"];
+                let balance = yield getNep5.getBalance(asset, this.address);
+                if (!balance.err) {
+                    this.addInfo.loadNep5(name, balance.result);
+                }
+            }
+        });
     }
     addressInfo() {
         return __awaiter(this, void 0, void 0, function* () {
@@ -707,8 +883,8 @@ class AddressControll {
             utxo.map((item) => {
                 item.asset = allAsset.find(val => val.id == item.asset).name.map((name) => { return name.name; }).join("|");
             });
-            let addInfo = new PageViews_1.AddressInfoView(balances, utxo, this.address);
-            addInfo.loadView(); //加载页面
+            this.addInfo = new PageViews_1.AddressInfoView(balances, utxo, this.address);
+            this.addInfo.loadView(); //加载页面
         });
     }
 }
@@ -1007,7 +1183,7 @@ class AddressInfoView {
             html += '<div class="panel-heading">';
             html += '<h3 class="panel-title">' + name + '</h3>';
             html += '</div>';
-            html += '<div id="size" class="panel-body code">';
+            html += '<div id="size" class="panel-body">';
             html += balance.balance;
             html += '</div></div></div>';
             $("#balance").append(html);
@@ -1015,16 +1191,21 @@ class AddressInfoView {
         this.utxo.forEach((utxo) => {
             let html = '';
             html += "<tr>";
-            html += "<td><a class='code' target='_blank' rel='external nofollow' href='./txInfo.html?txid=" + utxo.txid + "'>" + utxo.txid;
-            html += "</a></td>";
-            html += "<td>" + utxo.n + "</td>";
-            html += "<td>" + utxo.value;
-            html += "</td>";
             html += "<td class='code'>" + utxo.asset;
             html += "</td>";
+            html += "<td>" + utxo.value;
+            html += "</td>";
+            html += "<td><a class='code' target='_blank' rel='external nofollow' href='./txInfo.html?txid=" + utxo.txid + "'>" + utxo.txid;
+            html += "</a>[" + utxo.n + "]</td>";
             html += "</tr>";
             $("#utxos").append(html);
         });
+    }
+    /**
+     * loadNep5
+     */
+    loadNep5(name, balance) {
+        $("#nep5balance").append('<li class="list-group-item">' + name + ': ' + balance + '</li>');
     }
 }
 exports.AddressInfoView = AddressInfoView;

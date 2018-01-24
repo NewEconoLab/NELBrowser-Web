@@ -55,7 +55,8 @@ body {
 }
 
 .code {
-    word-break: break-all
+    word-break:break-all;
+    font-family: Menlo,Monaco,Consolas,"Courier New",monospace;
 }
 
 .panel {

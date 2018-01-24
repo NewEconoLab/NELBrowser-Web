@@ -50,20 +50,20 @@
                         </div>
                     </div>
                     <ul class="nav navbar-nav">
-                        <li class="active"><a href="#" id="index-btn">概览</a></li>
-                        <li class="dropdown">
+                        <li class="active" id="index-btn"><a href="#">概览</a></li>
+                        <li class="dropdown" id="brow-btn">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                              浏览 <b class="caret"></b>
                             </a>
                             <ul class="dropdown-menu">
-                                <li><a href="#txlist-page">交易</a></li>
-                                <li><a href="#addrs-page">地址</a></li>
-                                <li><a href="#blocks-page">区块</a></li>
-                                <li><a href="#asset-page">资产</a></li>
+                                <li id="txlist-btn"><a href="#txlist-page">交易</a></li>
+                                <li id="addrs-btn"><a href="#addrs-page">地址</a></li>
+                                <li id="blocks-btn"><a href="#blocks-page">区块</a></li>
+                                <li id="asset-btn"><a href="#asset-page">资产</a></li>
                             </ul>
                         </li>
                         <li><a href="#">合约</a></li>
-                        <li><a href="#wallet-page" id="wallet-btn">钱包</a></li>
+                        <li id="wallet-btn"><a href="#wallet-page">钱包</a></li>
                     </ul>
                     <div style="padding-right:100px">
                         <ul class="nav navbar-nav navbar-right">
@@ -163,7 +163,7 @@
                                 </thead>
                                 <tbody></tbody>
                             </table>
-                            <a class="btn btn-primary"  href="#txlist-page" id="txlist-btn" role="button">查看更多交易</a>
+                            <a class="btn btn-primary"  href="#txlist-page"  role="button">查看更多交易</a>
                         </div>
                     </div>
                 </div>

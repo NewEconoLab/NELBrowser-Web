@@ -27,7 +27,7 @@ export class AddressInfoView{
             html += '<div class="panel-heading">';
             html += '<h3 class="panel-title">'+name+'</h3>';
             html += '</div>';
-            html += '<div id="size" class="panel-body code">';
+            html += '<div id="size" class="panel-body">';
             html += balance.balance;
             html += '</div></div></div>';
            $("#balance").append(html);
@@ -35,16 +35,21 @@ export class AddressInfoView{
         this.utxo.forEach((utxo:Utxo)=>{
             let html ='';
             html+="<tr>"
-            html+="<td><a class='code' target='_blank' rel='external nofollow' href='./txInfo.html?txid="+utxo.txid+"'>"+utxo.txid
-            html+="</a></td>"
-            html+="<td>"+utxo.n+"</td>"
-            html+="<td>"+utxo.value;
-            html+="</td>"
             html+="<td class='code'>"+utxo.asset;
             html+="</td>"
+            html+="<td>"+utxo.value;
+            html+="</td>"
+            html+="<td><a class='code' target='_blank' rel='external nofollow' href='./txInfo.html?txid="+utxo.txid+"'>"+utxo.txid
+            html+="</a>["+utxo.n+"]</td>"
             html+="</tr>"
             $("#utxos").append(html);
         });
+    }
+    /**
+     * loadNep5
+     */
+    public loadNep5(name:string,balance:number) {
+        $("#nep5balance").append('<li class="list-group-item">'+name+': '+balance+'</li>');
     }
 }
 

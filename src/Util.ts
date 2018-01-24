@@ -268,3 +268,157 @@ export class walletStorage{
 }
 
 
+export class GetNep5Info{
+    
+    constructor() {
+    }
+    //http://47.96.168.8:20332/?jsonrpc=2.0&id=1&method=invokescript&params=[%2200c1046e616d6567056bd94ecab6fe9607014624ef66bbc991dbcc3f%22]
+
+    makeRpcUrl(url: string, method: string, ..._params: any[]) {
+
+
+        if (url[url.length - 1] != '/')
+            url = url + "/";
+        var urlout = url + "?jsonrpc=2.0&id=1&method=" + method + "&params=[";
+        for (var i = 0; i < _params.length; i++) {
+            urlout += JSON.stringify(_params[i]);
+            if (i != _params.length - 1)
+                urlout += ",";
+        }
+        urlout += "]";
+        return urlout;
+    }
+    nep5decimals: number = 0;
+    async getInfo(sid:string):Promise<result>{
+        let res:result = {err:false,result:{name:"",symbol:"",decimals:""}};
+        try {
+            //拼接三次调用
+            var sb = new ThinNeo.ScriptBuilder();
+
+            sb.EmitParamJson(JSON.parse("[]"));//参数倒序入
+            sb.EmitParamJson("(str)name");//参数倒序入
+            var shash = sid.hexToBytes();
+            sb.EmitAppCall(shash.reverse());//nep5脚本
+
+            sb.EmitParamJson(JSON.parse("[]"));
+            sb.EmitParamJson("(str)symbol");
+            var shash = sid.hexToBytes();
+            sb.EmitAppCall(shash.reverse());
+
+            sb.EmitParamJson(JSON.parse("[]"));
+            sb.EmitParamJson("(str)decimals");
+            var shash = sid.hexToBytes();
+            sb.EmitAppCall(shash.reverse());
+
+            var data = sb.ToArray();
+
+            var url = this.makeRpcUrl("http://47.96.168.8:20332", "invokescript", data.toHexString());
+            let response = await fetch(url, { "method": "get" });
+            let json = await response.json();
+            
+            // info1.textContent = JSON.stringify(r);
+            try {
+                var state = json.result.state as string;
+                // info2.textContent = "";
+                if (state.includes("HALT")) {
+                    // info2.textContent += "Succ\n";
+                    res.err= false;
+                }
+                var stack = json.result.stack as any[];
+                //find name 他的type 有可能是string 或者ByteArray
+                if (stack[0].type == "String"){
+                    // info2.textContent += "name=" + stack[0].value + "\n";
+                    res.result.name = stack[0].value;
+                }
+                else if (stack[0].type == "ByteArray") {
+                    var bs = (stack[0].value as string).hexToBytes();
+                    var str = ThinNeo.Helper.Bytes2String(bs);
+                    // info2.textContent += "name=" + str + "\n";
+                    res.result.name = str
+                }
+                //find symbol 他的type 有可能是string 或者ByteArray
+                if (stack[1].type == "String"){
+                    // info2.textContent += "symbol=" + stack[1].value + "\n";
+                    res.result.symbol = stack[1].value;
+                }
+                else if (stack[1].type == "ByteArray") {
+                    var bs = (stack[1].value as string).hexToBytes();
+                    var str = ThinNeo.Helper.Bytes2String(bs);
+                    // info2.textContent += "symbol=" + str + "\n";
+                    res.result.symbol = str;
+                }
+
+                //find decimals 他的type 有可能是 Integer 或者ByteArray
+                if (stack[2].type == "Integer") {
+                    this.nep5decimals = (new Neo.BigInteger(stack[2].value as string)).toInt32();
+                }
+                else if (stack[2].type == "ByteArray") {
+                    var bs = (stack[2].value as string).hexToBytes();
+                    var num = new Neo.BigInteger(bs);
+                    this.nep5decimals = num.toInt32();
+                }
+                // info2.textContent += "decimals=" + this.nep5decimals + "\n";
+                res.result.decimals = this.nep5decimals;
+                return res;
+            }
+            catch (e) {
+                res.err=true;
+                res.result=e.message;
+                return res;
+            }
+        }
+        catch (e) {
+            res.err=true;
+            res.result=e.message;
+            return res;
+        }
+
+    }
+    async getBalance(sid:string,addr:string):Promise<result>{
+        let res:result = {err:false,result:0};
+        var sb = new ThinNeo.ScriptBuilder();
+        sb.EmitParamJson(["(addr)" + addr]);//参数倒序入
+        sb.EmitParamJson("(str)balanceOf");//参数倒序入 //name//totalSupply//symbol//decimals
+        var shash = sid.hexToBytes();
+        sb.EmitAppCall(shash.reverse());//nep5脚本
+
+        var data = sb.ToArray();
+        // info1.textContent = data.toHexString();        
+        try {
+            var url = this.makeRpcUrl("http://47.96.168.8:20332", "invokescript", data.toHexString());
+            let response = await fetch(url, { "method": "get" })
+            let json = await response.json();
+            var state = json.result.state as string;
+            // info2.textContent = "";
+            if (state.includes("HALT")) {
+                // info2.textContent += "Succ\n";
+            }
+            var stack = json.result.stack as any[];
+
+            var bnum = new Neo.BigInteger(0);
+            //find decimals 他的type 有可能是 Integer 或者ByteArray
+            if (stack[0].type == "Integer") {
+
+                bnum = new Neo.BigInteger(stack[0].value);
+            }
+            else if (stack[0].type == "ByteArray") {
+                var bs = (stack[0].value as string).hexToBytes();
+                bnum = new Neo.BigInteger(bs);
+            }
+            var v = 1;
+            for (var i = 0; i < this.nep5decimals; i++) {
+                v *= 10;
+            }
+            var intv = bnum.divide(v).toInt32();
+            var smallv = bnum.mod(v).toInt32() / v;
+            // info2.textContent += "count=" + (intv + smallv);
+            res.result=intv+smallv;
+        }
+        catch (e) {
+            res.err=true;
+            res.result = e.message;
+            return res;
+        }
+        return res;
+    }
+}

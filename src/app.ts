@@ -30,7 +30,7 @@ async function indexPage(){
         var newDate = new Date();
         newDate.setTime(item.time * 1000);
         let html = '';
-        html += '<tr><td><a class="code" href="./page/blockInfo.html?index='+item.index+'">';
+        html += '<tr><td><a class="code" class="code" target="_blank" rel="external nofollow"  href="./page/blockInfo.html?index='+item.index+'">';
         html += item.index+'</a></td><td>'+item.size+' bytes</td><td>';
         html += newDate.toLocaleString()+'</td>';
         html += '<td>'+item.tx.length+'</td></tr>';
@@ -52,7 +52,7 @@ async function indexPage(){
         txid = txid.substring(0,4)+'...'+txid.substring(txid.length-4);
         let html:string="";
         html+="<tr>"
-        html+="<td><a class='code' href='./page/txInfo.html?txid="+tx.txid+"'>"+txid+"</a>"
+        html+="<td><a class='code' class='code' target='_blank' rel='external nofollow'  href='./page/txInfo.html?txid="+tx.txid+"'>"+txid+"</a>"
         html+="</td>"
         html+="<td>"+tx.type
         html+="</td>"
@@ -128,51 +128,62 @@ function redirect(page:string){
     if(page===''){
         indexPage();
         $('#index-page').show();
+        $("#index-btn").addClass("active");
+        $("#brow-btn").removeClass("active");
     }else{
         $('#index-page').hide();
+        $("#brow-btn").addClass("active");
+        $("#index-btn").removeClass("active");
     }
     if(page==='#blocks-page'){
         // let blocks=new BlocksControll();
         // blocks.start();
         blocksPage();
         $(page).show();
+        $("#blocks-btn").addClass("active");
     }else{
         $('#blocks-page').hide();
+        $("#blocks-btn").removeClass("active");
     }
     if(page==='#txlist-page'){
         let ts:Trasctions = new Trasctions();
         $(page).show();
+        $("#txlist-btn").addClass("active");
     }else{
         $('#txlist-page').hide();
+        $("#txlist-btn").removeClass("active");
     }
     if(page==='#addrs-page'){
         let addrlist:addrlistControll = new addrlistControll();
         addrlist.start();
         $(page).show();
+        $("#addrs-btn").addClass("active");
     }else{
         $('#addrs-page').hide();
+        $("#addrs-btn").removeClass("active");
     }
     if(page==='#asset-page'){
         //启动asset管理器
         let assetControll:AssetControll = new AssetControll();
         assetControll.allAsset();
         $(page).show();
+        $("#asset-btn").addClass("active");
     }else{
         $('#asset-page').hide();
+        $("#asset-btn").removeClass("active");
     }
     if(page=="#wallet-page"){
         let wallet:WalletControll = new WalletControll();
 
         $(page).show();
+        $("#wallet-btn").addClass("active");
+        $("#brow-btn").removeClass("active");
 
     }else{
         $("#wallet-page").hide();
+        $("#wallet-btn").removeClass("active");
     }
 }
-
-$("#wallet-new").click(()=>{
-    $('#createWallet').modal('show');
-})
 
 function onhash(){
     let hash = location.hash;
