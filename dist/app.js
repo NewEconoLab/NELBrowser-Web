@@ -1325,6 +1325,7 @@ class AssetsView {
      */
     loadView() {
         $("#assets").empty();
+        $("#nep5ass").empty();
         this.assets.forEach((asset) => {
             let html = '';
             html += '<div class="col-md-4">';
