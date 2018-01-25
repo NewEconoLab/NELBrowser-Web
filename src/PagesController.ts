@@ -1,7 +1,7 @@
 /// <reference types="jquery" />
 // import * as $ from "jquery";
-import { Ajax, LocationUtil, NeoUtil, pageCut, GetNep5Info } from './Util';
-import { Utxo, Balance, Asset, AssetEnum, PageUtil, Addr, Block, TableMode, result } from './Entitys';
+import { Ajax, LocationUtil, NeoUtil, pageCut, GetNep5Info, StorageUtil } from './Util';
+import { Utxo, Balance, Asset, AssetEnum, PageUtil, Addr, Block, TableMode, result, Nep5as } from './Entitys';
 import { AddressInfoView,AssetsView, AddrlistView, BlocksView } from './PageViews';
 
 export class SearchController{
@@ -51,18 +51,33 @@ export class AddressControll{
     public async nep5Info() {
         let getNep5:GetNep5Info = new GetNep5Info();
         let asset:string = $("#nep5-text").val().toString();
+        let stouitl:StorageUtil = new StorageUtil();
         if(asset.length<1)
             alert("请输入资产id");
-        let res:result = await getNep5.getInfo(asset);
-        if(!res.err){
-            let name = res.result["name"];
-            let balance:result = await getNep5.getBalance(asset,this.address);
-            if(balance.err){
-                alert(res.result);
+        getNep5.getInfo(asset).then((res)=>{
+            if(!res.err){
+                let name = res.result["name"];
+                let symbol = res.result["symbol"];
+                return res;
             }else{
-                this.addInfo.loadNep5(name,balance.result);
+                alert("-_-!!!抱歉您的资产id好像不太正确 \n error["+res.result+"]");
             }
-        }
+        })
+        .then((res)=>{
+            getNep5.getBalance(asset,this.address)
+            .then((balance)=>{
+                if(balance.err){
+                    alert("=_=!抱歉查询查询余额失败，请检查您的资产id \n error["+balance.result+"]");
+                }else{
+                    this.addInfo.loadNep5(res.result.name,res.result.symbol,balance.result);
+                    let asids:string[] =  stouitl.getStorage("assetIds_nep5","|");
+                    if(!asids.find(as=>as==asset)){
+                        asids.push(asset);
+                        stouitl.setStorage("assetIds_nep5",asids.join('|'));
+                    }
+                }
+            })
+        })
     }
     public async addressInfo(){
         let balances:Balance[] = await this.ajax.post('getbalance',[this.address]).catch((e)=>{
@@ -173,10 +188,29 @@ export class AssetControll{
             if(asset.id==AssetEnum.GAS){
                 asset.name=[{lang:'en',name:"GAS"}];
             }
+            let name = asset.name.map((name)=>{ return name.name})
+            asset.names = name.join("|");
         });
-        let assetView : AssetsView = new AssetsView(allAsset);
-        assetView.loadView();   //调用loadView方法渲染页面
+        let nep5Info:GetNep5Info = new GetNep5Info ();
+        let storutil:StorageUtil = new StorageUtil();
+        let nep5asids:string[] = storutil.getStorage("assetIds_nep5","|");
+        let nep5s:Asset[] = new Array<Asset>();
+        for(let n=0;n<nep5asids.length;n++){
+            let res = await nep5Info.getInfo(nep5asids[n]);
+            let assetnep5:Nep5as = new Nep5as();
+            if(!res.err){
+                assetnep5.names=res.result["name"];
+                assetnep5.type= res.result["symbol"]
+                assetnep5.amount = res.result["totalsupply"];
+                assetnep5.id = nep5asids[n];
+            }nep5s.push(assetnep5);
+        }
+        let assetView : AssetsView = new AssetsView(allAsset,nep5s);
+        await assetView.loadView();   //调用loadView方法渲染页面
+        
+        
     }
+
     
 }
 

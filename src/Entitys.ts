@@ -143,6 +143,21 @@ export interface Asset{
         lang: string;
         name: string;
     }[];
+    names:string;
+    amount:string;
+    precision:number;
+    owner:string;
+    admin:string;
+    id:string;
+}
+
+export class Nep5as{
+    type:string;
+    name: {
+        lang: string;
+        name: string;
+    }[];
+    names:string;
     amount:string;
     precision:number;
     owner:string;

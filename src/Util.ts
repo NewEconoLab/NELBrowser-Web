@@ -275,8 +275,6 @@ export class GetNep5Info{
     //http://47.96.168.8:20332/?jsonrpc=2.0&id=1&method=invokescript&params=[%2200c1046e616d6567056bd94ecab6fe9607014624ef66bbc991dbcc3f%22]
 
     makeRpcUrl(url: string, method: string, ..._params: any[]) {
-
-
         if (url[url.length - 1] != '/')
             url = url + "/";
         var urlout = url + "?jsonrpc=2.0&id=1&method=" + method + "&params=[";
@@ -290,7 +288,7 @@ export class GetNep5Info{
     }
     nep5decimals: number = 0;
     async getInfo(sid:string):Promise<result>{
-        let res:result = {err:false,result:{name:"",symbol:"",decimals:""}};
+        let res:result = {err:false,result:{name:"",symbol:"",decimals:0,totalsupply:0}};
         try {
             //拼接三次调用
             var sb = new ThinNeo.ScriptBuilder();
@@ -307,6 +305,11 @@ export class GetNep5Info{
 
             sb.EmitParamJson(JSON.parse("[]"));
             sb.EmitParamJson("(str)decimals");
+            var shash = sid.hexToBytes();
+            sb.EmitAppCall(shash.reverse());
+            
+            sb.EmitParamJson(JSON.parse("[]"));
+            sb.EmitParamJson("(str)totalSupply");
             var shash = sid.hexToBytes();
             sb.EmitAppCall(shash.reverse());
 
@@ -357,7 +360,17 @@ export class GetNep5Info{
                     var num = new Neo.BigInteger(bs);
                     this.nep5decimals = num.toInt32();
                 }
+                //find decimals 他的type 有可能是 Integer 或者ByteArray
+                if (stack[3].type == "Integer") {
+                    var totalsupply = (new Neo.BigInteger(stack[3].value as string)).toInt32();
+                }
+                else if (stack[3].type == "ByteArray") {
+                    var bs = (stack[3].value as string).hexToBytes();
+                    var num = new Neo.BigInteger(bs);
+                    totalsupply = num.toInt32();
+                }
                 // info2.textContent += "decimals=" + this.nep5decimals + "\n";
+                res.result.totalsupply = totalsupply;
                 res.result.decimals = this.nep5decimals;
                 return res;
             }
@@ -422,3 +435,32 @@ export class GetNep5Info{
         return res;
     }
 }
+
+export class StorageUtil{
+    /**
+     * setStorage
+     */
+    public setStorage(name:string,str:string) {
+        localStorage.setItem(name,str);
+    }
+    /**
+     * getStorage
+     */
+    public getStorage(name:string,decoder:string):any {
+        let res = localStorage.getItem(name)
+        if(!res){
+            localStorage.setItem(name,"");
+        }
+        if(decoder){
+            if(!res){
+                return [];
+            }
+            let item = localStorage.getItem(name).split(decoder);
+            return item;
+        }else{
+            let item = JSON.parse(localStorage.getItem(name));
+            return item;
+        }
+    }
+}
+

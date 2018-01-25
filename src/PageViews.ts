@@ -1,6 +1,6 @@
 // import * as $ from "jquery";
 /// <reference types="jquery" />
-import { Balance, Utxo, Asset, PageUtil, Tx, Addr, TableMode } from './Entitys';
+import { Balance, Utxo, Asset, PageUtil, Tx, Addr, TableMode, Nep5as } from './Entitys';
 import { TableView } from './Util';
 export class AddressInfoView{
     public balances:Balance[];
@@ -48,9 +48,9 @@ export class AddressInfoView{
     /**
      * loadNep5
      */
-    public loadNep5(name:string,balance:number) {
+    public loadNep5(name:string,symbol:string,balance:number) {
         $("#nep5balance").empty();
-        $("#nep5balance").append('<li class="list-group-item">'+name+': '+balance+'</li>');
+        $("#nep5balance").append('<li class="list-group-item">['+symbol+'] '+name+': '+balance+'</li>');
     }
 }
 
@@ -77,8 +77,11 @@ export class AddrlistView{
 
 export class AssetsView{
     private assets:Asset[];
-    constructor(allAsset:Asset[]){
+    private nep5s:Asset[];
+    constructor(allAsset:Asset[],nep5s:Asset[]){
         this.assets = allAsset;
+        console.log(nep5s);
+        this.nep5s = nep5s;
     }
     
     /**
@@ -88,12 +91,10 @@ export class AssetsView{
         $("#assets").empty();
         this.assets.forEach((asset:Asset)=>{
             let html ='';
-            let name = asset.name.map((name)=>{ return name.name})
-            let names = name.join("|");
             html += '<div class="col-md-4">';
             html += '<div class="panel panel-default" style="height:100%">';
             html += '<div class="panel-heading">';
-            html += '<h3 class="panel-title">'+names+'</h3>';
+            html += '<h3 class="panel-title">'+asset.names+'</h3>';
             html += '</div>';
             html += '<ul id="size" class="list-group" >';
             html += '<li class="list-group-item"> 类型: '
@@ -108,11 +109,28 @@ export class AssetsView{
             html += '<li class="list-group-item code"> admin: '
             html += asset.admin
             html += '</li>'
-            html += '<li class="list-group-item ">'
-            html += asset.amount
-            html += '</li>'
             html += '</ul></div></div>';
            $("#assets").append(html);
+        });
+        this.nep5s.forEach((asset:Asset)=>{
+            let html ='';
+            html += '<div class="col-md-4">';
+            html += '<div class="panel panel-default" style="height:100%">';
+            html += '<div class="panel-heading">';
+            html += '<h3 class="panel-title">'+asset.names+'</h3>';
+            html += '</div>';
+            html += '<ul id="size" class="list-group" >';
+            html += '<li class="list-group-item"> 类型: '
+            html += asset.type
+            html += '</li>'
+            html += '<li class="list-group-item"> 总量: '
+            html += asset.amount
+            html += '</li>'
+            html += '<li class="list-group-item code"> id: '
+            html += asset.id
+            html += '</li>'
+            html += '</ul></div></div>';
+           $("#nep5ass").append(html);
         });
     }
 }

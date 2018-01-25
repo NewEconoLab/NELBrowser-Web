@@ -359,7 +359,7 @@ class GetNep5Info {
     }
     getInfo(sid) {
         return __awaiter(this, void 0, void 0, function* () {
-            let res = { err: false, result: { name: "", symbol: "", decimals: "" } };
+            let res = { err: false, result: { name: "", symbol: "", decimals: 0, totalsupply: 0 } };
             try {
                 //拼接三次调用
                 var sb = new ThinNeo.ScriptBuilder();
@@ -373,6 +373,10 @@ class GetNep5Info {
                 sb.EmitAppCall(shash.reverse());
                 sb.EmitParamJson(JSON.parse("[]"));
                 sb.EmitParamJson("(str)decimals");
+                var shash = sid.hexToBytes();
+                sb.EmitAppCall(shash.reverse());
+                sb.EmitParamJson(JSON.parse("[]"));
+                sb.EmitParamJson("(str)totalSupply");
                 var shash = sid.hexToBytes();
                 sb.EmitAppCall(shash.reverse());
                 var data = sb.ToArray();
@@ -419,7 +423,17 @@ class GetNep5Info {
                         var num = new Neo.BigInteger(bs);
                         this.nep5decimals = num.toInt32();
                     }
+                    //find decimals 他的type 有可能是 Integer 或者ByteArray
+                    if (stack[3].type == "Integer") {
+                        var totalsupply = (new Neo.BigInteger(stack[3].value)).toInt32();
+                    }
+                    else if (stack[3].type == "ByteArray") {
+                        var bs = stack[3].value.hexToBytes();
+                        var num = new Neo.BigInteger(bs);
+                        totalsupply = num.toInt32();
+                    }
                     // info2.textContent += "decimals=" + this.nep5decimals + "\n";
+                    res.result.totalsupply = totalsupply;
                     res.result.decimals = this.nep5decimals;
                     return res;
                 }
@@ -484,6 +498,35 @@ class GetNep5Info {
     }
 }
 exports.GetNep5Info = GetNep5Info;
+class StorageUtil {
+    /**
+     * setStorage
+     */
+    setStorage(name, str) {
+        localStorage.setItem(name, str);
+    }
+    /**
+     * getStorage
+     */
+    getStorage(name, decoder) {
+        let res = localStorage.getItem(name);
+        if (!res) {
+            localStorage.setItem(name, "");
+        }
+        if (decoder) {
+            if (!res) {
+                return [];
+            }
+            let item = localStorage.getItem(name).split(decoder);
+            return item;
+        }
+        else {
+            let item = JSON.parse(localStorage.getItem(name));
+            return item;
+        }
+    }
+}
+exports.StorageUtil = StorageUtil;
 
 
 /***/ }),
@@ -557,6 +600,9 @@ class PageUtil {
     }
 }
 exports.PageUtil = PageUtil;
+class Nep5as {
+}
+exports.Nep5as = Nep5as;
 var AssetEnum;
 (function (AssetEnum) {
     AssetEnum["NEO"] = "0xc56f33fc6ecfcd0c225c4ab356fee59390af8560be0e930faebe74a6daff7c9b";
@@ -841,19 +887,35 @@ class AddressControll {
         return __awaiter(this, void 0, void 0, function* () {
             let getNep5 = new Util_1.GetNep5Info();
             let asset = $("#nep5-text").val().toString();
+            let stouitl = new Util_1.StorageUtil();
             if (asset.length < 1)
                 alert("请输入资产id");
-            let res = yield getNep5.getInfo(asset);
-            if (!res.err) {
-                let name = res.result["name"];
-                let balance = yield getNep5.getBalance(asset, this.address);
-                if (balance.err) {
-                    alert(res.result);
+            getNep5.getInfo(asset).then((res) => {
+                if (!res.err) {
+                    let name = res.result["name"];
+                    let symbol = res.result["symbol"];
+                    return res;
                 }
                 else {
-                    this.addInfo.loadNep5(name, balance.result);
+                    alert("-_-!!!抱歉您的资产id好像不太正确 \n error[" + res.result + "]");
                 }
-            }
+            })
+                .then((res) => {
+                getNep5.getBalance(asset, this.address)
+                    .then((balance) => {
+                    if (balance.err) {
+                        alert("=_=!抱歉查询查询余额失败，请检查您的资产id \n error[" + balance.result + "]");
+                    }
+                    else {
+                        this.addInfo.loadNep5(res.result.name, res.result.symbol, balance.result);
+                        let asids = stouitl.getStorage("assetIds_nep5", "|");
+                        if (!asids.find(as => as == asset)) {
+                            asids.push(asset);
+                            stouitl.setStorage("assetIds_nep5", asids.join('|'));
+                        }
+                    }
+                });
+            });
         });
     }
     addressInfo() {
@@ -971,9 +1033,26 @@ class AssetControll {
                 if (asset.id == Entitys_1.AssetEnum.GAS) {
                     asset.name = [{ lang: 'en', name: "GAS" }];
                 }
+                let name = asset.name.map((name) => { return name.name; });
+                asset.names = name.join("|");
             });
-            let assetView = new PageViews_1.AssetsView(allAsset);
-            assetView.loadView(); //调用loadView方法渲染页面
+            let nep5Info = new Util_1.GetNep5Info();
+            let storutil = new Util_1.StorageUtil();
+            let nep5asids = storutil.getStorage("assetIds_nep5", "|");
+            let nep5s = new Array();
+            for (let n = 0; n < nep5asids.length; n++) {
+                let res = yield nep5Info.getInfo(nep5asids[n]);
+                let assetnep5 = new Entitys_1.Nep5as();
+                if (!res.err) {
+                    assetnep5.names = res.result["name"];
+                    assetnep5.type = res.result["symbol"];
+                    assetnep5.amount = res.result["totalsupply"];
+                    assetnep5.id = nep5asids[n];
+                }
+                nep5s.push(assetnep5);
+            }
+            let assetView = new PageViews_1.AssetsView(allAsset, nep5s);
+            yield assetView.loadView(); //调用loadView方法渲染页面
         });
     }
 }
@@ -1209,9 +1288,9 @@ class AddressInfoView {
     /**
      * loadNep5
      */
-    loadNep5(name, balance) {
+    loadNep5(name, symbol, balance) {
         $("#nep5balance").empty();
-        $("#nep5balance").append('<li class="list-group-item">' + name + ': ' + balance + '</li>');
+        $("#nep5balance").append('<li class="list-group-item">[' + symbol + '] ' + name + ': ' + balance + '</li>');
     }
 }
 exports.AddressInfoView = AddressInfoView;
@@ -1236,8 +1315,10 @@ class AddrlistView {
 }
 exports.AddrlistView = AddrlistView;
 class AssetsView {
-    constructor(allAsset) {
+    constructor(allAsset, nep5s) {
         this.assets = allAsset;
+        console.log(nep5s);
+        this.nep5s = nep5s;
     }
     /**
      * loadView 页面展现
@@ -1246,12 +1327,10 @@ class AssetsView {
         $("#assets").empty();
         this.assets.forEach((asset) => {
             let html = '';
-            let name = asset.name.map((name) => { return name.name; });
-            let names = name.join("|");
             html += '<div class="col-md-4">';
             html += '<div class="panel panel-default" style="height:100%">';
             html += '<div class="panel-heading">';
-            html += '<h3 class="panel-title">' + names + '</h3>';
+            html += '<h3 class="panel-title">' + asset.names + '</h3>';
             html += '</div>';
             html += '<ul id="size" class="list-group" >';
             html += '<li class="list-group-item"> 类型: ';
@@ -1266,11 +1345,28 @@ class AssetsView {
             html += '<li class="list-group-item code"> admin: ';
             html += asset.admin;
             html += '</li>';
-            html += '<li class="list-group-item ">';
-            html += asset.amount;
-            html += '</li>';
             html += '</ul></div></div>';
             $("#assets").append(html);
+        });
+        this.nep5s.forEach((asset) => {
+            let html = '';
+            html += '<div class="col-md-4">';
+            html += '<div class="panel panel-default" style="height:100%">';
+            html += '<div class="panel-heading">';
+            html += '<h3 class="panel-title">' + asset.names + '</h3>';
+            html += '</div>';
+            html += '<ul id="size" class="list-group" >';
+            html += '<li class="list-group-item"> 类型: ';
+            html += asset.type;
+            html += '</li>';
+            html += '<li class="list-group-item"> 总量: ';
+            html += asset.amount;
+            html += '</li>';
+            html += '<li class="list-group-item code"> id: ';
+            html += asset.id;
+            html += '</li>';
+            html += '</ul></div></div>';
+            $("#nep5ass").append(html);
         });
     }
 }
