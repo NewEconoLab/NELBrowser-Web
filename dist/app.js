@@ -1614,7 +1614,8 @@ class TrasctionInfo {
         return __awaiter(this, void 0, void 0, function* () {
             let txInfos = yield this.ajax.post('getrawtransaction', [txid]);
             let txInfo = txInfos[0];
-            $("#txInfo").text(txInfo.type + " | Hash: " + txInfo.txid);
+            $("#type").text(txInfo.type);
+            $("#txInfo").text("Hash: " + txInfo.txid);
             $("#index").text(txInfo.blockindex);
             $("#size").text(txInfo.size + " bytes");
             let allAsset = yield this.ajax.post('getallasset', []);
@@ -1632,11 +1633,11 @@ class TrasctionInfo {
                 let address = vout.address;
                 let value = vout.value;
                 let name = allAsset.find(val => val.id == vout.asset).name.map(name => { return name.name; }).join("|");
-                $("#from").append('<li class="list-group-item">' + address + ' ' + value + ' ' + name + ' </br> txid: <a class="code" href="./txInfo.html?txid=' + vin.txid + '">' + vin.txid + '</a> </br>n:' + vin.vout + ' </li>');
+                $("#from").append('<li class="list-group-item"> </br> txid: <a class="code" href="./txInfo.html?txid=' + vin.txid + '">' + vin.txid + '</a>[' + vin.vout + '] </li>');
             }));
             txInfo.vout.forEach(vout => {
                 let name = allAsset.find(val => val.id == vout.asset).name.map(name => name.name).join("|");
-                $("#to").append('<li class="list-group-item">' + vout.address + ' ' + vout.value + ' ' + name + '</br>n :' + vout.n + '</li>');
+                $("#to").append('<li class="list-group-item">' + name + ' ' + vout.value + ' </br>[' + vout.n + '] &nbsp' + vout.address + '</li>');
             });
         });
     }
