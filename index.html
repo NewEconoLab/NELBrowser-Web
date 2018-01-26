@@ -40,14 +40,28 @@
               <span class="icon-bar"></span>
               <span class="icon-bar"></span>
             </button>
-            <img id="log" src="./img/log.png" alt="" style="height:60px">
-                </div>
+                <img id="log" class="navbar-brand" src="./img/log.png" alt="">
+            </div>
                 <div id="navbar" class="navbar-collapse collapse">
                     <div class="navbar-form navbar-left input-append">
                         <div class="input-group input-group-lg">
-                            <input id="searchText" type="text" class="form-control" placeholder="交易哈希/钱包地址/区块高度">
+                            <input id="searchText" type="text" class="form-control" placeholder="TxHash/Addr/blockHeight">
                             <span id="searchBtn" class="input-group-addon">Go!</span>
                         </div>
+                    </div>
+                    <div style="padding-left:100px">
+                        <ul class="nav navbar-nav navbar-left">
+                            <li>
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                                    <h4>TestNet
+                                            <span class=" caret"></span></h4>
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <li><a href="#" class="active">TestNet</a></li>
+                                    <li><a href="#">MainNet</a></li>
+                                </ul>
+                            </li>
+                        </ul>
                     </div>
                     <ul class="nav navbar-nav">
                         <li class="active" id="index-btn"><a href="#">概览</a></li>
@@ -65,17 +79,6 @@
                         <li><a href="#">合约</a></li>
                         <li id="wallet-btn"><a href="#wallet-page">钱包</a></li>
                     </ul>
-                    <div style="padding-right:100px">
-                        <ul class="nav navbar-nav navbar-right">
-                            <li>
-                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">网关切换<span class="caret"></span></a>
-                                <ul class="dropdown-menu">
-                                    <li><a href="#">主网</a></li>
-                                    <li><a href="#">测试网</a></li>
-                                </ul>
-                            </li>
-                        </ul>
-                    </div>
                 </div>
                 <!--/.nav-collapse -->
             </div>
@@ -94,9 +97,9 @@
                             <div class="thumbnail">
                                 <div class="caption">
                                     <h3>
-                                        交易记录 <br><small id="txcount">0</small>
+                                        Total transactions <br><small id="txcount">0</small>
                                     </h3>
-                                    <a class="btn btn-info" href="#txlist-page">查看更多</a>
+                                    <a class="btn btn-info" href="#txlist-page">View all transactions</a>
                                 </div>
                             </div>
                         </div>
@@ -104,9 +107,9 @@
                             <div class="thumbnail">
                                 <div class="caption">
                                     <h3>
-                                        区块高度 <br><small id="blockHeight">0</small>
+                                        Last block <br><small id="blockHeight">0</small>
                                     </h3>
-                                    <a class="btn btn-info" href="#blocks-page">查看更多</a>
+                                    <a class="btn btn-info" href="#blocks-page">View all blocks</a>
                                 </div>
                             </div>
                         </div>
@@ -114,9 +117,9 @@
                             <div class="thumbnail">
                                 <div class="caption">
                                     <h3>
-                                        地址总数 <br><small id="addrCount">0</small>
+                                        Wallet addresses created <br><small id="addrCount">0</small>
                                     </h3>
-                                    <a class="btn btn-info" href="#addrs-page">查看更多</a>
+                                    <a class="btn btn-info" href="#addrs-page">View all addresses</a>
                                 </div>
                             </div>
                         </div>
@@ -130,14 +133,14 @@
                         <div class="container">
                             <table class="table table-hover cool" id="blocks">
                                 <caption>
-                                    <h2>最新的十个区块</h2>
+                                    <h2>Laset 10 Blocks</h2>
                                 </caption>
                                 <thead>
                                     <tr>
-                                        <th>高度</th>
-                                        <th>大小</th>
-                                        <th>时间</th>
-                                        <th>交易量</th>
+                                        <th>Height</th>
+                                        <th>Size</th>
+                                        <th>Created on</th>
+                                        <th>Transactions</th>
                                     </tr>
                                 </thead>
                                 <tbody></tbody>
@@ -151,14 +154,14 @@
                         <div class="container">
                             <table class="table cool table-hover" id="transactions">
                                 <caption>
-                                    <h2>最近的十笔交易</h2>
+                                    <h2>Laset 10 Transactions</h2>
                                 </caption>
                                 <thead>
                                     <tr>
                                         <th>TXID</th>
-                                        <th>类型</th>
-                                        <th>区块</th>
-                                        <th>大小</th>
+                                        <th>Type</th>
+                                        <th>Height</th>
+                                        <th>Size</th>
                                     </tr>
                                 </thead>
                                 <tbody></tbody>

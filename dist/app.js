@@ -1575,7 +1575,7 @@ class Trasctions {
                 html += "<tr>";
                 html += "<td><a class='code' target='_blank' rel='external nofollow' href='./page/txInfo.html?txid=" + tx.txid + "'>" + txid;
                 html += "</a></td>";
-                html += "<td><a href='./blcokInfo.html?index=" + tx.blockindex + "'>" + tx.blockindex;
+                html += "<td><a href='./page/blcokInfo.html?index=" + tx.blockindex + "'>" + tx.blockindex;
                 html += "</a></td>";
                 html += "<td>" + tx.type;
                 html += "</td>";
@@ -1637,7 +1637,7 @@ class TrasctionInfo {
             }));
             txInfo.vout.forEach(vout => {
                 let name = allAsset.find(val => val.id == vout.asset).name.map(name => name.name).join("|");
-                $("#to").append('<li class="list-group-item">' + name + ' ' + vout.value + ' </br>[' + vout.n + '] &nbsp' + vout.address + '</li>');
+                $("#to").append('<li class="list-group-item">' + name + ' ' + vout.value + ' </br>[' + vout.n + '] &nbsp<a class="code">' + vout.address + '</a></li>');
             });
         });
     }
