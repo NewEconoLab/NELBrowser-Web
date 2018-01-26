@@ -196,3 +196,21 @@ export class BlocksView{
         this.tbview.update();     
     }
 }
+
+export class WalletView{
+    constructor(){}
+    /**
+     * showDetails
+     */
+    public showDetails(address:string,height:number,balances:Balance[]) {
+        $("#address-wallet").text(address);
+        $("#height-block").text(height);
+        $("#balance-wallet").empty();
+        balances.forEach((balance:Balance)=>{
+            let html ='';
+            let name = balance.name.map((name)=>{ return name.name}).join('|');
+            html += '<li class="list-group-item"> '+name+' : '+balance.balance+'</li>';
+           $("#balance-wallet").append(html);
+        });
+    }
+}

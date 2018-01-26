@@ -174,7 +174,6 @@ function redirect(page:string){
     }
     if(page=="#wallet-page"){
         let wallet:WalletControll = new WalletControll();
-
         $(page).show();
         $("#wallet-btn").addClass("active");
         $("#brow-btn").removeClass("active");

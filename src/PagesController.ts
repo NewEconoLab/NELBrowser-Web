@@ -2,7 +2,7 @@
 // import * as $ from "jquery";
 import { Ajax, LocationUtil, NeoUtil, pageCut, GetNep5Info, StorageUtil } from './Util';
 import { Utxo, Balance, Asset, AssetEnum, PageUtil, Addr, Block, TableMode, result, Nep5as } from './Entitys';
-import { AddressInfoView,AssetsView, AddrlistView, BlocksView } from './PageViews';
+import { AddressInfoView,AssetsView, AddrlistView, BlocksView, WalletView } from './PageViews';
 
 export class SearchController{
     public locationUtil:LocationUtil=new LocationUtil();
@@ -314,95 +314,82 @@ export class BlocksControll{
 
 export class WalletControll{
     private wifInput:JQuery<HTMLElement>;
-    private p1Input:JQuery<HTMLElement>;
-    private p2Input:JQuery<HTMLElement>;
     private neoUtil:NeoUtil = new NeoUtil();
+    private walletview:WalletView = new WalletView();
+    private ajax:Ajax = new Ajax();
 
     constructor(){
-        this.wifInput = $('#createWallet').find("#wif-input").children('input');
-        this.p1Input = $('#password1');
-        this.p2Input = $('#password2');
-        this.wifInput.blur(()=>{
-            this.verifWif();
-        });
-        this.p1Input.blur(()=>{
-            this.verifpassword();
-        });
-        this.p2Input.blur(()=>{
-            this.verifpassword();
-        })
+        $("#import-wif").click(()=>{
+            $("#importWif").modal('show');
+        })  
+        this.wifInput = $('#importWif').find("#wif-input").children('input');
         $('#send-wallet').click(()=>{
-            if(this.verifWif()==1){
-                if(this.verifpassword()){
-                    let res = this.neoUtil.nep2FromWif(this.wifInput.val().toString(),this.p1Input.val().toString());
-                    if(!res.err){
-                        res.result
-                    }
-                }
-            }
-            if(this.verifWif()>1){
-                this.verifpassword();
+            // alert(this.wifInput.val().toString());
+            let res = this.verifWif();
+            if(res.err){
+
+            }else{
+                this.details(res.result["address"]).then(()=>{
+                    $("#importWif").modal('hide');
+                })
             }
         })
     }
-    
-    public verifWif():number{
-        let wifGroup:JQuery<HTMLElement> = $('#createWallet').find("#wif-input");
-        var wif:string = this.wifInput.val().toString();
+    /**
+     * details
+     */
+    public async details(address:string) {
+        let height:number = 0;
+        this.ajax.post('getbalance',[address])
+        .then(async(balances:Balance[])=>{            
+            balances.map((balance)=>{
+                if(balance.asset==AssetEnum.NEO){
+                    balance.name=[{lang:'en',name:'NEO'}];
+                }
+                if(balance.asset==AssetEnum.GAS){
+                    balance.name=[{lang:'en',name:"GAS"}];
+                }
+            });
+            
+            let blockCount = await this.ajax.post('getblockcount',[]);
+            let blockHeight = blockCount[0]['blockcount']-1;
+            this.walletview.showDetails(address,blockHeight,balances);
+        })
+        .catch((e)=>{
+            alert(e);
+        });;
         
+    }
+    
+    public verifWif():result{
+        var wif:string = this.wifInput.val().toString();
+        let result:result;
         if (wif.length) {   //如果填写了wif则进行验证
             try {
                 let result= this.neoUtil.wifDecode(wif);
                 if (result.err) {
-                    wifGroup.addClass("has-error");
-                    wifGroup.children("p").text("请输入正确的WIF");
-                    return 0;
+                    $("#wif-input").addClass("has-error");
+                    $("#wif-input").children("p").text("请输入正确的WIF");
+                    return result;
                 }else{
-                    wifGroup.addClass("has-success");
-                    wifGroup.removeClass("has-error");
-                    wifGroup.children("p").text("");
-                    return 1;
+                    $("#wif-input").addClass("has-success");
+                    $("#wif-input").removeClass("has-error");
+                    $("#wif-input").children("p").text("验证通过");
+                    return result;
                 }
             } catch (error) {
-                return 0;
+                result = {err:true,result:error.message};
+                return result;
             }
         }else{
-            wifGroup.removeClass("has-error has-success");
-            wifGroup.addClass("has-error");
-            wifGroup.children("p").text("不得为空");
-            return 2;
+            $("#wif-input").removeClass("has-error has-success");
+            $("#wif-input").addClass("has-error");
+            $("#wif-input").children("p").text("不得为空");
+            result = {err:true,result:"wif is null"};
+            return result;
         }
     }
-    /**
-     * verif
-     */
-    public verifpassword() {
-        let p1Group:JQuery<HTMLElement> = $("#p1group");
-        let p2Group:JQuery<HTMLElement> = $("#p2group");
-        var p1:string = this.p1Input.val().toString();
-        var p2:string = this.p2Input.val().toString();
-        let neoUtil:NeoUtil = new NeoUtil();
 
-        if(p1.length>7){
-            p1Group.addClass("has-success");
-            p1Group.removeClass("has-error");
-            p1Group.children("p").text("");
-            if(p2===p1){
-                p2Group.addClass("has-success");
-                p2Group.removeClass("has-error");
-                p2Group.children("p").text("");
-            }else{
-                p2Group.addClass("has-error");
-                p2Group.removeClass("has-success");
-                p2Group.children("p").text("请您输入相同的登陆密码");
-            }
-        }else{
-            p1Group.addClass("has-error");
-            p1Group.removeClass("has-success");
-            p1Group.children("p").text("密码不能小于8位");
-        }
-        
-    }
 
 
 }

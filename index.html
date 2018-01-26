@@ -275,9 +275,35 @@
                         </select>
                     </div>
                     <div class="form-group">
-                        <button class="btn btn-info" id="wallet-new">导入钱包</button>
+                        <button class="btn btn-info" id="import-wif">Import key from WIF String</button>
+                        <button class="btn btn-info" id="import-nep2">Import key from Nep2 String</button>
+                        <button class="btn btn-info" id="import-nep6">Import key from Nep6 File</button>
                     </div>
                 </div>
+            </div>
+            <div class="jumbotron masthead">
+                <caption>
+                    <h3>Details</h3>
+                </caption>
+                <div class="row">
+                    <div class=" col-lg-6">
+                        <div class="panel panel-default" style="height:100%">
+                            <div class="panel-heading">
+                                <h3 class="panel-title code" id="address-wallet">ALjSnMZidJqd18iQaoCgFun6iqWRm2cVtj</h3>
+                            </div>
+                            <div class=" panel-body" id="height-block">index: 10,233,122</div>
+                        </div>
+                    </div>
+                    <div class=" col-lg-6">
+                        <div class="panel panel-default" style="height:100%">
+                            <div class="panel-heading">
+                                <h3 class="panel-title">Balance</h3>
+                            </div>
+                            <ul id="balance-wallet" class="list-group" >
+                            </ul>
+                        </div>
+                    </div>
+                </div>                
             </div>
             <div class="jumbotron masthead">
                 <caption>
@@ -286,55 +312,36 @@
                 <div>
                     <div class="form-group">
                         <label for="exampleInputPassword1">To Address</label>
-                        <input type="text" class="form-control" id="address" placeholder="请输入您要交易的地址">
+                        <input type="text" class="form-control" id="address" placeholder="Enter the address you want to trade">
                     </div>
                     <div class="form-group">
                         <label for="exampleInputPassword1">Amount</label>
-                        <input type="number" class="form-control" id="amount" placeholder="请输入您要交易的金额">
+                        <input type="number" class="form-control" id="amount" placeholder="Enter the amount you want to trade ">
                     </div>
                     <div class=" form-group">
                         <button class="btn btn-info">Send</button>
                     </div>
                 </div>
             </div>
-            <div class="jumbotron masthead">
-                <caption>
-                    <h3>Details</h3>
-                </caption>
-            </div>
         </div>
     </div>
     <!-- /container -->
     <!-- modal -->
-    <div class="modal fade" id="createWallet" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel">
+    <div class="modal fade" id="importWif" tabindex="-1" role="dialog" aria-labelledby="importWIFLabel">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                    <h4 class="modal-title" id="exampleModalLabel">New Wallet</h4>
+                    <h4 class="modal-title" id="exampleModalLabel">Open Wallet</h4>
                 </div>
                 <div class="modal-body">
                     <form>
                         <div id="wif-input" class="form-group has-feedback">
-                            <label for="recipient-name">WIF私钥:</label>
-                            <input type="text" class="form-control" id="recipient-name" placeholder="若您没有WIF私钥，此栏不用填写" aria-describedby="wifStatus">
-                            <span class="glyphicon glyphicon-ok form-control-feedback" aria-hidden="true"></span>
-                            <span class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span>
+                            <label for="recipient-name">WIF private key:</label>
+                            <input type="text" class="form-control" id="recipient-name" placeholder="Place or type private key." aria-describedby="wifStatus">
+                            <!-- <span class="glyphicon glyphicon-ok form-control-feedback" aria-hidden="true"></span>
+                            <span class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span> -->
                             <p class="control-label"></p>
-                        </div>
-                        <div id="p1group" class="form-group has-feedback">
-                            <label for="recipient-name">登陆密码:</label>
-                            <input id="password1" type="password" class="form-control" id="recipient-name" placeholder="请输入您的密码">
-                            <span class="glyphicon glyphicon-ok form-control-feedback" aria-hidden="true"></span>
-                            <span class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span>
-                            <p class=" control-label"></p>
-                        </div>
-                        <div id="p2group" class="form-group has-feedback">
-                            <label for="message-text">重复密码:</label>
-                            <input id="password2" type="password" class="form-control" id="recipient-name" placeholder="重复上一行密码">
-                            <span class="glyphicon glyphicon-ok form-control-feedback" aria-hidden="true"></span>
-                            <span class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span>
-                            <p class=" control-label"></p>
                         </div>
                     </form>
                 </div>
