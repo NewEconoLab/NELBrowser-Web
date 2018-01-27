@@ -45,40 +45,74 @@ export class AddressControll{
             this.nep5Info();
         })
     }
+
+    /**
+     * queryNep5AssetById
+     */
+    public async queryNep5AssetById(id:string):Promise<result>{
+        let getNep5:GetNep5Info = new GetNep5Info();
+        let res:result;
+        try {
+            res= await getNep5.getInfo(id);
+            let name = res.result["name"];
+            let symbol = res.result["symbol"];
+        } catch (error) {
+            alert("^_^ 请尝试输入正确的资产id");
+            return;
+        }
+        try {
+            let balance = await getNep5.getBalance(id,this.address);
+            res.result.balance = balance.result;
+            return res;
+        } catch (error) {
+            alert("^_^ 请尝试输入正确的地址");
+            return;
+        }
+    }
+
+    async initNep5Asset(){
+        let stouitl:StorageUtil = new StorageUtil();
+        let asids:string[] =  stouitl.getStorage("assetIds_nep5","|");
+        if(asids.length==0){return}
+        else{
+            try {
+                let ress:Array<any>=new Array<any>();
+                for (let index = 0; index < asids.length; index++) {
+                    let res= await this.queryNep5AssetById(asids[index]);
+                    console.log(res.result["balance"]);
+                    if(res.result["balance"]) ress.push(res);
+                }
+                if(ress.length) this.addInfo.initNep5(ress);
+            } catch (error) {
+                console.error("查询nep5资产出错");
+            }
+        }
+    }
+
     /**
      * nep5Info
      */
     public async nep5Info() {
-        let getNep5:GetNep5Info = new GetNep5Info();
         let asset:string = $("#nep5-text").val().toString();
         let stouitl:StorageUtil = new StorageUtil();
         if(asset.length<1)
             alert("请输入资产id");
-        getNep5.getInfo(asset).then((res)=>{
-            if(!res.err){
-                let name = res.result["name"];
-                let symbol = res.result["symbol"];
-                return res;
-            }else{
-                alert("-_-!!!抱歉您的资产id好像不太正确 \n error["+res.result+"]");
+        try {
+            let res = await this.queryNep5AssetById(asset);
+            this.addInfo.loadNep5(res.result["name"],res.result["symbol"],res.result["balance"]);
+            let asids:string[] =  stouitl.getStorage("assetIds_nep5","|");
+            if(!asids.find(as=>as==asset)){
+                asids.push(asset);
+                stouitl.setStorage("assetIds_nep5",asids.join('|'));
             }
-        })
-        .then((res)=>{
-            getNep5.getBalance(asset,this.address)
-            .then((balance)=>{
-                if(balance.err){
-                    alert("=_=!抱歉查询查询余额失败，请检查您的资产id \n error["+balance.result+"]");
-                }else{
-                    this.addInfo.loadNep5(res.result.name,res.result.symbol,balance.result);
-                    let asids:string[] =  stouitl.getStorage("assetIds_nep5","|");
-                    if(!asids.find(as=>as==asset)){
-                        asids.push(asset);
-                        stouitl.setStorage("assetIds_nep5",asids.join('|'));
-                    }
-                }
-            })
-        })
+        } catch (err) {
+            console.error("查询nep5资产出错");
+            
+        }
     }
+    /**
+     * 
+     */
     public async addressInfo(){
         let balances:Balance[] = await this.ajax.post('getbalance',[this.address]).catch((e)=>{
             alert(e);
@@ -116,6 +150,7 @@ export class AddressControll{
 
         this.addInfo = new AddressInfoView(balances,utxo,this.address);
         this.addInfo.loadView(); //加载页面
+        this.initNep5Asset();
     }
 }
 //地址列表

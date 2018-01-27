@@ -438,15 +438,11 @@ class GetNep5Info {
                     return res;
                 }
                 catch (e) {
-                    res.err = true;
-                    res.result = e.message;
-                    return res;
+                    return e.message;
                 }
             }
             catch (e) {
-                res.err = true;
-                res.result = e.message;
-                return res;
+                return e.message;
             }
         });
     }
@@ -487,13 +483,11 @@ class GetNep5Info {
                 var smallv = bnum.mod(v).toInt32() / v;
                 // info2.textContent += "count=" + (intv + smallv);
                 res.result = intv + smallv;
-            }
-            catch (e) {
-                res.err = true;
-                res.result = e.message;
                 return res;
             }
-            return res;
+            catch (e) {
+                return { err: true, result: "^_^ 请尝试输入正确的地址" };
+            }
         });
     }
 }
@@ -881,43 +875,83 @@ class AddressControll {
         });
     }
     /**
+     * queryNep5AssetById
+     */
+    queryNep5AssetById(id) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let getNep5 = new Util_1.GetNep5Info();
+            let res;
+            try {
+                res = yield getNep5.getInfo(id);
+                let name = res.result["name"];
+                let symbol = res.result["symbol"];
+            }
+            catch (error) {
+                alert("^_^ 请尝试输入正确的资产id");
+                return;
+            }
+            try {
+                let balance = yield getNep5.getBalance(id, this.address);
+                res.result.balance = balance.result;
+                return res;
+            }
+            catch (error) {
+                alert("^_^ 请尝试输入正确的地址");
+                return;
+            }
+        });
+    }
+    initNep5Asset() {
+        return __awaiter(this, void 0, void 0, function* () {
+            let stouitl = new Util_1.StorageUtil();
+            let asids = stouitl.getStorage("assetIds_nep5", "|");
+            if (asids.length == 0) {
+                return;
+            }
+            else {
+                try {
+                    let ress = new Array();
+                    for (let index = 0; index < asids.length; index++) {
+                        let res = yield this.queryNep5AssetById(asids[index]);
+                        console.log(res.result["balance"]);
+                        if (res.result["balance"])
+                            ress.push(res);
+                    }
+                    if (ress.length)
+                        this.addInfo.initNep5(ress);
+                }
+                catch (error) {
+                    console.error("查询nep5资产出错");
+                }
+            }
+        });
+    }
+    /**
      * nep5Info
      */
     nep5Info() {
         return __awaiter(this, void 0, void 0, function* () {
-            let getNep5 = new Util_1.GetNep5Info();
             let asset = $("#nep5-text").val().toString();
             let stouitl = new Util_1.StorageUtil();
             if (asset.length < 1)
                 alert("请输入资产id");
-            getNep5.getInfo(asset).then((res) => {
-                if (!res.err) {
-                    let name = res.result["name"];
-                    let symbol = res.result["symbol"];
-                    return res;
+            try {
+                let res = yield this.queryNep5AssetById(asset);
+                this.addInfo.loadNep5(res.result["name"], res.result["symbol"], res.result["balance"]);
+                let asids = stouitl.getStorage("assetIds_nep5", "|");
+                if (!asids.find(as => as == asset)) {
+                    asids.push(asset);
+                    stouitl.setStorage("assetIds_nep5", asids.join('|'));
                 }
-                else {
-                    alert("-_-!!!抱歉您的资产id好像不太正确 \n error[" + res.result + "]");
-                }
-            })
-                .then((res) => {
-                getNep5.getBalance(asset, this.address)
-                    .then((balance) => {
-                    if (balance.err) {
-                        alert("=_=!抱歉查询查询余额失败，请检查您的资产id \n error[" + balance.result + "]");
-                    }
-                    else {
-                        this.addInfo.loadNep5(res.result.name, res.result.symbol, balance.result);
-                        let asids = stouitl.getStorage("assetIds_nep5", "|");
-                        if (!asids.find(as => as == asset)) {
-                            asids.push(asset);
-                            stouitl.setStorage("assetIds_nep5", asids.join('|'));
-                        }
-                    }
-                });
-            });
+            }
+            catch (err) {
+                console.error("查询nep5资产出错");
+            }
         });
     }
+    /**
+     *
+     */
     addressInfo() {
         return __awaiter(this, void 0, void 0, function* () {
             let balances = yield this.ajax.post('getbalance', [this.address]).catch((e) => {
@@ -952,6 +986,7 @@ class AddressControll {
             });
             this.addInfo = new PageViews_1.AddressInfoView(balances, utxo, this.address);
             this.addInfo.loadView(); //加载页面
+            this.initNep5Asset();
         });
     }
 }
@@ -1281,6 +1316,19 @@ class AddressInfoView {
     loadNep5(name, symbol, balance) {
         $("#nep5balance").empty();
         $("#nep5balance").append('<li class="list-group-item">[' + symbol + '] ' + name + ': ' + balance + '</li>');
+    }
+    /**
+     * initNep5
+     */
+    initNep5(arr) {
+        $("#nep5AssetList").empty();
+        $("#nep5assets").show();
+        arr.forEach(element => {
+            let symbol = element.result["symbol"];
+            let name = element.result["name"];
+            let balance = element.result["balance"];
+            $("#nep5AssetList").append('<li class="list-group-item">[' + symbol + '] ' + name + ': ' + balance + '</li>');
+        });
     }
 }
 exports.AddressInfoView = AddressInfoView;

@@ -1,6 +1,6 @@
 // import * as $ from "jquery";
 /// <reference types="jquery" />
-import { Balance, Utxo, Asset, PageUtil, Tx, Addr, TableMode, Nep5as } from './Entitys';
+import { Balance, Utxo, Asset, PageUtil, Tx, Addr, TableMode, Nep5as, result } from './Entitys';
 import { TableView } from './Util';
 export class AddressInfoView{
     public balances:Balance[];
@@ -51,6 +51,19 @@ export class AddressInfoView{
     public loadNep5(name:string,symbol:string,balance:number) {
         $("#nep5balance").empty();
         $("#nep5balance").append('<li class="list-group-item">['+symbol+'] '+name+': '+balance+'</li>');
+    }
+    /**
+     * initNep5
+     */
+    public initNep5(arr:Array<result>) {
+        $("#nep5AssetList").empty();
+        $("#nep5assets").show();
+        arr.forEach(element => {
+            let symbol:string = element.result["symbol"];
+            let name:string = element.result["name"];
+            let balance:number = element.result["balance"];
+            $("#nep5AssetList").append('<li class="list-group-item">['+symbol+'] '+name+': '+balance+'</li>');
+        });
     }
 }
 

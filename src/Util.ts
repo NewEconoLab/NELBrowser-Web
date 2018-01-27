@@ -375,15 +375,11 @@ export class GetNep5Info{
                 return res;
             }
             catch (e) {
-                res.err=true;
-                res.result=e.message;
-                return res;
+                return e.message;
             }
         }
         catch (e) {
-            res.err=true;
-            res.result=e.message;
-            return res;
+            return e.message;
         }
 
     }
@@ -426,13 +422,11 @@ export class GetNep5Info{
             var smallv = bnum.mod(v).toInt32() / v;
             // info2.textContent += "count=" + (intv + smallv);
             res.result=intv+smallv;
-        }
-        catch (e) {
-            res.err=true;
-            res.result = e.message;
             return res;
         }
-        return res;
+        catch (e) {
+            return {err:true,result:"^_^ 请尝试输入正确的地址"};
+        }
     }
 }
 
