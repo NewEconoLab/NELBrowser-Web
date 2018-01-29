@@ -262,7 +262,7 @@
                 <li id="next" class="next"><a class="btn">Newer &rarr;</a></li>
             </ul>
         </div>
-        <!-- 钱包 -->
+        <!-- wallet -->
         <div id="wallet-page" hidden>
             <div class="jumbotron masthead">
                 <caption>
@@ -285,24 +285,7 @@
                 <caption>
                     <h3>Details</h3>
                 </caption>
-                <div class="row">
-                    <div class=" col-lg-6">
-                        <div class="panel panel-default" style="height:100%">
-                            <div class="panel-heading">
-                                <h3 class="panel-title code" id="address-wallet">ALjSnMZidJqd18iQaoCgFun6iqWRm2cVtj</h3>
-                            </div>
-                            <div class=" panel-body" id="height-block">index: 10,233,122</div>
-                        </div>
-                    </div>
-                    <div class=" col-lg-6">
-                        <div class="panel panel-default" style="height:100%">
-                            <div class="panel-heading">
-                                <h3 class="panel-title">Balance</h3>
-                            </div>
-                            <ul id="balance-wallet" class="list-group" >
-                            </ul>
-                        </div>
-                    </div>
+                <div class="row" id="wallet-details">
                 </div>                
             </div>
             <div class="jumbotron masthead">
@@ -327,6 +310,7 @@
     </div>
     <!-- /container -->
     <!-- modal -->
+    <!-- importWif -->
     <div class="modal fade" id="importWif" tabindex="-1" role="dialog" aria-labelledby="importWIFLabel">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -347,12 +331,72 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary" id="send-wallet">Send message</button>
+                    <button type="button" class="btn btn-primary" id="send-wif">Send message</button>
                 </div>
             </div>
         </div>
     </div>
-
+    <!-- /importWif -->
+    <!-- importNep2 -->
+    <div class="modal fade" id="importNep2" tabindex="-1" role="dialog" aria-labelledby="importWIFLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="exampleModalLabel">Open Wallet</h4>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div id="nep2-input" class="form-group has-feedback">
+                            <label for="recipient-name">Nep2:</label>
+                            <input type="text" class="form-control" id="nep2-string" placeholder="Place or type nep2" aria-describedby="wifStatus">
+                            <p class="control-label"></p>
+                        </div>
+                        <div id="pass-input" class="form-group has-feedback">
+                            <label for="recipient-name">Password:</label>
+                            <input type="password" class="form-control" id="nep2-password" placeholder="Place or type password" aria-describedby="wifStatus">
+                            <p class="control-label"></p>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="send-nep2">Send message</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /importNep2 -->
+    <!-- importNep6 -->
+    <div class="modal fade" id="importNep6" tabindex="-1" role="dialog" aria-labelledby="importWIFLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="exampleModalLabel">Open Wallet</h4>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div id="nep2-input" class="form-group">                            
+                            <label for="exampleInputFile">Select Nep6 File:</label>
+                            <input type="file" id="nep6-select">
+                            <p class="help-block">Example block-level help text here.</p>
+                        </div>
+                        <div id="pass-input" class="form-group has-feedback">
+                            <label for="recipient-name">Password:</label>
+                            <input type="password" class="form-control" id="nep6-password" placeholder="Place or type password" aria-describedby="wifStatus">
+                            <p class="control-label"></p>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="send-nep6">Send message</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /importNep6 -->
     <!-- /modal -->
 
     <!-- Bootstrap core JavaScript
@@ -363,7 +407,12 @@
     <!-- <script src="./dist/bootstrap-table.js"></script> -->
     <script src="./lib/jquery.min.js"></script>
     <script src="./lib/bootstrap.min.js"></script>
-    <script src="./lib/neo-ts.js"></script>
+    <script src="lib/rollup/aes.js"></script>
+    <script src="lib/component/aes.js"></script>
+    <script src="lib/component/mode-ecb.js"></script>
+    <script src="lib/component/pad-nopadding.js"></script>
+    <script src="lib/scrypt.js"></script>
+    <script src="lib/neo-ts.js"></script>
     <script src="./dist/app.js"></script>
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
 </body>

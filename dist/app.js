@@ -278,6 +278,93 @@ class NeoUtil {
             return res;
         }
     }
+    /**
+     * nep2TOWif
+     */
+    nep2ToWif(nep2, password) {
+        return __awaiter(this, void 0, void 0, function* () {
+            var prikey;
+            var pubkey;
+            var address;
+            let promise = new Promise((resolve, reject) => {
+                let n = 16384;
+                var r = 8;
+                var p = 8;
+                ThinNeo.Helper.GetPrivateKeyFromNep2(nep2, password, n, r, p, (info, result) => {
+                    //spanNep2.textContent = "info=" + info + " result=" + result;
+                    console.log("result=" + "info=" + info + " result=" + result);
+                    prikey = result;
+                    if (prikey != null) {
+                        var pubkey = ThinNeo.Helper.GetPublicKeyFromPrivateKey(prikey);
+                        var address = ThinNeo.Helper.GetAddressFromPublicKey(pubkey);
+                        var wif = ThinNeo.Helper.GetWifFromPrivateKey(prikey);
+                        console.log('1:' + address);
+                        resolve({ err: false, result: { pubkey, address, wif } });
+                    }
+                    else {
+                        // spanWif.textContent = "result=" + "info=" + info + " result=" + result;
+                        reject({ err: false, result: result });
+                    }
+                });
+            });
+            return promise;
+        });
+    }
+    /**
+     * nep6Load
+     */
+    nep6Load(wallet, password) {
+        return __awaiter(this, void 0, void 0, function* () {
+            // let promise:Promise<result> = new Promise((resolve,reject)=>{
+            try {
+                //getPrivateKey 是异步方法，且同时只能执行一个
+                var istart = 0;
+                let res = new Array();
+                var getkey = null;
+                // getkey = async (keyindex: number) => {
+                for (let keyindex = 0; keyindex < wallet.accounts.length; keyindex++) {
+                    let account = wallet.accounts[keyindex];
+                    try {
+                        let result = yield this.getPriKeyfromAccount(wallet.scrypt, password, account);
+                        res.push(result.result);
+                    }
+                    catch (error) {
+                        console.error(error);
+                        return { err: true, result: error };
+                    }
+                }
+                return { err: false, result: res };
+            }
+            catch (e) {
+            }
+            // });
+            // return promise;
+        });
+    }
+    /**
+     * getPriKeyform
+     */
+    getPriKeyfromAccount(scrypt, password, account) {
+        return __awaiter(this, void 0, void 0, function* () {
+            let promise = new Promise((resolve, reject) => {
+                account.getPrivateKey(scrypt, password, (info, result) => {
+                    if (info == "finish") {
+                        var pubkey = ThinNeo.Helper.GetPublicKeyFromPrivateKey(result);
+                        var address = ThinNeo.Helper.GetAddressFromPublicKey(pubkey);
+                        var wif = ThinNeo.Helper.GetWifFromPrivateKey(result);
+                        var hexkey = result.toHexString();
+                        console.log(info + "|" + address + " wif=" + wif);
+                        resolve({ err: false, result: { pubkey: pubkey, address: address, prikey: wif } });
+                    }
+                    else {
+                        // info2.textContent += info + "|" + result;
+                        reject({ err: true, result: result });
+                    }
+                });
+            });
+            return promise;
+        });
+    }
 }
 exports.NeoUtil = NeoUtil;
 function pageCut(pageUtil) {
@@ -610,6 +697,14 @@ class TableMode {
     }
 }
 exports.TableMode = TableMode;
+class Detail {
+    constructor(address, height, balances) {
+        this.address = address;
+        this.height = height;
+        this.balances = balances;
+    }
+}
+exports.Detail = Detail;
 
 
 /***/ }),
@@ -1189,15 +1284,92 @@ class WalletControll {
             $("#importWif").modal('show');
         });
         this.wifInput = $('#importWif').find("#wif-input").children('input');
-        $('#send-wallet').click(() => {
+        $("#import-nep2").click(() => {
+            $("#importNep2").modal('show');
+        });
+        $("#import-nep6").click(() => {
+            $("#importNep6").modal('show');
+        });
+        $("#send-nep2").click(() => {
+            this.nep2init();
+        });
+        $('#send-wif').click(() => {
             // alert(this.wifInput.val().toString());
             let res = this.verifWif();
             if (res.err) {
             }
             else {
+                $("#wallet-details").empty();
                 this.details(res.result["address"]).then(() => {
                     $("#importWif").modal('hide');
                 });
+            }
+        });
+        this.nep6Init();
+    }
+    /**
+     * nep6Init
+     */
+    nep6Init() {
+        let file = document.getElementById("nep6-select");
+        var wallet;
+        var reader = new FileReader();
+        reader.onload = (e) => {
+            var walletstr = reader.result;
+            wallet = new ThinNeo.nep6wallet();
+            wallet.fromJsonStr(walletstr);
+            var textContent = "";
+            for (var i = 0; i < wallet.accounts.length; i++) {
+                textContent += wallet.accounts[i].address;
+                if (wallet.accounts[i].nep2key != null)
+                    textContent += "(have key)";
+                textContent += "\r\n";
+            }
+            // alert(2+":"+textContent);
+        };
+        file.onchange = (ev) => {
+            if (file.files[0].name.includes(".json")) {
+                // alert("1:json");
+                reader.readAsText(file.files[0]);
+            }
+        };
+        $("#send-nep6").click(() => {
+            let password = $("#nep6-password").val().toString();
+            this.neoUtil.nep6Load(wallet, password)
+                .then((res) => {
+                console.log("成功返回：" + res.result[0]);
+                $('#importNep6').modal('hide');
+                if (!res.err) {
+                    $("#wallet-details").empty();
+                    res.result.forEach((result) => {
+                        this.details(result["address"]);
+                    });
+                }
+            })
+                .catch((err) => {
+                alert("失败");
+                console.log("失败：" + err.result);
+            });
+        });
+    }
+    /**
+     * nep2init
+     */
+    nep2init() {
+        return __awaiter(this, void 0, void 0, function* () {
+            let nep2 = $("#nep2-string").val().toString();
+            let password = $("#nep2-password").val().toString();
+            try {
+                let res = yield this.neoUtil.nep2ToWif(nep2, password);
+                console.log(res);
+                if (!res.err) {
+                    $("#importNep2").modal('hide');
+                    $("#wallet-details").empty();
+                    this.details(res.result["address"]);
+                }
+            }
+            catch (err) {
+                console.log("err:" + err);
             }
         });
     }
@@ -1219,7 +1391,8 @@ class WalletControll {
                 });
                 let blockCount = yield this.ajax.post('getblockcount', []);
                 let blockHeight = blockCount[0]['blockcount'] - 1;
-                this.walletview.showDetails(address, blockHeight, balances);
+                let detail = new Entitys_1.Detail(address, blockHeight, balances);
+                this.walletview.showDetails(detail);
             }))
                 .catch((e) => {
                 alert(e);
@@ -1227,6 +1400,9 @@ class WalletControll {
             ;
         });
     }
+    /**
+     * 验证
+     */
     verifWif() {
         var wif = this.wifInput.val().toString();
         let result;
@@ -1473,16 +1649,34 @@ class WalletView {
     /**
      * showDetails
      */
-    showDetails(address, height, balances) {
-        $("#address-wallet").text(address);
-        $("#height-block").text(height);
-        $("#balance-wallet").empty();
-        balances.forEach((balance) => {
-            let html = '';
+    showDetails(detail) {
+        let html = "";
+        let ul = '';
+        for (let n = 0; n < detail.balances.length; n++) {
+            const balance = detail.balances[n];
             let name = balance.name.map((name) => { return name.name; }).join('|');
-            html += '<li class="list-group-item"> ' + name + ' : ' + balance.balance + '</li>';
-            $("#balance-wallet").append(html);
+            ul += '<li class="list-group-item"> ' + name + ' : ' + balance.balance + '</li>';
+        }
+        detail.balances.forEach((balance) => {
         });
+        html += '<div class=" col-lg-6">';
+        html += '<div class="panel panel-default" style="height:100%">';
+        html += '<div class="panel-heading">';
+        html += '<h3 class="panel-title code" >' + detail.address + '</h3>';
+        html += '</div>';
+        html += '<div class=" panel-body" >api:' + detail.height + '</div>';
+        html += '</div>';
+        html += '</div>';
+        html += '<div class=" col-lg-6">';
+        html += '<div class="panel panel-default" style="height:100%">';
+        html += '<div class="panel-heading">';
+        html += '<h3 class="panel-title code" >Balance</h3>';
+        html += '</div>';
+        html += '<ul id="balance-wallet" class="list-group" >';
+        html += ul;
+        html += '</ul>';
+        html += '</div>';
+        $("#wallet-details").append(html);
     }
 }
 exports.WalletView = WalletView;

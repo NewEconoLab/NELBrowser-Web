@@ -1,7 +1,7 @@
 /// <reference types="jquery" />
 // import * as $ from "jquery";
 import { Ajax, LocationUtil, NeoUtil, pageCut, GetNep5Info, StorageUtil } from './Util';
-import { Utxo, Balance, Asset, AssetEnum, PageUtil, Addr, Block, TableMode, result, Nep5as } from './Entitys';
+import { Utxo, Balance, Asset, AssetEnum, PageUtil, Addr, Block, TableMode, result, Nep5as, Detail } from './Entitys';
 import { AddressInfoView,AssetsView, AddrlistView, BlocksView, WalletView } from './PageViews';
 
 export class SearchController{
@@ -358,17 +358,92 @@ export class WalletControll{
             $("#importWif").modal('show');
         })  
         this.wifInput = $('#importWif').find("#wif-input").children('input');
-        $('#send-wallet').click(()=>{
+
+        $("#import-nep2").click(()=>{
+            $("#importNep2").modal('show');
+        })
+        $("#import-nep6").click(()=>{
+            $("#importNep6").modal('show');
+        })
+        $("#send-nep2").click(()=>{
+            this.nep2init();
+        })
+        $('#send-wif').click(()=>{
             // alert(this.wifInput.val().toString());
             let res = this.verifWif();
             if(res.err){
 
             }else{
+                $("#wallet-details").empty();
                 this.details(res.result["address"]).then(()=>{
                     $("#importWif").modal('hide');
                 })
             }
         })
+        this.nep6Init();
+    }
+    /**
+     * nep6Init
+     */
+    public nep6Init() {
+        let file:HTMLInputElement = <HTMLInputElement>document.getElementById("nep6-select");
+        var wallet: ThinNeo.nep6wallet;
+        var reader = new FileReader();
+        reader.onload = (e: Event) => {
+            var walletstr = reader.result as string;
+            wallet = new ThinNeo.nep6wallet();
+            wallet.fromJsonStr(walletstr);
+            var textContent = "";
+            for (var i = 0; i < wallet.accounts.length; i++) {
+                textContent += wallet.accounts[i].address;
+                if (wallet.accounts[i].nep2key != null)
+                    textContent += "(have key)";
+                textContent += "\r\n";
+            }
+            // alert(2+":"+textContent);
+        };
+        file.onchange = (ev: Event) => {
+            if (file.files[0].name.includes(".json")) {
+                // alert("1:json");
+                reader.readAsText(file.files[0]);
+            }
+        }
+        $("#send-nep6").click(()=>{
+            let password = $("#nep6-password").val().toString();
+            this.neoUtil.nep6Load(wallet,password)
+            .then((res:result)=>{
+                console.log("成功返回："+res.result[0]);
+                $('#importNep6').modal('hide');
+                if(!res.err){
+                    $("#wallet-details").empty();
+                    res.result.forEach((result)=>{
+                        this.details(result["address"]);
+                    })
+                }
+            })
+            .catch((err)=>{
+                alert("失败");
+                console.log("失败："+err.result);
+            })
+        })
+    }
+    /**
+     * nep2init
+     */
+    public async nep2init() {
+        let nep2:string = $("#nep2-string").val().toString();
+        let password:string = $("#nep2-password").val().toString();
+        try {
+            let res:result = await this.neoUtil.nep2ToWif(nep2,password);
+            console.log(res);
+            if(!res.err){
+                $("#importNep2").modal('hide');
+                $("#wallet-details").empty();
+                this.details(res.result["address"]);
+            }
+        } catch (err) {
+            console.log("err:"+err);
+        }
     }
     /**
      * details
@@ -388,14 +463,17 @@ export class WalletControll{
             
             let blockCount = await this.ajax.post('getblockcount',[]);
             let blockHeight = blockCount[0]['blockcount']-1;
-            this.walletview.showDetails(address,blockHeight,balances);
+            let detail:Detail = new Detail(address,blockHeight,balances);
+            this.walletview.showDetails(detail);
         })
         .catch((e)=>{
             alert(e);
         });;
         
     }
-    
+    /**
+     * 验证
+     */
     public verifWif():result{
         var wif:string = this.wifInput.val().toString();
         let result:result;

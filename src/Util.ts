@@ -204,6 +204,91 @@ export class NeoUtil{
             return res;
         }
     }
+
+    /**
+     * nep2TOWif
+     */
+    public async nep2ToWif(nep2:string,password:string):Promise<result> {
+        var prikey: Uint8Array;
+        var pubkey: Uint8Array;
+        var address: string;
+        let promise:Promise<result> = new Promise((resolve,reject)=>{
+            let n:number = 16384;
+            var r:number = 8;
+            var p:number = 8
+            ThinNeo.Helper.GetPrivateKeyFromNep2(nep2, password, n, r, p, (info, result) => {
+                //spanNep2.textContent = "info=" + info + " result=" + result;
+                console.log("result=" + "info=" + info + " result=" + result);
+                prikey = result as Uint8Array;
+                if (prikey != null) {
+                    var pubkey = ThinNeo.Helper.GetPublicKeyFromPrivateKey(prikey);
+                    var address = ThinNeo.Helper.GetAddressFromPublicKey(pubkey);
+                    var wif = ThinNeo.Helper.GetWifFromPrivateKey(prikey);
+                    console.log('1:'+address);
+                    resolve({err:false,result:{pubkey,address,wif}});
+                }
+                else {
+                    // spanWif.textContent = "result=" + "info=" + info + " result=" + result;
+                    reject({err:false,result:result});
+                }
+            });
+        }); 
+        return promise;
+    }
+
+    /**
+     * nep6Load
+     */
+    public async nep6Load(wallet: ThinNeo.nep6wallet,password:string) {
+        // let promise:Promise<result> = new Promise((resolve,reject)=>{
+            try {
+                //getPrivateKey 是异步方法，且同时只能执行一个
+                var istart = 0;
+                let res:any[] = new Array<any>();
+                var getkey: (n: number) => void = null;
+                // getkey = async (keyindex: number) => {
+                for (let keyindex = 0; keyindex < wallet.accounts.length; keyindex++) {
+                    let account = wallet.accounts[keyindex];
+                    try {
+                        let result:result = await this.getPriKeyfromAccount(wallet.scrypt,password,account);
+                        res.push(result.result);
+                    } catch (error) {
+                        console.error(error);
+                        return {err:true,result:error}
+                    }
+                }
+                return {err:false,result:res}
+            }
+            catch (e) {
+            }
+        // });
+        // return promise;
+    }
+
+    /**
+     * getPriKeyform
+     */
+    public async getPriKeyfromAccount(scrypt: ThinNeo.nep6ScryptParameters,password:string,account:ThinNeo.nep6account):Promise<result> {
+        let promise:Promise<result> = 
+        new Promise((resolve,reject)=>{
+            account.getPrivateKey(scrypt, password, (info, result) => {
+                if (info == "finish") {
+                    var pubkey = ThinNeo.Helper.GetPublicKeyFromPrivateKey(result as Uint8Array);
+                    var address = ThinNeo.Helper.GetAddressFromPublicKey(pubkey);
+                    var wif = ThinNeo.Helper.GetWifFromPrivateKey(result as Uint8Array);
+                    var hexkey = (result as Uint8Array).toHexString();
+                    console.log(info + "|" + address + " wif="+wif );
+                    resolve({err:false,result:{pubkey:pubkey,address:address,prikey:wif}});
+                }
+                else {
+                    // info2.textContent += info + "|" + result;
+                    reject({err:true,result:result});
+                }
+
+            });
+        })
+        return promise;
+    }
     
 }
 

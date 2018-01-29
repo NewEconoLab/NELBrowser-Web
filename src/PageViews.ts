@@ -1,6 +1,6 @@
 // import * as $ from "jquery";
 /// <reference types="jquery" />
-import { Balance, Utxo, Asset, PageUtil, Tx, Addr, TableMode, Nep5as, result } from './Entitys';
+import { Balance, Utxo, Asset, PageUtil, Tx, Addr, TableMode, Nep5as, result, Detail } from './Entitys';
 import { TableView } from './Util';
 export class AddressInfoView{
     public balances:Balance[];
@@ -215,15 +215,33 @@ export class WalletView{
     /**
      * showDetails
      */
-    public showDetails(address:string,height:number,balances:Balance[]) {
-        $("#address-wallet").text(address);
-        $("#height-block").text(height);
-        $("#balance-wallet").empty();
-        balances.forEach((balance:Balance)=>{
-            let html ='';
+    public showDetails(detail:Detail) {
+        let html:string = "";
+        let ul ='';
+        for (let n = 0; n < detail.balances.length; n++) {
+            const balance = detail.balances[n];
             let name = balance.name.map((name)=>{ return name.name}).join('|');
-            html += '<li class="list-group-item"> '+name+' : '+balance.balance+'</li>';
-           $("#balance-wallet").append(html);
+            ul += '<li class="list-group-item"> '+name+' : '+balance.balance+'</li>';
+        }
+        detail.balances.forEach((balance:Balance)=>{
         });
+        html += '<div class=" col-lg-6">';
+        html +=     '<div class="panel panel-default" style="height:100%">';
+        html +=     '<div class="panel-heading">';
+        html +=         '<h3 class="panel-title code" >'+detail.address+'</h3>';
+        html +=     '</div>';
+        html +=     '<div class=" panel-body" >api:'+detail.height+'</div>';
+        html +=    '</div>';
+        html += '</div>';
+        html += '<div class=" col-lg-6">';
+        html +=     '<div class="panel panel-default" style="height:100%">';
+        html +=     '<div class="panel-heading">';
+        html +=         '<h3 class="panel-title code" >Balance</h3>';
+        html +=     '</div>';
+        html +=     '<ul id="balance-wallet" class="list-group" >';
+        html +=         ul;
+        html +=    '</ul>';
+        html += '</div>';
+        $("#wallet-details").append(html);
     }
 }

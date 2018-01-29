@@ -184,3 +184,14 @@ export class TableMode{
         this.tablId = tableId;
     }
 }
+
+export class Detail{
+    public address:string;
+    public height:number;
+    public balances:Balance[];
+    constructor(address:string,height:number,balances:Balance[]){
+        this.address = address;
+        this.height = height;
+        this.balances = balances;
+    }
+}
