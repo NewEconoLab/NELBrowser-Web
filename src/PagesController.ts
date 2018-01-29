@@ -374,8 +374,8 @@ export class WalletControll{
             if(res.err){
 
             }else{
-                $("#wallet-details").empty();
                 this.details(res.result["address"]).then(()=>{
+                    $("#wallet-details").empty();
                     $("#importWif").modal('hide');
                 })
             }

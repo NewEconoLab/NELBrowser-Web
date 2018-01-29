@@ -225,7 +225,7 @@ export class WalletView{
         }
         detail.balances.forEach((balance:Balance)=>{
         });
-        html += '<div class=" col-lg-6">';
+        html += '<div class="row"><div class=" col-lg-6">';
         html +=     '<div class="panel panel-default" style="height:100%">';
         html +=     '<div class="panel-heading">';
         html +=         '<h3 class="panel-title code" >'+detail.address+'</h3>';
@@ -241,7 +241,7 @@ export class WalletView{
         html +=     '<ul id="balance-wallet" class="list-group" >';
         html +=         ul;
         html +=    '</ul>';
-        html += '</div>';
+        html += '</div></div>';
         $("#wallet-details").append(html);
     }
 }
