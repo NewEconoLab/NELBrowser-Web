@@ -47,6 +47,7 @@ export class Trasctions{
         this.txlist.find("table").children("tbody").empty();
         txs.forEach((tx)=>{
             let txid = tx.txid;
+            txid = txid.replace('0x','');
             txid = txid.substring(0,6)+'...'+txid.substring(txid.length-6);
             let html:string="";
             html+="<tr>"

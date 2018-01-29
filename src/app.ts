@@ -49,6 +49,7 @@ async function indexPage(){
     $("#index-page").find("#transactions").children("tbody").empty();   
     txs.forEach((tx)=>{
         let txid : string = tx.txid;
+        txid = txid.replace('0x','');
         txid = txid.substring(0,4)+'...'+txid.substring(txid.length-4);
         let html:string="";
         html+="<tr>"
@@ -117,12 +118,6 @@ $(()=>{
     }
 });
 
-// $("#txlist-btn").click(()=>{redirect('#txlist-page')})
-// $("#addrs-btn").click(()=>{redirect("#addrs-page")})
-// $("#blocks-btn").click(()=>{redirect("#blocks-page")})
-// $("#asset-btn").click(()=>{redirect("#asset-page")})
-// $("#index-btn").click(()=>{redirect("")});
-// $("#wallet-btn").click(()=>{redirect("#wallet-page")});
 
 function redirect(page:string){
     if(page===''){
