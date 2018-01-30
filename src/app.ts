@@ -7,6 +7,7 @@ import { PageUtil, Block, result } from './Entitys';
 import {BlockPage}from "./blocks";
 import {Trasctions,TrasctionInfo}from "./Trasction";
 let ajax:Ajax = new Ajax();
+ajax.network="testnet";
 //主页
 async function indexPage(){
     //查询区块高度(区块数量-1)

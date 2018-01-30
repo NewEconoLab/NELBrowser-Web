@@ -79,7 +79,21 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 class Ajax {
-    constructor() { }
+    /**
+     * get network
+     */
+    get network() {
+        return this._network;
+    }
+    /**
+     * set network
+     */
+    set network(nextwork) {
+        this._network = nextwork;
+    }
+    constructor() {
+        this._network = "testnet";
+    }
     /**
      * async post
      */
@@ -88,7 +102,7 @@ class Ajax {
             let promise = new Promise((resolve, reject) => {
                 $.ajax({
                     type: 'POST',
-                    url: 'http://47.96.168.8:81/api/testnet',
+                    url: 'http://47.96.168.8:81/api/' + this._network,
                     data: JSON.stringify({
                         "jsonrpc": "2.0",
                         "method": method,
@@ -705,6 +719,7 @@ class Detail {
     }
 }
 exports.Detail = Detail;
+exports.network = "testnet";
 
 
 /***/ }),
@@ -731,6 +746,7 @@ const Entitys_1 = __webpack_require__(1);
 const blocks_1 = __webpack_require__(5);
 const Trasction_1 = __webpack_require__(6);
 let ajax = new Util_1.Ajax();
+ajax.network = "testnet";
 //主页
 function indexPage() {
     return __awaiter(this, void 0, void 0, function* () {
@@ -963,6 +979,7 @@ class AddressControll {
         $("#nep5-btn").click(() => {
             this.nep5Info();
         });
+        this.ajax.network = Entitys_1.network;
     }
     /**
      * queryNep5AssetById
@@ -1085,6 +1102,7 @@ exports.AddressControll = AddressControll;
 class addrlistControll {
     constructor() {
         this.ajax = new Util_1.Ajax();
+        this.ajax.network = Entitys_1.network;
         $("#addrs-page").find("#next").click(() => {
             if (this.pageUtil.currentPage == this.pageUtil.totalPage) {
                 alert('当前页已经是最后一页了');
@@ -1147,6 +1165,7 @@ exports.addrlistControll = addrlistControll;
 class AssetControll {
     constructor() {
         this.ajax = new Util_1.Ajax();
+        this.ajax.network = Entitys_1.network;
     }
     allAsset() {
         return __awaiter(this, void 0, void 0, function* () {
@@ -1185,6 +1204,7 @@ exports.AssetControll = AssetControll;
 class BlocksControll {
     constructor() {
         this.ajax = new Util_1.Ajax();
+        this.ajax.network = Entitys_1.network;
         this.previous = document.createElement("li");
         this.next = document.createElement("li");
         this.ul = document.createElement("ul");
@@ -1275,6 +1295,7 @@ class WalletControll {
         this.neoUtil = new Util_1.NeoUtil();
         this.walletview = new PageViews_1.WalletView();
         this.ajax = new Util_1.Ajax();
+        this.ajax.network = Entitys_1.network;
         $("#import-wif").click(() => {
             $("#importWif").modal('show');
         });
@@ -1654,7 +1675,7 @@ class WalletView {
         }
         detail.balances.forEach((balance) => {
         });
-        html += '<div class="row"><div class=" col-lg-6">';
+        html += '<div class="row"><div class=" col-lg-4">';
         html += '<div class="panel panel-default" style="height:100%">';
         html += '<div class="panel-heading">';
         html += '<h3 class="panel-title code" >' + detail.address + '</h3>';
@@ -1662,7 +1683,7 @@ class WalletView {
         html += '<div class=" panel-body" >api:' + detail.height + '</div>';
         html += '</div>';
         html += '</div>';
-        html += '<div class=" col-lg-6">';
+        html += '<div class=" col-lg-4">';
         html += '<div class="panel panel-default" style="height:100%">';
         html += '<div class="panel-heading">';
         html += '<h3 class="panel-title code" >Balance</h3>';
@@ -1780,6 +1801,7 @@ const Entitys_2 = __webpack_require__(1);
 class Trasctions {
     constructor() {
         this.ajax = new Util_1.Ajax();
+        this.ajax.network = Entitys_1.network;
         this.txlist = $("#txlist-page");
         this.start();
         //监听交易列表选择框
@@ -1855,6 +1877,7 @@ exports.Trasctions = Trasctions;
 class TrasctionInfo {
     constructor() {
         this.ajax = new Util_1.Ajax();
+        this.ajax.network = Entitys_1.network;
     }
     updateTxInfo(txid) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -1873,19 +1896,69 @@ class TrasctionInfo {
                     asset.name = [{ lang: 'en', name: "GAS" }];
                 }
             });
-            txInfo.vin.forEach((vin, index, arry) => __awaiter(this, void 0, void 0, function* () {
+            let arr = new Array();
+            for (let index = 0; index < txInfo.vin.length; index++) {
+                const vin = txInfo.vin[index];
                 let txInfos = yield this.ajax.post('getrawtransaction', [vin.txid]);
                 let vout = txInfos[0].vout[vin.vout];
                 let address = vout.address;
                 let value = vout.value;
                 let name = allAsset.find(val => val.id == vout.asset).name.map(name => { return name.name; }).join("|");
-                $("#from").append('<li class="list-group-item"> </br> txid: <a class="code" href="./txInfo.html?txid=' + vin.txid + '">' + vin.txid + '</a>[' + vin.vout + '] </li>');
-            }));
+                arr.push({ vin: vin.txid, vout: vin.vout, addr: address, name: name, amount: value });
+            }
+            let array = this.groupByaddr(arr);
+            console.log(array);
+            for (let index = 0; index < array.length; index++) {
+                const item = array[index];
+                let html = "";
+                html += '<li class="list-group-item">';
+                html += '<table class="table">';
+                html += '<thead><h4 class="code">' + item.addr + '</h4></thead>';
+                html += '<th>name</th><th>amount</th><th>txid</th>';
+                for (let i = 0; i < item.data.length; i++) {
+                    const element = item.data[i];
+                    html += '<tr><td>' + element.name + '</td><td>' + element.amount + ' </td><td class="code">' + element.vin + ' [' + element.vout + ']</td></tr>';
+                }
+                html += '</table>';
+                html += '</li>';
+                $("#from").append(html);
+            }
+            // txInfo.vin.forEach(async (vin,index,arry)=>{
+            //     let txInfos:Tx[] = await this.ajax.post('getrawtransaction',[vin.txid]);
+            //     let vout = txInfos[0].vout[vin.vout]
+            //     let address:string = vout.address;
+            //     let value :string = vout.value;            
+            //     let name = allAsset.find(val=>val.id==vout.asset).name.map(name=>{return name.name}).join("|");
+            //     $("#from").append('<li class="list-group-item"> </br> txid: <a class="code" href="./txInfo.html?txid='+vin.txid+'">'+vin.txid+'</a>['+vin.vout+'] </li>');
+            // });
             txInfo.vout.forEach(vout => {
                 let name = allAsset.find(val => val.id == vout.asset).name.map(name => name.name).join("|");
-                $("#to").append('<li class="list-group-item">' + name + ' ' + vout.value + ' </br>[' + vout.n + '] &nbsp<a class="code">' + vout.address + '</a></li>');
+                $("#to").append('<li class="list-group-item"><div class="row"><div class="col-md-1"><h4>[' + vout.n + ']</h4></div><div class="col-md-11"><div class="row"><div class="col-md-12">' + name + ' ' + vout.value + ' </div><div class="col-md-12"> <a class="code">' + vout.address + '</a></div></div></div></li>');
             });
         });
+    }
+    groupByaddr(arr) {
+        var map = {}, dest = [];
+        for (var i = 0; i < arr.length; i++) {
+            var ai = arr[i];
+            if (!map[ai.addr]) {
+                dest.push({
+                    addr: ai.addr,
+                    data: [ai]
+                });
+                map[ai.addr] = ai;
+            }
+            else {
+                for (var j = 0; j < dest.length; j++) {
+                    var dj = dest[j];
+                    if (dj.addr == ai.addr) {
+                        dj.data.push(ai);
+                        break;
+                    }
+                }
+            }
+        }
+        return dest;
     }
 }
 exports.TrasctionInfo = TrasctionInfo;

@@ -1,7 +1,7 @@
 /// <reference types="jquery" />
 // import * as $ from "jquery";
 import { Ajax, LocationUtil, NeoUtil, pageCut, GetNep5Info, StorageUtil } from './Util';
-import { Utxo, Balance, Asset, AssetEnum, PageUtil, Addr, Block, TableMode, result, Nep5as, Detail } from './Entitys';
+import { Utxo, Balance, Asset, AssetEnum, PageUtil, Addr, Block, TableMode, result, Nep5as, Detail, network } from './Entitys';
 import { AddressInfoView,AssetsView, AddrlistView, BlocksView, WalletView } from './PageViews';
 
 export class SearchController{
@@ -44,6 +44,7 @@ export class AddressControll{
         $("#nep5-btn").click(()=>{
             this.nep5Info();
         })
+        this.ajax.network=network;
     }
 
     /**
@@ -157,7 +158,8 @@ export class AddressControll{
 export class addrlistControll{
     private pageUtil:PageUtil;
     private ajax:Ajax = new Ajax();
-    constructor(){        
+    constructor(){    
+        this.ajax.network=network;    
         $("#addrs-page").find("#next").click(()=>{
             if(this.pageUtil.currentPage==this.pageUtil.totalPage){
                 alert('当前页已经是最后一页了');
@@ -213,7 +215,9 @@ export class addrlistControll{
 //资产页面管理器
 export class AssetControll{
     private ajax:Ajax = new Ajax();
-    constructor(){}
+    constructor(){
+        this.ajax.network=network;
+    }
     public async allAsset(){
         let allAsset:Asset[] = await this.ajax.post('getallasset',[]);
         allAsset.map((asset)=>{
@@ -260,6 +264,7 @@ export class BlocksControll{
     private text:HTMLAnchorElement;
     constructor(){
         
+        this.ajax.network=network;
         this.previous=document.createElement("li");
         this.next=document.createElement("li");
         this.ul = document.createElement("ul");
@@ -354,6 +359,7 @@ export class WalletControll{
     private ajax:Ajax = new Ajax();
 
     constructor(){
+        this.ajax.network=network;
         $("#import-wif").click(()=>{
             $("#importWif").modal('show');
         })  

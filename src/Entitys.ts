@@ -195,3 +195,5 @@ export class Detail{
         this.balances = balances;
     }
 }
+
+export let network:string = "testnet";

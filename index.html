@@ -53,12 +53,12 @@
                         <ul class="nav navbar-nav navbar-left">
                             <li>
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
-                                    <h4>TestNet
+                                    <h4 id="network">TestNet
                                             <span class=" caret"></span></h4>
                                 </a>
                                 <ul class="dropdown-menu">
-                                    <li><a href="#" class="active">TestNet</a></li>
-                                    <li><a href="#">MainNet</a></li>
+                                    <li><a id="btn-testnet" href="#" class="active">TestNet</a></li>
+                                    <li><a id="btn-mainnet" href="#">MainNet</a></li>
                                 </ul>
                             </li>
                         </ul>
@@ -175,14 +175,14 @@
         <!-- 区块列表页面 -->
         <div id="blocks-page" class="jumbotron container" hidden>
             <caption>
-                <h2>区块</h2>
+                <h2>Block list</h2>
             </caption>
             <table class="table table-hover cool">
                 <thead>
                     <tr>
-                        <th>高度</th>
-                        <th>大小</th>
-                        <th>时间</th>
+                        <th>index</th>
+                        <th>size</th>
+                        <th>time</th>
                     </tr>
                 </thead>
                 <tbody id="blocks"></tbody>
@@ -198,7 +198,7 @@
             <div class="row">
                 <div class="col-md-2">
                     <caption>
-                        <h2 class="title">交易</h2>
+                        <h2 class="title">Transactions</h2>
                     </caption>
                 </div>
                 <div class="col-md-2">
@@ -219,10 +219,10 @@
                 <thead>
                     <tr>
                         <th>TXID</th>
-                        <th>高度</th>
-                        <th>类型</th>
-                        <th>费用</th>
-                        <th>大小</th>
+                        <th>block index</th>
+                        <th>type</th>
+                        <th>cost</th>
+                        <th>size</th>
                     </tr>
                 </thead>
                 <tbody id="transactions"></tbody>
@@ -243,15 +243,15 @@
         <!-- 地址页面 -->
         <div id="addrs-page" class="jumbotron container" hidden>
             <caption>
-                <h2>地址概览</h2>
+                <h2>Address list</h2>
             </caption>
             <table class="table table-hover cool">
                 <thead>
                     <tr>
-                        <th>地址</th>
-                        <th>首次交易时间</th>
-                        <th>最后交易时间</th>
-                        <th>交易数量</th>
+                        <th>address</th>
+                        <th>First trading time</th>
+                        <th>Last trading time</th>
+                        <th>Quantity</th>
                     </tr>
                 </thead>
                 <tbody id="addrlist"></tbody>

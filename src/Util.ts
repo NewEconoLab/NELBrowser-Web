@@ -2,7 +2,22 @@
 /// <reference types="jquery" />
 import { PageUtil, TableMode, result } from './Entitys';
 export class Ajax{
-    constructor(){}
+    private _network:string;
+    /**
+     * get network
+     */
+    public get network() {
+        return this._network;
+    }
+    /**
+     * set network
+     */
+    public set network(nextwork:string) {
+        this._network = nextwork;
+    }
+    constructor(){
+        this._network="testnet";
+    }
     /**
      * async post
      */
@@ -10,7 +25,7 @@ export class Ajax{
         let promise = new Promise<any>((resolve,reject)=>{
             $.ajax({
                 type: 'POST',
-                url: 'http://47.96.168.8:81/api/testnet',
+                url: 'http://47.96.168.8:81/api/'+this._network,
                 data: JSON.stringify({
                     "jsonrpc": "2.0",
                     "method": method,
