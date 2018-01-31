@@ -917,6 +917,9 @@ function onhash() {
     redirect(hash);
 }
 document.getElementsByTagName("body")[0].onhashchange = () => { onhash(); };
+function test(addr) {
+    alert(addr);
+}
 
 
 /***/ }),
@@ -1355,6 +1358,10 @@ class WalletControll {
                 .then((res) => {
                 console.log("成功返回：" + res.result[0]);
                 $('#importNep6').modal('hide');
+                if (res.result.length > 1) {
+                    let addrs = res.result.map(item => { return item.address; });
+                    this.walletview.showSelectAddrs(addrs);
+                }
                 if (!res.err) {
                     $("#wallet-details").empty();
                     res.result.forEach((result) => {
@@ -1366,6 +1373,11 @@ class WalletControll {
                 alert("失败");
                 console.log("失败：" + err.result);
             });
+        });
+        $("#send-Addr").click(() => {
+            let addr = $('#selectAddress input[name="addrRadio"]:checked ').val().toString();
+            this.details(addr);
+            $("#selectAddr").modal("hide");
         });
     }
     /**
@@ -1395,8 +1407,8 @@ class WalletControll {
     details(address) {
         return __awaiter(this, void 0, void 0, function* () {
             let height = 0;
-            this.ajax.post('getbalance', [address])
-                .then((balances) => __awaiter(this, void 0, void 0, function* () {
+            try {
+                let balances = yield this.ajax.post('getbalance', [address]);
                 balances.map((balance) => {
                     if (balance.asset == Entitys_1.AssetEnum.NEO) {
                         balance.name = [{ lang: 'en', name: 'NEO' }];
@@ -1409,11 +1421,30 @@ class WalletControll {
                 let blockHeight = blockCount[0]['blockcount'] - 1;
                 let detail = new Entitys_1.Detail(address, blockHeight, balances);
                 this.walletview.showDetails(detail);
-            }))
-                .catch((e) => {
-                alert(e);
-            });
-            ;
+                try {
+                    let allAsset = yield this.ajax.post('getallasset', []);
+                    allAsset.map((asset) => {
+                        if (asset.id == Entitys_1.AssetEnum.NEO) {
+                            asset.name = [{ lang: 'en', name: 'NEO' }];
+                        }
+                        if (asset.id == Entitys_1.AssetEnum.GAS) {
+                            asset.name = [{ lang: 'en', name: "GAS" }];
+                        }
+                    });
+                    let utxos = yield this.ajax.post('getutxo', [address]);
+                    utxos.map((item) => {
+                        item.asset = allAsset.find(val => val.id == item.asset).name.map((name) => { return name.name; }).join("|");
+                    });
+                    this.walletview.showUtxo(utxos);
+                    $("#wallet-details").show();
+                    $("#wallet-utxo").show();
+                    $("#wallet-transaction").show();
+                }
+                catch (error) {
+                }
+            }
+            catch (error) {
+            }
         });
     }
     /**
@@ -1666,6 +1697,7 @@ class WalletView {
      * showDetails
      */
     showDetails(detail) {
+        $("#wallet-details").empty();
         let html = "";
         let ul = '';
         for (let n = 0; n < detail.balances.length; n++) {
@@ -1675,15 +1707,15 @@ class WalletView {
         }
         detail.balances.forEach((balance) => {
         });
-        html += '<div class="row"><div class=" col-lg-4">';
+        html += '<div class="row"><div class=" col-lg-6">';
         html += '<div class="panel panel-default" style="height:100%">';
         html += '<div class="panel-heading">';
         html += '<h3 class="panel-title code" >' + detail.address + '</h3>';
         html += '</div>';
-        html += '<div class=" panel-body" >api:' + detail.height + '</div>';
+        html += '<div class=" panel-body" >api:' + detail.height + ' </div>';
         html += '</div>';
         html += '</div>';
-        html += '<div class=" col-lg-4">';
+        html += '<div class=" col-lg-6">';
         html += '<div class="panel panel-default" style="height:100%">';
         html += '<div class="panel-heading">';
         html += '<h3 class="panel-title code" >Balance</h3>';
@@ -1693,6 +1725,34 @@ class WalletView {
         html += '</ul>';
         html += '</div></div>';
         $("#wallet-details").append(html);
+    }
+    /**
+     * showSelectAddrs
+     */
+    showSelectAddrs(addrs) {
+        $("#selectAddress").empty();
+        addrs.forEach((addr) => {
+            $("#selectAddress").append('<label><input type="radio" name="addrRadio" id="addrRadio1" value="' + addr + '" aria-label="...">' + addr + '</label>');
+        });
+        $("#selectAddr").modal("show");
+    }
+    /**
+     * showUtxo
+     */
+    showUtxo(utxos) {
+        $("#wallet-utxos").empty();
+        utxos.forEach((utxo) => {
+            let html = '';
+            html += "<tr>";
+            html += "<td class='code'>" + utxo.asset;
+            html += "</td>";
+            html += "<td>" + utxo.value;
+            html += "</td>";
+            html += "<td><a class='code' target='_blank' rel='external nofollow' href='./txInfo.html?txid=" + utxo.txid + "'>" + utxo.txid;
+            html += "</a>[" + utxo.n + "]</td>";
+            html += "</tr>";
+            $("#wallet-utxos").append(html);
+        });
     }
 }
 exports.WalletView = WalletView;
@@ -1899,15 +1959,18 @@ class TrasctionInfo {
             let arr = new Array();
             for (let index = 0; index < txInfo.vin.length; index++) {
                 const vin = txInfo.vin[index];
-                let txInfos = yield this.ajax.post('getrawtransaction', [vin.txid]);
-                let vout = txInfos[0].vout[vin.vout];
-                let address = vout.address;
-                let value = vout.value;
-                let name = allAsset.find(val => val.id == vout.asset).name.map(name => { return name.name; }).join("|");
-                arr.push({ vin: vin.txid, vout: vin.vout, addr: address, name: name, amount: value });
+                try {
+                    let txInfos = yield this.ajax.post('getrawtransaction', [vin.txid]);
+                    let vout = txInfos[0].vout[vin.vout];
+                    let address = vout.address;
+                    let value = vout.value;
+                    let name = allAsset.find(val => val.id == vout.asset).name.map(name => { return name.name; }).join("|");
+                    arr.push({ vin: vin.txid, vout: vin.vout, addr: address, name: name, amount: value });
+                }
+                catch (error) {
+                }
             }
             let array = this.groupByaddr(arr);
-            console.log(array);
             for (let index = 0; index < array.length; index++) {
                 const item = array[index];
                 let html = "";
@@ -1933,7 +1996,11 @@ class TrasctionInfo {
             // });
             txInfo.vout.forEach(vout => {
                 let name = allAsset.find(val => val.id == vout.asset).name.map(name => name.name).join("|");
-                $("#to").append('<li class="list-group-item"><div class="row"><div class="col-md-1"><h4>[' + vout.n + ']</h4></div><div class="col-md-11"><div class="row"><div class="col-md-12">' + name + ' ' + vout.value + ' </div><div class="col-md-12"> <a class="code">' + vout.address + '</a></div></div></div></li>');
+                let sign = "";
+                if (array.find(item => item.addr == vout.address)) {
+                    sign = "(change)";
+                }
+                $("#to").append('<li class="list-group-item"><div class="row"><div class="col-md-1"><h4>[' + vout.n + ']</h4></div><div class="col-md-11"><div class="row"><div class="col-md-12">' + name + ' ' + vout.value + sign + ' </div><div class="col-md-12"> <a class="code">' + vout.address + '</a></div></div></div></li>');
             });
         });
     }

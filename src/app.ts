@@ -186,3 +186,7 @@ function onhash(){
 }
 
 document.getElementsByTagName("body")[0].onhashchange=()=>{onhash()};
+
+function test(addr:string){
+    alert(addr);
+}

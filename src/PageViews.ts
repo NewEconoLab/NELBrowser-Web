@@ -216,6 +216,7 @@ export class WalletView{
      * showDetails
      */
     public showDetails(detail:Detail) {
+        $("#wallet-details").empty();
         let html:string = "";
         let ul ='';
         for (let n = 0; n < detail.balances.length; n++) {
@@ -225,15 +226,15 @@ export class WalletView{
         }
         detail.balances.forEach((balance:Balance)=>{
         });
-        html += '<div class="row"><div class=" col-lg-4">';
+        html += '<div class="row"><div class=" col-lg-6">';
         html +=     '<div class="panel panel-default" style="height:100%">';
         html +=     '<div class="panel-heading">';
         html +=         '<h3 class="panel-title code" >'+detail.address+'</h3>';
         html +=     '</div>';
-        html +=     '<div class=" panel-body" >api:'+detail.height+'</div>';
+        html +=     '<div class=" panel-body" >api:'+detail.height+' </div>';
         html +=    '</div>';
         html += '</div>';
-        html += '<div class=" col-lg-4">';
+        html += '<div class=" col-lg-6">';
         html +=     '<div class="panel panel-default" style="height:100%">';
         html +=     '<div class="panel-heading">';
         html +=         '<h3 class="panel-title code" >Balance</h3>';
@@ -243,5 +244,36 @@ export class WalletView{
         html +=    '</ul>';
         html += '</div></div>';
         $("#wallet-details").append(html);
+    }
+
+    /**
+     * showSelectAddrs
+     */
+    public showSelectAddrs(addrs:string[]) {
+        $("#selectAddress").empty();
+        addrs.forEach((addr)=>{
+            $("#selectAddress").append('<label><input type="radio" name="addrRadio" id="addrRadio1" value="'+addr+'" aria-label="...">'+addr+'</label>');
+        })
+        
+        $("#selectAddr").modal("show");
+    }
+
+    /**
+     * showUtxo
+     */
+    public showUtxo(utxos:Utxo[]) {
+        $("#wallet-utxos").empty();
+        utxos.forEach((utxo)=>{
+            let html ='';
+            html+="<tr>"
+            html+="<td class='code'>"+utxo.asset;
+            html+="</td>"
+            html+="<td>"+utxo.value;
+            html+="</td>"
+            html+="<td><a class='code' target='_blank' rel='external nofollow' href='./txInfo.html?txid="+utxo.txid+"'>"+utxo.txid
+            html+="</a>["+utxo.n+"]</td>"
+            html+="</tr>"
+            $("#wallet-utxos").append(html);
+        })
     }
 }

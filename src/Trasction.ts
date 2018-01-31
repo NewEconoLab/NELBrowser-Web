@@ -84,8 +84,7 @@ export class Trasctions{
  */
 export class TrasctionInfo{
     private ajax :Ajax = new Ajax();
-    constructor(){
-        this.ajax.network = network;}
+    constructor(){this.ajax.network = network;}
     public async updateTxInfo(txid:string){
         let txInfos:Tx[] = await this.ajax.post('getrawtransaction',[txid]);
         let txInfo:Tx = txInfos[0];
@@ -104,18 +103,22 @@ export class TrasctionInfo{
             }
         });
 
+        
         let arr = new Array<any>();
         for (let index = 0; index < txInfo.vin.length; index++) {
             const vin = txInfo.vin[index];
-            let txInfos:Tx[] = await this.ajax.post('getrawtransaction',[vin.txid]);
-            let vout = txInfos[0].vout[vin.vout]
-            let address:string = vout.address;
-            let value :string = vout.value;            
-            let name = allAsset.find(val=>val.id==vout.asset).name.map(name=>{return name.name}).join("|");
-            arr.push({vin:vin.txid,vout:vin.vout,addr:address,name:name,amount:value});
+            try {
+                let txInfos:Tx[] = await this.ajax.post('getrawtransaction',[vin.txid]);
+                let vout = txInfos[0].vout[vin.vout]
+                let address:string = vout.address;
+                let value :string = vout.value;            
+                let name = allAsset.find(val=>val.id==vout.asset).name.map(name=>{return name.name}).join("|");
+                arr.push({vin:vin.txid,vout:vin.vout,addr:address,name:name,amount:value});
+            } catch (error) {
+                
+            }
         }
         let array = this.groupByaddr(arr);
-        console.log(array);
         for (let index = 0; index < array.length; index++) {
             const item = array[index];
             let html = "";
@@ -143,11 +146,15 @@ export class TrasctionInfo{
         // });
         txInfo.vout.forEach(vout=>{
             let name = allAsset.find(val=>val.id==vout.asset).name.map(name=>name.name).join("|");
-            $("#to").append('<li class="list-group-item"><div class="row"><div class="col-md-1"><h4>['+vout.n+']</h4></div><div class="col-md-11"><div class="row"><div class="col-md-12">'+name+' '+vout.value+' </div><div class="col-md-12"> <a class="code">'+vout.address+'</a></div></div></div></li>');
+            let sign : string = "";
+            if(array.find(item=>item.addr==vout.address)){
+                sign = "(change)"
+            }
+            $("#to").append('<li class="list-group-item"><div class="row"><div class="col-md-1"><h4>['+vout.n+']</h4></div><div class="col-md-11"><div class="row"><div class="col-md-12">'+name+' '+vout.value+sign+' </div><div class="col-md-12"> <a class="code">'+vout.address+'</a></div></div></div></li>');
         });
     }
 
-    groupByaddr(arr:any[]){
+    public groupByaddr(arr:any[]){
         var map = {},
         dest = [];
         for(var i = 0; i < arr.length; i++){

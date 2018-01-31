@@ -281,28 +281,60 @@
                     </div>
                 </div>
             </div>
-            <div class="jumbotron masthead">
+            <div class="jumbotron masthead" id="wallet-details" hidden>
                 <caption>
                     <h3>Details</h3>
                 </caption>
                 <div class="row" id="wallet-details">
-                </div>                
+                </div>
             </div>
-            <div class="jumbotron masthead">
-                <caption>
-                    <h3>Transfer</h3>
-                </caption>
-                <div>
-                    <div class="form-group">
-                        <label for="exampleInputPassword1">To Address</label>
-                        <input type="text" class="form-control" id="address" placeholder="Enter the address you want to trade">
+            
+            <div class="jumbotron masthead" id="wallet-utxo" hidden>
+                <table class="table table-hover cool">
+                    <caption>
+                        <h3>UTXO</h3>
+                    </caption>
+                    <thead>
+                        <tr>
+                            <th>asset</th>
+                            <th>number</th>
+                            <th>txid</th>
+                        </tr>
+                    </thead>
+                    <tbody id="wallet-utxos"></tbody>
+                </table>
+            </div>
+
+            <div class="row jumbotron masthead " id="wallet-transaction" hidden>
+                <div class="col-lg-6">
+                    <caption>
+                        <h3>Transfer</h3>
+                    </caption>
+                    <div>
+                        <div class="form-group">
+                            <label for="exampleInputPassword1">To Address</label>
+                            <input type="text" class="form-control" id="address" placeholder="Enter the address you want to trade">
+                        </div>
+                        <div class="form-group">
+                            <label for="exampleInputPassword1">Amount</label>
+                            <input type="number" class="form-control" id="amount" placeholder="Enter the amount you want to trade ">
+                        </div>
+                        <div class="form-group">
+                            <label for="exampleInputPassword1">Type</label>
+                            <select name="" id="" >
+                                <option value="NEO">NEO </option>
+                                <option value="NEO">GAS </option>
+                            </select>
+                        </div>
+                        <div class=" form-group">
+                            <button class="btn btn-info">Make transfer</button>
+                        </div>
                     </div>
-                    <div class="form-group">
-                        <label for="exampleInputPassword1">Amount</label>
-                        <input type="number" class="form-control" id="amount" placeholder="Enter the amount you want to trade ">
-                    </div>
-                    <div class=" form-group">
-                        <button class="btn btn-info">Send</button>
+                </div>
+                <div class="col-lg-6">
+                    <caption><h3>Transaction</h3></caption>
+                    <div>
+                        <textarea name="transaction" id="" cols="30" rows="10"></textarea>
                     </div>
                 </div>
             </div>
@@ -368,7 +400,7 @@
     </div>
     <!-- /importNep2 -->
     <!-- importNep6 -->
-    <div class="modal fade" id="importNep6" tabindex="-1" role="dialog" aria-labelledby="importWIFLabel">
+    <div class="modal fade" id="importNep6" tabindex="-1" role="dialog" >
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -397,6 +429,29 @@
         </div>
     </div>
     <!-- /importNep6 -->
+    <div class="modal fade" id="selectAddr" tabindex="-1" role="dialog" >
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="exampleModalLabel">Choose address</h4>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="form-group">                            
+                            <label for="exampleInputFile">Select Nep6 File:</label>
+                            <div class="radio" id="selectAddress">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="send-Addr">Send message</button>
+                </div>
+            </div>
+        </div>
+    </div>
     <!-- /modal -->
 
     <!-- Bootstrap core JavaScript

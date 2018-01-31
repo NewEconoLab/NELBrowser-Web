@@ -1,9 +1,9 @@
 /// <reference types="jquery" />
-// import * as $ from "jquery";
 import { Ajax, LocationUtil, NeoUtil, pageCut, GetNep5Info, StorageUtil } from './Util';
 import { Utxo, Balance, Asset, AssetEnum, PageUtil, Addr, Block, TableMode, result, Nep5as, Detail, network } from './Entitys';
 import { AddressInfoView,AssetsView, AddrlistView, BlocksView, WalletView } from './PageViews';
-
+namespace what
+{
 export class SearchController{
     public locationUtil:LocationUtil=new LocationUtil();
     constructor(){
@@ -420,6 +420,10 @@ export class WalletControll{
             .then((res:result)=>{
                 console.log("成功返回："+res.result[0]);
                 $('#importNep6').modal('hide');
+                if(res.result.length>1){
+                    let addrs:string[] = res.result.map(item=>{return item.address});
+                    this.walletview.showSelectAddrs(addrs);
+                }                
                 if(!res.err){
                     $("#wallet-details").empty();
                     res.result.forEach((result)=>{
@@ -431,6 +435,11 @@ export class WalletControll{
                 alert("失败");
                 console.log("失败："+err.result);
             })
+        })
+        $("#send-Addr").click(()=>{
+            let addr = $('#selectAddress input[name="addrRadio"]:checked ').val().toString();
+            this.details(addr);
+            $("#selectAddr").modal("hide");
         })
     }
     /**
@@ -456,8 +465,8 @@ export class WalletControll{
      */
     public async details(address:string) {
         let height:number = 0;
-        this.ajax.post('getbalance',[address])
-        .then(async(balances:Balance[])=>{            
+        try {
+            let balances:Balance[] = await this.ajax.post('getbalance',[address])
             balances.map((balance)=>{
                 if(balance.asset==AssetEnum.NEO){
                     balance.name=[{lang:'en',name:'NEO'}];
@@ -471,10 +480,30 @@ export class WalletControll{
             let blockHeight = blockCount[0]['blockcount']-1;
             let detail:Detail = new Detail(address,blockHeight,balances);
             this.walletview.showDetails(detail);
-        })
-        .catch((e)=>{
-            alert(e);
-        });;
+            try {
+                let allAsset:Asset[] = await this.ajax.post('getallasset',[]);
+                allAsset.map((asset)=>{
+                    if(asset.id==AssetEnum.NEO){
+                        asset.name=[{lang:'en',name:'NEO'}];
+                    }
+                    if(asset.id==AssetEnum.GAS){
+                        asset.name=[{lang:'en',name:"GAS"}];
+                    }
+                });
+                let utxos:Utxo[] = await this.ajax.post('getutxo',[address]);
+                utxos.map((item)=>{
+                    item.asset = allAsset.find(val => val.id==item.asset).name.map((name)=>{ return name.name}).join("|");
+                })
+                this.walletview.showUtxo(utxos);
+                $("#wallet-details").show();
+                $("#wallet-utxo").show();
+                $("#wallet-transaction").show();
+            } catch (error) {
+                
+            }
+        } catch (error) {
+            
+        }
         
     }
     /**
@@ -509,6 +538,20 @@ export class WalletControll{
         }
     }
 
+    /**
+     * tranfer
+     */
+    public tranfer(targetaddr:string,asset:string,count:string) {
+        
+        var targetaddr = targetaddr;
+        var asset = asset;
+        
+        // var assetid = CoinTool.name2assetID[asset];
+        // var _count = Neo.Fixed8.parse(count);
+        // var tran = CoinTool.makeTran(this.main.panelUTXO.assets, targetaddr, assetid, _count);
+        // this.main.panelTransaction.setTran(tran);
+    }
 
 
+}
 }
