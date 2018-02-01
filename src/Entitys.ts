@@ -109,6 +109,7 @@ export interface Utxo{
     asset: string;
     value: string;
     used: string;
+    name:string;
 }
 
 export interface Balance{

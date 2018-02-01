@@ -60,7 +60,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 2);
+/******/ 	return __webpack_require__(__webpack_require__.s = 3);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -737,14 +737,111 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+class WWW {
+    static makeRpcUrl(url, method, ..._params) {
+        if (url[url.length - 1] != '/')
+            url = url + "/";
+        var urlout = url + "?jsonrpc=2.0&id=1&method=" + method + "&params=[";
+        for (var i = 0; i < _params.length; i++) {
+            urlout += JSON.stringify(_params[i]);
+            if (i != _params.length - 1)
+                urlout += ",";
+        }
+        urlout += "]";
+        return urlout;
+    }
+    static makeRpcPostBody(method, ..._params) {
+        var body = {};
+        body["jsonrpc"] = "2.0";
+        body["id"] = 1;
+        body["method"] = method;
+        var params = [];
+        for (var i = 0; i < _params.length; i++) {
+            params.push(_params[i]);
+        }
+        body["params"] = params;
+        return body;
+    }
+    static api_getHeight() {
+        return __awaiter(this, void 0, void 0, function* () {
+            var str = WWW.makeRpcUrl(WWW.api, "getblockcount");
+            var result = yield fetch(str, { "method": "get" });
+            var json = yield result.json();
+            var r = json["result"];
+            var height = parseInt(r[0]["blockcount"]) - 1;
+            return height;
+        });
+    }
+    static api_getAllAssets() {
+        return __awaiter(this, void 0, void 0, function* () {
+            var str = WWW.makeRpcUrl(WWW.api, "getallasset");
+            var result = yield fetch(str, { "method": "get" });
+            var json = yield result.json();
+            var r = json["result"];
+            return r;
+        });
+    }
+    static api_getUTXO(address) {
+        return __awaiter(this, void 0, void 0, function* () {
+            var str = WWW.makeRpcUrl(WWW.api, "getutxo", address);
+            var result = yield fetch(str, { "method": "get" });
+            var json = yield result.json();
+            var r = json["result"];
+            return r;
+        });
+    }
+    static rpc_getURL() {
+        return __awaiter(this, void 0, void 0, function* () {
+            var str = WWW.makeRpcUrl(WWW.api, "getnoderpcapi");
+            var result = yield fetch(str, { "method": "get" });
+            var json = yield result.json();
+            var r = json["result"][0];
+            var url = r.nodeList[0];
+            WWW.rpc = url;
+            WWW.rpcName = r.nodeType;
+            return url;
+        });
+    }
+    static rpc_getHeight() {
+        return __awaiter(this, void 0, void 0, function* () {
+            var str = WWW.makeRpcUrl(WWW.rpc, "getblockcount");
+            var result = yield fetch(str, { "method": "get" });
+            var json = yield result.json();
+            var r = json["result"];
+            var height = parseInt(r) - 1;
+            return height;
+        });
+    }
+}
+WWW.api = "http://47.96.168.8:81/api/testnet";
+WWW.rpc = "";
+WWW.rpcName = "";
+exports.WWW = WWW;
+
+
+/***/ }),
+/* 3 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", { value: true });
 ///<reference path="../lib/neo-ts.d.ts"/>
 /// <reference types="jquery" />
 /// <reference types="bootstrap" />
 const Util_1 = __webpack_require__(0);
-const PagesController_1 = __webpack_require__(3);
+const PagesController_1 = __webpack_require__(4);
 const Entitys_1 = __webpack_require__(1);
-const blocks_1 = __webpack_require__(5);
-const Trasction_1 = __webpack_require__(6);
+const blocks_1 = __webpack_require__(7);
+const Trasction_1 = __webpack_require__(8);
 let ajax = new Util_1.Ajax();
 ajax.network = "testnet";
 //主页
@@ -917,13 +1014,10 @@ function onhash() {
     redirect(hash);
 }
 document.getElementsByTagName("body")[0].onhashchange = () => { onhash(); };
-function test(addr) {
-    alert(addr);
-}
 
 
 /***/ }),
-/* 3 */
+/* 4 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -938,10 +1032,13 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 /// <reference types="jquery" />
-// import * as $ from "jquery";
+/// <reference path="./tools/cointool.ts" />
+/// <reference path="./tools/wwwtool.ts" />
 const Util_1 = __webpack_require__(0);
 const Entitys_1 = __webpack_require__(1);
-const PageViews_1 = __webpack_require__(4);
+const PageViews_1 = __webpack_require__(5);
+const cointool_1 = __webpack_require__(6);
+const wwwtool_1 = __webpack_require__(2);
 class SearchController {
     constructor() {
         this.locationUtil = new Util_1.LocationUtil();
@@ -1325,6 +1422,9 @@ class WalletControll {
             }
         });
         this.nep6Init();
+        $("#send-transfer").click(() => {
+            this.tranfer();
+        });
     }
     /**
      * nep6Init
@@ -1431,9 +1531,10 @@ class WalletControll {
                             asset.name = [{ lang: 'en', name: "GAS" }];
                         }
                     });
-                    let utxos = yield this.ajax.post('getutxo', [address]);
+                    var utxos = yield wwwtool_1.WWW.api_getUTXO(address);
+                    this.utxos = utxos;
                     utxos.map((item) => {
-                        item.asset = allAsset.find(val => val.id == item.asset).name.map((name) => { return name.name; }).join("|");
+                        item.name = allAsset.find(val => val.id == item.asset).name.map((name) => { return name.name; }).join("|");
                     });
                     this.walletview.showUtxo(utxos);
                     $("#wallet-details").show();
@@ -1481,12 +1582,66 @@ class WalletControll {
             return result;
         }
     }
+    getassets() {
+        // var utxos = this.utxos;
+        var assets = {};
+        for (var i in this.utxos) {
+            var item = this.utxos[i];
+            var txid = item.txid;
+            var n = item.n;
+            var asset = item.asset;
+            var count = item.value;
+            if (assets[asset] == undefined) {
+                assets[asset] = [];
+            }
+            var utxo = new cointool_1.UTXO();
+            utxo.addr = item.addr;
+            utxo.asset = asset;
+            utxo.n = n;
+            utxo.txid = txid;
+            utxo.count = Neo.Fixed8.parse(count);
+            assets[asset].push(utxo);
+        }
+        return assets;
+    }
+    /**
+     * tranfer
+     */
+    tranfer() {
+        return __awaiter(this, void 0, void 0, function* () {
+            var targetaddr = $("#targetaddr").val().toString();
+            var asset = $("#transfer-asset").val().toString();
+            yield cointool_1.CoinTool.initAllAsset();
+            var assetid = cointool_1.CoinTool.name2assetID[asset];
+            var count = $("#transfer-amount").val().toString();
+            var utxos = this.getassets();
+            var _count = Neo.Fixed8.parse(count);
+            var tran = cointool_1.CoinTool.makeTran(utxos, targetaddr, assetid, _count);
+            console.log(tran);
+            let type = ThinNeo.TransactionType[tran.type].toString();
+            let version = tran.version.toString();
+            let inputcount = tran.inputs.length;
+            var inputAddrs = [];
+            //輸入顯示
+            for (var i = 0; i < tran.inputs.length; i++) {
+                var _addr = tran.inputs[i]["_addr"];
+                if (inputAddrs.indexOf(_addr) < 0) {
+                    inputAddrs.push(_addr);
+                }
+                //必须clone后翻转,因爲這個hash是input的成員，直接反轉會改變它
+                var rhash = tran.inputs[i].hash.clone().reverse();
+                var inputhash = rhash.toHexString();
+                var outstr = "    input[" + i + "]" + inputhash + "(" + tran.inputs[i].index + ")";
+                var txid = inputhash;
+            }
+        });
+    }
 }
 exports.WalletControll = WalletControll;
 
 
 /***/ }),
-/* 4 */
+/* 5 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1744,7 +1899,7 @@ class WalletView {
         utxos.forEach((utxo) => {
             let html = '';
             html += "<tr>";
-            html += "<td class='code'>" + utxo.asset;
+            html += "<td class='code'>" + utxo.name;
             html += "</td>";
             html += "<td>" + utxo.value;
             html += "</td>";
@@ -1759,7 +1914,111 @@ exports.WalletView = WalletView;
 
 
 /***/ }),
-/* 5 */
+/* 6 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+const wwwtool_1 = __webpack_require__(2);
+class UTXO {
+}
+exports.UTXO = UTXO;
+class CoinTool {
+    static initAllAsset() {
+        return __awaiter(this, void 0, void 0, function* () {
+            var allassets = yield wwwtool_1.WWW.api_getAllAssets();
+            for (var a in allassets) {
+                var asset = allassets[a];
+                var names = asset.name;
+                var id = asset.id;
+                var name = "";
+                if (id == CoinTool.id_GAS) {
+                    name = "GAS";
+                }
+                else if (id == CoinTool.id_NEO) {
+                    name = "NEO";
+                }
+                else {
+                    for (var i in names) {
+                        name = names[i].name;
+                        if (names[i].lang == "en")
+                            break;
+                    }
+                }
+                CoinTool.assetID2name[id] = name;
+                CoinTool.name2assetID[name] = id;
+            }
+        });
+    }
+    static makeTran(utxos, targetaddr, assetid, sendcount) {
+        if (sendcount.compareTo(Neo.Fixed8.Zero) <= 0)
+            throw new Error("can not send zero.");
+        var tran = new ThinNeo.Transaction();
+        tran.type = ThinNeo.TransactionType.ContractTransaction;
+        tran.version = 0; //0 or 1
+        tran.extdata = null;
+        tran.attributes = [];
+        tran.inputs = [];
+        var scraddr = "";
+        utxos[assetid].sort((a, b) => {
+            return a.count.compareTo(b.count);
+        });
+        var us = utxos[assetid];
+        var count = Neo.Fixed8.Zero;
+        for (var i = 0; i < us.length; i++) {
+            var input = new ThinNeo.TransactionInput();
+            input.hash = us[i].txid.hexToBytes().reverse();
+            input.index = us[i].n;
+            input["_addr"] = us[i].addr; //利用js的隨意性，臨時傳個值
+            tran.inputs.push(input);
+            count = count.add(us[i].count);
+            scraddr = us[i].addr;
+            if (count.compareTo(sendcount) > 0) {
+                break;
+            }
+        }
+        if (count.compareTo(sendcount) >= 0) {
+            tran.outputs = [];
+            //输出
+            var output = new ThinNeo.TransactionOutput();
+            output.assetId = assetid.hexToBytes().reverse();
+            output.value = sendcount;
+            output.toAddress = ThinNeo.Helper.GetPublicKeyScriptHash_FromAddress(targetaddr);
+            tran.outputs.push(output);
+            //找零
+            var change = count.subtract(sendcount);
+            if (change.compareTo(Neo.Fixed8.Zero) > 0) {
+                var outputchange = new ThinNeo.TransactionOutput();
+                outputchange.toAddress = ThinNeo.Helper.GetPublicKeyScriptHash_FromAddress(scraddr);
+                outputchange.value = change;
+                outputchange.assetId = assetid.hexToBytes().reverse();
+                tran.outputs.push(outputchange);
+            }
+        }
+        else {
+            throw new Error("no enough money.");
+        }
+        return tran;
+    }
+}
+CoinTool.id_GAS = "0x602c79718b16e442de58778e148d0b1084e3b2dffd5de6b7b16cee7969282de7";
+CoinTool.id_NEO = "0xc56f33fc6ecfcd0c225c4ab356fee59390af8560be0e930faebe74a6daff7c9b";
+CoinTool.assetID2name = {};
+CoinTool.name2assetID = {};
+exports.CoinTool = CoinTool;
+
+
+/***/ }),
+/* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1836,7 +2095,7 @@ exports.BlockPage = BlockPage;
 
 
 /***/ }),
-/* 6 */
+/* 8 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";

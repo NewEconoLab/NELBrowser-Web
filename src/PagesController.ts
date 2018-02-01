@@ -1,9 +1,12 @@
 /// <reference types="jquery" />
+/// <reference path="./tools/cointool.ts" />
+/// <reference path="./tools/wwwtool.ts" />
 import { Ajax, LocationUtil, NeoUtil, pageCut, GetNep5Info, StorageUtil } from './Util';
 import { Utxo, Balance, Asset, AssetEnum, PageUtil, Addr, Block, TableMode, result, Nep5as, Detail, network } from './Entitys';
 import { AddressInfoView,AssetsView, AddrlistView, BlocksView, WalletView } from './PageViews';
-namespace what
-{
+import { CoinTool, UTXO } from './tools/cointool';
+import { WWW } from './tools/wwwtool';
+
 export class SearchController{
     public locationUtil:LocationUtil=new LocationUtil();
     constructor(){
@@ -356,6 +359,7 @@ export class WalletControll{
     private wifInput:JQuery<HTMLElement>;
     private neoUtil:NeoUtil = new NeoUtil();
     private walletview:WalletView = new WalletView();
+    private utxos:Utxo[];
     private ajax:Ajax = new Ajax();
 
     constructor(){
@@ -387,6 +391,9 @@ export class WalletControll{
             }
         })
         this.nep6Init();
+        $("#send-transfer").click(()=>{
+            this.tranfer();
+        })
     }
     /**
      * nep6Init
@@ -490,9 +497,10 @@ export class WalletControll{
                         asset.name=[{lang:'en',name:"GAS"}];
                     }
                 });
-                let utxos:Utxo[] = await this.ajax.post('getutxo',[address]);
+                var utxos = await WWW.api_getUTXO(address);
+                this.utxos = utxos;
                 utxos.map((item)=>{
-                    item.asset = allAsset.find(val => val.id==item.asset).name.map((name)=>{ return name.name}).join("|");
+                    item.name = allAsset.find(val => val.id==item.asset).name.map((name)=>{ return name.name}).join("|");
                 })
                 this.walletview.showUtxo(utxos);
                 $("#wallet-details").show();
@@ -538,20 +546,92 @@ export class WalletControll{
         }
     }
 
+    public getassets():{[id:string]:UTXO[]}{
+        
+        // var utxos = this.utxos;
+        var assets = {};
+        for (var i in this.utxos)
+        {
+            var item = this.utxos[i];
+            var txid = item.txid;
+            var n = item.n;
+            var asset = item.asset;
+            var count = item.value;
+            if (assets[asset] == undefined)
+            {
+                assets[asset] = [];
+            }
+            var utxo = new UTXO();
+            utxo.addr = item.addr;
+            utxo.asset = asset;
+            utxo.n = n;
+            utxo.txid = txid;
+            utxo.count = Neo.Fixed8.parse(count);
+            assets[asset].push(utxo);
+        }
+        return assets;
+    }
+
     /**
      * tranfer
      */
-    public tranfer(targetaddr:string,asset:string,count:string) {
+    public async tranfer() {
         
-        var targetaddr = targetaddr;
-        var asset = asset;
+        var targetaddr:string = $("#targetaddr").val().toString();
+        var asset= $("#transfer-asset").val().toString();
+        await CoinTool.initAllAsset();
+        var assetid = CoinTool.name2assetID[asset];
+        var count = $("#transfer-amount").val().toString();
+        var utxos:{[id:string]:UTXO[]} = this.getassets();
+        var _count = Neo.Fixed8.parse(count);
+        var tran = CoinTool.makeTran( utxos,targetaddr,assetid,_count)
+        console.log(tran);
+        let type:string = ThinNeo.TransactionType[tran.type].toString();
+        let version:string = tran.version.toString();
+        let inputcount = tran.inputs.length;
+        var inputAddrs: string[] = [];
+        //輸入顯示
         
-        // var assetid = CoinTool.name2assetID[asset];
-        // var _count = Neo.Fixed8.parse(count);
-        // var tran = CoinTool.makeTran(this.main.panelUTXO.assets, targetaddr, assetid, _count);
-        // this.main.panelTransaction.setTran(tran);
+        for (var i = 0; i < tran.inputs.length; i++)
+        {
+            var _addr = tran.inputs[i]["_addr"];
+            if (inputAddrs.indexOf(_addr) < 0)
+            {
+                inputAddrs.push(_addr);
+            }
+
+            //必须clone后翻转,因爲這個hash是input的成員，直接反轉會改變它
+            var rhash = tran.inputs[i].hash.clone().reverse();
+            var inputhash = rhash.toHexString();
+            var outstr = "    input[" + i + "]" + inputhash + "(" + tran.inputs[i].index + ")";
+            var txid = inputhash;
+        }
+
+        
+        for (var i = 0; i < tran.outputs.length; i++)
+        {
+            var addrt = tran.outputs[i].toAddress;
+            var address = ThinNeo.Helper.GetAddressFromScriptHash(addrt);
+            // var a = lightsPanel.QuickDom.addA(this.panel, "    outputs[" + i + "]" + address, "http://be.nel.group/page/address.html?addr=" + address);
+            // a.target = "_blank";
+            var outputs = "outputs["+i+"]"+address;
+
+            var assethash = tran.outputs[i].assetId.clone().reverse();
+            var assetid = "0x" + assethash.toHexString();
+            if (inputAddrs.length == 1 && address == inputAddrs[0])
+            {
+                // lightsPanel.QuickDom.addSpan(this.panel, "    (change)" + CoinTool.assetID2name[assetid] + "=" + tran.outputs[i].value.toString());
+                var addr = CoinTool.assetID2name[assetid]+"="+tran.outputs[i].value.toString();
+            }
+            else
+            {
+                // lightsPanel.QuickDom.addSpan(this.panel, "    " + CoinTool.assetID2name[assetid] + "=" + tran.outputs[i].value.toString());
+                var addr = CoinTool.assetID2name[assetid] + "=" + tran.outputs[i].value.toString();
+            }
+            // lightsPanel.QuickDom.addElement(this.panel, "br");
+        }
+
     }
 
 
-}
 }

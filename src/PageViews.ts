@@ -266,7 +266,7 @@ export class WalletView{
         utxos.forEach((utxo)=>{
             let html ='';
             html+="<tr>"
-            html+="<td class='code'>"+utxo.asset;
+            html+="<td class='code'>"+utxo.name;
             html+="</td>"
             html+="<td>"+utxo.value;
             html+="</td>"
@@ -274,6 +274,6 @@ export class WalletView{
             html+="</a>["+utxo.n+"]</td>"
             html+="</tr>"
             $("#wallet-utxos").append(html);
-        })
+        });
     }
 }
