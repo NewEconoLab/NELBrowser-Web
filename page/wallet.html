@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <link href="../css/bootstrap.min.css" rel="stylesheet">
+    <link href="../css/mystyle.css" rel="stylesheet">
+</head>
+<body>
+    <!-- wallet -->
+    <div id="wallet-page" hidden>
+        <div class="jumbotron masthead">
+            <caption>
+                <h2>wallet</h2>
+            </caption>
+            <div>
+                <div class="form-group" hidden>
+                    <label >选择您的钱包</label>
+                    <select class="form-control">
+                    </select>
+                </div>
+                <div class="form-group">
+                    <button class="btn btn-info" id="import-wif">Import key from WIF String</button>
+                    <button class="btn btn-info" id="import-nep2">Import key from Nep2 String</button>
+                    <button class="btn btn-info" id="import-nep6">Import key from Nep6 File</button>
+                </div>
+            </div>
+        </div>
+        <div class="jumbotron masthead" id="wallet-details" hidden>
+            <caption>
+                <h3>Details</h3>
+            </caption>
+            <div class="row" id="wallet-details">
+            </div>
+        </div>
+        
+        <div class="jumbotron masthead" id="wallet-utxo" hidden>
+            <table class="table table-hover cool">
+                <caption>
+                    <h3>UTXO</h3>
+                </caption>
+                <thead>
+                    <tr>
+                        <th>asset</th>
+                        <th>number</th>
+                        <th>txid</th>
+                    </tr>
+                </thead>
+                <tbody id="wallet-utxos"></tbody>
+            </table>
+        </div>
+
+        <div class="row jumbotron masthead " id="wallet-transaction" hidden>
+            <div class="col-lg-6">
+                <caption>
+                    <h3>Transfer</h3>
+                </caption>
+                <div>
+                    <div class="form-group">
+                        <label for="exampleInputPassword1">To Address</label>
+                        <input type="text" class="form-control" id="targetaddr" placeholder="Enter the address you want to trade">
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleInputPassword1">Amount</label>
+                        <input type="number" class="form-control" id="transfer-amount" placeholder="Enter the amount you want to trade ">
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleInputPassword1">Type</label>
+                        <select name="" id="transfer-asset" >
+                            <option value="NEO">NEO </option>
+                            <option value="GAS">GAS </option>
+                        </select>
+                    </div>
+                    <div class=" form-group">
+                        <button class="btn btn-info" id="send-transfer">Make transfer</button>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <caption><h3>Transaction</h3></caption>
+                <div>
+                    <textarea name="transaction" id="" cols="30" rows="10"></textarea>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /container -->
+    <!-- modal -->
+    <!-- importWif -->
+    <div class="modal fade" id="importWif" tabindex="-1" role="dialog" aria-labelledby="importWIFLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="exampleModalLabel">Open Wallet</h4>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div id="wif-input" class="form-group has-feedback">
+                            <label for="recipient-name">WIF private key:</label>
+                            <input type="text" class="form-control" id="recipient-name" placeholder="Place or type private key." aria-describedby="wifStatus">
+                            <!-- <span class="glyphicon glyphicon-ok form-control-feedback" aria-hidden="true"></span>
+                            <span class="glyphicon glyphicon-remove form-control-feedback" aria-hidden="true"></span> -->
+                            <p class="control-label"></p>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="send-wif">Send message</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /importWif -->
+    <!-- importNep2 -->
+    <div class="modal fade" id="importNep2" tabindex="-1" role="dialog" aria-labelledby="importWIFLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="exampleModalLabel">Open Wallet</h4>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div id="nep2-input" class="form-group has-feedback">
+                            <label for="recipient-name">Nep2:</label>
+                            <input type="text" class="form-control" id="nep2-string" placeholder="Place or type nep2" aria-describedby="wifStatus">
+                            <p class="control-label"></p>
+                        </div>
+                        <div id="pass-input" class="form-group has-feedback">
+                            <label for="recipient-name">Password:</label>
+                            <input type="password" class="form-control" id="nep2-password" placeholder="Place or type password" aria-describedby="wifStatus">
+                            <p class="control-label"></p>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="send-nep2">Send message</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /importNep2 -->
+    <!-- importNep6 -->
+    <div class="modal fade" id="importNep6" tabindex="-1" role="dialog" >
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="exampleModalLabel">Open Wallet</h4>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div id="nep2-input" class="form-group">                            
+                            <label for="exampleInputFile">Select Nep6 File:</label>
+                            <input type="file" id="nep6-select">
+                            <p class="help-block">Example block-level help text here.</p>
+                        </div>
+                        <div id="pass-input" class="form-group has-feedback">
+                            <label for="recipient-name">Password:</label>
+                            <input type="password" class="form-control" id="nep6-password" placeholder="Place or type password" aria-describedby="wifStatus">
+                            <p class="control-label"></p>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="send-nep6">Send message</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /importNep6 -->
+    <div class="modal fade" id="selectAddr" tabindex="-1" role="dialog" >
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title" id="exampleModalLabel">Choose address</h4>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="form-group">                            
+                            <label for="exampleInputFile">Select Nep6 File:</label>
+                            <div class="radio" id="selectAddress">
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="send-Addr">Send message</button>
+                </div>
+            </div>
+        </div>
+    </div>
+<!-- /modal -->
+    <script src="../lib/neo-ts.js"></script>
+    <script src="../lib/jquery.min.js"></script>
+    <script src="../lib/bootstrap.min.js"></script>
+    <script src="../dist/app.js"></script>
+</body>
+</html>
