@@ -332,9 +332,24 @@
                     </div>
                 </div>
                 <div class="col-lg-6">
-                    <caption><h3>Transaction</h3></caption>
-                    <div>
-                        <textarea name="transaction" id="" cols="30" rows="10"></textarea>
+                    <div class="panel panel-default" style="height:100%">
+                        <div class="panel-heading">
+                            <h3 class="panel-title">Transaction</h3>
+                            <button class=" btn btn-primary" id="Sing-send">Sing</button>
+                        </div>
+                        <ul id="transactionInfo" class="list-group">
+                        </ul>
+                    </div>
+                    <div class="panel panel-default" id="sign" style="height:100%" hidden>
+                        <div class="panel-heading">
+                            <h3 class="panel-title">Sign</h3>
+                            <!-- <button class=" btn btn-primary" id="Sing-send">Sing</button> -->
+                        </div>
+                        <ul id="Sign-list" class="list-group">
+                        </ul>
+                        <div class=" panel-footer">
+                            <button id="btn-boadcast" class="btn btn-info">boadcast it</div>
+                        </div>
                     </div>
                 </div>
             </div>

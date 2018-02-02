@@ -361,6 +361,8 @@ export class WalletControll{
     private walletview:WalletView = new WalletView();
     private utxos:Utxo[];
     private ajax:Ajax = new Ajax();
+    private loadKeys:{pubkey:Uint8Array,prikey:Uint8Array,address:string}[];
+    private address:string;
 
     constructor(){
         this.ajax.network=network;
@@ -436,6 +438,7 @@ export class WalletControll{
                     res.result.forEach((result)=>{
                         this.details(result["address"]);
                     })
+                    this.loadKeys = res.result;
                 }
             })
             .catch((err)=>{
@@ -471,6 +474,7 @@ export class WalletControll{
      * details
      */
     public async details(address:string) {
+        this.address = address;
         let height:number = 0;
         try {
             let balances:Balance[] = await this.ajax.post('getbalance',[address])
@@ -585,12 +589,16 @@ export class WalletControll{
         var utxos:{[id:string]:UTXO[]} = this.getassets();
         var _count = Neo.Fixed8.parse(count);
         var tran = CoinTool.makeTran( utxos,targetaddr,assetid,_count)
-        console.log(tran);
+        // console.log(tran);
         let type:string = ThinNeo.TransactionType[tran.type].toString();
         let version:string = tran.version.toString();
         let inputcount = tran.inputs.length;
         var inputAddrs: string[] = [];
         //輸入顯示
+        $("#transactionInfo").empty();
+        $("#transactionInfo").append('<li class="list-group-item">type: '+type+'</li>');
+        $("#transactionInfo").append('<li class="list-group-item">version: '+version+'</li>');
+        $("#transactionInfo").append('<li class="list-group-item">inputcount: '+inputcount+'</li>');
         
         for (var i = 0; i < tran.inputs.length; i++)
         {
@@ -605,6 +613,9 @@ export class WalletControll{
             var inputhash = rhash.toHexString();
             var outstr = "    input[" + i + "]" + inputhash + "(" + tran.inputs[i].index + ")";
             var txid = inputhash;
+            
+            $("#transactionInfo").append('<li class="list-group-item"><a class="code" href="http://be.nel.group/page/txInfo.html?txid='+inputhash+'">'+outstr+'</a></li>');
+
         }
 
         
@@ -615,23 +626,116 @@ export class WalletControll{
             // var a = lightsPanel.QuickDom.addA(this.panel, "    outputs[" + i + "]" + address, "http://be.nel.group/page/address.html?addr=" + address);
             // a.target = "_blank";
             var outputs = "outputs["+i+"]"+address;
+            $("#transactionInfo").append('<li class="list-group-item"><a class="code" href="http://be.nel.group/page/address.html?addr='+address+'">'+outputs+'</a></li>');
 
             var assethash = tran.outputs[i].assetId.clone().reverse();
             var assetid = "0x" + assethash.toHexString();
             if (inputAddrs.length == 1 && address == inputAddrs[0])
             {
                 // lightsPanel.QuickDom.addSpan(this.panel, "    (change)" + CoinTool.assetID2name[assetid] + "=" + tran.outputs[i].value.toString());
-                var addr = CoinTool.assetID2name[assetid]+"="+tran.outputs[i].value.toString();
+                var addr = "(change)"+CoinTool.assetID2name[assetid]+"="+tran.outputs[i].value.toString();
+                $("#transactionInfo").append('<li class="list-group-item">'+addr+'</li>');
             }
             else
             {
                 // lightsPanel.QuickDom.addSpan(this.panel, "    " + CoinTool.assetID2name[assetid] + "=" + tran.outputs[i].value.toString());
                 var addr = CoinTool.assetID2name[assetid] + "=" + tran.outputs[i].value.toString();
+                $("#transactionInfo").append('<li class="list-group-item">'+addr+'</li>');
             }
             // lightsPanel.QuickDom.addElement(this.panel, "br");
         }
+        
+        let msg = tran.GetMessage();
+        var msglen = msg.length;
+        var txid = tran.GetHash().toHexString();
+        $("#transactionInfo").append("<li class='list-group-item code'>--this TXLen=" + msglen+"--this TXID=" + txid+"</li>");
+        for (var i = 0; i < inputAddrs.length; i++)
+        {
+            let must = "must witness[" + i + "]=" + inputAddrs[i];
+            $("#transactionInfo").append("<li class='list-group-item code'>"+must+"</li>");
+        }
+        $("#Sing-send").click(()=>{
+            tran.witnesses = [];
+            this.setTran(tran, inputAddrs);
+        });
 
     }
 
+    setTran(tran: ThinNeo.Transaction, inputaddr: string[]):void
+    {
+        $("#sign").show();
+        if (tran.witnesses == null)
+            tran.witnesses = [];
+        let txid = tran.GetHash().clone().reverse().toHexString();
+        $("#Sign-list").empty();
+        this.setPanelList("Sign-list",'<a href="http://be.nel.group/page/txInfo.html?txid='+txid+'">TXID:'+txid+'</a>')
+        this.setPanelList("Sign-list","need witness:");
+        
+        for (var i = 0; i < inputaddr.length; i++)
+        {
+            this.setPanelList("Sing-list","Withess[" + i + "]:" + inputaddr[i]);
+            var hadwit = false;
+            for (var w = 0; w < tran.witnesses.length; w++)
+            {
+                if (tran.witnesses[w].Address == inputaddr[i])//命中
+                {
+                    //m
+                    this.setPanelList("Sing-list","V_script:" + tran.witnesses[w].VerificationScript.toHexString());
+                    this.setPanelList("Sing-list","I_script:" + tran.witnesses[w].InvocationScript.toHexString());
+                    this.setPanelList("Sing-list","delete witness");
+                    let witi = w;
+                    this.setPanelList("Sing-list","<button id='del-witness' class='btn btn-info'>delete witness</button>");
+
+                    $("#del-witness").click(()=>{
+                        tran.witnesses.splice(witi,1);
+                        this.setTran(tran,inputaddr);
+                        return;
+                    })
+                    // btn.onclick = () =>
+                    // {
+                    //     tran.witnesses.splice(witi, 1);
+                    //     this.setTran(tran, inputaddr);
+                    //     return;
+                    // };
+                    hadwit = true;
+                    break;
+                }
+            }
+            if (hadwit == false)
+            {
+                this.setPanelList("Sing-list","NoWitness");
+                this.setPanelList("Sing-list","");
+                let loadKey = this.loadKeys.find(load=>load.address==this.address);
+                if (inputaddr[i] == loadKey.address)
+                {
+                    this.setPanelList("Sign-list","<button id='addWitness' class='btn btn-info'>Add witness by current key</button>");
+                    $("#addWitness").click(()=>{
+
+                        var msg = tran.GetMessage();
+                        var pubkey = loadKey.pubkey;
+                        var signdata = ThinNeo.Helper.Sign(msg,loadKey.prikey);
+                        tran.AddWitness(signdata,pubkey,loadKey.address);
+                        this.setTran(tran,inputaddr);
+                    });
+                }
+
+            }
+            $("#btn-boadcast").click(async ()=>{
+                try {
+                    var result = await WWW.rpc_postRawTransaction(tran.GetRawData());
+                    if (result as boolean == true)
+                    {
+                        alert("txid=" + txid);
+                    }
+                } catch (error) {
+                    
+                }
+            });
+        }
+    }
+
+    setPanelList(id:string,value:string){
+        $("#"+id).append("<li class='list-group-item code'>"+value+"</li>");
+    }
 
 }

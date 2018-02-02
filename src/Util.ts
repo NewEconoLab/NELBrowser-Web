@@ -240,7 +240,7 @@ export class NeoUtil{
                     var address = ThinNeo.Helper.GetAddressFromPublicKey(pubkey);
                     var wif = ThinNeo.Helper.GetWifFromPrivateKey(prikey);
                     console.log('1:'+address);
-                    resolve({err:false,result:{pubkey,address,wif}});
+                    resolve({err:false,result:{pubkey,address,prikey}});
                 }
                 else {
                     // spanWif.textContent = "result=" + "info=" + info + " result=" + result;
@@ -293,7 +293,7 @@ export class NeoUtil{
                     var wif = ThinNeo.Helper.GetWifFromPrivateKey(result as Uint8Array);
                     var hexkey = (result as Uint8Array).toHexString();
                     console.log(info + "|" + address + " wif="+wif );
-                    resolve({err:false,result:{pubkey:pubkey,address:address,prikey:wif}});
+                    resolve({err:false,result:{pubkey:pubkey,address:address,prikey:result as Uint8Array}});
                 }
                 else {
                     // info2.textContent += info + "|" + result;

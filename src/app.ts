@@ -6,6 +6,7 @@ import { SearchController, AddressControll, AssetControll, addrlistControll, Blo
 import { PageUtil, Block, result } from './Entitys';
 import {BlockPage}from "./blocks";
 import {Trasctions,TrasctionInfo}from "./Trasction";
+import { WWW } from './tools/wwwtool';
 let ajax:Ajax = new Ajax();
 ajax.network="testnet";
 //主页
@@ -186,3 +187,4 @@ function onhash(){
 }
 
 document.getElementsByTagName("body")[0].onhashchange=()=>{onhash()};
+WWW.rpc_getURL();

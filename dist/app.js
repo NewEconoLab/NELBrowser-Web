@@ -313,7 +313,7 @@ class NeoUtil {
                         var address = ThinNeo.Helper.GetAddressFromPublicKey(pubkey);
                         var wif = ThinNeo.Helper.GetWifFromPrivateKey(prikey);
                         console.log('1:' + address);
-                        resolve({ err: false, result: { pubkey, address, wif } });
+                        resolve({ err: false, result: { pubkey, address, prikey } });
                     }
                     else {
                         // spanWif.textContent = "result=" + "info=" + info + " result=" + result;
@@ -368,7 +368,7 @@ class NeoUtil {
                         var wif = ThinNeo.Helper.GetWifFromPrivateKey(result);
                         var hexkey = result.toHexString();
                         console.log(info + "|" + address + " wif=" + wif);
-                        resolve({ err: false, result: { pubkey: pubkey, address: address, prikey: wif } });
+                        resolve({ err: false, result: { pubkey: pubkey, address: address, prikey: result } });
                     }
                     else {
                         // info2.textContent += info + "|" + result;
@@ -790,6 +790,15 @@ class WWW {
             return r;
         });
     }
+    static rpc_postRawTransaction(data) {
+        return __awaiter(this, void 0, void 0, function* () {
+            var postdata = WWW.makeRpcPostBody("sendrawtransaction", data.toHexString());
+            var result = yield fetch(WWW.rpc, { "method": "post", "body": JSON.stringify(postdata) });
+            var json = yield result.json();
+            var r = json["result"];
+            return r;
+        });
+    }
     static rpc_getURL() {
         return __awaiter(this, void 0, void 0, function* () {
             var str = WWW.makeRpcUrl(WWW.api, "getnoderpcapi");
@@ -842,6 +851,7 @@ const PagesController_1 = __webpack_require__(4);
 const Entitys_1 = __webpack_require__(1);
 const blocks_1 = __webpack_require__(7);
 const Trasction_1 = __webpack_require__(8);
+const wwwtool_1 = __webpack_require__(2);
 let ajax = new Util_1.Ajax();
 ajax.network = "testnet";
 //主页
@@ -1014,6 +1024,7 @@ function onhash() {
     redirect(hash);
 }
 document.getElementsByTagName("body")[0].onhashchange = () => { onhash(); };
+wwwtool_1.WWW.rpc_getURL();
 
 
 /***/ }),
@@ -1467,6 +1478,7 @@ class WalletControll {
                     res.result.forEach((result) => {
                         this.details(result["address"]);
                     });
+                    this.loadKeys = res.result;
                 }
             })
                 .catch((err) => {
@@ -1506,6 +1518,7 @@ class WalletControll {
      */
     details(address) {
         return __awaiter(this, void 0, void 0, function* () {
+            this.address = address;
             let height = 0;
             try {
                 let balances = yield this.ajax.post('getbalance', [address]);
@@ -1617,12 +1630,16 @@ class WalletControll {
             var utxos = this.getassets();
             var _count = Neo.Fixed8.parse(count);
             var tran = cointool_1.CoinTool.makeTran(utxos, targetaddr, assetid, _count);
-            console.log(tran);
+            // console.log(tran);
             let type = ThinNeo.TransactionType[tran.type].toString();
             let version = tran.version.toString();
             let inputcount = tran.inputs.length;
             var inputAddrs = [];
             //輸入顯示
+            $("#transactionInfo").empty();
+            $("#transactionInfo").append('<li class="list-group-item">type: ' + type + '</li>');
+            $("#transactionInfo").append('<li class="list-group-item">version: ' + version + '</li>');
+            $("#transactionInfo").append('<li class="list-group-item">inputcount: ' + inputcount + '</li>');
             for (var i = 0; i < tran.inputs.length; i++) {
                 var _addr = tran.inputs[i]["_addr"];
                 if (inputAddrs.indexOf(_addr) < 0) {
@@ -1633,8 +1650,106 @@ class WalletControll {
                 var inputhash = rhash.toHexString();
                 var outstr = "    input[" + i + "]" + inputhash + "(" + tran.inputs[i].index + ")";
                 var txid = inputhash;
+                $("#transactionInfo").append('<li class="list-group-item"><a class="code" href="http://be.nel.group/page/txInfo.html?txid=' + inputhash + '">' + outstr + '</a></li>');
             }
+            for (var i = 0; i < tran.outputs.length; i++) {
+                var addrt = tran.outputs[i].toAddress;
+                var address = ThinNeo.Helper.GetAddressFromScriptHash(addrt);
+                // var a = lightsPanel.QuickDom.addA(this.panel, "    outputs[" + i + "]" + address, "http://be.nel.group/page/address.html?addr=" + address);
+                // a.target = "_blank";
+                var outputs = "outputs[" + i + "]" + address;
+                $("#transactionInfo").append('<li class="list-group-item"><a class="code" href="http://be.nel.group/page/address.html?addr=' + address + '">' + outputs + '</a></li>');
+                var assethash = tran.outputs[i].assetId.clone().reverse();
+                var assetid = "0x" + assethash.toHexString();
+                if (inputAddrs.length == 1 && address == inputAddrs[0]) {
+                    // lightsPanel.QuickDom.addSpan(this.panel, "    (change)" + CoinTool.assetID2name[assetid] + "=" + tran.outputs[i].value.toString());
+                    var addr = "(change)" + cointool_1.CoinTool.assetID2name[assetid] + "=" + tran.outputs[i].value.toString();
+                    $("#transactionInfo").append('<li class="list-group-item">' + addr + '</li>');
+                }
+                else {
+                    // lightsPanel.QuickDom.addSpan(this.panel, "    " + CoinTool.assetID2name[assetid] + "=" + tran.outputs[i].value.toString());
+                    var addr = cointool_1.CoinTool.assetID2name[assetid] + "=" + tran.outputs[i].value.toString();
+                    $("#transactionInfo").append('<li class="list-group-item">' + addr + '</li>');
+                }
+                // lightsPanel.QuickDom.addElement(this.panel, "br");
+            }
+            let msg = tran.GetMessage();
+            var msglen = msg.length;
+            var txid = tran.GetHash().toHexString();
+            $("#transactionInfo").append("<li class='list-group-item code'>--this TXLen=" + msglen + "--this TXID=" + txid + "</li>");
+            for (var i = 0; i < inputAddrs.length; i++) {
+                let must = "must witness[" + i + "]=" + inputAddrs[i];
+                $("#transactionInfo").append("<li class='list-group-item code'>" + must + "</li>");
+            }
+            $("#Sing-send").click(() => {
+                tran.witnesses = [];
+                this.setTran(tran, inputAddrs);
+            });
         });
+    }
+    setTran(tran, inputaddr) {
+        $("#sign").show();
+        if (tran.witnesses == null)
+            tran.witnesses = [];
+        let txid = tran.GetHash().clone().reverse().toHexString();
+        $("#Sign-list").empty();
+        this.setPanelList("Sign-list", '<a href="http://be.nel.group/page/txInfo.html?txid=' + txid + '">TXID:' + txid + '</a>');
+        this.setPanelList("Sign-list", "need witness:");
+        for (var i = 0; i < inputaddr.length; i++) {
+            this.setPanelList("Sing-list", "Withess[" + i + "]:" + inputaddr[i]);
+            var hadwit = false;
+            for (var w = 0; w < tran.witnesses.length; w++) {
+                if (tran.witnesses[w].Address == inputaddr[i]) {
+                    //m
+                    this.setPanelList("Sing-list", "V_script:" + tran.witnesses[w].VerificationScript.toHexString());
+                    this.setPanelList("Sing-list", "I_script:" + tran.witnesses[w].InvocationScript.toHexString());
+                    this.setPanelList("Sing-list", "delete witness");
+                    let witi = w;
+                    this.setPanelList("Sing-list", "<button id='del-witness' class='btn btn-info'>delete witness</button>");
+                    $("#del-witness").click(() => {
+                        tran.witnesses.splice(witi, 1);
+                        this.setTran(tran, inputaddr);
+                        return;
+                    });
+                    // btn.onclick = () =>
+                    // {
+                    //     tran.witnesses.splice(witi, 1);
+                    //     this.setTran(tran, inputaddr);
+                    //     return;
+                    // };
+                    hadwit = true;
+                    break;
+                }
+            }
+            if (hadwit == false) {
+                this.setPanelList("Sing-list", "NoWitness");
+                this.setPanelList("Sing-list", "");
+                let loadKey = this.loadKeys.find(load => load.address == this.address);
+                if (inputaddr[i] == loadKey.address) {
+                    this.setPanelList("Sign-list", "<button id='addWitness' class='btn btn-info'>Add witness by current key</button>");
+                    $("#addWitness").click(() => {
+                        var msg = tran.GetMessage();
+                        var pubkey = loadKey.pubkey;
+                        var signdata = ThinNeo.Helper.Sign(msg, loadKey.prikey);
+                        tran.AddWitness(signdata, pubkey, loadKey.address);
+                        this.setTran(tran, inputaddr);
+                    });
+                }
+            }
+            $("#btn-boadcast").click(() => __awaiter(this, void 0, void 0, function* () {
+                try {
+                    var result = yield wwwtool_1.WWW.rpc_postRawTransaction(tran.GetRawData());
+                    if (result == true) {
+                        alert("txid=" + txid);
+                    }
+                }
+                catch (error) {
+                }
+            }));
+        }
+    }
+    setPanelList(id, value) {
+        $("#" + id).append("<li class='list-group-item code'>" + value + "</li>");
     }
 }
 exports.WalletControll = WalletControll;
