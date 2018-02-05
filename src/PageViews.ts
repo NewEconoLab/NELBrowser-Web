@@ -115,7 +115,7 @@ export class AssetsView{
             html += asset.type
             html += '</li>'
             html += '<li class="list-group-item"> 总量: '
-            html += asset.amount
+            html += (asset.amount <= 0 ?asset.available:asset.amount);
             html += '</li>'
             html += '<li class="list-group-item code"> id: '
             html += asset.id

@@ -390,6 +390,9 @@ export class WalletControll{
                     $("#wallet-details").empty();
                     $("#importWif").modal('hide');
                 })
+                .catch((err)=>{
+                    alert(err);
+                })
             }
         })
         this.nep6Init();

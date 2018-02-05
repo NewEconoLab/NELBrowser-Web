@@ -145,8 +145,9 @@ export interface Asset{
         name: string;
     }[];
     names:string;
-    amount:string;
+    amount:number;
     precision:number;
+    available:number;
     owner:string;
     admin:string;
     id:string;
@@ -159,8 +160,9 @@ export class Nep5as{
         name: string;
     }[];
     names:string;
-    amount:string;
+    amount:number;
     precision:number;
+    available:number;
     owner:string;
     admin:string;
     id:string;
