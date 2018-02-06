@@ -1,15 +1,15 @@
-﻿import { WWW } from "./wwwtool";
+﻿
 
-
-
-    export class UTXO
+namespace WebBrowser
 {
-    addr: string;
-    txid: string;
-    n: number;
-    asset: string;
-    count: Neo.Fixed8;
-}
+    export class UTXO
+    {
+        addr: string;
+        txid: string;
+        n: number;
+        asset: string;
+        count: Neo.Fixed8;
+    }
     export class CoinTool
     {
         static readonly id_GAS: string = "0x602c79718b16e442de58778e148d0b1084e3b2dffd5de6b7b16cee7969282de7";
@@ -111,3 +111,6 @@
         }
 
     }
+
+
+}

@@ -1,17 +1,13 @@
 {
-    "compilerOptions": {
-        "outDir": "./dist/",
-        "sourceMap": true,
-        "noImplicitAny": false,
-        "module": "commonjs",
-        "target": "es6",
-        "allowJs": true
-    },
-    "include": [
-        "./src/*"
-    ],
-    "exclude": [
-        "node_modules",
-        "./src/controllers/*"
-    ]
+  "compilerOptions": {
+    "outFile": "./dist/app.js",
+    "sourceMap": true,
+    "noImplicitAny": false,
+    "module": "system",
+    "target": "es6",
+    "allowJs": false
+  },
+  "include": [
+    "./src/*"
+  ]
 }

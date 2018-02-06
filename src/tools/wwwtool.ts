@@ -1,4 +1,6 @@
-﻿    export class WWW
+﻿namespace WebBrowser
+{
+    export class WWW
     {
         static api: string = "http://47.96.168.8:81/api/testnet";
         static rpc: string = "";
@@ -93,3 +95,4 @@
             return height;
         }
     }
+}
