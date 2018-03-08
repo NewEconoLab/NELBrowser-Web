@@ -13,7 +13,7 @@
     <title>NEL NewEconnolab</title>
 
     <!-- Bootstrap core CSS -->
-    <link href="./css/bootstrap.min.css" rel="stylesheet">
+    <link href="./css/bootstrap.css" rel="stylesheet">
     <link href="./css/mystyle.css" rel="stylesheet">
     <!-- <link href="./css/bootstrap-table.css" rel="stylesheet"> -->
 
@@ -31,143 +31,180 @@
 <body onhashchange="onhash()">
     <div class="container">
         <!-- Static navbar -->
-        <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation" style="padding-left:100px">
+        <!--<nav class="navbar nav-bar navbar-fixed-top" role="navigation" style="padding-left:100px">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <img id="log" class="navbar-brand" src="./img/log.png" alt="">
+            </div>
+            <div id="navbar" class="navbar-collapse collapse">
+                <div class="navbar-form navbar-left input-append">
+                    <div class="input-group input-group-lg">
+                        <input id="searchText" type="text" class="form-control" placeholder="TxHash/Addr/blockHeight">
+                        <span id="searchBtn" class="input-group-addon">Go!</span>
+                    </div>
+                </div>
+                <div style="padding-left:100px">
+                    <ul class="nav navbar-nav navbar-left">
+                        <li>
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                                <h4 id="network">
+                                    TestNet
+                                    <span class=" caret"></span>
+                                </h4>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a id="btn-testnet" href="#" class="active">TestNet</a></li>
+                                <li><a id="btn-mainnet" href="#">MainNet</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+                <ul class="nav navbar-nav">
+                    <li class="active" id="index-btn"><a href="#">Explorer</a></li>
+                    <li class="dropdown" id="brow-btn">
+                        <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                            Browse <b class="caret"></b>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li id="txlist-btn"><a href="#txlist-page">Transactions</a></li>
+                            <li id="addrs-btn"><a href="#addrs-page">Addresses</a></li>
+                            <li id="blocks-btn"><a href="#blocks-page">Blocks</a></li>
+                            <li id="asset-btn"><a href="#asset-page">Assets</a></li>
+                        </ul>
+                    </li>
+                    <li><a href="#">Contract</a></li>
+                    <li id="wallet-btn"><a href="#wallet-page">Wallet</a></li>
+                </ul>
+            </div>
+
+        </div>
+    </nav>-->
+        <!--/.nav-collapse -->
+        <!--/.container-fluid -->
+        <!--</nav>-->
+
+        <nav class="navbar navbar-nel navbar-fixed-top">
             <div class="container">
                 <div class="navbar-header">
                     <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-              <span class="sr-only">Toggle navigation</span>
-              <span class="icon-bar"></span>
-              <span class="icon-bar"></span>
-              <span class="icon-bar"></span>
-            </button>
-                <img id="log" class="navbar-brand" src="./img/log.png" alt="">
-            </div>
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="#">NEL</a>
+                </div>
                 <div id="navbar" class="navbar-collapse collapse">
-                    <div class="navbar-form navbar-left input-append">
-                        <div class="input-group input-group-lg">
-                            <input id="searchText" type="text" class="form-control" placeholder="TxHash/Addr/blockHeight">
-                            <span id="searchBtn" class="input-group-addon">Go!</span>
-                        </div>
-                    </div>
-                    <div style="padding-left:100px">
-                        <ul class="nav navbar-nav navbar-left">
-                            <li>
-                                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
-                                    <h4 id="network">TestNet
-                                            <span class=" caret"></span></h4>
-                                </a>
-                                <ul class="dropdown-menu">
-                                    <li><a id="btn-testnet" href="#" class="active">TestNet</a></li>
-                                    <li><a id="btn-mainnet" href="#">MainNet</a></li>
-                                </ul>
-                            </li>
-                        </ul>
-                    </div>
                     <ul class="nav navbar-nav">
-                        <li class="active" id="index-btn"><a href="#">Explorer</a></li>
-                        <li class="dropdown" id="brow-btn">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                             Browse <b class="caret"></b>
-                            </a>
+                        <li class="active"><a href="#">Explorer</a></li>
+                        <li class="">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Browse <span class="caret"></span></a>
                             <ul class="dropdown-menu">
-                                <li id="txlist-btn"><a href="#txlist-page">Transactions</a></li>
-                                <li id="addrs-btn"><a href="#addrs-page">Addresses</a></li>
-                                <li id="blocks-btn"><a href="#blocks-page">Blocks</a></li>
-                                <li id="asset-btn"><a href="#asset-page">Assets</a></li>
+                                <li><a href="#blocks-page">Blocks</a></li>
+                                <li><a href="#txlist-page">Transactions</a></li>
+                                <li><a href="#addrs-page">Addresses</a></li>
                             </ul>
                         </li>
-                        <li><a href="#">Contract</a></li>
-                        <li id="wallet-btn"><a href="#wallet-page">Wallet</a></li>
+                        <li><a href="#">Assets</a></li>
+                        <li><a href="#">Wallet</a></li>
                     </ul>
-                </div>
-                <!--/.nav-collapse -->
-            </div>
-            <!--/.container-fluid -->
+                    <div class="navbar-form navbar-right input-append">
+                        <div class="input-group">
+                            <input id="searchText" type="text" class="form-control nel" placeholder="TxHash/Addr/blockHeight">
+                            <span id="searchBtn" class="input-group-addon nel form-control-feedback " >
+                                <img src="fonts/search.svg" width="18px" height="18px"/>
+                            </span>
+                        </div>
+                    </div>
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                                TestNet
+                                <span class=" caret"></span>
+                            </a>
+                            <ul class="dropdown-menu">
+                                <li><a id="btn-testnet" href="#" class="active">TestNet</a></li>
+                                <li><a id="btn-mainnet" href="#">MainNet</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div><!--/.nav-collapse -->
+            </div><!--/.container -->
         </nav>
-
         <!-- Main component for a primary marketing message or call to action -->
         <!-- 首页 -->
         <div id="index-page" hidden>
-            <div class="jumbotron masthead">
-                <div class="container">
-                    <h2 class="text-center">NEL(NewEconnolab)</h2>
-                    <p class="text-center">NEO生态的中国开发志愿者社区</p>
-                    <div class="row">
-                        <div class="col-sm-6 col-md-4 col-lg-4 ">
-                            <div class="thumbnail">
-                                <div class="caption">
-                                    <h3>
-                                        Total transactions <br><small id="txcount">0</small>
-                                    </h3>
-                                    <a class="btn btn-info" href="#txlist-page">View all transactions</a>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-sm-6 col-md-4 col-lg-4 ">
-                            <div class="thumbnail">
-                                <div class="caption">
-                                    <h3>
-                                        Last block <br><small id="blockHeight">0</small>
-                                    </h3>
-                                    <a class="btn btn-info" href="#blocks-page">View all blocks</a>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-sm-6 col-md-4 col-lg-4 ">
-                            <div class="thumbnail">
-                                <div class="caption">
-                                    <h3>
-                                        Wallet addresses created <br><small id="addrCount">0</small>
-                                    </h3>
-                                    <a class="btn btn-info" href="#addrs-page">View all addresses</a>
-                                </div>
+            <div class=" masthead">
+                <div style="height:80px"></div>
+                <span class="title">Summary</span>
+                <div class="row summary">
+                    <div class="col-md-4 ">
+                        <div class="block">
+                            <div class="caption">
+                                    <div class="title-summary">Last block</div>  <div class="number" id="blockHeight">0</div>
+                                    <div>
+                                        <a class="btn btn-nel" href="#blocks-page">View all blocks</a>
+                                    </div>
                             </div>
                         </div>
                     </div>
-                    <br>
+                    <div class="col-md-4 ">
+                        <div class="block">
+                            <div class="caption">
+                                <div class="title-summary">Total transactions</div>  <div class="number" id="txcount">0</div>
+                                <div><a class="btn btn-nel" href="#txlist-page">View all transactions</a></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-4 ">
+                        <div class="block">
+                            <div class="caption">
+                                <div class="title-summary">Wallet address created</div> <div class="number" id="addrCount">0</div>
+                                <div><a class="btn btn-nel" href="#addrs-page">View all addresses</a></div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="row">
                 <div class="col-md-6">
-                    <div class="jumbotron">
-                        <div class="container">
-                            <table class="table table-hover cool" id="blocks">
-                                <caption>
-                                    <h2>Laset 10 Blocks</h2>
-                                </caption>
-                                <thead>
-                                    <tr>
-                                        <th>Height</th>
-                                        <th>Size</th>
-                                        <th>Created on</th>
-                                        <th>Tx count</th>
-                                    </tr>
-                                </thead>
-                                <tbody></tbody>
-                            </table>
-                            <a class="btn btn-primary" href="#blocks-page" role="button">See all blocks &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i class="glyphicon glyphicon-arrow-right"></i></a>
-                        </div>
+                    <span class="title">Laset 10 Transactions</span>
+                    <div class="last-info">
+                        <table class="table table-striped cool" id="blocks">
+                            <thead>
+                                <tr>
+                                    <th>Height</th>
+                                    <th>Size</th>
+                                    <th>Created on</th>
+                                    <th>Tx count</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                        <a class="btn btn-primary" href="#blocks-page" role="button">See all blocks &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i class="glyphicon glyphicon-arrow-right"></i></a>
                     </div>
                 </div>
                 <div class="col-md-6">
-                    <div class="jumbotron">
-                        <div class="container">
-                            <table class="table cool table-hover" id="transactions">
-                                <caption>
-                                    <h2>Laset 10 Transactions</h2>
-                                </caption>
-                                <thead>
-                                    <tr>
-                                        <th>TXID</th>
-                                        <th>Type</th>
-                                        <th>Height</th>
-                                        <th>Size</th>
-                                    </tr>
-                                </thead>
-                                <tbody></tbody>
-                            </table>
-                            <a class="btn btn-primary"  href="#txlist-page"  role="button">See all transactions&nbsp;<i class="glyphicon glyphicon-arrow-right"></i></a>
-                        </div>
+                    <span class="title">Laset 10 Transactions</span>
+                    <div class="last-info" >
+                        <table class="table cool table-striped" id="transactions">
+                            <thead>
+                                <tr>
+                                    <th>TXID</th>
+                                    <th>Type</th>
+                                    <th>Height</th>
+                                    <th>Size</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+                        <a class="btn btn-primary" href="#txlist-page" role="button">See all transactions&nbsp;<i class="glyphicon glyphicon-arrow-right"></i></a>
                     </div>
                 </div>
             </div>
@@ -203,16 +240,16 @@
                 </div>
                 <div class="col-md-2">
                     <select id="TxType" class="form-control">
-                    <option value="">Any</option>
-                    <option value="EnrollmentTransaction">Enrollment</option>
-                    <option value="PublishTransaction">Publish</option>
-                    <option value="InvocationTransaction">Invocation</option>
-                    <option value="ClaimTransaction">Claim</option>
-                    <option value="MinerTransaction">Miner</option>
-                    <option value="RegisterTransaction">Register</option>
-                    <option value="IssueTransaction">Issue</option>
-                    <option value="ContractTransaction">Contract</option>
-                  </select>
+                        <option value="">Any</option>
+                        <option value="EnrollmentTransaction">Enrollment</option>
+                        <option value="PublishTransaction">Publish</option>
+                        <option value="InvocationTransaction">Invocation</option>
+                        <option value="ClaimTransaction">Claim</option>
+                        <option value="MinerTransaction">Miner</option>
+                        <option value="RegisterTransaction">Register</option>
+                        <option value="IssueTransaction">Issue</option>
+                        <option value="ContractTransaction">Contract</option>
+                    </select>
                 </div>
             </div>
             <table class="table cool table-hover">
@@ -270,9 +307,8 @@
                 </caption>
                 <div>
                     <div class="form-group" hidden>
-                        <label >选择您的钱包</label>
-                        <select class="form-control">
-                        </select>
+                        <label>选择您的钱包</label>
+                        <select class="form-control"></select>
                     </div>
                     <div class="form-group">
                         <button class="btn btn-info" id="import-wif">Import key from WIF String</button>
@@ -288,7 +324,7 @@
                 <div class="row" id="wallet-details">
                 </div>
             </div>
-            
+
             <div class="jumbotron masthead" id="wallet-utxo" hidden>
                 <table class="table table-hover cool">
                     <caption>
@@ -321,7 +357,7 @@
                         </div>
                         <div class="form-group">
                             <label for="exampleInputPassword1">Type</label>
-                            <select name="" id="transfer-asset" >
+                            <select name="" id="transfer-asset">
                                 <option value="NEO">NEO </option>
                                 <option value="GAS">GAS </option>
                             </select>
@@ -337,23 +373,22 @@
                             <h3 class="panel-title">Transaction</h3>
                             <button class=" btn btn-primary" id="Sing-send">Sing</button>
                         </div>
-                        <ul id="transactionInfo" class="list-group">
-                        </ul>
+                        <ul id="transactionInfo" class="list-group"></ul>
                     </div>
                     <div class="panel panel-default" id="sign" style="height:100%" hidden>
                         <div class="panel-heading">
                             <h3 class="panel-title">Sign</h3>
                             <!-- <button class=" btn btn-primary" id="Sing-send">Sing</button> -->
                         </div>
-                        <ul id="Sign-list" class="list-group">
-                        </ul>
+                        <ul id="Sign-list" class="list-group"></ul>
                         <div class=" panel-footer">
-                            <button id="btn-boadcast" class="btn btn-info">boadcast it</div>
+                            <button id="btn-boadcast" class="btn btn-info">boadcast it
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
     </div>
     <!-- /container -->
     <!-- modal -->

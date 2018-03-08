@@ -72,9 +72,11 @@
     <Reference Include="System.EnterpriseServices" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="css\bootstrap.css" />
     <Content Include="css\bootstrap.min.css" />
     <Content Include="css\mystyle.css" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
+    <Content Include="fonts\search.svg" />
     <Content Include="img\bs-docs-masthead-pattern.png" />
     <Content Include="img\icon.png" />
     <Content Include="img\log.png" />
