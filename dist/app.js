@@ -741,6 +741,12 @@ var WebBrowser;
     window.onload = () => {
         document.getElementsByTagName("body")[0].onhashchange = () => { onhash(); };
         WebBrowser.WWW.rpc_getURL();
+        $("#searchText").focus(() => {
+            $("#nel-search").addClass("nel-input");
+        });
+        $("#searchText").focusout(() => {
+            $("#nel-search").removeClass("nel-input");
+        });
     };
 })(WebBrowser || (WebBrowser = {}));
 // import * as $ from "jquery";

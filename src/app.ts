@@ -213,5 +213,14 @@ namespace WebBrowser
     {
         document.getElementsByTagName("body")[0].onhashchange = () => { onhash() };
         WWW.rpc_getURL();
+
+        $("#searchText").focus(() =>
+        {
+            $("#nel-search").addClass("nel-input");
+        })
+        $("#searchText").focusout(() =>
+        {
+            $("#nel-search").removeClass("nel-input");
+        })
     }
 }

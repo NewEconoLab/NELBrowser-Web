@@ -114,14 +114,6 @@
                         <li><a href="#">Assets</a></li>
                         <li><a href="#">Wallet</a></li>
                     </ul>
-                    <div class="navbar-form navbar-right input-append">
-                        <div class="input-group">
-                            <input id="searchText" type="text" class="form-control nel" placeholder="TxHash/Addr/blockHeight">
-                            <span id="searchBtn" class="input-group-addon nel form-control-feedback " >
-                                <img src="fonts/search.svg" width="18px" height="18px"/>
-                            </span>
-                        </div>
-                    </div>
                     <ul class="nav navbar-nav navbar-right">
                         <li>
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
@@ -134,6 +126,14 @@
                             </ul>
                         </li>
                     </ul>
+                    <div class="navbar-form navbar-right input-append">
+                        <div class="input-group " id="nel-search" >
+                            <input id="searchText" type="text" class="form-control nel" placeholder="TxHash/Addr/blockHeight">
+                            <span id="searchBtn" class="input-group-addon nel " >
+                                <img src="fonts/search.svg" width="18px" height="18px"/>
+                            </span>
+                        </div>
+                    </div>
                 </div><!--/.nav-collapse -->
             </div><!--/.container -->
         </nav>
@@ -141,8 +141,10 @@
         <!-- 首页 -->
         <div id="index-page" hidden>
             <div class=" masthead">
-                <div style="height:80px"></div>
-                <span class="title">Summary</span>
+                <div style="height:54px"></div>
+                <div class="title">
+                    <span>Summary</span>
+                </div>
                 <div class="row summary">
                     <div class="col-md-4 ">
                         <div class="block">
@@ -174,24 +176,30 @@
             </div>
             <div class="row">
                 <div class="col-md-6">
-                    <span class="title">Laset 10 Transactions</span>
+                    <div class="title">
+                        <span>Last 10 Blocks</span>
+                    </div>
                     <div class="last-info">
-                        <table class="table table-striped cool" id="blocks">
-                            <thead>
-                                <tr>
-                                    <th>Height</th>
-                                    <th>Size</th>
-                                    <th>Created on</th>
-                                    <th>Tx count</th>
-                                </tr>
-                            </thead>
-                            <tbody></tbody>
-                        </table>
-                        <a class="btn btn-primary" href="#blocks-page" role="button">See all blocks &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i class="glyphicon glyphicon-arrow-right"></i></a>
+                            <table class="table table-striped cool" id="blocks">
+                                <thead>
+                                    <tr>
+                                        <th>Height</th>
+                                        <th>Size</th>
+                                        <th>Created on</th>
+                                        <th>Tx count</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                            <div class="tfood">
+                                <a class="" href="#blocks-page">View all &nbsp; >>>></a>
+                            </div>
                     </div>
                 </div>
                 <div class="col-md-6">
-                    <span class="title">Laset 10 Transactions</span>
+                    <div class="title">
+                        <span>Last 10 Transactions</span>
+                    </div>
                     <div class="last-info" >
                         <table class="table cool table-striped" id="transactions">
                             <thead>
@@ -204,17 +212,19 @@
                             </thead>
                             <tbody></tbody>
                         </table>
-                        <a class="btn btn-primary" href="#txlist-page" role="button">See all transactions&nbsp;<i class="glyphicon glyphicon-arrow-right"></i></a>
+                        <div class="tfood">
+                            <a class="" href="#txlist-page">View all &nbsp; >>>></a>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
         <!-- 区块列表页面 -->
         <div id="blocks-page" class="jumbotron container" hidden>
-            <caption>
-                <h2>Block list</h2>
-            </caption>
-            <table class="table table-hover cool">
+            <div class="title">
+                <span>Block list</span>
+            </div>
+            <table class="table table-striped cool">
                 <thead>
                     <tr>
                         <th>index</th>
@@ -234,11 +244,11 @@
         <div id="txlist-page" class="jumbotron container" hidden>
             <div class="row">
                 <div class="col-md-2">
-                    <caption>
-                        <h2 class="title">Transactions</h2>
-                    </caption>
+                    <div class="title">
+                        <span >Transactions</span>
+                    </div>
                 </div>
-                <div class="col-md-2">
+                <div class="col-md-2" style="padding-top:80px">
                     <select id="TxType" class="form-control">
                         <option value="">Any</option>
                         <option value="EnrollmentTransaction">Enrollment</option>
@@ -252,7 +262,7 @@
                     </select>
                 </div>
             </div>
-            <table class="table cool table-hover">
+            <table class="table cool table-striped">
                 <thead>
                     <tr>
                         <th>TXID</th>
@@ -272,17 +282,19 @@
         </div>
         <!-- 资产页面 -->
         <div id="asset-page" class="jumbotron container" hidden>
-            <h2>Assets</h2>
+            <div class="title">
+                <span>Assets</span>
+            </div>
             <div id="assets" class="row"></div>
             <h3>NEP5</h3>
             <div id="nep5ass" class="row"></div>
         </div>
         <!-- 地址页面 -->
         <div id="addrs-page" class="jumbotron container" hidden>
-            <caption>
-                <h2>Address list</h2>
-            </caption>
-            <table class="table table-hover cool">
+            <div class="title">
+                <span>Address list</span>
+            </div>
+            <table class="table table-striped cool">
                 <thead>
                     <tr>
                         <th>address</th>
@@ -302,9 +314,9 @@
         <!-- wallet -->
         <div id="wallet-page" hidden>
             <div class="jumbotron masthead">
-                <caption>
-                    <h2>wallet</h2>
-                </caption>
+                <div class="title">
+                    <span>wallet</span>
+                </div>>
                 <div>
                     <div class="form-group" hidden>
                         <label>选择您的钱包</label>
@@ -326,7 +338,7 @@
             </div>
 
             <div class="jumbotron masthead" id="wallet-utxo" hidden>
-                <table class="table table-hover cool">
+                <table class="table table-striped cool">
                     <caption>
                         <h3>UTXO</h3>
                     </caption>
