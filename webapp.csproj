@@ -74,7 +74,9 @@
   <ItemGroup>
     <Content Include="css\bootstrap.css" />
     <Content Include="css\bootstrap.min.css" />
+    <Content Include="css\mainnet.css" />
     <Content Include="css\mystyle.css" />
+    <Content Include="css\testnet.css" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="fonts\search.svg" />
     <Content Include="img\bs-docs-masthead-pattern.png" />
