@@ -739,7 +739,6 @@ var WebBrowser;
             $("#network").children(".text").text("TestNet");
         }
         else {
-            $("#network").val(net);
             if (net == "mainnet") {
                 $("#btn-mainnet").addClass("active");
                 $("#btn-testnet").removeClass("active");
@@ -750,6 +749,7 @@ var WebBrowser;
                 $("#btn-mainnet").removeClass("active");
                 $("#network").children(".text").text("TestNet");
             }
+            $("#network").val(net);
         }
         $("#btn-testnet").click(() => {
             $("#network").val("testnet");

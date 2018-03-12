@@ -230,7 +230,6 @@ namespace WebBrowser
             $("#network").val("testnet");
             $("#network").children(".text").text("TestNet");
         } else {
-            $("#network").val(net);
             if (net == "mainnet") {
                 $("#btn-mainnet").addClass("active");
                 $("#btn-testnet").removeClass("active");
@@ -241,6 +240,7 @@ namespace WebBrowser
                 $("#btn-mainnet").removeClass("active");
                 $("#network").children(".text").text("TestNet");
             }
+            $("#network").val(net);
         }
 
 
