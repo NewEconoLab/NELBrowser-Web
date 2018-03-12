@@ -21,7 +21,7 @@ namespace WebBrowser
                 this.updateTrasctions(this.pageUtil, <string>$("#TxType").val());
             });
 
-            this.txlist.find(".next").click(() =>
+            this.txlist.find("#next").click(() =>
             {
                 if (this.pageUtil.currentPage == this.pageUtil.totalPage)
                 {
@@ -33,7 +33,7 @@ namespace WebBrowser
                     this.updateTrasctions(this.pageUtil, <string>$("#TxType").val());
                 }
             });
-            this.txlist.find(".previous").click(() =>
+            this.txlist.find("#previous").click(() =>
             {
                 if (this.pageUtil.currentPage <= 1)
                 {
@@ -65,7 +65,7 @@ namespace WebBrowser
                 html += "</a></td>"
                 html += "<td><a href='./page/blcokInfo.html?index=" + tx.blockindex + "'>" + tx.blockindex
                 html += "</a></td>"
-                html += "<td>" + tx.type
+                html += "<td>" + tx.type.replace("Transaction", "");
                 html += "</td>"
                 html += "<td>" + (tx.gas == undefined ? '0' : tx.gas)
                 html += "</td>"
@@ -100,7 +100,7 @@ namespace WebBrowser
         {
             let txInfos: Tx[] = await this.ajax.post('getrawtransaction', [txid]);
             let txInfo: Tx = txInfos[0];
-            $("#type").text(txInfo.type);
+            $("#type").text(txInfo.type.replace("Transaction", ""));
             $("#txInfo").text("Hash: " + txInfo.txid);
             $("#index").text(txInfo.blockindex);
             $("#size").text(txInfo.size + " bytes");
@@ -154,16 +154,7 @@ namespace WebBrowser
                 html += '</li>'
                 $("#from").append(html);
             }
-
-            // txInfo.vin.forEach(async (vin,index,arry)=>{
-            //     let txInfos:Tx[] = await this.ajax.post('getrawtransaction',[vin.txid]);
-            //     let vout = txInfos[0].vout[vin.vout]
-            //     let address:string = vout.address;
-            //     let value :string = vout.value;            
-            //     let name = allAsset.find(val=>val.id==vout.asset).name.map(name=>{return name.name}).join("|");
-
-            //     $("#from").append('<li class="list-group-item"> </br> txid: <a class="code" href="./txInfo.html?txid='+vin.txid+'">'+vin.txid+'</a>['+vin.vout+'] </li>');
-            // });
+            
             txInfo.vout.forEach(vout =>
             {
                 let name = allAsset.find(val => val.id == vout.asset).name.map(name => name.name).join("|");

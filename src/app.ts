@@ -57,7 +57,7 @@ namespace WebBrowser
             html += "<tr>"
             html += "<td><a class='code' class='code' target='_blank' rel='external nofollow'  href='./page/txInfo.html?txid=" + tx.txid + "'>" + txid + "</a>"
             html += "</td>"
-            html += "<td>" + tx.type
+            html += "<td>" + tx.type.replace("Transaction", "");
             html += "</td>"
             html += "<td>" + tx.blockindex
             html += "</td>"
@@ -184,6 +184,7 @@ namespace WebBrowser
             assetControll.allAsset();
             $(page).show();
             $("#asset-btn").addClass("active");
+            $("#brow-btn").removeClass("active");
         } else
         {
             $('#asset-page').hide();
@@ -191,8 +192,8 @@ namespace WebBrowser
         }
         if (page == "#wallet-page")
         {
-            let wallet: WalletControll = new WalletControll();
-            $(page).show();
+            //let wallet: WalletControll = new WalletControll();
+            //$(page).show();
             $("#wallet-btn").addClass("active");
             $("#brow-btn").removeClass("active");
 

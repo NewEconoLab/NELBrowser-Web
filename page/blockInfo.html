@@ -1,128 +1,133 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
-    <meta name="description" content="">
-    <meta name="author" content="">
-    <!-- <link rel="icon" href="../../favicon.ico"> -->
 
-    <title>NEL NewEconnolab</title>
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
+  <meta name="description" content="">
+  <meta name="author" content="">
+  <!-- <link rel="icon" href="../../favicon.ico"> -->
 
-    <!-- Bootstrap core CSS -->
-    <link href="../css/bootstrap.min.css" rel="stylesheet">
-    <link href="../css/mystyle.css" rel="stylesheet">
+  <title>NEL NewEconnolab</title>
 
-    <!-- Custom styles for this template -->
-    <!-- <link href="navbar.css" rel="stylesheet"> -->
+  <!-- Bootstrap core CSS -->
+  <link href="../css/bootstrap.min.css" rel="stylesheet">
+  <link href="../css/mystyle.css" rel="stylesheet">
 
-    <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
+  <!-- Custom styles for this template -->
+  <!-- <link href="navbar.css" rel="stylesheet"> -->
 
-    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
-    <!--[if lt IE 9]>
+  <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
+
+  <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+  <!--[if lt IE 9]>
       <script src="https://cdn.bootcss.com/html5shiv/3.7.3/html5shiv.min.js"></script>
       <script src="https://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
-  </head>
+</head>
 
-  <body>
+<body>
 
-    <div class="container">
+  <div class="container">
 
-      <!-- Static navbar -->
+    <!-- Static navbar -->
 
-      <!-- Main component for a primary marketing message or call to action -->
-      <div class="jumbotron">
-        <div class="container">
-          <h2>区块详情</h2>
-          <div class="row">
-             <div class="col-md-4">
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <h3 class="panel-title">
-                          索引
-                        </h3>
-                    </div>
-                    <div id="index" class="panel-body" style="word-break:break-all;">
-                    </div>
-                </div> 
+    <!-- Main component for a primary marketing message or call to action -->
+    <div class="jumbotron">
+      <div class="container">
+        <h2>区块详情</h2>
+        <div class="row">
+          <div class="col-md-4">
+            <div class="panel panel-default">
+              <div class="panel-heading">
+                <h3 class="panel-title">
+                  索引
+                </h3>
               </div>
-              <div class="col-md-4">
-                 <div class="panel panel-default" style="height:100%">
-                    <div class="panel-heading">
-                        <h3 class="panel-title">
-                            大小
-                        </h3>
-                    </div>
-                     <div id="size" class="panel-body" style="word-break:break-all;">
-                     </div>
-                 </div> 
-               </div>
-               <div class="col-md-4">
-                  <div class="panel panel-default">
-                      <div class="panel-heading">
-                          <h3 class="panel-title">
-                              日期
-                          </h3>
-                      </div>
-                      <div id="time" class="panel-body" style="word-break:break-all;">
-                      </div>
-                  </div> 
-                </div>
-          </div>
-          <div class="row">
-             <div class="col-md-4">
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <h3 class="panel-title">
-                          版本号
-                        </h3>
-                    </div>
-                    <div id="version" class="panel-body" style="word-break:break-all;">
-                    </div>
-                </div> 
+              <div id="index" class="panel-body" style="word-break:break-all;">
               </div>
-              <div class="col-md-4">
-                 <div class="panel panel-default" style="height:100%">
-                    <div class="panel-heading">
-                        <h3 class="panel-title">
-                            HASH
-                        </h3>
-                    </div>
-                     <div id="hash" class="panel-body" style="word-break:break-all;">
-                     </div>
-                 </div> 
-               </div>
+            </div>
           </div>
-              
-          <table class="table table-hover cool">
-            <caption><h3>交易</h3></caption>
-            <thead>
-              <tr>
-                <th>txid</th>
-                <th>类型</th>
-                <th>大小</th>
-                <th>版本</th>
-              </tr>
-            </thead>
-            <tbody id="txs"></tbody>
+          <div class="col-md-4">
+            <div class="panel panel-default" style="height:100%">
+              <div class="panel-heading">
+                <h3 class="panel-title">
+                  大小
+                </h3>
+              </div>
+              <div id="size" class="panel-body" style="word-break:break-all;">
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="panel panel-default">
+              <div class="panel-heading">
+                <h3 class="panel-title">
+                  日期
+                </h3>
+              </div>
+              <div id="time" class="panel-body" style="word-break:break-all;">
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-4">
+            <div class="panel panel-default">
+              <div class="panel-heading">
+                <h3 class="panel-title">
+                  版本号
+                </h3>
+              </div>
+              <div id="version" class="panel-body" style="word-break:break-all;">
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="panel panel-default" style="height:100%">
+              <div class="panel-heading">
+                <h3 class="panel-title">
+                  HASH
+                </h3>
+              </div>
+              <div id="hash" class="panel-body" style="word-break:break-all;">
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <table class="table table-hover cool">
+          <caption>
+            <h3>交易</h3>
+          </caption>
+          <thead>
+            <tr>
+              <th>txid</th>
+              <th>类型</th>
+              <th>大小</th>
+              <th>版本</th>
+            </tr>
+          </thead>
+          <tbody id="txs"></tbody>
         </table>
-       </div>
       </div>
+    </div>
 
-    </div> <!-- /container -->
+  </div>
+  <!-- /container -->
 
 
-    <!-- Bootstrap core JavaScript
+  <!-- Bootstrap core JavaScript
     ================================================== -->
-    <!-- Placed at the end of the document so the pages load faster -->
-    <input id="page" value="blockInfo" hidden>
-    <script src="../lib/neo-ts.js"></script>
-    <script src="../lib/jquery.min.js"></script>
-    <script src="../lib/bootstrap.min.js"></script>
-    <script src="../dist/app.js"></script>
-    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
-  </body>
+  <!-- Placed at the end of the document so the pages load faster -->
+  <input id="page" value="blockInfo" hidden>
+  <script src="../lib/neo-ts.js"></script>
+  <script src="../lib/jquery.min.js"></script>
+  <script src="../lib/bootstrap.min.js"></script>
+  <script src="../dist/app.js"></script>
+  <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+</body>
+
 </html>

@@ -608,7 +608,7 @@ var WebBrowser;
                 html += "<tr>";
                 html += "<td><a class='code' class='code' target='_blank' rel='external nofollow'  href='./page/txInfo.html?txid=" + tx.txid + "'>" + txid + "</a>";
                 html += "</td>";
-                html += "<td>" + tx.type;
+                html += "<td>" + tx.type.replace("Transaction", "");
                 html += "</td>";
                 html += "<td>" + tx.blockindex;
                 html += "</td>";
@@ -718,14 +718,15 @@ var WebBrowser;
             assetControll.allAsset();
             $(page).show();
             $("#asset-btn").addClass("active");
+            $("#brow-btn").removeClass("active");
         }
         else {
             $('#asset-page').hide();
             $("#asset-btn").removeClass("active");
         }
         if (page == "#wallet-page") {
-            let wallet = new WebBrowser.WalletControll();
-            $(page).show();
+            //let wallet: WalletControll = new WalletControll();
+            //$(page).show();
             $("#wallet-btn").addClass("active");
             $("#brow-btn").removeClass("active");
         }
@@ -2096,7 +2097,7 @@ var WebBrowser;
             $("#TxType").change(() => {
                 this.updateTrasctions(this.pageUtil, $("#TxType").val());
             });
-            this.txlist.find(".next").click(() => {
+            this.txlist.find("#next").click(() => {
                 if (this.pageUtil.currentPage == this.pageUtil.totalPage) {
                     alert('当前页已经是最后一页了');
                     return;
@@ -2106,7 +2107,7 @@ var WebBrowser;
                     this.updateTrasctions(this.pageUtil, $("#TxType").val());
                 }
             });
-            this.txlist.find(".previous").click(() => {
+            this.txlist.find("#previous").click(() => {
                 if (this.pageUtil.currentPage <= 1) {
                     alert('当前已经是第一页了');
                     return;
@@ -2133,7 +2134,7 @@ var WebBrowser;
                     html += "</a></td>";
                     html += "<td><a href='./page/blcokInfo.html?index=" + tx.blockindex + "'>" + tx.blockindex;
                     html += "</a></td>";
-                    html += "<td>" + tx.type;
+                    html += "<td>" + tx.type.replace("Transaction", "");
                     html += "</td>";
                     html += "<td>" + (tx.gas == undefined ? '0' : tx.gas);
                     html += "</td>";
@@ -2171,7 +2172,7 @@ var WebBrowser;
             return __awaiter(this, void 0, void 0, function* () {
                 let txInfos = yield this.ajax.post('getrawtransaction', [txid]);
                 let txInfo = txInfos[0];
-                $("#type").text(txInfo.type);
+                $("#type").text(txInfo.type.replace("Transaction", ""));
                 $("#txInfo").text("Hash: " + txInfo.txid);
                 $("#index").text(txInfo.blockindex);
                 $("#size").text(txInfo.size + " bytes");
@@ -2214,14 +2215,6 @@ var WebBrowser;
                     html += '</li>';
                     $("#from").append(html);
                 }
-                // txInfo.vin.forEach(async (vin,index,arry)=>{
-                //     let txInfos:Tx[] = await this.ajax.post('getrawtransaction',[vin.txid]);
-                //     let vout = txInfos[0].vout[vin.vout]
-                //     let address:string = vout.address;
-                //     let value :string = vout.value;            
-                //     let name = allAsset.find(val=>val.id==vout.asset).name.map(name=>{return name.name}).join("|");
-                //     $("#from").append('<li class="list-group-item"> </br> txid: <a class="code" href="./txInfo.html?txid='+vin.txid+'">'+vin.txid+'</a>['+vin.vout+'] </li>');
-                // });
                 txInfo.vout.forEach(vout => {
                     let name = allAsset.find(val => val.id == vout.asset).name.map(name => name.name).join("|");
                     let sign = "";
