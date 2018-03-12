@@ -475,31 +475,28 @@ a:hover, a:focus {
     text-decoration: underline;
 }
 
-.page{
+.page {
     width: 101px;
     height: 38px;
     margin: 0 auto;
     /* Firefox */
-    display:-moz-box;
-    -moz-box-pack:center;
-    -moz-box-align:center;
-    
+    display: -moz-box;
+    -moz-box-pack: center;
+    -moz-box-align: center;
     /* Safari, Chrome, and Opera */
-    display:-webkit-box;
-    -webkit-box-pack:center;
-    -webkit-box-align:center;
-    
+    display: -webkit-box;
+    -webkit-box-pack: center;
+    -webkit-box-align: center;
     /* W3C */
-    display:box;
-    box-pack:center;
-    box-align:center;
-
+    display: box;
+    box-pack: center;
+    box-align: center;
     padding-top: 30px;
 }
 
-.page-previous{
+.page-previous {
     text-align: center;
-    text-align: center;  
+    text-align: center;
     height: 38px;
     width: 50px;
     background: #198CEE;
@@ -513,37 +510,31 @@ a:hover, a:focus {
     user-select: none;
 }
 
-.page-next{
+.page-next {
     text-align: center;
-    text-align: center;  
+    text-align: center;
     height: 38px;
     width: 50px;
     background: #198CEE;
     border-radius: 0 5px 5px 0;
     display: table-cell;
     vertical-align: middle;
-    text-align: center;   
+    text-align: center;
     -webkit-user-select: none;
     -moz-user-select: none;
     -ms-user-select: none;
     user-select: none;
 }
 
-.page-previous.disabled,
-.page-next.disabled
-{
+.page-previous.disabled, .page-next.disabled {
     background: #0E5C9E;
 }
 
-.page-previous:hover,
-.page-next:hover
-{
+.page-previous:hover, .page-next:hover {
     background: #4DADFF;
 }
 
-.page-next.disabled:hover,
-.page-previous.disabled:hover
-{
+.page-next.disabled:hover, .page-previous.disabled:hover {
     background: #0E5C9E;
 }
 
