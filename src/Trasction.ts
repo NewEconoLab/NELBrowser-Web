@@ -12,7 +12,7 @@ namespace WebBrowser
         private txlist: JQuery<HTMLElement>;
         constructor()
         {
-            this.ajax.network = network;
+            
             this.txlist = $("#txlist-page");
             this.start();
             //监听交易列表选择框
@@ -95,7 +95,7 @@ namespace WebBrowser
     export class TrasctionInfo
     {
         private ajax: Ajax = new Ajax();
-        constructor() { this.ajax.network = network; }
+        constructor() {  }
         public async updateTxInfo(txid: string)
         {
             let txInfos: Tx[] = await this.ajax.post('getrawtransaction', [txid]);

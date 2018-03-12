@@ -13,21 +13,6 @@ var WebBrowser;
 /// <reference types="jquery" />
 (function (WebBrowser) {
     class Ajax {
-        constructor() {
-            this._network = "testnet";
-        }
-        /**
-         * get network
-         */
-        get network() {
-            return this._network;
-        }
-        /**
-         * set network
-         */
-        set network(nextwork) {
-            this._network = nextwork;
-        }
         /**
          * async post
          */
@@ -36,7 +21,7 @@ var WebBrowser;
                 let promise = new Promise((resolve, reject) => {
                     $.ajax({
                         type: 'POST',
-                        url: 'http://47.96.168.8:81/api/' + this._network,
+                        url: 'http://47.96.168.8:81/api/' + sessionStorage.getItem('network'),
                         data: JSON.stringify({
                             "jsonrpc": "2.0",
                             "method": method,
@@ -76,7 +61,7 @@ var WebBrowser;
                 let promise = new Promise((resolve, reject) => {
                     $.ajax({
                         type: 'GET',
-                        url: 'https://47.96.168.8:4431/api/testnet?jsonrpc=2.0&method=getblock&params=%5b1000%5d&id=1001',
+                        url: 'https://47.96.168.8:4431/api/' + sessionStorage.getItem('network') + '?jsonrpc=2.0&method=getblock&params=%5b1000%5d&id=1001',
                         success: (data, status) => {
                             resolve(data['result']);
                         },
@@ -568,7 +553,6 @@ var WebBrowser;
 /// <reference path="Util.ts" />
 (function (WebBrowser) {
     let ajax = new WebBrowser.Ajax();
-    ajax.network = "testnet";
     //主页
     function indexPage() {
         return __awaiter(this, void 0, void 0, function* () {
@@ -748,6 +732,35 @@ var WebBrowser;
         $("#searchText").focusout(() => {
             $("#nel-search").removeClass("nel-input");
         });
+        var net = sessionStorage.getItem("network");
+        if (net == undefined || net == "") {
+            sessionStorage.setItem('network', 'testnet');
+            $("#network").val("testnet");
+            $("#network").children(".text").text("TestNet");
+        }
+        else {
+            $("#network").val(net);
+            if (net == "mainnet") {
+                $("#btn-mainnet").addClass("active");
+                $("#btn-testnet").removeClass("active");
+                $("#network").children(".text").text("MainNet");
+            }
+            if (net == "testnet") {
+                $("#btn-testnet").addClass("active");
+                $("#btn-mainnet").removeClass("active");
+                $("#network").children(".text").text("TestNet");
+            }
+        }
+        $("#btn-testnet").click(() => {
+            $("#network").val("testnet");
+            sessionStorage.setItem('network', 'testnet');
+            window.location.reload();
+        });
+        $("#btn-mainnet").click(() => {
+            $("#network").val("mainnet");
+            sessionStorage.setItem('network', 'mainnet');
+            window.location.reload();
+        });
     };
 })(WebBrowser || (WebBrowser = {}));
 // import * as $ from "jquery";
@@ -910,7 +923,7 @@ var WebBrowser;
         }
     }
     WebBrowser.Detail = Detail;
-    WebBrowser.network = "testnet";
+    WebBrowser.network = "mainnet";
 })(WebBrowser || (WebBrowser = {}));
 var WebBrowser;
 (function (WebBrowser) {
@@ -1141,7 +1154,6 @@ var WebBrowser;
             $("#nep5-btn").click(() => {
                 this.nep5Info();
             });
-            this.ajax.network = WebBrowser.network;
         }
         /**
          * queryNep5AssetById
@@ -1264,7 +1276,6 @@ var WebBrowser;
     class addrlistControll {
         constructor() {
             this.ajax = new WebBrowser.Ajax();
-            this.ajax.network = WebBrowser.network;
             $("#addrs-page").find("#next").click(() => {
                 if (this.pageUtil.currentPage == this.pageUtil.totalPage) {
                     alert('当前页已经是最后一页了');
@@ -1327,7 +1338,6 @@ var WebBrowser;
     class AssetControll {
         constructor() {
             this.ajax = new WebBrowser.Ajax();
-            this.ajax.network = WebBrowser.network;
         }
         allAsset() {
             return __awaiter(this, void 0, void 0, function* () {
@@ -1366,7 +1376,6 @@ var WebBrowser;
     class BlocksControll {
         constructor() {
             this.ajax = new WebBrowser.Ajax();
-            this.ajax.network = WebBrowser.network;
             this.previous = document.createElement("li");
             this.next = document.createElement("li");
             this.ul = document.createElement("ul");
@@ -1457,7 +1466,6 @@ var WebBrowser;
             this.neoUtil = new WebBrowser.NeoUtil();
             this.walletview = new WebBrowser.WalletView();
             this.ajax = new WebBrowser.Ajax();
-            this.ajax.network = WebBrowser.network;
             $("#import-wif").click(() => {
                 $("#importWif").modal('show');
             });
@@ -2090,7 +2098,6 @@ var WebBrowser;
     class Trasctions {
         constructor() {
             this.ajax = new WebBrowser.Ajax();
-            this.ajax.network = WebBrowser.network;
             this.txlist = $("#txlist-page");
             this.start();
             //监听交易列表选择框
@@ -2166,7 +2173,6 @@ var WebBrowser;
     class TrasctionInfo {
         constructor() {
             this.ajax = new WebBrowser.Ajax();
-            this.ajax.network = WebBrowser.network;
         }
         updateTxInfo(txid) {
             return __awaiter(this, void 0, void 0, function* () {

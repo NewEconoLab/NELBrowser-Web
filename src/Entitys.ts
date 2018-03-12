@@ -223,5 +223,8 @@ namespace WebBrowser
         }
     }
 
-    export let network: string = "testnet";
+    export let network: string = "mainnet";
+
+
+
 }

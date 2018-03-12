@@ -5,7 +5,6 @@
 namespace WebBrowser
 {
     let ajax: Ajax = new Ajax();
-    ajax.network = "testnet";
     //主页
     async function indexPage()
     {
@@ -223,5 +222,38 @@ namespace WebBrowser
         {
             $("#nel-search").removeClass("nel-input");
         })
+
+
+        var net = sessionStorage.getItem("network");
+        if (net == undefined || net == "") {
+            sessionStorage.setItem('network', 'testnet');
+            $("#network").val("testnet");
+            $("#network").children(".text").text("TestNet");
+        } else {
+            $("#network").val(net);
+            if (net == "mainnet") {
+                $("#btn-mainnet").addClass("active");
+                $("#btn-testnet").removeClass("active");
+                $("#network").children(".text").text("MainNet");
+            }
+            if (net == "testnet") {
+                $("#btn-testnet").addClass("active");
+                $("#btn-mainnet").removeClass("active");
+                $("#network").children(".text").text("TestNet");
+            }
+        }
+
+
+        $("#btn-testnet").click(() => {
+            $("#network").val("testnet");
+            sessionStorage.setItem('network', 'testnet');
+            window.location.reload();
+        })
+        $("#btn-mainnet").click(() => {
+            $("#network").val("mainnet");
+            sessionStorage.setItem('network', 'mainnet');
+            window.location.reload();
+        })
     }
+    
 }

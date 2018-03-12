@@ -57,7 +57,7 @@ namespace WebBrowser
             {
                 this.nep5Info();
             })
-            this.ajax.network = network;
+            
         }
 
         /**
@@ -199,7 +199,7 @@ namespace WebBrowser
         private ajax: Ajax = new Ajax();
         constructor()
         {
-            this.ajax.network = network;
+            
             $("#addrs-page").find("#next").click(() =>
             {
                 if (this.pageUtil.currentPage == this.pageUtil.totalPage)
@@ -269,7 +269,7 @@ namespace WebBrowser
         private ajax: Ajax = new Ajax();
         constructor()
         {
-            this.ajax.network = network;
+            
         }
         public async allAsset()
         {
@@ -325,7 +325,7 @@ namespace WebBrowser
         constructor()
         {
 
-            this.ajax.network = network;
+            
             this.previous = document.createElement("li");
             this.next = document.createElement("li");
             this.ul = document.createElement("ul");
@@ -434,7 +434,7 @@ namespace WebBrowser
 
         constructor()
         {
-            this.ajax.network = network;
+            
             $("#import-wif").click(() =>
             {
                 $("#importWif").modal('show');

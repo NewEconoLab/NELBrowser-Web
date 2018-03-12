@@ -4,25 +4,7 @@ namespace WebBrowser
 {
     export class Ajax
     {
-        private _network: string;
-        /**
-         * get network
-         */
-        public get network()
-        {
-            return this._network;
-        }
-        /**
-         * set network
-         */
-        public set network(nextwork: string)
-        {
-            this._network = nextwork;
-        }
-        constructor()
-        {
-            this._network = "testnet";
-        }
+        
         /**
          * async post
          */
@@ -32,7 +14,7 @@ namespace WebBrowser
             {
                 $.ajax({
                     type: 'POST',
-                    url: 'http://47.96.168.8:81/api/' + this._network,
+                    url: 'http://47.96.168.8:81/api/' + sessionStorage.getItem('network'),
                     data: JSON.stringify({
                         "jsonrpc": "2.0",
                         "method": method,
@@ -79,7 +61,7 @@ namespace WebBrowser
             {
                 $.ajax({
                     type: 'GET',
-                    url: 'https://47.96.168.8:4431/api/testnet?jsonrpc=2.0&method=getblock&params=%5b1000%5d&id=1001',
+                    url: 'https://47.96.168.8:4431/api/' + sessionStorage.getItem('network') + '?jsonrpc=2.0&method=getblock&params=%5b1000%5d&id=1001',
 
                     success: (data, status) =>
                     {
