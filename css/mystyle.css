@@ -23,7 +23,7 @@ body {
 }
 
 #searchText:hover, #searchText:focus {
-    width: 574px;
+    width: 564px;
     border-right: 0;
     outline: 0;
 }
@@ -47,6 +47,10 @@ body {
 .container {
     position: relative;
     z-index: 2
+}
+
+.container-nel{
+    padding-top: 28px;
 }
 
 body:after {
@@ -77,7 +81,7 @@ body:after {
     padding: 40px;
 }
 
-.table-striped {
+.table-nel {
     border-radius: 5px 5px 0 0;
 }
 
@@ -88,7 +92,7 @@ body:after {
     padding: 13px;
 }
 
-.table-striped>tbody>tr>td {
+.table-nel>tbody>tr>td {
     display: table-cell;
     vertical-align: middle;
     text-align: center;

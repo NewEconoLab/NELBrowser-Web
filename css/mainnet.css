@@ -275,9 +275,13 @@ table>tbody>tr {
 
 .last-info {
     background: #F5F5F5;
-    border-radius: 0 0 5px 5px;
+    border-radius: 5px 5px 5px 5px;
 }
 
+.table-nel > tbody > tr:nth-of-type(odd) {
+    background-color: #F5F5F5;
+}
+.table-nel{background-color:#fff}
 
 a {
     color: #198CEE;
@@ -294,7 +298,7 @@ a:hover, a:focus {
     text-align: center;
     height: 38px;
     width: 50px;
-    background: #198CEE;
+    background: #454F60;
     border-radius: 5px 0 0 5px;
     display: table-cell;
     vertical-align: middle;
@@ -310,7 +314,7 @@ a:hover, a:focus {
     text-align: center;
     height: 38px;
     width: 50px;
-    background: #198CEE;
+    background: #151A1E;
     border-radius: 0 5px 5px 0;
     display: table-cell;
     vertical-align: middle;
@@ -320,7 +324,6 @@ a:hover, a:focus {
     -ms-user-select: none;
     user-select: none;
 }
-
 .page-previous.disabled, .page-next.disabled {
     background: #0E5C9E;
 }

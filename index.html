@@ -15,7 +15,7 @@
     <!-- Bootstrap core CSS -->
     <link href="./css/bootstrap.css" rel="stylesheet">
     <link href="./css/mystyle.css" rel="stylesheet">
-    <link id="netCss" href="./css/mainnet.css" rel="stylesheet"/>
+    <link id="netCss" href="./css/testnet.css" rel="stylesheet"/>
     <!-- <link href="./css/bootstrap-table.css" rel="stylesheet"> -->
 
     <!-- Custom styles for this template -->
@@ -108,8 +108,7 @@
         <!-- Main component for a primary marketing message or call to action -->
         <!-- 首页 -->
         <div id="index-page" hidden>
-            <div class=" masthead">
-                <div style="height:54px"></div>
+            <div class=" container-nel">
                 <div class="title">
                     <span>Summary</span>
                 </div>
@@ -155,7 +154,7 @@
                         <span>Last 10 Blocks</span>
                     </div>
                     <div class="last-info">
-                        <table class="table table-striped cool" id="blocks">
+                        <table class="table table-nel cool" id="blocks">
                             <thead>
                                 <tr>
                                     <th>Height</th>
@@ -176,7 +175,7 @@
                         <span>Last 10 Transactions</span>
                     </div>
                     <div class="last-info">
-                        <table class="table cool table-striped" id="transactions">
+                        <table class="table cool table-nel" id="transactions">
                             <thead>
                                 <tr>
                                     <th>TXID</th>
@@ -195,11 +194,11 @@
             </div>
         </div>
         <!-- 区块列表页面 -->
-        <div id="blocks-page" class="jumbotron container" hidden>
+        <div id="blocks-page" class="container-nel" hidden>
             <div class="title">
                 <span>Block list</span>
             </div>
-            <table class="table table-striped cool">
+            <table class="table table-nel cool">
                 <thead>
                     <tr>
                         <th>index</th>
@@ -222,7 +221,7 @@
             </div>
         </div>
         <!-- 交易列表页面 -->
-        <div id="txlist-page" class="jumbotron container" hidden>
+        <div id="txlist-page" class="container-nel" hidden>
             <div class="row">
                 <div class="col-md-2">
                     <div class="title">
@@ -243,7 +242,7 @@
                     </select>
                 </div>
             </div>
-            <table class="table cool table-striped">
+            <table class="table cool table-nel">
                 <thead>
                     <tr>
                         <th>TXID</th>
@@ -268,7 +267,7 @@
             </div>
         </div>
         <!-- 资产页面 -->
-        <div id="asset-page" class="jumbotron container" hidden>
+        <div id="asset-page" class="container-nel" hidden>
             <div class="title">
                 <span>Assets</span>
             </div>
@@ -277,11 +276,11 @@
             <div id="nep5ass" class="row"></div>
         </div>
         <!-- 地址页面 -->
-        <div id="addrs-page" class="jumbotron container" hidden>
+        <div id="addrs-page" class="container-nel" hidden>
             <div class="title">
                 <span>Address list</span>
             </div>
-            <table class="table table-striped cool">
+            <table class="table table-nel cool">
                 <thead>
                     <tr>
                         <th>address</th>
