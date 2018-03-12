@@ -1117,7 +1117,7 @@ var WebBrowser;
                 let search = $("#searchText").val().toString();
                 if (search.length == 34) {
                     if (neoUtil.verifyPublicKey(search)) {
-                        window.location.href = url + 'address.html?addr=' + search;
+                        window.open(url + 'address.html?addr=' + search);
                     }
                     else {
                         alert('请输入正确的地址');
@@ -1125,10 +1125,10 @@ var WebBrowser;
                 }
                 search = search.replace('0x', '');
                 if (search.length == 64) {
-                    window.location.href = url + 'txInfo.html?txid=' + search;
+                    window.open(url + 'txInfo.html?txid=' + search);
                 }
                 if (!isNaN(Number(search))) {
-                    window.location.href = url + 'blockInfo.html?index=' + search;
+                    window.open(url + 'blockInfo.html?index=' + search);
                 }
             });
         }
