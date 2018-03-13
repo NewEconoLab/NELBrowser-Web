@@ -223,33 +223,51 @@ namespace WebBrowser
             $("#nel-search").removeClass("nel-input");
         })
 
+        let page = $('#page').val();
+        var css = document.getElementById("netCss") as HTMLLinkElement;
+        var link: string = "";
+        if (page == "index")
+        {
+            link = "./css/";
+        } else {
+            link = "../css/";
+        }
 
         var net = sessionStorage.getItem("network");
-        if (net == undefined || net == "") {
+        if (net == undefined || net == "")
+        {
             sessionStorage.setItem('network', 'testnet');
             $("#network").val("testnet");
+            $("#btn-testnet").addClass("active");
             $("#network").children(".text").text("TestNet");
+            css.href = link + "testnet.css";
         } else {
-            if (net == "mainnet") {
+            if (net == "mainnet")
+            {
                 $("#btn-mainnet").addClass("active");
                 $("#btn-testnet").removeClass("active");
                 $("#network").children(".text").text("MainNet");
+                css.href = link+"mainnet.css";
             }
-            if (net == "testnet") {
+            if (net == "testnet")
+            {
                 $("#btn-testnet").addClass("active");
                 $("#btn-mainnet").removeClass("active");
                 $("#network").children(".text").text("TestNet");
+                css.href = link + "testnet.css";
             }
             $("#network").val(net);
         }
 
 
-        $("#btn-testnet").click(() => {
+        $("#btn-testnet").click(() =>
+        {
             $("#network").val("testnet");
             sessionStorage.setItem('network', 'testnet');
             window.location.reload();
         })
-        $("#btn-mainnet").click(() => {
+        $("#btn-mainnet").click(() =>
+        {
             $("#network").val("mainnet");
             sessionStorage.setItem('network', 'mainnet');
             window.location.reload();

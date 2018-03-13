@@ -265,6 +265,14 @@
     padding-bottom: 30px;
 }
 
+
+table>thead>tr{
+    font-family: PingFangSC-Regular;
+    font-size: 12px;
+    color: #333333;
+    line-height: 12px;
+}
+
 table>tbody>tr {
     height: 56px;
     font-family: Microsoft Yahei;
@@ -342,4 +350,10 @@ a:hover, a:focus {
     color: #7B7B7B;
     line-height: 16px;
     padding-top: 20px;
+}
+
+
+
+.table-nel > div:nth-of-type(odd) {
+    background-color: #F5F5F5;
 }

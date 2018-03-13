@@ -732,22 +732,35 @@ var WebBrowser;
         $("#searchText").focusout(() => {
             $("#nel-search").removeClass("nel-input");
         });
+        let page = $('#page').val();
+        var css = document.getElementById("netCss");
+        var link = "";
+        if (page == "index") {
+            link = "./css/";
+        }
+        else {
+            link = "../css/";
+        }
         var net = sessionStorage.getItem("network");
         if (net == undefined || net == "") {
             sessionStorage.setItem('network', 'testnet');
             $("#network").val("testnet");
+            $("#btn-testnet").addClass("active");
             $("#network").children(".text").text("TestNet");
+            css.href = link + "testnet.css";
         }
         else {
             if (net == "mainnet") {
                 $("#btn-mainnet").addClass("active");
                 $("#btn-testnet").removeClass("active");
                 $("#network").children(".text").text("MainNet");
+                css.href = link + "mainnet.css";
             }
             if (net == "testnet") {
                 $("#btn-testnet").addClass("active");
                 $("#btn-mainnet").removeClass("active");
                 $("#network").children(".text").text("TestNet");
+                css.href = link + "testnet.css";
             }
             $("#network").val(net);
         }
