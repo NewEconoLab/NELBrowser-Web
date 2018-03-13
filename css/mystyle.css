@@ -7,7 +7,7 @@
 }
 
 body {
-    height: 1789px;
+    height: 1260px;
     padding: 0;
     padding-top: 30px;
     margin: 0;
@@ -82,7 +82,7 @@ body:after {
 }
 
 .table-nel {
-    border-radius: 5px 5px 0 0;
+    border-radius: 5px 5px 5px 5px;
 }
 
 .tfood {
@@ -102,7 +102,6 @@ body:after {
     border-bottom: 0;
     text-align: center;
 }
-
 .page {
     width: 101px;
     height: 38px;

@@ -395,7 +395,7 @@ table>tbody>tr {
 }
 
 .list-nel{
-    background-color: #454F60;
+    background-color: #454F60;border-collapse: separate;
 }
 
 .list-nel{
@@ -404,4 +404,8 @@ table>tbody>tr {
 
 .list-body>.line:nth-of-type(odd){
     background-color: #505F79;
+}
+.table-nel>tbody tr:last-of-type {
+    border-collapse: separate;
+    border-radius: 5px 5px 5px 5px;
 }

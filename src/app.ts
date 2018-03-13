@@ -2,11 +2,34 @@
 /// <reference types="jquery" />
 /// <reference types="bootstrap" />
 /// <reference path="Util.ts" />
+/// <reference path="../page/addressInfo.ts" />
 namespace WebBrowser
 {
     let ajax: Ajax = new Ajax();
-    //主页
-    async function indexPage()
+
+    class App
+    {
+        navbar: Navbar = new Navbar();
+        netWork: NetWork = new NetWork();
+
+        strat()
+        {
+            this.netWork.start();
+            this.redirect();
+            document.getElementsByTagName("body")[0].onhashchange = () => { this.redirect() };
+
+            $("#searchText").focus(() =>
+            {
+                $("#nel-search").addClass("nel-input");
+            })
+            $("#searchText").focusout(() =>
+            {
+                $("#nel-search").removeClass("nel-input");
+            })
+        }
+
+            //主页
+    async indexPage()
     {
         //查询区块高度(区块数量-1)
         let blockCount = await ajax.post('getblockcount', []);
@@ -69,7 +92,7 @@ namespace WebBrowser
     };
 
     //区块列表
-    async function blocksPage()
+    async blocksPage()
     {
         //查询区块数量
         let blockCount = await ajax.post('getblockcount', []);
@@ -100,40 +123,30 @@ namespace WebBrowser
         });
     }
 
-
-    $(() =>
+    redirect()
     {
-        let page = $('#page').val();
-        let locationutil: LocationUtil = new LocationUtil();
+        var href = window.location.href;
+        var page: string = "";
         let hash = location.hash;
-        redirect(hash);
-        new SearchController();
-        if (page === 'txInfo')
+        var urlarr: string[] = hash.split("/");
+        if (urlarr.length == 1)
         {
-            let txid: string = locationutil.GetQueryString("txid");
-            let ts: TrasctionInfo = new TrasctionInfo();
-            ts.updateTxInfo(txid);
+            page = urlarr[0];
         }
-        if (page === 'blockInfo')
+        if (urlarr.length == 2)
         {
-            let index: number = Number(locationutil.GetQueryString("index"));
-            let block: BlockPage = new BlockPage();
-            block.queryBlock(index);
+            page = urlarr[1];
         }
-        if (page === 'addrInfo')
+        if (urlarr[0] == "")
         {
-            let addr: string = locationutil.GetQueryString("addr");
-            let addrInfo: AddressControll = new AddressControll(addr);
-            addrInfo.addressInfo();
+            var newhref = href.replace("#", "");
+            newhref += "#mainnet";
+            window.location.href = newhref;
         }
-    });
-
-
-    function redirect(page: string)
-    {
-        if (page === '')
+        this.netWork.changeNetWork(urlarr[0]);
+        if (page === '#mainnet' || page === "#testnet")
         {
-            indexPage();
+            this.indexPage();
             $('#index-page').show();
             $("#index-btn").addClass("active");
             $("#brow-btn").removeClass("active");
@@ -147,7 +160,7 @@ namespace WebBrowser
         {
             // let blocks=new BlocksControll();
             // blocks.start();
-            blocksPage();
+            this.blocksPage();
             $(page).show();
             $("#blocks-btn").addClass("active");
         } else
@@ -201,77 +214,38 @@ namespace WebBrowser
             $("#wallet-page").hide();
             $("#wallet-btn").removeClass("active");
         }
-    }
 
-    function onhash()
-    {
-        let hash = location.hash;
-        redirect(hash);
+    }
     }
 
     window.onload = () =>
     {
-        document.getElementsByTagName("body")[0].onhashchange = () => { onhash() };
         WWW.rpc_getURL();
+        var app = new App();
+        app.strat();
 
-        $("#searchText").focus(() =>
-        {
-            $("#nel-search").addClass("nel-input");
-        })
-        $("#searchText").focusout(() =>
-        {
-            $("#nel-search").removeClass("nel-input");
-        })
 
         let page = $('#page').val();
-        var css = document.getElementById("netCss") as HTMLLinkElement;
-        var link: string = "";
-        if (page == "index")
+        let locationutil: LocationUtil = new LocationUtil();
+        new SearchController();
+        if (page === 'txInfo')
         {
-            link = "./css/";
-        } else {
-            link = "../css/";
+            let txid: string = locationutil.GetQueryString("txid");
+            let ts: TrasctionInfo = new TrasctionInfo();
+            ts.updateTxInfo(txid);
         }
-
-        var net = sessionStorage.getItem("network");
-        if (net == undefined || net == "")
+        if (page === 'blockInfo')
         {
-            sessionStorage.setItem('network', 'testnet');
-            $("#network").val("testnet");
-            $("#btn-testnet").addClass("active");
-            $("#network").children(".text").text("TestNet");
-            css.href = link + "testnet.css";
-        } else {
-            if (net == "mainnet")
-            {
-                $("#btn-mainnet").addClass("active");
-                $("#btn-testnet").removeClass("active");
-                $("#network").children(".text").text("MainNet");
-                css.href = link+"mainnet.css";
-            }
-            if (net == "testnet")
-            {
-                $("#btn-testnet").addClass("active");
-                $("#btn-mainnet").removeClass("active");
-                $("#network").children(".text").text("TestNet");
-                css.href = link + "testnet.css";
-            }
-            $("#network").val(net);
+            let index: number = Number(locationutil.GetQueryString("index"));
+            let block: BlockPage = new BlockPage();
+            block.queryBlock(index);
         }
-
-
-        $("#btn-testnet").click(() =>
+        if (page === 'addrInfo')
         {
-            $("#network").val("testnet");
-            sessionStorage.setItem('network', 'testnet');
-            window.location.reload();
-        })
-        $("#btn-mainnet").click(() =>
-        {
-            $("#network").val("mainnet");
-            sessionStorage.setItem('network', 'mainnet');
-            window.location.reload();
-        })
+            let addr: string = locationutil.GetQueryString("addr");
+            let addrInfo: AddressControll = new AddressControll(addr);
+            addrInfo.addressInfo();
+        }
     }
     
 }

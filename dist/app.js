@@ -542,101 +542,253 @@ var WebBrowser;
     }
     WebBrowser.StorageUtil = StorageUtil;
 })(WebBrowser || (WebBrowser = {}));
+var WebBrowser;
+(function (WebBrowser) {
+    var page;
+    (function (page) {
+        page.addressInfo = document.createElement("div");
+        page.addressInfo.innerHTML =
+            `
+    <div class="title"><span>Address info</span></div>
+    <h4 class="cool" id="address"></h4>
+    <div id="balance" class="row">
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            <div class="panel panel-default" style="height:100%">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Nep5 asset query </h3>
+                </div>
+                <div class="panel-body">
+                    <div class="input-group">
+                        <input type="text" name="query-nep5" id="nep5-text" class="form-control" aria-label="Amount (to the nearest dollar)">
+                        <span class="input-group-addon btn" id="nep5-btn"><span class="glyphicon glyphicon-search"></span></span>
+                    </div>
+                </div>
+                <ul id="nep5balance" class="list-group"></ul>
+            </div>
+        </div>
+        <div class="col-md-6" hidden id="nep5assets">
+            <div class="panel panel-default" style="height:100%">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Nep5 Asset List</h3>
+                </div>
+                <ul id="nep5AssetList" class="list-group"></ul>
+            </div>
+        </div>
+    </div>
+    <div class="title">
+        <span>UTXO</span>
+    </div>
+    <table class="table table-nel cool">
+        <thead>
+            <tr>
+                <th>asset</th>
+                <th>number</th>
+                <th>txid</th>
+            </tr>
+        </thead>
+        <tbody id="utxos"></tbody>
+    </table>
+    `;
+    })(page = WebBrowser.page || (WebBrowser.page = {}));
+})(WebBrowser || (WebBrowser = {}));
 /// <reference path="../lib/neo-ts.d.ts"/>
 /// <reference types="jquery" />
 /// <reference types="bootstrap" />
 /// <reference path="Util.ts" />
+/// <reference path="../page/addressInfo.ts" />
 var WebBrowser;
 /// <reference path="../lib/neo-ts.d.ts"/>
 /// <reference types="jquery" />
 /// <reference types="bootstrap" />
 /// <reference path="Util.ts" />
+/// <reference path="../page/addressInfo.ts" />
 (function (WebBrowser) {
     let ajax = new WebBrowser.Ajax();
-    //主页
-    function indexPage() {
-        return __awaiter(this, void 0, void 0, function* () {
-            //查询区块高度(区块数量-1)
-            let blockCount = yield ajax.post('getblockcount', []);
-            let blockHeight = blockCount[0]['blockcount'] - 1;
-            $("#blockHeight").text(blockHeight.toLocaleString()); //显示在页面
-            //查询交易数量
-            let txCount = yield ajax.post('gettxcount', []);
-            txCount = txCount[0]['txcount'];
-            $("#txcount").text(txCount.toLocaleString()); //显示在页面
-            //查询地址总数
-            let addrCount = yield ajax.post('getaddrcount', []);
-            addrCount = addrCount[0]['addrcount'];
-            $("#addrCount").text(addrCount.toLocaleString());
-            $("#index-page").find("#blocks").children("tbody").empty();
-            //分页查询区块数据
-            let blocks = yield ajax.post('getblocks', [10, 1]);
-            blocks.forEach((item, index, input) => {
-                var newDate = new Date();
-                newDate.setTime(item.time * 1000);
-                let html = '';
-                html += '<tr><td><a class="code" class="code" target="_blank" rel="external nofollow"  href="./page/blockInfo.html?index=' + item.index + '">';
-                html += item.index + '</a></td><td>' + item.size + ' bytes</td><td>';
-                html += newDate.toLocaleString() + '</td>';
-                html += '<td>' + item.tx.length + '</td></tr>';
-                $("#index-page").find("#blocks").append(html);
+    class App {
+        constructor() {
+            this.navbar = new WebBrowser.Navbar();
+            this.netWork = new WebBrowser.NetWork();
+        }
+        strat() {
+            this.netWork.start();
+            this.redirect();
+            document.getElementsByTagName("body")[0].onhashchange = () => { this.redirect(); };
+            $("#searchText").focus(() => {
+                $("#nel-search").addClass("nel-input");
             });
-            //分页查询交易记录
-            let txs = yield ajax.post('getrawtransactions', [10, 1]);
-            $("#index-page").find("#transactions").children("tbody").empty();
-            txs.forEach((tx) => {
-                let txid = tx.txid;
-                txid = txid.replace('0x', '');
-                txid = txid.substring(0, 4) + '...' + txid.substring(txid.length - 4);
-                let html = "";
-                html += "<tr>";
-                html += "<td><a class='code' class='code' target='_blank' rel='external nofollow'  href='./page/txInfo.html?txid=" + tx.txid + "'>" + txid + "</a>";
-                html += "</td>";
-                html += "<td>" + tx.type.replace("Transaction", "");
-                html += "</td>";
-                html += "<td>" + tx.blockindex;
-                html += "</td>";
-                html += "<td>" + tx.size + " bytes";
-                html += "</td>";
-                html += "</tr>";
-                $("#index-page").find("#transactions").children("tbody").append(html);
+            $("#searchText").focusout(() => {
+                $("#nel-search").removeClass("nel-input");
             });
-        });
-    }
-    ;
-    //区块列表
-    function blocksPage() {
-        return __awaiter(this, void 0, void 0, function* () {
-            //查询区块数量
-            let blockCount = yield ajax.post('getblockcount', []);
-            //分页查询区块数据
-            let pageUtil = new WebBrowser.PageUtil(blockCount[0]['blockcount'], 15);
-            let block = new WebBrowser.BlockPage();
-            block.updateBlocks(pageUtil);
-            //监听下一页
-            $("#blocks-page").find("#next").click(() => {
-                if (pageUtil.currentPage == pageUtil.totalPage) {
-                    alert('当前页已经是最后一页了');
-                    return;
-                }
-                pageUtil.currentPage += 1;
+        }
+        //主页
+        indexPage() {
+            return __awaiter(this, void 0, void 0, function* () {
+                //查询区块高度(区块数量-1)
+                let blockCount = yield ajax.post('getblockcount', []);
+                let blockHeight = blockCount[0]['blockcount'] - 1;
+                $("#blockHeight").text(blockHeight.toLocaleString()); //显示在页面
+                //查询交易数量
+                let txCount = yield ajax.post('gettxcount', []);
+                txCount = txCount[0]['txcount'];
+                $("#txcount").text(txCount.toLocaleString()); //显示在页面
+                //查询地址总数
+                let addrCount = yield ajax.post('getaddrcount', []);
+                addrCount = addrCount[0]['addrcount'];
+                $("#addrCount").text(addrCount.toLocaleString());
+                $("#index-page").find("#blocks").children("tbody").empty();
+                //分页查询区块数据
+                let blocks = yield ajax.post('getblocks', [10, 1]);
+                blocks.forEach((item, index, input) => {
+                    var newDate = new Date();
+                    newDate.setTime(item.time * 1000);
+                    let html = '';
+                    html += '<tr><td><a class="code" class="code" target="_blank" rel="external nofollow"  href="./page/blockInfo.html?index=' + item.index + '">';
+                    html += item.index + '</a></td><td>' + item.size + ' bytes</td><td>';
+                    html += newDate.toLocaleString() + '</td>';
+                    html += '<td>' + item.tx.length + '</td></tr>';
+                    $("#index-page").find("#blocks").append(html);
+                });
+                //分页查询交易记录
+                let txs = yield ajax.post('getrawtransactions', [10, 1]);
+                $("#index-page").find("#transactions").children("tbody").empty();
+                txs.forEach((tx) => {
+                    let txid = tx.txid;
+                    txid = txid.replace('0x', '');
+                    txid = txid.substring(0, 4) + '...' + txid.substring(txid.length - 4);
+                    let html = "";
+                    html += "<tr>";
+                    html += "<td><a class='code' class='code' target='_blank' rel='external nofollow'  href='./page/txInfo.html?txid=" + tx.txid + "'>" + txid + "</a>";
+                    html += "</td>";
+                    html += "<td>" + tx.type.replace("Transaction", "");
+                    html += "</td>";
+                    html += "<td>" + tx.blockindex;
+                    html += "</td>";
+                    html += "<td>" + tx.size + " bytes";
+                    html += "</td>";
+                    html += "</tr>";
+                    $("#index-page").find("#transactions").children("tbody").append(html);
+                });
+            });
+        }
+        ;
+        //区块列表
+        blocksPage() {
+            return __awaiter(this, void 0, void 0, function* () {
+                //查询区块数量
+                let blockCount = yield ajax.post('getblockcount', []);
+                //分页查询区块数据
+                let pageUtil = new WebBrowser.PageUtil(blockCount[0]['blockcount'], 15);
+                let block = new WebBrowser.BlockPage();
                 block.updateBlocks(pageUtil);
+                //监听下一页
+                $("#blocks-page").find("#next").click(() => {
+                    if (pageUtil.currentPage == pageUtil.totalPage) {
+                        alert('当前页已经是最后一页了');
+                        return;
+                    }
+                    pageUtil.currentPage += 1;
+                    block.updateBlocks(pageUtil);
+                });
+                $("#blocks-page").find("#previous").click(() => {
+                    if (pageUtil.currentPage <= 1) {
+                        alert('当前已经是第一页了');
+                        return;
+                    }
+                    pageUtil.currentPage -= 1;
+                    block.updateBlocks(pageUtil);
+                });
             });
-            $("#blocks-page").find("#previous").click(() => {
-                if (pageUtil.currentPage <= 1) {
-                    alert('当前已经是第一页了');
-                    return;
-                }
-                pageUtil.currentPage -= 1;
-                block.updateBlocks(pageUtil);
-            });
-        });
+        }
+        redirect() {
+            var href = window.location.href;
+            var page = "";
+            let hash = location.hash;
+            var urlarr = hash.split("/");
+            if (urlarr.length == 1) {
+                page = urlarr[0];
+            }
+            if (urlarr.length == 2) {
+                page = urlarr[1];
+            }
+            if (urlarr[0] == "") {
+                var newhref = href.replace("#", "");
+                newhref += "#mainnet";
+                window.location.href = newhref;
+            }
+            this.netWork.changeNetWork(urlarr[0]);
+            if (page === '#mainnet' || page === "#testnet") {
+                this.indexPage();
+                $('#index-page').show();
+                $("#index-btn").addClass("active");
+                $("#brow-btn").removeClass("active");
+            }
+            else {
+                $('#index-page').hide();
+                $("#brow-btn").addClass("active");
+                $("#index-btn").removeClass("active");
+            }
+            if (page === '#blocks-page') {
+                // let blocks=new BlocksControll();
+                // blocks.start();
+                this.blocksPage();
+                $(page).show();
+                $("#blocks-btn").addClass("active");
+            }
+            else {
+                $('#blocks-page').hide();
+                $("#blocks-btn").removeClass("active");
+            }
+            if (page === '#txlist-page') {
+                let ts = new WebBrowser.Trasctions();
+                $(page).show();
+                $("#txlist-btn").addClass("active");
+            }
+            else {
+                $('#txlist-page').hide();
+                $("#txlist-btn").removeClass("active");
+            }
+            if (page === '#addrs-page') {
+                let addrlist = new WebBrowser.addrlistControll();
+                addrlist.start();
+                $(page).show();
+                $("#addrs-btn").addClass("active");
+            }
+            else {
+                $('#addrs-page').hide();
+                $("#addrs-btn").removeClass("active");
+            }
+            if (page === '#asset-page') {
+                //启动asset管理器
+                let assetControll = new WebBrowser.AssetControll();
+                assetControll.allAsset();
+                $(page).show();
+                $("#asset-btn").addClass("active");
+                $("#brow-btn").removeClass("active");
+            }
+            else {
+                $('#asset-page').hide();
+                $("#asset-btn").removeClass("active");
+            }
+            if (page == "#wallet-page") {
+                //let wallet: WalletControll = new WalletControll();
+                //$(page).show();
+                $("#wallet-btn").addClass("active");
+                $("#brow-btn").removeClass("active");
+            }
+            else {
+                $("#wallet-page").hide();
+                $("#wallet-btn").removeClass("active");
+            }
+        }
     }
-    $(() => {
+    window.onload = () => {
+        WebBrowser.WWW.rpc_getURL();
+        var app = new App();
+        app.strat();
         let page = $('#page').val();
         let locationutil = new WebBrowser.LocationUtil();
-        let hash = location.hash;
-        redirect(hash);
         new WebBrowser.SearchController();
         if (page === 'txInfo') {
             let txid = locationutil.GetQueryString("txid");
@@ -653,127 +805,6 @@ var WebBrowser;
             let addrInfo = new WebBrowser.AddressControll(addr);
             addrInfo.addressInfo();
         }
-    });
-    function redirect(page) {
-        if (page === '') {
-            indexPage();
-            $('#index-page').show();
-            $("#index-btn").addClass("active");
-            $("#brow-btn").removeClass("active");
-        }
-        else {
-            $('#index-page').hide();
-            $("#brow-btn").addClass("active");
-            $("#index-btn").removeClass("active");
-        }
-        if (page === '#blocks-page') {
-            // let blocks=new BlocksControll();
-            // blocks.start();
-            blocksPage();
-            $(page).show();
-            $("#blocks-btn").addClass("active");
-        }
-        else {
-            $('#blocks-page').hide();
-            $("#blocks-btn").removeClass("active");
-        }
-        if (page === '#txlist-page') {
-            let ts = new WebBrowser.Trasctions();
-            $(page).show();
-            $("#txlist-btn").addClass("active");
-        }
-        else {
-            $('#txlist-page').hide();
-            $("#txlist-btn").removeClass("active");
-        }
-        if (page === '#addrs-page') {
-            let addrlist = new WebBrowser.addrlistControll();
-            addrlist.start();
-            $(page).show();
-            $("#addrs-btn").addClass("active");
-        }
-        else {
-            $('#addrs-page').hide();
-            $("#addrs-btn").removeClass("active");
-        }
-        if (page === '#asset-page') {
-            //启动asset管理器
-            let assetControll = new WebBrowser.AssetControll();
-            assetControll.allAsset();
-            $(page).show();
-            $("#asset-btn").addClass("active");
-            $("#brow-btn").removeClass("active");
-        }
-        else {
-            $('#asset-page').hide();
-            $("#asset-btn").removeClass("active");
-        }
-        if (page == "#wallet-page") {
-            //let wallet: WalletControll = new WalletControll();
-            //$(page).show();
-            $("#wallet-btn").addClass("active");
-            $("#brow-btn").removeClass("active");
-        }
-        else {
-            $("#wallet-page").hide();
-            $("#wallet-btn").removeClass("active");
-        }
-    }
-    function onhash() {
-        let hash = location.hash;
-        redirect(hash);
-    }
-    window.onload = () => {
-        document.getElementsByTagName("body")[0].onhashchange = () => { onhash(); };
-        WebBrowser.WWW.rpc_getURL();
-        $("#searchText").focus(() => {
-            $("#nel-search").addClass("nel-input");
-        });
-        $("#searchText").focusout(() => {
-            $("#nel-search").removeClass("nel-input");
-        });
-        let page = $('#page').val();
-        var css = document.getElementById("netCss");
-        var link = "";
-        if (page == "index") {
-            link = "./css/";
-        }
-        else {
-            link = "../css/";
-        }
-        var net = sessionStorage.getItem("network");
-        if (net == undefined || net == "") {
-            sessionStorage.setItem('network', 'testnet');
-            $("#network").val("testnet");
-            $("#btn-testnet").addClass("active");
-            $("#network").children(".text").text("TestNet");
-            css.href = link + "testnet.css";
-        }
-        else {
-            if (net == "mainnet") {
-                $("#btn-mainnet").addClass("active");
-                $("#btn-testnet").removeClass("active");
-                $("#network").children(".text").text("MainNet");
-                css.href = link + "mainnet.css";
-            }
-            if (net == "testnet") {
-                $("#btn-testnet").addClass("active");
-                $("#btn-mainnet").removeClass("active");
-                $("#network").children(".text").text("TestNet");
-                css.href = link + "testnet.css";
-            }
-            $("#network").val(net);
-        }
-        $("#btn-testnet").click(() => {
-            $("#network").val("testnet");
-            sessionStorage.setItem('network', 'testnet');
-            window.location.reload();
-        });
-        $("#btn-mainnet").click(() => {
-            $("#network").val("mainnet");
-            sessionStorage.setItem('network', 'mainnet');
-            window.location.reload();
-        });
     };
 })(WebBrowser || (WebBrowser = {}));
 // import * as $ from "jquery";
@@ -937,6 +968,64 @@ var WebBrowser;
     }
     WebBrowser.Detail = Detail;
     WebBrowser.network = "mainnet";
+})(WebBrowser || (WebBrowser = {}));
+var WebBrowser;
+(function (WebBrowser) {
+    class Navbar {
+        constructor() {
+            this.browBtn = document.getElementById("brow-btn");
+            this.blockBtn = document.getElementById("blocks-btn");
+            this.txlistBtn = document.getElementById("txlist-btn");
+            this.addrsBtn = document.getElementById("addrs-btn");
+            this.assetBtn = document.getElementById("asset-btn");
+            this.walletBtn = document.getElementById("wallet-btn");
+        }
+    }
+    WebBrowser.Navbar = Navbar;
+})(WebBrowser || (WebBrowser = {}));
+var WebBrowser;
+(function (WebBrowser) {
+    class NetWork {
+        constructor() {
+            this.title = document.getElementById("network");
+            this.testbtn = document.getElementById("testnet-btn");
+            this.testa = document.getElementById("testa");
+            this.mainbtn = document.getElementById("mainnet-btn");
+            this.maina = document.getElementById("maina");
+            this.css = document.getElementById("netCss");
+        }
+        start() {
+            this.testa.onclick = () => {
+                var href = window.location.href.split("#");
+                var net = href[1].replace("mainnet", "");
+                net = net.replace("testnet", "");
+                net = "#testnet" + net;
+                window.location.href = href[0] + net;
+            };
+            this.maina.onclick = () => {
+                var href = window.location.href.split("#");
+                var net = href[1].replace("mainnet", "");
+                net = net.replace("testnet", "");
+                net = "#mainnet" + net;
+                window.location.href = href[0] + net;
+            };
+        }
+        changeNetWork(net) {
+            if (net == "#testnet") {
+                this.title.innerText = "TestNet";
+                this.testbtn.classList.add("active");
+                this.mainbtn.classList.remove("active");
+                this.css.href = "./css/testnet.css";
+            }
+            if (net == "#mainnet") {
+                this.title.innerText = "MainNet";
+                this.mainbtn.classList.add("active");
+                this.testbtn.classList.remove("active");
+                this.css.href = "./css/mainnet.css";
+            }
+        }
+    }
+    WebBrowser.NetWork = NetWork;
 })(WebBrowser || (WebBrowser = {}));
 var WebBrowser;
 (function (WebBrowser) {

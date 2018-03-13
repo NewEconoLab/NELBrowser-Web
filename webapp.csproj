@@ -100,10 +100,12 @@
     <Content Include="page\address.html" />
     <Content Include="page\blockInfo.html" />
     <Content Include="page\txInfo.html" />
-    <Content Include="page\wallet.html" />
     <Content Include="index.html" />
     <TypeScriptCompile Include="lib\code.d.ts" />
     <TypeScriptCompile Include="lib\neo-ts.d.ts" />
+    <TypeScriptCompile Include="page\addressInfo.ts" />
+    <TypeScriptCompile Include="page\blockInfo.ts" />
+    <TypeScriptCompile Include="page\txInfo.ts" />
     <TypeScriptCompile Include="src\app.ts" />
     <TypeScriptCompile Include="src\Blocks.ts" />
     <TypeScriptCompile Include="src\controllers\AddressControll.ts" />
@@ -112,6 +114,8 @@
     <TypeScriptCompile Include="src\controllers\TransactionsControll.ts" />
     <TypeScriptCompile Include="src\controllers\WalletControll.ts" />
     <TypeScriptCompile Include="src\Entitys.ts" />
+    <TypeScriptCompile Include="src\Navbar.ts" />
+    <TypeScriptCompile Include="src\Network.ts" />
     <TypeScriptCompile Include="src\PagesController.ts" />
     <TypeScriptCompile Include="src\PageViews.ts" />
     <TypeScriptCompile Include="src\tools\cointool.ts" />
