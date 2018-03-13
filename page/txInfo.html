@@ -12,7 +12,7 @@
     <title>NEL NewEconnolab</title>
 
     <!-- Bootstrap core CSS -->
-    <link href="../css/bootstrap.min.css" rel="stylesheet">
+    <link href="../css/bootstrap.css" rel="stylesheet">
     <link href="../css/mystyle.css" rel="stylesheet">
     <link id="netCss" href="./css/testnet.css" rel="stylesheet" />
 
@@ -21,8 +21,6 @@
     <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
-      <script src="https://cdn.bootcss.com/html5shiv/3.7.3/html5shiv.min.js"></script>
-      <script src="https://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
 </head>
 
@@ -33,35 +31,23 @@
       <!-- Static navbar -->
 
       <!-- Main component for a primary marketing message or call to action -->
-      <div class="jumbotron">
-        <caption><h2>交易详情</h2></caption>
-        <h2 id="type" class="cool"></h2>
-        <h4 id="txInfo" class="code"></h4>
-        <div class="container">
-          <div class="row">
-             <div class="col-md-4">
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <h3 class="panel-title">
-                          区块索引
-                        </h3>
-                    </div>
-                    <div id="index" class="panel-body code" style="word-break:break-all;">
-                    </div>
-                </div> 
-              </div>
-              <div class="col-md-4">
-                 <div class="panel panel-default" style="height:100%">
-                    <div class="panel-heading">
-                        <h3 class="panel-title">
-                            大小
-                        </h3>
-                    </div>
-                     <div id="size" class="panel-body" style="word-break:break-all;">
-                     </div>
-                 </div> 
-               </div>
+      <div class="">
+        <div class="title"><span>Transaction Information</span></div>
+        <div class="list-nel">
+          <div class="list-head">
+              <div class="line"><div class="title-nel"><span>Block 1723980</span></div></div>
           </div>
+          <div class="list-body">
+              <div class="line"><div class="title-nel"><span>TXID</span></div> <div class="content-nel"><span id="hash"></span></div></div>
+              <div class="line"><div class="title-nel"><span>Type</span></div> <div class="content-nel"><span id="txInfo"></span></div></div>
+              <div class="line"><div class="title-nel"><span>Time</span></div> <div class="content-nel"><span id="time"></span></div></div>
+              <div class="line"><div class="title-nel"><span>Network Fee</span></div><div class="content-nel"><span>0</span></div></div>
+              <div class="line"><div class="title-nel"><span>System Fee</span></div><div class="content-nel"></div><span>0</span></div>
+              <div class="line"><div class="title-nel"><span>Size</span></div><div class="content-nel"></div><span id="size"></span></div>
+              <div class="line"><div class="title-nel"><span>Included in Block</span></div><div class="content-nel"></div><span id="index"></span></div>
+          </div>
+        </div>
+        <div class="container">
           <div class="row">
              <div class="col-md-6">
                 <div class="panel panel-default">

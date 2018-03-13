@@ -13,7 +13,7 @@
     <title>NEL NewEconnolab</title>
 
     <!-- Bootstrap core CSS -->
-    <link href="../css/bootstrap.min.css" rel="stylesheet">
+    <link href="../css/bootstrap.css" rel="stylesheet">
     <link href="../css/mystyle.css" rel="stylesheet">
     <link id="netCss" href="./css/testnet.css" rel="stylesheet" />
 
@@ -34,9 +34,9 @@
         <!-- Static navbar -->
         <!-- Main component for a primary marketing message or call to action -->
 
-        <div class="jumbotron">
+        <div class="">
             <div class="container">
-                <h2>Address info</h2>
+                <div class="title"><span>Address info</span></div>
                 <h4 class="cool" id="address"></h4>
                 <div id="balance" class="row">
                 </div>
@@ -52,8 +52,7 @@
                                     <span class="input-group-addon btn" id="nep5-btn"><span class="glyphicon glyphicon-search"></span></span>
                                 </div>
                             </div>
-                            <ul id="nep5balance" class="list-group">
-                            </ul>
+                            <ul id="nep5balance" class="list-group"></ul>
                         </div>
                     </div>
                     <div class="col-md-6" hidden id="nep5assets">
@@ -61,17 +60,16 @@
                             <div class="panel-heading">
                                 <h3 class="panel-title">Nep5 Asset List</h3>
                             </div>
-                            <ul id="nep5AssetList" class="list-group">
-                            </ul>
+                            <ul id="nep5AssetList" class="list-group"></ul>
                         </div>
                     </div>
                 </div>
             </div>
 
+            <div class="title">
+                <span>UTXO</span>
+            </div>
             <table class="table table-hover cool">
-                <caption>
-                    <h3>UTXO</h3>
-                </caption>
                 <thead>
                     <tr>
                         <th>asset</th>

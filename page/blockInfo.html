@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="zh-CN">
 
 <head>
@@ -13,7 +13,7 @@
   <title>NEL NewEconnolab</title>
 
   <!-- Bootstrap core CSS -->
-  <link href="../css/bootstrap.min.css" rel="stylesheet">
+  <link href="../css/bootstrap.css" rel="stylesheet">
   <link href="../css/mystyle.css" rel="stylesheet">
   <link id="netCss" href="../css/testnet.css" rel="stylesheet"/>
 
@@ -36,84 +36,38 @@
     <!-- Static navbar -->
 
     <!-- Main component for a primary marketing message or call to action -->
-    <div class="jumbotron">
-      <div class="container">
-        <h2>区块详情</h2>
-        <div class="row">
-          <div class="col-md-4">
-            <div class="panel panel-default">
-              <div class="panel-heading">
-                <h3 class="panel-title">
-                  索引
-                </h3>
+    <div class="">
+        <div class="container">
+            <div class="title"><span>Block Information</span></div>
+            <div class="list-nel">
+              <div class="list-head">
+                  <div class="line"><div class="title-nel"><span>Block 1723980</span></div></div>
               </div>
-              <div id="index" class="panel-body" style="word-break:break-all;">
-              </div>
-            </div>
-          </div>
-          <div class="col-md-4">
-            <div class="panel panel-default" style="height:100%">
-              <div class="panel-heading">
-                <h3 class="panel-title">
-                  大小
-                </h3>
-              </div>
-              <div id="size" class="panel-body" style="word-break:break-all;">
+              <div class="list-body">
+                  <div class="line"><div class="title-nel"><span>Hash</span></div> <div class="content-nel"><span id="hash"></span></div></div>
+                  <div class="line"><div class="title-nel"><span>Index</span></div> <div class="content-nel"><span id="index"></span></div></div>
+                  <div class="line"><div class="title-nel"><span>Time</span></div> <div class="content-nel"><span id="time"></span></div></div>
+                  <div class="line"><div class="title-nel"><span>Size</span></div><div class="content-nel"><span id="size"></span></div></div>
+                  <div class="line"><div class="title-nel"><span>Previous Block</span></div><div class="content-nel"></div><span></span></div>
+                  <div class="line"><div class="title-nel"><span>Next Block</span></div><div class="content-nel"></div><span></span></div>
               </div>
             </div>
-          </div>
-          <div class="col-md-4">
-            <div class="panel panel-default">
-              <div class="panel-heading">
-                <h3 class="panel-title">
-                  日期
-                </h3>
-              </div>
-              <div id="time" class="panel-body" style="word-break:break-all;">
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-md-4">
-            <div class="panel panel-default">
-              <div class="panel-heading">
-                <h3 class="panel-title">
-                  版本号
-                </h3>
-              </div>
-              <div id="version" class="panel-body" style="word-break:break-all;">
-              </div>
-            </div>
-          </div>
-          <div class="col-md-4">
-            <div class="panel panel-default" style="height:100%">
-              <div class="panel-heading">
-                <h3 class="panel-title">
-                  HASH
-                </h3>
-              </div>
-              <div id="hash" class="panel-body" style="word-break:break-all;">
-              </div>
-            </div>
-          </div>
-        </div>
 
-        <table class="table table-nel cool">
-          <caption>
-            <h3>交易</h3>
-          </caption>
-          <thead>
-            <tr>
-              <th>txid</th>
-              <th>类型</th>
-              <th>大小</th>
-              <th>版本</th>
-            </tr>
-          </thead>
-          <tbody id="txs"></tbody>
-        </table>
-      </div>
+            <div class="title">
+                <span>Transactions</span>
+            </div>
+            <table class="table table-nel cool">
+                <thead>
+                    <tr>
+                        <th>TXID</th>
+                        <th>Type</th>
+                        <th>Size</th>
+                        <th>Vesion</th>
+                    </tr>
+                </thead>
+                <tbody id="txs"></tbody>
+            </table>
+        </div>
     </div>
 
   </div>

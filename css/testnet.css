@@ -303,7 +303,9 @@ a:hover, a:focus {
 
 .table-nel > tbody > tr:nth-of-type(odd) {
     background-color: #505F79;
+    height: 56px;
 }
+
 .table-nel{
     background-color:#454F60;
 }
@@ -390,4 +392,16 @@ table>tbody>tr {
     color: #7B7B7B;
     line-height: 16px;
     padding-top: 20px;
+}
+
+.list-nel{
+    background-color: #454F60;
+}
+
+.list-nel{
+    background-color: #454F60;
+}
+
+.list-body>.line:nth-of-type(odd){
+    background-color: #505F79;
 }

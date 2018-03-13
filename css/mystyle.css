@@ -117,8 +117,7 @@ body:after {
     -webkit-box-align: center;
     /* W3C */
     display: box;
-    box-pack: center;
-    box-align: center;
+    text-align: center;
     padding-top: 30px;
 }
 
@@ -190,3 +189,47 @@ body:after {
         left: 0;
     }
 }
+
+.list-nel{
+    border-radius: 5px 5px 5px 5px;
+}
+
+.list-nel>.list-head>.list-title{
+    border-radius: 5px 5px 0px 0px;
+    height: 55px;
+}
+
+.list-body>.line{
+    height: 56px;
+}
+
+.list-head>.line>.title-nel,
+.list-body>.line>.title-nel,
+.list-body>.line>.content-nel {
+    display: table-cell;
+    vertical-align: middle;
+    height: 56px;
+    font-family: PingFangSC-Medium;
+    font-size: 16px;
+    color: #FFFFFF;
+    line-height: 16px;
+}
+
+.list-body>.line>.title-nel{
+    width: 160px;
+}
+
+.list-head>.line>.title-nel>span,
+.list-body>.line>.title-nel>span,
+.list-body>.line>.content-nel>span{
+    padding-left: 20px;
+    margin: 0 auto;
+}
+
+
+
+/* .table>thead>tr>th {
+    vertical-align: bottom;
+    border-bottom: 0;
+    text-align: center;
+} */
