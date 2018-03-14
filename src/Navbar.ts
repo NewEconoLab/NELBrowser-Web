@@ -16,14 +16,28 @@
         walletBtn: HTMLLIElement = document.getElementById("wallet-btn") as HTMLLIElement;
         walleta: HTMLAnchorElement = document.getElementById("walleta") as HTMLAnchorElement;
 
-        start(network: string)
+        start()
         {
-            this.indexa.href = "./#" + network;
-            this.blocka.href = "./#" + network + "/blocks";
-            this.txlista.href = "./#" + network + "/transactions";
-            this.addrsa.href = "./#" + network + "/addresses";
-            this.asseta.href = "./#" + network + "/assets";
-            
+            this.indexa.onclick = () =>
+            {
+                this.skip("");
+            }
+            this.blocka.onclick = () =>
+            {
+                this.skip("/blocks");                
+            }
+            this.txlista.onclick = () =>
+            {
+                this.skip("/transactions");  
+            }
+            this.addrsa.onclick = () =>
+            {
+                this.skip("/addresses");  
+            }
+            this.asseta.onclick = () =>
+            {
+                this.skip("/assets");  
+            }
         }
 
         skip(page: string)

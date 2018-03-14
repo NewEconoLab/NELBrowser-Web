@@ -227,7 +227,7 @@ var WebBrowser;
             this.transaction.start();
             this.address.start();
             this.redirect();
-            this.navbar.start(WebBrowser.locationtool.getNetWork());
+            this.navbar.start();
             document.getElementsByTagName("body")[0].onhashchange = () => { this.redirect(); };
             $("#searchText").focus(() => {
                 $("#nel-search").addClass("nel-input");
@@ -482,7 +482,7 @@ var WebBrowser;
                     newDate.setTime(item.time * 1000);
                     let html;
                     html += '<tr><td>';
-                    html += '<a href="./page/blockInfo.html?index=' + item.index + '">';
+                    html += '<a href="./#' + WebBrowser.locationtool.getNetWork() + '/block/' + item.index + '">';
                     html += item.index + '</a></td><td>' + item.size;
                     html += ' bytes</td><td>' + newDate.toLocaleString() + '</td></tr>';
                     $("#blocks-page").find("tbody").append(html);
@@ -504,7 +504,7 @@ var WebBrowser;
                 $("#index").text(block.index);
                 let txs = block.tx;
                 txs.forEach(tx => {
-                    $("#txs").append('<tr><td><a href="./txInfo.html?txid=' + tx.txid + '">' + tx.txid + '</a></td><td>' + tx.type + '</td><td>' + tx.size + ' bytes</td><td>' + tx.version + '</td></tr>');
+                    $("#txs").append('<tr><td><a href="./#' + WebBrowser.locationtool.getNetWork() + '/transaction/' + tx.txid + '">' + tx.txid + '</a></td><td>' + tx.type + '</td><td>' + tx.size + ' bytes</td><td>' + tx.version + '</td></tr>');
                 });
             });
         }
@@ -627,12 +627,22 @@ var WebBrowser;
             this.walletBtn = document.getElementById("wallet-btn");
             this.walleta = document.getElementById("walleta");
         }
-        start(network) {
-            this.indexa.href = "./#" + network;
-            this.blocka.href = "./#" + network + "/blocks";
-            this.txlista.href = "./#" + network + "/transactions";
-            this.addrsa.href = "./#" + network + "/addresses";
-            this.asseta.href = "./#" + network + "/assets";
+        start() {
+            this.indexa.onclick = () => {
+                this.skip("");
+            };
+            this.blocka.onclick = () => {
+                this.skip("/blocks");
+            };
+            this.txlista.onclick = () => {
+                this.skip("/transactions");
+            };
+            this.addrsa.onclick = () => {
+                this.skip("/addresses");
+            };
+            this.asseta.onclick = () => {
+                this.skip("/assets");
+            };
         }
         skip(page) {
             var href = window.location.href.split("#");
@@ -881,9 +891,9 @@ var WebBrowser;
         constructor() {
             this.locationUtil = new WebBrowser.LocationUtil();
             let page = $('#page').val().toString();
+            let url = "./#" + WebBrowser.locationtool.getNetWork();
             let neoUtil = new WebBrowser.NeoUtil();
             $("#searchBtn").click(() => {
-                let url = "./#" + WebBrowser.locationtool.getNetWork();
                 let search = $("#searchText").val().toString();
                 if (search.length == 34) {
                     if (neoUtil.verifyPublicKey(search)) {
@@ -1611,7 +1621,7 @@ var WebBrowser;
                 html += "</td>";
                 html += "<td>" + utxo.value;
                 html += "</td>";
-                html += "<td><a class='code' target='_blank' rel='external nofollow' href='./txInfo.html?txid=" + utxo.txid + "'>" + utxo.txid;
+                html += "<td><a class='code' target='_blank' rel='external nofollow' href='./#" + WebBrowser.locationtool.getNetWork() + "/transaction/" + utxo.txid + "'>" + utxo.txid;
                 html += "</a>[" + utxo.n + "]</td>";
                 html += "</tr>";
                 $("#utxos").append(html);
@@ -1649,7 +1659,8 @@ var WebBrowser;
             let html = '';
             addrlist.forEach(item => {
                 html += '<tr>';
-                html += '<td><a class="code" target="_blank" rel="external nofollow" href="./page/address.html?addr=' + item.addr + '">' + item.addr + '</a></td>';
+                html += '<td><a class="code" target="_blank" rel="external nofollow" ';
+                html += 'href="./#' + WebBrowser.locationtool.getNetWork() + "/address/" + item.addr + '">' + item.addr + '</a></td>';
                 html += '<td>' + item.firstDate + '</td>';
                 html += '<td>' + item.lastDate + '</td>';
                 html += '<td>' + item.txcount + '</td>';
@@ -1671,82 +1682,34 @@ var WebBrowser;
         loadView() {
             $("#assets").empty();
             $("#nep5ass").empty();
+            console.log("assets:" + JSON.stringify(this.assets));
+            console.log("nep5s:" + JSON.stringify(this.nep5s));
             this.assets.forEach((asset) => {
                 let html = '';
-                html += '<div class="col-md-4">';
-                html += '<div class="panel panel-default" style="height:100%">';
-                html += '<div class="panel-heading">';
-                html += '<h3 class="panel-title">' + asset.names + '</h3>';
-                html += '</div>';
-                html += '<ul id="size" class="list-group" >';
-                html += '<li class="list-group-item"> 类型: ';
-                html += asset.type;
-                html += '</li>';
-                html += '<li class="list-group-item"> 总量: ';
-                html += (asset.amount <= 0 ? asset.available : asset.amount);
-                html += '</li>';
-                html += '<li class="list-group-item code"> id: ';
-                html += asset.id;
-                html += '</li>';
-                html += '<li class="list-group-item code"> admin: ';
-                html += asset.admin;
-                html += '</li>';
-                html += '</ul></div></div>';
+                html += '<tr>';
+                html += '<td>' + asset.names + '</td>';
+                html += '<td>' + asset.type + '</td>';
+                html += '<td>' + (asset.amount <= 0 ? asset.available : asset.amount);
+                +'</td>';
+                html += '<td>' + asset.precision + '</td>';
+                html += '</tr>';
                 $("#assets").append(html);
             });
             this.nep5s.forEach((asset) => {
                 let html = '';
-                html += '<div class="col-md-4">';
-                html += '<div class="panel panel-default" style="height:100%">';
-                html += '<div class="panel-heading">';
-                html += '<h3 class="panel-title">' + asset.names + '</h3>';
-                html += '</div>';
-                html += '<ul id="size" class="list-group" >';
-                html += '<li class="list-group-item"> 类型: ';
-                html += asset.type;
-                html += '</li>';
-                html += '<li class="list-group-item"> 总量: ';
-                html += asset.amount;
-                html += '</li>';
-                html += '<li class="list-group-item code"> id: ';
-                html += asset.id;
-                html += '</li>';
-                html += '</ul></div></div>';
+                html += '<tr>';
+                html += '<td>' + asset.names + '</td>';
+                html += '<td>' + asset.type + '</td>';
+                html += '<td>' + asset.names + '</td>';
+                html += '<td>' + (asset.amount <= 0 ? asset.available : asset.amount);
+                +'</td>';
+                html += '<td>' + asset.names + '</td>';
+                html += '</tr>';
                 $("#nep5ass").append(html);
             });
         }
     }
     WebBrowser.AssetsView = AssetsView;
-    /**
-     * @class 交易记录
-     */
-    //export class Trasctions
-    //{
-    //    constructor() { }
-    //    //更新交易记录
-    //    public loadView(txs: Tx[])
-    //    {
-    //        $("#transactions").empty();
-    //        txs.forEach((tx) =>
-    //        {
-    //            // console.log(tx);
-    //            let html: string = "";
-    //            html += "<tr>"
-    //            html += "<td><a class='code' href='./txInfo.html?txid=" + tx.txid + "'>" + tx.txid
-    //            html += "</a></td>"
-    //            html += "<td><a href='./blcokInfo.html?index=" + tx.blockindex + "'>" + tx.blockindex
-    //            html += "</a></td>"
-    //            html += "<td>" + tx.type
-    //            html += "</td>"
-    //            html += "<td>" + (tx.gas == undefined ? '0' : tx.gas)
-    //            html += "</td>"
-    //            html += "<td>" + tx.size + " bytes"
-    //            html += "</td>"
-    //            html += "</tr>"
-    //            $("#transactions").append(html);
-    //        });
-    //    }
-    //}
     class BlocksView {
         constructor(tbmode, next, previous, text) {
             this.next = next;
@@ -1834,7 +1797,7 @@ var WebBrowser;
                 html += "</td>";
                 html += "<td>" + utxo.value;
                 html += "</td>";
-                html += "<td><a class='code' target='_blank' rel='external nofollow' href='./txInfo.html?txid=" + utxo.txid + "'>" + utxo.txid;
+                html += "<td><a class='code' target='_blank' rel='external nofollow' href='./#" + WebBrowser.locationtool.getNetWork() + "/transaction/" + utxo.txid + "'>" + utxo.txid;
                 html += "</a>[" + utxo.n + "]</td>";
                 html += "</tr>";
                 $("#wallet-utxos").append(html);
@@ -2434,9 +2397,9 @@ var WebBrowser;
                     txid = txid.substring(0, 6) + '...' + txid.substring(txid.length - 6);
                     let html = "";
                     html += "<tr>";
-                    html += "<td><a class='code' target='_blank' rel='external nofollow' href='./page/txInfo.html?txid=" + tx.txid + "'>" + txid;
+                    html += "<td><a class='code' target='_blank' rel='external nofollow' href='./#" + WebBrowser.locationtool.getNetWork() + "/transaction/" + tx.txid + "'>" + txid;
                     html += "</a></td>";
-                    html += "<td><a href='./page/blcokInfo.html?index=" + tx.blockindex + "'>" + tx.blockindex;
+                    html += "<td><a href='./#" + WebBrowser.locationtool.getNetWork() + "/block/" + tx.blockindex + "'>" + tx.blockindex;
                     html += "</a></td>";
                     html += "<td>" + tx.type.replace("Transaction", "");
                     html += "</td>";

@@ -33,7 +33,7 @@ namespace WebBrowser
             this.transaction.start();
             this.address.start();
             this.redirect();
-            this.navbar.start(locationtool.getNetWork());
+            this.navbar.start();
             document.getElementsByTagName("body")[0].onhashchange = () => { this.redirect() };
 
             $("#searchText").focus(() =>

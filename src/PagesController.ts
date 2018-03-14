@@ -10,10 +10,10 @@ namespace WebBrowser
         constructor()
         {
             let page: string = $('#page').val().toString();
+            let url: string = "./#" + locationtool.getNetWork();
             let neoUtil: NeoUtil = new NeoUtil();
             $("#searchBtn").click(() =>
             {
-                let url: string = "./#" + locationtool.getNetWork();
                 let search: string = $("#searchText").val().toString();
                 if (search.length == 34)
                 {

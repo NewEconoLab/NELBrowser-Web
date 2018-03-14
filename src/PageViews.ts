@@ -43,7 +43,7 @@ namespace WebBrowser
                 html += "</td>"
                 html += "<td>" + utxo.value;
                 html += "</td>"
-                html += "<td><a class='code' target='_blank' rel='external nofollow' href='./txInfo.html?txid=" + utxo.txid + "'>" + utxo.txid
+                html += "<td><a class='code' target='_blank' rel='external nofollow' href='./#" + locationtool.getNetWork()+"/transaction/" + utxo.txid + "'>" + utxo.txid
                 html += "</a>[" + utxo.n + "]</td>"
                 html += "</tr>"
                 $("#utxos").append(html);
@@ -88,7 +88,8 @@ namespace WebBrowser
             addrlist.forEach(item =>
             {
                 html += '<tr>';
-                html += '<td><a class="code" target="_blank" rel="external nofollow" href="./page/address.html?addr=' + item.addr + '">' + item.addr + '</a></td>';
+                html += '<td><a class="code" target="_blank" rel="external nofollow" '
+                html += 'href="./#' + locationtool.getNetWork() + "/address/" + item.addr + '">' + item.addr + '</a></td>';
                 html += '<td>' + item.firstDate + '</td>';
                 html += '<td>' + item.lastDate + '</td>';
                 html += '<td>' + item.txcount + '</td>';
@@ -116,85 +117,33 @@ namespace WebBrowser
         {
             $("#assets").empty();
             $("#nep5ass").empty();
+            console.log("assets:" + JSON.stringify(this.assets));
+            console.log("nep5s:" + JSON.stringify(this.nep5s));
             this.assets.forEach((asset: Asset) =>
             {
                 let html = '';
-                html += '<div class="col-md-4">';
-                html += '<div class="panel panel-default" style="height:100%">';
-                html += '<div class="panel-heading">';
-                html += '<h3 class="panel-title">' + asset.names + '</h3>';
-                html += '</div>';
-                html += '<ul id="size" class="list-group" >';
-                html += '<li class="list-group-item"> 类型: '
-                html += asset.type
-                html += '</li>'
-                html += '<li class="list-group-item"> 总量: '
-                html += (asset.amount <= 0 ? asset.available : asset.amount);
-                html += '</li>'
-                html += '<li class="list-group-item code"> id: '
-                html += asset.id
-                html += '</li>'
-                html += '<li class="list-group-item code"> admin: '
-                html += asset.admin
-                html += '</li>'
-                html += '</ul></div></div>';
+                html += '<tr>';
+                html += '<td>' + asset.names + '</td>';
+                html += '<td>' + asset.type + '</td>';
+                html += '<td>' + (asset.amount <= 0 ? asset.available : asset.amount); + '</td>';
+                html += '<td>' + asset.precision + '</td>';
+                html += '</tr>';
                 $("#assets").append(html);
             });
             this.nep5s.forEach((asset: Asset) =>
             {
                 let html = '';
-                html += '<div class="col-md-4">';
-                html += '<div class="panel panel-default" style="height:100%">';
-                html += '<div class="panel-heading">';
-                html += '<h3 class="panel-title">' + asset.names + '</h3>';
-                html += '</div>';
-                html += '<ul id="size" class="list-group" >';
-                html += '<li class="list-group-item"> 类型: '
-                html += asset.type
-                html += '</li>'
-                html += '<li class="list-group-item"> 总量: '
-                html += asset.amount
-                html += '</li>'
-                html += '<li class="list-group-item code"> id: '
-                html += asset.id
-                html += '</li>'
-                html += '</ul></div></div>';
+                html += '<tr>';
+                html += '<td>' + asset.names + '</td>';
+                html += '<td>' + asset.type + '</td>';
+                html += '<td>' + asset.names + '</td>';
+                html += '<td>' + (asset.amount <= 0 ? asset.available : asset.amount); + '</td>';
+                html += '<td>' + asset.names + '</td>';
+                html += '</tr>';
                 $("#nep5ass").append(html);
             });
         }
     }
-
-    /**
-     * @class 交易记录
-     */
-    //export class Trasctions
-    //{
-    //    constructor() { }
-    //    //更新交易记录
-    //    public loadView(txs: Tx[])
-    //    {
-    //        $("#transactions").empty();
-    //        txs.forEach((tx) =>
-    //        {
-    //            // console.log(tx);
-    //            let html: string = "";
-    //            html += "<tr>"
-    //            html += "<td><a class='code' href='./txInfo.html?txid=" + tx.txid + "'>" + tx.txid
-    //            html += "</a></td>"
-    //            html += "<td><a href='./blcokInfo.html?index=" + tx.blockindex + "'>" + tx.blockindex
-    //            html += "</a></td>"
-    //            html += "<td>" + tx.type
-    //            html += "</td>"
-    //            html += "<td>" + (tx.gas == undefined ? '0' : tx.gas)
-    //            html += "</td>"
-    //            html += "<td>" + tx.size + " bytes"
-    //            html += "</td>"
-    //            html += "</tr>"
-    //            $("#transactions").append(html);
-    //        });
-    //    }
-    //}
-
 
     export class BlocksView
     {
@@ -303,7 +252,7 @@ namespace WebBrowser
                 html += "</td>"
                 html += "<td>" + utxo.value;
                 html += "</td>"
-                html += "<td><a class='code' target='_blank' rel='external nofollow' href='./txInfo.html?txid=" + utxo.txid + "'>" + utxo.txid
+                html += "<td><a class='code' target='_blank' rel='external nofollow' href='./#" + locationtool.getNetWork() +"/transaction/"+ utxo.txid + "'>" + utxo.txid
                 html += "</a>[" + utxo.n + "]</td>"
                 html += "</tr>"
                 $("#wallet-utxos").append(html);

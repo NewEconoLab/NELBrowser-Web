@@ -28,7 +28,7 @@ namespace WebBrowser {
                 newDate.setTime(item.time * 1000);
                 let html: string;
                 html += '<tr><td>'
-                html += '<a href="./page/blockInfo.html?index=' + item.index + '">';
+                html += '<a href="./#' + locationtool.getNetWork() + '/block/' + item.index + '">';
                 html += item.index + '</a></td><td>' + item.size;
                 html += ' bytes</td><td>' + newDate.toLocaleString() + '</td></tr>';
                 $("#blocks-page").find("tbody").append(html);
@@ -48,8 +48,9 @@ namespace WebBrowser {
             $("#version").text(block.version);
             $("#index").text(block.index);
             let txs: Tx[] = block.tx;
-            txs.forEach(tx => {
-                $("#txs").append('<tr><td><a href="./txInfo.html?txid=' + tx.txid + '">' + tx.txid + '</a></td><td>' + tx.type + '</td><td>' + tx.size + ' bytes</td><td>' + tx.version + '</td></tr>');
+            txs.forEach(tx =>
+            {
+                $("#txs").append('<tr><td><a href="./#' + locationtool.getNetWork() + '/transaction/' + tx.txid + '">' + tx.txid + '</a></td><td>' + tx.type + '</td><td>' + tx.size + ' bytes</td><td>' + tx.version + '</td></tr>');
             });
 
         }
