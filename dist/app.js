@@ -90,80 +90,76 @@ var WebBrowser;
           <div class="line"><div class="title-nel"><span>Type</span></div> <div class="content-nel"><span id="txInfo"></span></div></div>
           <div class="line"><div class="title-nel"><span>Time</span></div> <div class="content-nel"><span id="time"></span></div></div>
           <div class="line"><div class="title-nel"><span>Network Fee</span></div><div class="content-nel"><span>0</span></div></div>
-          <div class="line"><div class="title-nel"><span>System Fee</span></div><div class="content-nel"></div><span>0</span></div>
-          <div class="line"><div class="title-nel"><span>Size</span></div><div class="content-nel"></div><span id="size"></span></div>
-          <div class="line"><div class="title-nel"><span>Included in Block</span></div><div class="content-nel"></div><span id="index"></span></div>
+          <div class="line"><div class="title-nel"><span>System Fee</span></div><div class="content-nel"><span>0</span></div></div>
+          <div class="line"><div class="title-nel"><span>Size</span></div><div class="content-nel"><span id="size"></span></div></div>
+          <div class="line"><div class="title-nel"><span>Included in Block</span></div><div class="content-nel"><span id="index"></span></div></div>
       </div>
     </div>
     <div class="container">
       <div class="row">
          <div class="col-md-6">
-            <div class="panel panel-default">
-                <div class="panel-heading">
-                    <h3 class="panel-title">
-                      输入
-                    </h3>
-                </div>
-                <ul id="from" class="list-group">
-                </ul>
-            </div> 
+            <div class="list-nel">
+              <div class="list-head">
+                  <div class="line"><div class="title-nel"><span>Input</span></div></div>
+              </div>
+              <div class="list-body" id="from" >
+              </div>
+            </div>
           </div>
           <div class="col-md-6">
-             <div class="panel panel-default" style="height:100%">
-                <div class="panel-heading">
-                    <h3 class="panel-title">
-                      输出
-                    </h3>
-                </div>
-                <ul id="to" class="list-group">
-                </ul>
-             </div> 
+            <div class="list-nel">
+              <div class="list-head">
+                  <div class="line"><div class="title-nel"><span>Output</span></div></div>
+              </div>
+              <div class="list-body" id="to" >
+              </div>
+            </div>
            </div>
-      </div>
-   </div>
+        </div>
+    </div>
     `;
         pages.addres = `
-    <div class="title"><span>Address info</span></div>
-    <h4 class="cool" id="address"></h4>
-    <div id="balance" class="row">
-    </div>
-    <div class="row">
-        <div class="col-md-6">
-            <div class="panel panel-default" style="height:100%">
-                <div class="panel-heading">
-                    <h3 class="panel-title">Nep5 asset query </h3>
+        <div class="container">
+            <div class="title"><span>Address info</span></div>
+
+            <div class="list-nel">
+                <div class="list-head">
+                    <div class="line"><div class="title-nel"><span id="address"></span></div></div>
                 </div>
-                <div class="panel-body">
-                    <div class="input-group">
-                        <input type="text" name="query-nep5" id="nep5-text" class="form-control" aria-label="Amount (to the nearest dollar)">
-                        <span class="input-group-addon btn" id="nep5-btn"><span class="glyphicon glyphicon-search"></span></span>
-                    </div>
+                <div class="list-body" id="balance">
+                    <div class="line"><div class="title-nel"><span>Address</span></div> <div class="content-nel"><span id="hash"></span></div></div>
                 </div>
-                <ul id="nep5balance" class="list-group"></ul>
+            </div>
+
+            <div class="title"><span>Nep5</span></div>
+            <div class="input-group " id="nel-search">
+                <input id="nep5-text" type="text" class="form-control nel" placeholder="TxHash/Addr/blockHeight">
+                <span id="nep5-btn" class="input-group-addon nel ">
+                    <img src="fonts/search.svg" width="18" height="18" />
+                </span>
+            </div>
+            <div class="list-nel">
+                <div class="list-head">
+                    <div class="line"><div class="title-nel"><span></span></div></div>
+                </div>
+                <div class="list-body" id="nep5balance">
+                </div>
             </div>
         </div>
-        <div class="col-md-6" hidden id="nep5assets">
-            <div class="panel panel-default" style="height:100%">
-                <div class="panel-heading">
-                    <h3 class="panel-title">Nep5 Asset List</h3>
-                </div>
-                <ul id="nep5AssetList" class="list-group"></ul>
-            </div>
+
+        <div class="title">
+            <span>UTXO</span>
         </div>
-    </div>
-    <div class="title">
-        <span>UTXO</span>
-    </div>
-    <table class="table table-nel cool">
-        <thead>
-            <tr>
-                <th>asset</th>
-                <th>number</th>
-                <th>txid</th>
-            </tr>
-        </thead>
-        <tbody id="utxos"></tbody>
-    </table>
+        <table class="table table-nel cool">
+            <thead>
+                <tr>
+                    <th>asset</th>
+                    <th>number</th>
+                    <th>txid</th>
+                </tr>
+            </thead>
+            <tbody id="utxos"></tbody>
+        </table>
     `;
     })(pages = WebBrowser.pages || (WebBrowser.pages = {}));
 })(WebBrowser || (WebBrowser = {}));
@@ -1597,21 +1593,15 @@ var WebBrowser;
          * loadView
          */
         loadView() {
-            $("#balance").empty();
+            //$("#balance").empty();
             $("#utxos").empty();
             $("#address").text('address | ' + this.address);
             // console.log(this.balances);
             this.balances.forEach((balance) => {
                 let html = '';
                 let name = balance.name.map((name) => { return name.name; }).join('|');
-                html += '<div class="col-md-6">';
-                html += '<div class="panel panel-default" style="height:100%">';
-                html += '<div class="panel-heading">';
-                html += '<h3 class="panel-title">' + name + '</h3>';
-                html += '</div>';
-                html += '<div id="size" class="panel-body">';
-                html += balance.balance;
-                html += '</div></div></div>';
+                html += '<div class="line" > <div class="title-nel" > <span>' + name + ' </span></div >';
+                html += '<div class="content-nel" > <span> ' + balance.balance + ' </span></div > </div>';
                 $("#balance").append(html);
             });
             this.utxo.forEach((utxo) => {
@@ -1632,7 +1622,9 @@ var WebBrowser;
          */
         loadNep5(name, symbol, balance) {
             $("#nep5balance").empty();
-            $("#nep5balance").append('<li class="list-group-item">[' + symbol + '] ' + name + ': ' + balance + '</li>');
+            var html = '<div class="line" > <div class="title-nel" > <span>[' + symbol + '] ' + name + ' </span></div>';
+            html += '<div class="content-nel" > <span>' + balance + ' </span></div> </div>';
+            $("#nep5balance").append(html);
         }
         /**
          * initNep5
@@ -1644,7 +1636,9 @@ var WebBrowser;
                 let symbol = element.result["symbol"];
                 let name = element.result["name"];
                 let balance = element.result["balance"];
-                $("#nep5AssetList").append('<li class="list-group-item">[' + symbol + '] ' + name + ': ' + balance + '</li>');
+                var html = '<div class="line" > <div class="title-nel" > <span>[' + symbol + '] ' + name + ' </span></div >';
+                html += '<div class="content-nel" > <span>' + balance + ' </span></div > </div>';
+                $("#nep5assets").append(html);
             });
         }
     }
@@ -2469,16 +2463,13 @@ var WebBrowser;
                 for (let index = 0; index < array.length; index++) {
                     const item = array[index];
                     let html = "";
-                    html += '<li class="list-group-item">';
-                    html += '<table class="table">';
-                    html += '<thead><h4 class="code">' + item.addr + '</h4></thead>';
-                    html += '<th>name</th><th>amount</th><th>txid</th>';
+                    html += '<div class="line" > <div class="title-nel" > <span>Address </span></div >';
+                    html += '<div class="content-nel" > <span id="size" >' + item.addr + ' </span></div > </div>';
                     for (let i = 0; i < item.data.length; i++) {
                         const element = item.data[i];
-                        html += '<tr><td>' + element.name + '</td><td>' + element.amount + ' </td><td class="code">' + element.vin + ' [' + element.vout + ']</td></tr>';
+                        html += '<div class="line" > <div class="title-nel" > <span>' + element.name + ' </span></div >';
+                        html += '<div class="content-nel" > <span id="size" >' + element.amount + ' </span></div > </div>';
                     }
-                    html += '</table>';
-                    html += '</li>';
                     $("#from").append(html);
                 }
                 txInfo.vout.forEach(vout => {
@@ -2487,7 +2478,12 @@ var WebBrowser;
                     if (array.find(item => item.addr == vout.address)) {
                         sign = "(change)";
                     }
-                    $("#to").append('<li class="list-group-item"><div class="row"><div class="col-md-1"><h4>[' + vout.n + ']</h4></div><div class="col-md-11"><div class="row"><div class="col-md-12">' + name + ' ' + vout.value + sign + ' </div><div class="col-md-12"> <a class="code">' + vout.address + '</a></div></div></div></li>');
+                    let html = "";
+                    html += '<div class="line" > <div class="title-nel" > <span>Address </span></div >';
+                    html += '<div class="content-nel" > <span id="size" >' + vout.address + ' </span></div > </div>';
+                    html += '<div class="line" > <div class="title-nel" > <span>' + name + ' </span></div >';
+                    html += '<div class="content-nel" > <span id="size" >' + vout.value + sign + ' </span></div > </div>';
+                    $("#to").append(html);
                 });
             });
         }

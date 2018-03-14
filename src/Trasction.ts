@@ -141,17 +141,15 @@ namespace WebBrowser
             {
                 const item = array[index];
                 let html = "";
-                html += '<li class="list-group-item">'
-                html += '<table class="table">'
-                html += '<thead><h4 class="code">' + item.addr + '</h4></thead>'
-                html += '<th>name</th><th>amount</th><th>txid</th>'
+
+                html += '<div class="line" > <div class="title-nel" > <span>Address </span></div >';
+                html += '<div class="content-nel" > <span id="size" >' + item.addr + ' </span></div > </div>';
                 for (let i = 0; i < item.data.length; i++)
                 {
                     const element = item.data[i];
-                    html += '<tr><td>' + element.name + '</td><td>' + element.amount + ' </td><td class="code">' + element.vin + ' [' + element.vout + ']</td></tr>'
+                    html += '<div class="line" > <div class="title-nel" > <span>' + element.name + ' </span></div >';
+                    html += '<div class="content-nel" > <span id="size" >' + element.amount + ' </span></div > </div>';
                 }
-                html += '</table>'
-                html += '</li>'
                 $("#from").append(html);
             }
             
@@ -163,7 +161,12 @@ namespace WebBrowser
                 {
                     sign = "(change)"
                 }
-                $("#to").append('<li class="list-group-item"><div class="row"><div class="col-md-1"><h4>[' + vout.n + ']</h4></div><div class="col-md-11"><div class="row"><div class="col-md-12">' + name + ' ' + vout.value + sign + ' </div><div class="col-md-12"> <a class="code">' + vout.address + '</a></div></div></div></li>');
+                let html = "";
+                html += '<div class="line" > <div class="title-nel" > <span>Address </span></div >';
+                html += '<div class="content-nel" > <span id="size" >' + vout.address + ' </span></div > </div>';
+                html += '<div class="line" > <div class="title-nel" > <span>' + name+' </span></div >';
+                html += '<div class="content-nel" > <span id="size" >' + vout.value + sign + ' </span></div > </div>';
+                $("#to").append(html);
             });
         }
 

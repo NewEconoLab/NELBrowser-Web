@@ -17,7 +17,7 @@ namespace WebBrowser
          */
         public loadView()
         {
-            $("#balance").empty();
+            //$("#balance").empty();
             $("#utxos").empty();
             $("#address").text('address | ' + this.address);
             // console.log(this.balances);
@@ -25,14 +25,9 @@ namespace WebBrowser
             {
                 let html = '';
                 let name = balance.name.map((name) => { return name.name }).join('|');
-                html += '<div class="col-md-6">';
-                html += '<div class="panel panel-default" style="height:100%">';
-                html += '<div class="panel-heading">';
-                html += '<h3 class="panel-title">' + name + '</h3>';
-                html += '</div>';
-                html += '<div id="size" class="panel-body">';
-                html += balance.balance;
-                html += '</div></div></div>';
+
+                html += '<div class="line" > <div class="title-nel" > <span>' + name + ' </span></div >';
+                html += '<div class="content-nel" > <span> ' + balance.balance + ' </span></div > </div>';
                 $("#balance").append(html);
             });
             this.utxo.forEach((utxo: Utxo) =>
@@ -55,7 +50,10 @@ namespace WebBrowser
         public loadNep5(name: string, symbol: string, balance: number)
         {
             $("#nep5balance").empty();
-            $("#nep5balance").append('<li class="list-group-item">[' + symbol + '] ' + name + ': ' + balance + '</li>');
+
+            var html = '<div class="line" > <div class="title-nel" > <span>[' + symbol + '] ' + name + ' </span></div>';
+            html += '<div class="content-nel" > <span>' + balance + ' </span></div> </div>';
+            $("#nep5balance").append(html);
         }
         /**
          * initNep5
@@ -69,7 +67,9 @@ namespace WebBrowser
                 let symbol: string = element.result["symbol"];
                 let name: string = element.result["name"];
                 let balance: number = element.result["balance"];
-                $("#nep5AssetList").append('<li class="list-group-item">[' + symbol + '] ' + name + ': ' + balance + '</li>');
+                var html = '<div class="line" > <div class="title-nel" > <span>[' + symbol + '] ' + name + ' </span></div >';
+                html += '<div class="content-nel" > <span>' + balance + ' </span></div > </div>';
+                $("#nep5assets").append(html);
             });
         }
     }
