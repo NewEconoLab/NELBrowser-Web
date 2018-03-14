@@ -6,546 +6,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-///<reference path="../lib/neo-ts.d.ts"/>
-/// <reference types="jquery" />
-var WebBrowser;
-///<reference path="../lib/neo-ts.d.ts"/>
-/// <reference types="jquery" />
-(function (WebBrowser) {
-    class Ajax {
-        /**
-         * async post
-         */
-        post(method, params) {
-            return __awaiter(this, void 0, void 0, function* () {
-                var href = window.location.href.split("#");
-                var arr = href[1].split("/");
-                let promise = new Promise((resolve, reject) => {
-                    $.ajax({
-                        type: 'POST',
-                        url: 'http://47.96.168.8:81/api/' + arr[0],
-                        data: JSON.stringify({
-                            "jsonrpc": "2.0",
-                            "method": method,
-                            "params": params,
-                            "id": 1
-                        }),
-                        contentType: "application/json; charset=utf-8",
-                        dataType: "json",
-                        success: (data, status) => {
-                            if ('result' in data) {
-                                // console.log(data['result']);              
-                                resolve(data['result']);
-                            }
-                            else if ('error' in data) {
-                                if (data['error']['code'] == -1) {
-                                    resolve([]);
-                                }
-                                else {
-                                    resolve([]);
-                                    reject("参数出错 code:-100");
-                                }
-                            }
-                        },
-                        error: () => {
-                            reject("请求失败");
-                        }
-                    });
-                });
-                return promise;
-            });
-        }
-        /**
-         * async post
-         */
-        get() {
-            return __awaiter(this, void 0, void 0, function* () {
-                var href = window.location.href.split("#");
-                var arr = href[1].split("/");
-                let promise = new Promise((resolve, reject) => {
-                    $.ajax({
-                        type: 'GET',
-                        url: 'https://47.96.168.8:4431/api/' + arr[0] + '?jsonrpc=2.0&method=getblock&params=%5b1000%5d&id=1001',
-                        success: (data, status) => {
-                            resolve(data['result']);
-                        },
-                        error: () => {
-                            reject("请求失败");
-                        }
-                    });
-                });
-                return promise;
-            });
-        }
-    }
-    WebBrowser.Ajax = Ajax;
-    class LocationUtil {
-        constructor() {
-            this.LocString = String(location.href);
-        }
-        GetQueryString(name) {
-            let rs = new RegExp("(^|)" + name + "=([^&]*)(&|$)", "gi").exec(this.LocString), tmp;
-            if (tmp = rs) {
-                return decodeURI(tmp[2]);
-            }
-            // parameter cannot be found
-            return "";
-        }
-        getRootPath_web() {
-            //获取当前网址，如： http://localhost:8083/uimcardprj/share/meun.jsp
-            var curWwwPath = window.document.location.href;
-            console.log(curWwwPath);
-            //获取主机地址之后的目录，如： uimcardprj/share/meun.jsp
-            var pathName = window.document.location.pathname;
-            console.log(pathName);
-            var pos = curWwwPath.indexOf(pathName);
-            //获取主机地址，如： http://localhost:8083
-            console.log(pos);
-            var localhostPaht = curWwwPath.substring(0, pos);
-            //获取带"/"的项目名，如：/uimcardprj
-            console.log(localhostPaht);
-            var projectName = pathName.substring(0, pathName.substr(1).indexOf('/') + 1);
-            console.log(projectName);
-            return (localhostPaht + projectName);
-        }
-        getRootPath() {
-            var pathName = window.location.pathname.substring(1);
-            var webName = pathName == '' ? '' : pathName.substring(0, pathName.indexOf('/'));
-            if (webName == "") {
-                return window.location.protocol + '//' + window.location.host;
-            }
-            else {
-                return window.location.protocol + '//' + window.location.host + '/' + webName;
-            }
-        }
-    }
-    WebBrowser.LocationUtil = LocationUtil;
-    class NeoUtil {
-        constructor() { }
-        /**
-         * verifyPublicKey 验证公钥
-         * @param publicKey 公钥
-         */
-        verifyPublicKey(publicKey) {
-            var array = Neo.Cryptography.Base58.decode(publicKey);
-            //var hexstr = array.toHexString();
-            //var salt = array.subarray(0, 1);
-            //var hash = array.subarray(1, 1 + 20);
-            var check = array.subarray(21, 21 + 4); //
-            var checkdata = array.subarray(0, 21); //
-            var hashd = Neo.Cryptography.Sha256.computeHash(checkdata); //
-            hashd = Neo.Cryptography.Sha256.computeHash(hashd); //
-            var hashd = hashd.slice(0, 4); //
-            var checked = new Uint8Array(hashd); //
-            var error = false;
-            for (var i = 0; i < 4; i++) {
-                if (checked[i] != check[i]) {
-                    error = true;
-                    break;
-                }
-            }
-            return !error;
-        }
-        /**
-         * wifDecode wif解码
-         * @param wif wif私钥
-         */
-        wifDecode(wif) {
-            let result = { err: false, result: { pubkey: "", prikey: "", address: "" } };
-            var prikey;
-            var pubkey;
-            var address;
-            try {
-                prikey = ThinNeo.Helper.GetPrivateKeyFromWIF(wif);
-                var hexstr = prikey.toHexString();
-                result.result.prikey = hexstr;
-            }
-            catch (e) {
-                result.err = true;
-                result.result = e.message;
-                return result;
-            }
-            try {
-                pubkey = ThinNeo.Helper.GetPublicKeyFromPrivateKey(prikey);
-                var hexstr = pubkey.toHexString();
-                result.result.pubkey = hexstr;
-            }
-            catch (e) {
-                result.err = true;
-                result.result = e.message;
-                return result;
-            }
-            try {
-                address = ThinNeo.Helper.GetAddressFromPublicKey(pubkey);
-                result.result.address = address;
-            }
-            catch (e) {
-                result.err = true;
-                result.result = e.message;
-                return result;
-            }
-            return result;
-        }
-        /**
-         * nep2FromWif
-         */
-        nep2FromWif(wif, password) {
-            var prikey;
-            var pubkey;
-            var address;
-            let res = { err: false, result: { address: "", nep2: "" } };
-            try {
-                prikey = ThinNeo.Helper.GetPrivateKeyFromWIF(wif);
-                var n = 16384;
-                var r = 8;
-                var p = 8;
-                ThinNeo.Helper.GetNep2FromPrivateKey(prikey, password, n, r, p, (info, result) => {
-                    res.err = false;
-                    res.result.nep2 = result;
-                    pubkey = ThinNeo.Helper.GetPublicKeyFromPrivateKey(prikey);
-                    var hexstr = pubkey.toHexString();
-                    address = ThinNeo.Helper.GetAddressFromPublicKey(pubkey);
-                    res.result.address = address;
-                    return res;
-                });
-            }
-            catch (e) {
-                res.err = true;
-                res.result = e.message;
-                return res;
-            }
-        }
-        /**
-         * nep2TOWif
-         */
-        nep2ToWif(nep2, password) {
-            return __awaiter(this, void 0, void 0, function* () {
-                var prikey;
-                var pubkey;
-                var address;
-                let promise = new Promise((resolve, reject) => {
-                    let n = 16384;
-                    var r = 8;
-                    var p = 8;
-                    ThinNeo.Helper.GetPrivateKeyFromNep2(nep2, password, n, r, p, (info, result) => {
-                        //spanNep2.textContent = "info=" + info + " result=" + result;
-                        console.log("result=" + "info=" + info + " result=" + result);
-                        prikey = result;
-                        if (prikey != null) {
-                            var pubkey = ThinNeo.Helper.GetPublicKeyFromPrivateKey(prikey);
-                            var address = ThinNeo.Helper.GetAddressFromPublicKey(pubkey);
-                            var wif = ThinNeo.Helper.GetWifFromPrivateKey(prikey);
-                            console.log('1:' + address);
-                            resolve({ err: false, result: { pubkey, address, prikey } });
-                        }
-                        else {
-                            // spanWif.textContent = "result=" + "info=" + info + " result=" + result;
-                            reject({ err: false, result: result });
-                        }
-                    });
-                });
-                return promise;
-            });
-        }
-        /**
-         * nep6Load
-         */
-        nep6Load(wallet, password) {
-            return __awaiter(this, void 0, void 0, function* () {
-                // let promise:Promise<result> = new Promise((resolve,reject)=>{
-                try {
-                    //getPrivateKey 是异步方法，且同时只能执行一个
-                    var istart = 0;
-                    let res = new Array();
-                    var getkey = null;
-                    // getkey = async (keyindex: number) => {
-                    for (let keyindex = 0; keyindex < wallet.accounts.length; keyindex++) {
-                        let account = wallet.accounts[keyindex];
-                        try {
-                            let result = yield this.getPriKeyfromAccount(wallet.scrypt, password, account);
-                            res.push(result.result);
-                        }
-                        catch (error) {
-                            console.error(error);
-                            return { err: true, result: error };
-                        }
-                    }
-                    return { err: false, result: res };
-                }
-                catch (e) {
-                }
-                // });
-                // return promise;
-            });
-        }
-        /**
-         * getPriKeyform
-         */
-        getPriKeyfromAccount(scrypt, password, account) {
-            return __awaiter(this, void 0, void 0, function* () {
-                let promise = new Promise((resolve, reject) => {
-                    account.getPrivateKey(scrypt, password, (info, result) => {
-                        if (info == "finish") {
-                            var pubkey = ThinNeo.Helper.GetPublicKeyFromPrivateKey(result);
-                            var address = ThinNeo.Helper.GetAddressFromPublicKey(pubkey);
-                            var wif = ThinNeo.Helper.GetWifFromPrivateKey(result);
-                            var hexkey = result.toHexString();
-                            console.log(info + "|" + address + " wif=" + wif);
-                            resolve({ err: false, result: { pubkey: pubkey, address: address, prikey: result } });
-                        }
-                        else {
-                            // info2.textContent += info + "|" + result;
-                            reject({ err: true, result: result });
-                        }
-                    });
-                });
-                return promise;
-            });
-        }
-    }
-    WebBrowser.NeoUtil = NeoUtil;
-    function pageCut(pageUtil) {
-        if (pageUtil.totalPage - pageUtil.currentPage) {
-            $("#next").removeClass('disabled');
-        }
-        else {
-            $("#next").addClass('disabled');
-        }
-        if (pageUtil.currentPage - 1) {
-            $("#previous").removeClass('disabled');
-        }
-        else {
-            $("#previous").addClass('disabled');
-        }
-    }
-    WebBrowser.pageCut = pageCut;
-    class TableView {
-        constructor(divId, tableMode) {
-            this._tableMode = tableMode;
-            this.divId = divId;
-            let html = "<table id='" + tableMode.tablId + "'>"
-                + "<thead><head></head></thead><tbody></tbody></table>";
-            $("#" + this.divId).append(html);
-        }
-        update() {
-            this._tableMode.ths.forEach((th) => {
-                $("#blocklist").children('thead').append('<th>' + th + '</th>');
-            });
-            let tbody = $("#blocklist").children('tbody');
-            let tr = '';
-            this._tableMode.tds.forEach((tdMap) => {
-                let td = "";
-                this._tableMode.ths.forEach((val, key) => {
-                    td += "<td>" + tdMap.get(key) + "</td>";
-                });
-                tr += "<tr>" + td + "</tr>";
-            });
-            tbody.empty();
-            tbody.append(tr);
-        }
-        set className(className) {
-            $("#" + this._tableMode.tablId).addClass(className);
-        }
-        set tableMode(tableMode) {
-            this._tableMode = tableMode;
-        }
-    }
-    WebBrowser.TableView = TableView;
-    class walletStorage {
-        constructor() {
-            this.wallets = localStorage.getItem("Nel_wallets");
-        }
-        /**
-         * setWallet
-         */
-        setWallet(address, nep2) {
-            let json = { address, nep2 };
-            let wallets = JSON.parse(this.wallets);
-        }
-    }
-    WebBrowser.walletStorage = walletStorage;
-    class GetNep5Info {
-        constructor() {
-            this.nep5decimals = 0;
-        }
-        //http://47.96.168.8:20332/?jsonrpc=2.0&id=1&method=invokescript&params=[%2200c1046e616d6567056bd94ecab6fe9607014624ef66bbc991dbcc3f%22]
-        makeRpcUrl(url, method, ..._params) {
-            if (url[url.length - 1] != '/')
-                url = url + "/";
-            var urlout = url + "?jsonrpc=2.0&id=1&method=" + method + "&params=[";
-            for (var i = 0; i < _params.length; i++) {
-                urlout += JSON.stringify(_params[i]);
-                if (i != _params.length - 1)
-                    urlout += ",";
-            }
-            urlout += "]";
-            return urlout;
-        }
-        getInfo(sid) {
-            return __awaiter(this, void 0, void 0, function* () {
-                let res = { err: false, result: { name: "", symbol: "", decimals: 0, totalsupply: 0 } };
-                try {
-                    //拼接三次调用
-                    var sb = new ThinNeo.ScriptBuilder();
-                    sb.EmitParamJson(JSON.parse("[]")); //参数倒序入
-                    sb.EmitParamJson("(str)name"); //参数倒序入
-                    var shash = sid.hexToBytes();
-                    sb.EmitAppCall(shash.reverse()); //nep5脚本
-                    sb.EmitParamJson(JSON.parse("[]"));
-                    sb.EmitParamJson("(str)symbol");
-                    var shash = sid.hexToBytes();
-                    sb.EmitAppCall(shash.reverse());
-                    sb.EmitParamJson(JSON.parse("[]"));
-                    sb.EmitParamJson("(str)decimals");
-                    var shash = sid.hexToBytes();
-                    sb.EmitAppCall(shash.reverse());
-                    sb.EmitParamJson(JSON.parse("[]"));
-                    sb.EmitParamJson("(str)totalSupply");
-                    var shash = sid.hexToBytes();
-                    sb.EmitAppCall(shash.reverse());
-                    var data = sb.ToArray();
-                    var url = this.makeRpcUrl("http://47.96.168.8:20332", "invokescript", data.toHexString());
-                    let response = yield fetch(url, { "method": "get" });
-                    let json = yield response.json();
-                    // info1.textContent = JSON.stringify(r);
-                    try {
-                        var state = json.result.state;
-                        // info2.textContent = "";
-                        if (state.includes("HALT")) {
-                            // info2.textContent += "Succ\n";
-                            res.err = false;
-                        }
-                        var stack = json.result.stack;
-                        //find name 他的type 有可能是string 或者ByteArray
-                        if (stack[0].type == "String") {
-                            // info2.textContent += "name=" + stack[0].value + "\n";
-                            res.result.name = stack[0].value;
-                        }
-                        else if (stack[0].type == "ByteArray") {
-                            var bs = stack[0].value.hexToBytes();
-                            var str = ThinNeo.Helper.Bytes2String(bs);
-                            // info2.textContent += "name=" + str + "\n";
-                            res.result.name = str;
-                        }
-                        //find symbol 他的type 有可能是string 或者ByteArray
-                        if (stack[1].type == "String") {
-                            // info2.textContent += "symbol=" + stack[1].value + "\n";
-                            res.result.symbol = stack[1].value;
-                        }
-                        else if (stack[1].type == "ByteArray") {
-                            var bs = stack[1].value.hexToBytes();
-                            var str = ThinNeo.Helper.Bytes2String(bs);
-                            // info2.textContent += "symbol=" + str + "\n";
-                            res.result.symbol = str;
-                        }
-                        //find decimals 他的type 有可能是 Integer 或者ByteArray
-                        if (stack[2].type == "Integer") {
-                            this.nep5decimals = (new Neo.BigInteger(stack[2].value)).toInt32();
-                        }
-                        else if (stack[2].type == "ByteArray") {
-                            var bs = stack[2].value.hexToBytes();
-                            var num = new Neo.BigInteger(bs);
-                            this.nep5decimals = num.toInt32();
-                        }
-                        //find decimals 他的type 有可能是 Integer 或者ByteArray
-                        if (stack[3].type == "Integer") {
-                            var totalsupply = (new Neo.BigInteger(stack[3].value)).toInt32();
-                        }
-                        else if (stack[3].type == "ByteArray") {
-                            var bs = stack[3].value.hexToBytes();
-                            var num = new Neo.BigInteger(bs);
-                            totalsupply = num.toInt32();
-                        }
-                        // info2.textContent += "decimals=" + this.nep5decimals + "\n";
-                        res.result.totalsupply = totalsupply;
-                        res.result.decimals = this.nep5decimals;
-                        return res;
-                    }
-                    catch (e) {
-                        return e.message;
-                    }
-                }
-                catch (e) {
-                    return e.message;
-                }
-            });
-        }
-        getBalance(sid, addr) {
-            return __awaiter(this, void 0, void 0, function* () {
-                let res = { err: false, result: 0 };
-                var sb = new ThinNeo.ScriptBuilder();
-                sb.EmitParamJson(["(addr)" + addr]); //参数倒序入
-                sb.EmitParamJson("(str)balanceOf"); //参数倒序入 //name//totalSupply//symbol//decimals
-                var shash = sid.hexToBytes();
-                sb.EmitAppCall(shash.reverse()); //nep5脚本
-                var data = sb.ToArray();
-                // info1.textContent = data.toHexString();        
-                try {
-                    var url = this.makeRpcUrl("http://47.96.168.8:20332", "invokescript", data.toHexString());
-                    let response = yield fetch(url, { "method": "get" });
-                    let json = yield response.json();
-                    var state = json.result.state;
-                    // info2.textContent = "";
-                    if (state.includes("HALT")) {
-                        // info2.textContent += "Succ\n";
-                    }
-                    var stack = json.result.stack;
-                    var bnum = new Neo.BigInteger(0);
-                    //find decimals 他的type 有可能是 Integer 或者ByteArray
-                    if (stack[0].type == "Integer") {
-                        bnum = new Neo.BigInteger(stack[0].value);
-                    }
-                    else if (stack[0].type == "ByteArray") {
-                        var bs = stack[0].value.hexToBytes();
-                        bnum = new Neo.BigInteger(bs);
-                    }
-                    var v = 1;
-                    for (var i = 0; i < this.nep5decimals; i++) {
-                        v *= 10;
-                    }
-                    var intv = bnum.divide(v).toInt32();
-                    var smallv = bnum.mod(v).toInt32() / v;
-                    // info2.textContent += "count=" + (intv + smallv);
-                    res.result = intv + smallv;
-                    return res;
-                }
-                catch (e) {
-                    return { err: true, result: "^_^ 请尝试输入正确的地址" };
-                }
-            });
-        }
-    }
-    WebBrowser.GetNep5Info = GetNep5Info;
-    class StorageUtil {
-        /**
-         * setStorage
-         */
-        setStorage(name, str) {
-            localStorage.setItem(name, str);
-        }
-        /**
-         * getStorage
-         */
-        getStorage(name, decoder) {
-            let res = localStorage.getItem(name);
-            if (!res) {
-                localStorage.setItem(name, "");
-            }
-            if (decoder) {
-                if (!res) {
-                    return [];
-                }
-                let item = localStorage.getItem(name).split(decoder);
-                return item;
-            }
-            else {
-                let item = JSON.parse(localStorage.getItem(name));
-                return item;
-            }
-        }
-    }
-    WebBrowser.StorageUtil = StorageUtil;
-})(WebBrowser || (WebBrowser = {}));
 var WebBrowser;
 (function (WebBrowser) {
     class Block {
@@ -718,43 +178,56 @@ var WebBrowser;
     }
     WebBrowser.locationtool = locationtool;
 })(WebBrowser || (WebBrowser = {}));
+/// <reference path="../app.ts"/>
+var WebBrowser;
+/// <reference path="../app.ts"/>
+(function (WebBrowser) {
+    class Index {
+    }
+    WebBrowser.Index = Index;
+})(WebBrowser || (WebBrowser = {}));
 /// <reference path="../lib/neo-ts.d.ts"/>
 /// <reference types="jquery" />
 /// <reference types="bootstrap" />
-/// <reference path="Util.ts" />
 /// <reference path="./pages/blockInfo.ts" />
 /// <reference path="./pages/addressInfo.ts" />
 /// <reference path="./pages/txInfo.ts" />
 /// <reference path="./pages/html-str.ts" />
 /// <reference path="./tools/locationtool.ts" />
+/// <reference path="./pages/index.ts"/>
 var WebBrowser;
 /// <reference path="../lib/neo-ts.d.ts"/>
 /// <reference types="jquery" />
 /// <reference types="bootstrap" />
-/// <reference path="Util.ts" />
 /// <reference path="./pages/blockInfo.ts" />
 /// <reference path="./pages/addressInfo.ts" />
 /// <reference path="./pages/txInfo.ts" />
 /// <reference path="./pages/html-str.ts" />
 /// <reference path="./tools/locationtool.ts" />
+/// <reference path="./pages/index.ts"/>
 (function (WebBrowser) {
-    let ajax = new WebBrowser.Ajax();
     class App {
         constructor() {
+            this.ajax = new WebBrowser.Ajax();
             this.navbar = new WebBrowser.Navbar();
             this.netWork = new WebBrowser.NetWork();
             this.block = new WebBrowser.Block();
             this.address = new WebBrowser.Address();
             this.transaction = new WebBrowser.Transaction();
+            this.viewtxlist = document.getElementById("viewtxlist");
+            this.viewblocks = document.getElementById("viewblocks");
+            this.alladdress = document.getElementById("alladdress");
+            this.allblock = document.getElementById("allblock");
+            this.alltxlist = document.getElementById("alltxlist");
         }
         strat() {
             this.search = new WebBrowser.SearchController();
             this.netWork.start();
-            this.navbar.start();
             this.block.start();
             this.transaction.start();
             this.address.start();
             this.redirect();
+            this.navbar.start(WebBrowser.locationtool.getNetWork());
             document.getElementsByTagName("body")[0].onhashchange = () => { this.redirect(); };
             $("#searchText").focus(() => {
                 $("#nel-search").addClass("nel-input");
@@ -762,25 +235,30 @@ var WebBrowser;
             $("#searchText").focusout(() => {
                 $("#nel-search").removeClass("nel-input");
             });
+            this.viewtxlist.href = "./#" + WebBrowser.locationtool.getNetWork() + "/transactions";
+            this.viewblocks.href = "./#" + WebBrowser.locationtool.getNetWork() + "/blocks";
+            this.alladdress.href = "./#" + WebBrowser.locationtool.getNetWork() + "/addresses";
+            this.allblock.href = "./#" + WebBrowser.locationtool.getNetWork() + "/blocks";
+            this.alltxlist.href = "./#" + WebBrowser.locationtool.getNetWork() + "/transactions";
         }
         //主页
         indexPage() {
             return __awaiter(this, void 0, void 0, function* () {
                 //查询区块高度(区块数量-1)
-                let blockCount = yield ajax.post('getblockcount', []);
+                let blockCount = yield this.ajax.post('getblockcount', []);
                 let blockHeight = blockCount[0]['blockcount'] - 1;
                 $("#blockHeight").text(blockHeight.toLocaleString()); //显示在页面
                 //查询交易数量
-                let txCount = yield ajax.post('gettxcount', []);
+                let txCount = yield this.ajax.post('gettxcount', []);
                 txCount = txCount[0]['txcount'];
                 $("#txcount").text(txCount.toLocaleString()); //显示在页面
                 //查询地址总数
-                let addrCount = yield ajax.post('getaddrcount', []);
+                let addrCount = yield this.ajax.post('getaddrcount', []);
                 addrCount = addrCount[0]['addrcount'];
                 $("#addrCount").text(addrCount.toLocaleString());
                 $("#index-page").find("#blocks").children("tbody").empty();
                 //分页查询区块数据
-                let blocks = yield ajax.post('getblocks', [10, 1]);
+                let blocks = yield this.ajax.post('getblocks', [10, 1]);
                 blocks.forEach((item, index, input) => {
                     var newDate = new Date();
                     newDate.setTime(item.time * 1000);
@@ -793,7 +271,7 @@ var WebBrowser;
                     $("#index-page").find("#blocks").append(html);
                 });
                 //分页查询交易记录
-                let txs = yield ajax.post('getrawtransactions', [10, 1]);
+                let txs = yield this.ajax.post('getrawtransactions', [10, 1]);
                 $("#index-page").find("#transactions").children("tbody").empty();
                 txs.forEach((tx) => {
                     let txid = tx.txid;
@@ -820,7 +298,7 @@ var WebBrowser;
         blocksPage() {
             return __awaiter(this, void 0, void 0, function* () {
                 //查询区块数量
-                let blockCount = yield ajax.post('getblockcount', []);
+                let blockCount = yield this.ajax.post('getblockcount', []);
                 //分页查询区块数据
                 let pageUtil = new WebBrowser.PageUtil(blockCount[0]['blockcount'], 15);
                 let block = new WebBrowser.BlockPage();
@@ -1149,22 +627,12 @@ var WebBrowser;
             this.walletBtn = document.getElementById("wallet-btn");
             this.walleta = document.getElementById("walleta");
         }
-        start() {
-            this.indexa.onclick = () => {
-                this.skip("");
-            };
-            this.blocka.onclick = () => {
-                this.skip("/blocks");
-            };
-            this.txlista.onclick = () => {
-                this.skip("/transactions");
-            };
-            this.addrsa.onclick = () => {
-                this.skip("/addresses");
-            };
-            this.asseta.onclick = () => {
-                this.skip("/assets");
-            };
+        start(network) {
+            this.indexa.href = "./#" + network;
+            this.blocka.href = "./#" + network + "/blocks";
+            this.txlista.href = "./#" + network + "/transactions";
+            this.addrsa.href = "./#" + network + "/addresses";
+            this.asseta.href = "./#" + network + "/assets";
         }
         skip(page) {
             var href = window.location.href.split("#");
@@ -2374,6 +1842,546 @@ var WebBrowser;
         }
     }
     WebBrowser.WalletView = WalletView;
+})(WebBrowser || (WebBrowser = {}));
+///<reference path="../lib/neo-ts.d.ts"/>
+/// <reference types="jquery" />
+var WebBrowser;
+///<reference path="../lib/neo-ts.d.ts"/>
+/// <reference types="jquery" />
+(function (WebBrowser) {
+    class Ajax {
+        /**
+         * async post
+         */
+        post(method, params) {
+            return __awaiter(this, void 0, void 0, function* () {
+                var href = window.location.href.split("#");
+                var arr = href[1].split("/");
+                let promise = new Promise((resolve, reject) => {
+                    $.ajax({
+                        type: 'POST',
+                        url: 'http://47.96.168.8:81/api/' + arr[0],
+                        data: JSON.stringify({
+                            "jsonrpc": "2.0",
+                            "method": method,
+                            "params": params,
+                            "id": 1
+                        }),
+                        contentType: "application/json; charset=utf-8",
+                        dataType: "json",
+                        success: (data, status) => {
+                            if ('result' in data) {
+                                // console.log(data['result']);              
+                                resolve(data['result']);
+                            }
+                            else if ('error' in data) {
+                                if (data['error']['code'] == -1) {
+                                    resolve([]);
+                                }
+                                else {
+                                    resolve([]);
+                                    reject("参数出错 code:-100");
+                                }
+                            }
+                        },
+                        error: () => {
+                            reject("请求失败");
+                        }
+                    });
+                });
+                return promise;
+            });
+        }
+        /**
+         * async post
+         */
+        get() {
+            return __awaiter(this, void 0, void 0, function* () {
+                var href = window.location.href.split("#");
+                var arr = href[1].split("/");
+                let promise = new Promise((resolve, reject) => {
+                    $.ajax({
+                        type: 'GET',
+                        url: 'https://47.96.168.8:4431/api/' + arr[0] + '?jsonrpc=2.0&method=getblock&params=%5b1000%5d&id=1001',
+                        success: (data, status) => {
+                            resolve(data['result']);
+                        },
+                        error: () => {
+                            reject("请求失败");
+                        }
+                    });
+                });
+                return promise;
+            });
+        }
+    }
+    WebBrowser.Ajax = Ajax;
+    class LocationUtil {
+        constructor() {
+            this.LocString = String(location.href);
+        }
+        GetQueryString(name) {
+            let rs = new RegExp("(^|)" + name + "=([^&]*)(&|$)", "gi").exec(this.LocString), tmp;
+            if (tmp = rs) {
+                return decodeURI(tmp[2]);
+            }
+            // parameter cannot be found
+            return "";
+        }
+        getRootPath_web() {
+            //获取当前网址，如： http://localhost:8083/uimcardprj/share/meun.jsp
+            var curWwwPath = window.document.location.href;
+            console.log(curWwwPath);
+            //获取主机地址之后的目录，如： uimcardprj/share/meun.jsp
+            var pathName = window.document.location.pathname;
+            console.log(pathName);
+            var pos = curWwwPath.indexOf(pathName);
+            //获取主机地址，如： http://localhost:8083
+            console.log(pos);
+            var localhostPaht = curWwwPath.substring(0, pos);
+            //获取带"/"的项目名，如：/uimcardprj
+            console.log(localhostPaht);
+            var projectName = pathName.substring(0, pathName.substr(1).indexOf('/') + 1);
+            console.log(projectName);
+            return (localhostPaht + projectName);
+        }
+        getRootPath() {
+            var pathName = window.location.pathname.substring(1);
+            var webName = pathName == '' ? '' : pathName.substring(0, pathName.indexOf('/'));
+            if (webName == "") {
+                return window.location.protocol + '//' + window.location.host;
+            }
+            else {
+                return window.location.protocol + '//' + window.location.host + '/' + webName;
+            }
+        }
+    }
+    WebBrowser.LocationUtil = LocationUtil;
+    class NeoUtil {
+        constructor() { }
+        /**
+         * verifyPublicKey 验证公钥
+         * @param publicKey 公钥
+         */
+        verifyPublicKey(publicKey) {
+            var array = Neo.Cryptography.Base58.decode(publicKey);
+            //var hexstr = array.toHexString();
+            //var salt = array.subarray(0, 1);
+            //var hash = array.subarray(1, 1 + 20);
+            var check = array.subarray(21, 21 + 4); //
+            var checkdata = array.subarray(0, 21); //
+            var hashd = Neo.Cryptography.Sha256.computeHash(checkdata); //
+            hashd = Neo.Cryptography.Sha256.computeHash(hashd); //
+            var hashd = hashd.slice(0, 4); //
+            var checked = new Uint8Array(hashd); //
+            var error = false;
+            for (var i = 0; i < 4; i++) {
+                if (checked[i] != check[i]) {
+                    error = true;
+                    break;
+                }
+            }
+            return !error;
+        }
+        /**
+         * wifDecode wif解码
+         * @param wif wif私钥
+         */
+        wifDecode(wif) {
+            let result = { err: false, result: { pubkey: "", prikey: "", address: "" } };
+            var prikey;
+            var pubkey;
+            var address;
+            try {
+                prikey = ThinNeo.Helper.GetPrivateKeyFromWIF(wif);
+                var hexstr = prikey.toHexString();
+                result.result.prikey = hexstr;
+            }
+            catch (e) {
+                result.err = true;
+                result.result = e.message;
+                return result;
+            }
+            try {
+                pubkey = ThinNeo.Helper.GetPublicKeyFromPrivateKey(prikey);
+                var hexstr = pubkey.toHexString();
+                result.result.pubkey = hexstr;
+            }
+            catch (e) {
+                result.err = true;
+                result.result = e.message;
+                return result;
+            }
+            try {
+                address = ThinNeo.Helper.GetAddressFromPublicKey(pubkey);
+                result.result.address = address;
+            }
+            catch (e) {
+                result.err = true;
+                result.result = e.message;
+                return result;
+            }
+            return result;
+        }
+        /**
+         * nep2FromWif
+         */
+        nep2FromWif(wif, password) {
+            var prikey;
+            var pubkey;
+            var address;
+            let res = { err: false, result: { address: "", nep2: "" } };
+            try {
+                prikey = ThinNeo.Helper.GetPrivateKeyFromWIF(wif);
+                var n = 16384;
+                var r = 8;
+                var p = 8;
+                ThinNeo.Helper.GetNep2FromPrivateKey(prikey, password, n, r, p, (info, result) => {
+                    res.err = false;
+                    res.result.nep2 = result;
+                    pubkey = ThinNeo.Helper.GetPublicKeyFromPrivateKey(prikey);
+                    var hexstr = pubkey.toHexString();
+                    address = ThinNeo.Helper.GetAddressFromPublicKey(pubkey);
+                    res.result.address = address;
+                    return res;
+                });
+            }
+            catch (e) {
+                res.err = true;
+                res.result = e.message;
+                return res;
+            }
+        }
+        /**
+         * nep2TOWif
+         */
+        nep2ToWif(nep2, password) {
+            return __awaiter(this, void 0, void 0, function* () {
+                var prikey;
+                var pubkey;
+                var address;
+                let promise = new Promise((resolve, reject) => {
+                    let n = 16384;
+                    var r = 8;
+                    var p = 8;
+                    ThinNeo.Helper.GetPrivateKeyFromNep2(nep2, password, n, r, p, (info, result) => {
+                        //spanNep2.textContent = "info=" + info + " result=" + result;
+                        console.log("result=" + "info=" + info + " result=" + result);
+                        prikey = result;
+                        if (prikey != null) {
+                            var pubkey = ThinNeo.Helper.GetPublicKeyFromPrivateKey(prikey);
+                            var address = ThinNeo.Helper.GetAddressFromPublicKey(pubkey);
+                            var wif = ThinNeo.Helper.GetWifFromPrivateKey(prikey);
+                            console.log('1:' + address);
+                            resolve({ err: false, result: { pubkey, address, prikey } });
+                        }
+                        else {
+                            // spanWif.textContent = "result=" + "info=" + info + " result=" + result;
+                            reject({ err: false, result: result });
+                        }
+                    });
+                });
+                return promise;
+            });
+        }
+        /**
+         * nep6Load
+         */
+        nep6Load(wallet, password) {
+            return __awaiter(this, void 0, void 0, function* () {
+                // let promise:Promise<result> = new Promise((resolve,reject)=>{
+                try {
+                    //getPrivateKey 是异步方法，且同时只能执行一个
+                    var istart = 0;
+                    let res = new Array();
+                    var getkey = null;
+                    // getkey = async (keyindex: number) => {
+                    for (let keyindex = 0; keyindex < wallet.accounts.length; keyindex++) {
+                        let account = wallet.accounts[keyindex];
+                        try {
+                            let result = yield this.getPriKeyfromAccount(wallet.scrypt, password, account);
+                            res.push(result.result);
+                        }
+                        catch (error) {
+                            console.error(error);
+                            return { err: true, result: error };
+                        }
+                    }
+                    return { err: false, result: res };
+                }
+                catch (e) {
+                }
+                // });
+                // return promise;
+            });
+        }
+        /**
+         * getPriKeyform
+         */
+        getPriKeyfromAccount(scrypt, password, account) {
+            return __awaiter(this, void 0, void 0, function* () {
+                let promise = new Promise((resolve, reject) => {
+                    account.getPrivateKey(scrypt, password, (info, result) => {
+                        if (info == "finish") {
+                            var pubkey = ThinNeo.Helper.GetPublicKeyFromPrivateKey(result);
+                            var address = ThinNeo.Helper.GetAddressFromPublicKey(pubkey);
+                            var wif = ThinNeo.Helper.GetWifFromPrivateKey(result);
+                            var hexkey = result.toHexString();
+                            console.log(info + "|" + address + " wif=" + wif);
+                            resolve({ err: false, result: { pubkey: pubkey, address: address, prikey: result } });
+                        }
+                        else {
+                            // info2.textContent += info + "|" + result;
+                            reject({ err: true, result: result });
+                        }
+                    });
+                });
+                return promise;
+            });
+        }
+    }
+    WebBrowser.NeoUtil = NeoUtil;
+    function pageCut(pageUtil) {
+        if (pageUtil.totalPage - pageUtil.currentPage) {
+            $("#next").removeClass('disabled');
+        }
+        else {
+            $("#next").addClass('disabled');
+        }
+        if (pageUtil.currentPage - 1) {
+            $("#previous").removeClass('disabled');
+        }
+        else {
+            $("#previous").addClass('disabled');
+        }
+    }
+    WebBrowser.pageCut = pageCut;
+    class TableView {
+        constructor(divId, tableMode) {
+            this._tableMode = tableMode;
+            this.divId = divId;
+            let html = "<table id='" + tableMode.tablId + "'>"
+                + "<thead><head></head></thead><tbody></tbody></table>";
+            $("#" + this.divId).append(html);
+        }
+        update() {
+            this._tableMode.ths.forEach((th) => {
+                $("#blocklist").children('thead').append('<th>' + th + '</th>');
+            });
+            let tbody = $("#blocklist").children('tbody');
+            let tr = '';
+            this._tableMode.tds.forEach((tdMap) => {
+                let td = "";
+                this._tableMode.ths.forEach((val, key) => {
+                    td += "<td>" + tdMap.get(key) + "</td>";
+                });
+                tr += "<tr>" + td + "</tr>";
+            });
+            tbody.empty();
+            tbody.append(tr);
+        }
+        set className(className) {
+            $("#" + this._tableMode.tablId).addClass(className);
+        }
+        set tableMode(tableMode) {
+            this._tableMode = tableMode;
+        }
+    }
+    WebBrowser.TableView = TableView;
+    class walletStorage {
+        constructor() {
+            this.wallets = localStorage.getItem("Nel_wallets");
+        }
+        /**
+         * setWallet
+         */
+        setWallet(address, nep2) {
+            let json = { address, nep2 };
+            let wallets = JSON.parse(this.wallets);
+        }
+    }
+    WebBrowser.walletStorage = walletStorage;
+    class GetNep5Info {
+        constructor() {
+            this.nep5decimals = 0;
+        }
+        //http://47.96.168.8:20332/?jsonrpc=2.0&id=1&method=invokescript&params=[%2200c1046e616d6567056bd94ecab6fe9607014624ef66bbc991dbcc3f%22]
+        makeRpcUrl(url, method, ..._params) {
+            if (url[url.length - 1] != '/')
+                url = url + "/";
+            var urlout = url + "?jsonrpc=2.0&id=1&method=" + method + "&params=[";
+            for (var i = 0; i < _params.length; i++) {
+                urlout += JSON.stringify(_params[i]);
+                if (i != _params.length - 1)
+                    urlout += ",";
+            }
+            urlout += "]";
+            return urlout;
+        }
+        getInfo(sid) {
+            return __awaiter(this, void 0, void 0, function* () {
+                let res = { err: false, result: { name: "", symbol: "", decimals: 0, totalsupply: 0 } };
+                try {
+                    //拼接三次调用
+                    var sb = new ThinNeo.ScriptBuilder();
+                    sb.EmitParamJson(JSON.parse("[]")); //参数倒序入
+                    sb.EmitParamJson("(str)name"); //参数倒序入
+                    var shash = sid.hexToBytes();
+                    sb.EmitAppCall(shash.reverse()); //nep5脚本
+                    sb.EmitParamJson(JSON.parse("[]"));
+                    sb.EmitParamJson("(str)symbol");
+                    var shash = sid.hexToBytes();
+                    sb.EmitAppCall(shash.reverse());
+                    sb.EmitParamJson(JSON.parse("[]"));
+                    sb.EmitParamJson("(str)decimals");
+                    var shash = sid.hexToBytes();
+                    sb.EmitAppCall(shash.reverse());
+                    sb.EmitParamJson(JSON.parse("[]"));
+                    sb.EmitParamJson("(str)totalSupply");
+                    var shash = sid.hexToBytes();
+                    sb.EmitAppCall(shash.reverse());
+                    var data = sb.ToArray();
+                    var url = this.makeRpcUrl("http://47.96.168.8:20332", "invokescript", data.toHexString());
+                    let response = yield fetch(url, { "method": "get" });
+                    let json = yield response.json();
+                    // info1.textContent = JSON.stringify(r);
+                    try {
+                        var state = json.result.state;
+                        // info2.textContent = "";
+                        if (state.includes("HALT")) {
+                            // info2.textContent += "Succ\n";
+                            res.err = false;
+                        }
+                        var stack = json.result.stack;
+                        //find name 他的type 有可能是string 或者ByteArray
+                        if (stack[0].type == "String") {
+                            // info2.textContent += "name=" + stack[0].value + "\n";
+                            res.result.name = stack[0].value;
+                        }
+                        else if (stack[0].type == "ByteArray") {
+                            var bs = stack[0].value.hexToBytes();
+                            var str = ThinNeo.Helper.Bytes2String(bs);
+                            // info2.textContent += "name=" + str + "\n";
+                            res.result.name = str;
+                        }
+                        //find symbol 他的type 有可能是string 或者ByteArray
+                        if (stack[1].type == "String") {
+                            // info2.textContent += "symbol=" + stack[1].value + "\n";
+                            res.result.symbol = stack[1].value;
+                        }
+                        else if (stack[1].type == "ByteArray") {
+                            var bs = stack[1].value.hexToBytes();
+                            var str = ThinNeo.Helper.Bytes2String(bs);
+                            // info2.textContent += "symbol=" + str + "\n";
+                            res.result.symbol = str;
+                        }
+                        //find decimals 他的type 有可能是 Integer 或者ByteArray
+                        if (stack[2].type == "Integer") {
+                            this.nep5decimals = (new Neo.BigInteger(stack[2].value)).toInt32();
+                        }
+                        else if (stack[2].type == "ByteArray") {
+                            var bs = stack[2].value.hexToBytes();
+                            var num = new Neo.BigInteger(bs);
+                            this.nep5decimals = num.toInt32();
+                        }
+                        //find decimals 他的type 有可能是 Integer 或者ByteArray
+                        if (stack[3].type == "Integer") {
+                            var totalsupply = (new Neo.BigInteger(stack[3].value)).toInt32();
+                        }
+                        else if (stack[3].type == "ByteArray") {
+                            var bs = stack[3].value.hexToBytes();
+                            var num = new Neo.BigInteger(bs);
+                            totalsupply = num.toInt32();
+                        }
+                        // info2.textContent += "decimals=" + this.nep5decimals + "\n";
+                        res.result.totalsupply = totalsupply;
+                        res.result.decimals = this.nep5decimals;
+                        return res;
+                    }
+                    catch (e) {
+                        return e.message;
+                    }
+                }
+                catch (e) {
+                    return e.message;
+                }
+            });
+        }
+        getBalance(sid, addr) {
+            return __awaiter(this, void 0, void 0, function* () {
+                let res = { err: false, result: 0 };
+                var sb = new ThinNeo.ScriptBuilder();
+                sb.EmitParamJson(["(addr)" + addr]); //参数倒序入
+                sb.EmitParamJson("(str)balanceOf"); //参数倒序入 //name//totalSupply//symbol//decimals
+                var shash = sid.hexToBytes();
+                sb.EmitAppCall(shash.reverse()); //nep5脚本
+                var data = sb.ToArray();
+                // info1.textContent = data.toHexString();        
+                try {
+                    var url = this.makeRpcUrl("http://47.96.168.8:20332", "invokescript", data.toHexString());
+                    let response = yield fetch(url, { "method": "get" });
+                    let json = yield response.json();
+                    var state = json.result.state;
+                    // info2.textContent = "";
+                    if (state.includes("HALT")) {
+                        // info2.textContent += "Succ\n";
+                    }
+                    var stack = json.result.stack;
+                    var bnum = new Neo.BigInteger(0);
+                    //find decimals 他的type 有可能是 Integer 或者ByteArray
+                    if (stack[0].type == "Integer") {
+                        bnum = new Neo.BigInteger(stack[0].value);
+                    }
+                    else if (stack[0].type == "ByteArray") {
+                        var bs = stack[0].value.hexToBytes();
+                        bnum = new Neo.BigInteger(bs);
+                    }
+                    var v = 1;
+                    for (var i = 0; i < this.nep5decimals; i++) {
+                        v *= 10;
+                    }
+                    var intv = bnum.divide(v).toInt32();
+                    var smallv = bnum.mod(v).toInt32() / v;
+                    // info2.textContent += "count=" + (intv + smallv);
+                    res.result = intv + smallv;
+                    return res;
+                }
+                catch (e) {
+                    return { err: true, result: "^_^ 请尝试输入正确的地址" };
+                }
+            });
+        }
+    }
+    WebBrowser.GetNep5Info = GetNep5Info;
+    class StorageUtil {
+        /**
+         * setStorage
+         */
+        setStorage(name, str) {
+            localStorage.setItem(name, str);
+        }
+        /**
+         * getStorage
+         */
+        getStorage(name, decoder) {
+            let res = localStorage.getItem(name);
+            if (!res) {
+                localStorage.setItem(name, "");
+            }
+            if (decoder) {
+                if (!res) {
+                    return [];
+                }
+                let item = localStorage.getItem(name).split(decoder);
+                return item;
+            }
+            else {
+                let item = JSON.parse(localStorage.getItem(name));
+                return item;
+            }
+        }
+    }
+    WebBrowser.StorageUtil = StorageUtil;
 })(WebBrowser || (WebBrowser = {}));
 // import * as $ from "jquery";
 /// <reference path ="Util.ts"/>

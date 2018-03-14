@@ -1,34 +1,39 @@
 /// <reference path="../lib/neo-ts.d.ts"/>
 /// <reference types="jquery" />
 /// <reference types="bootstrap" />
-/// <reference path="Util.ts" />
 /// <reference path="./pages/blockInfo.ts" />
 /// <reference path="./pages/addressInfo.ts" />
 /// <reference path="./pages/txInfo.ts" />
 /// <reference path="./pages/html-str.ts" />
 /// <reference path="./tools/locationtool.ts" />
+/// <reference path="./pages/index.ts"/>
 
 namespace WebBrowser
 {
-    let ajax: Ajax = new Ajax();
 
     class App
     {
+        ajax: Ajax = new Ajax();
         navbar: Navbar = new Navbar();
         netWork: NetWork = new NetWork();
         block: Block = new Block();
         address: Address = new Address();
         transaction: Transaction = new Transaction();
         search: SearchController;
+        viewtxlist: HTMLAnchorElement = document.getElementById("viewtxlist") as HTMLAnchorElement;
+        viewblocks: HTMLAnchorElement = document.getElementById("viewblocks") as HTMLAnchorElement;
+        alladdress: HTMLAnchorElement = document.getElementById("alladdress") as HTMLAnchorElement;
+        allblock: HTMLAnchorElement = document.getElementById("allblock") as HTMLAnchorElement;
+        alltxlist: HTMLAnchorElement = document.getElementById("alltxlist") as HTMLAnchorElement;
         strat()
         {
             this.search = new SearchController();
             this.netWork.start();
-            this.navbar.start();
             this.block.start();
             this.transaction.start();
             this.address.start();
             this.redirect();
+            this.navbar.start(locationtool.getNetWork());
             document.getElementsByTagName("body")[0].onhashchange = () => { this.redirect() };
 
             $("#searchText").focus(() =>
@@ -38,29 +43,36 @@ namespace WebBrowser
             $("#searchText").focusout(() =>
             {
                 $("#nel-search").removeClass("nel-input");
-            })
+            });
+
+            this.viewtxlist.href = "./#" + locationtool.getNetWork() + "/transactions";
+            this.viewblocks.href = "./#" + locationtool.getNetWork() + "/blocks";
+            
+            this.alladdress.href = "./#" + locationtool.getNetWork() + "/addresses";
+            this.allblock.href = "./#" + locationtool.getNetWork() + "/blocks";
+            this.alltxlist.href = "./#" + locationtool.getNetWork() + "/transactions";
         }
         
         //主页
         async indexPage()
         {
             //查询区块高度(区块数量-1)
-            let blockCount = await ajax.post('getblockcount', []);
+            let blockCount = await this.ajax.post('getblockcount', []);
             let blockHeight = blockCount[0]['blockcount'] - 1;
             $("#blockHeight").text(blockHeight.toLocaleString());//显示在页面
 
             //查询交易数量
-            let txCount = await ajax.post('gettxcount', []);
+            let txCount = await this.ajax.post('gettxcount', []);
             txCount = txCount[0]['txcount'];
             $("#txcount").text(txCount.toLocaleString());//显示在页面
 
             //查询地址总数
-            let addrCount: number = await ajax.post('getaddrcount', [])
+            let addrCount: number = await this.ajax.post('getaddrcount', [])
             addrCount = addrCount[0]['addrcount'];
             $("#addrCount").text(addrCount.toLocaleString());
             $("#index-page").find("#blocks").children("tbody").empty();
             //分页查询区块数据
-            let blocks: Block[] = await ajax.post('getblocks', [10, 1]);
+            let blocks: Block[] = await this.ajax.post('getblocks', [10, 1]);
             blocks.forEach((item, index, input) =>
             {
                 var newDate = new Date();
@@ -82,7 +94,7 @@ namespace WebBrowser
                 version: number,
                 blockindex: number,
                 gas: string,
-            }[] = await ajax.post('getrawtransactions', [10, 1]);
+            }[] = await this.ajax.post('getrawtransactions', [10, 1]);
             $("#index-page").find("#transactions").children("tbody").empty();
             txs.forEach((tx) =>
             {
@@ -110,7 +122,7 @@ namespace WebBrowser
         async blocksPage()
         {
             //查询区块数量
-            let blockCount = await ajax.post('getblockcount', []);
+            let blockCount = await this.ajax.post('getblockcount', []);
             //分页查询区块数据
             let pageUtil: PageUtil = new PageUtil(blockCount[0]['blockcount'], 15);
             let block: BlockPage = new BlockPage();

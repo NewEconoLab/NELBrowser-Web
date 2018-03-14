@@ -24,8 +24,6 @@
 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
-      <script src="https://cdn.bootcss.com/html5shiv/3.7.3/html5shiv.min.js"></script>
-      <script src="https://cdn.bootcss.com/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
 </head>
 
@@ -120,7 +118,7 @@
                                 <div class="title-summary">Last block</div>
                                 <div class="number" id="blockHeight">0</div>
                                 <div>
-                                    <a class="btn btn-nel" href="#blocks-page">View all blocks</a>
+                                    <a id="allblock" class="btn btn-nel" >View all blocks</a>
                                 </div>
                             </div>
                         </div>
@@ -131,7 +129,7 @@
                                 <div class="title-summary">Total transactions</div>
                                 <div class="number" id="txcount">0</div>
                                 <div>
-                                    <a class="btn btn-nel" href="#txlist-page">View all transactions</a>
+                                    <a id="alltxlist" class="btn btn-nel" >View all transactions</a>
                                 </div>
                             </div>
                         </div>
@@ -142,7 +140,7 @@
                                 <div class="title-summary">Wallet address created</div>
                                 <div class="number" id="addrCount">0</div>
                                 <div>
-                                    <a class="btn btn-nel" href="#addrs-page">View all addresses</a>
+                                    <a id="alladdress" class="btn btn-nel">View all addresses</a>
                                 </div>
                             </div>
                         </div>
@@ -167,7 +165,7 @@
                             <tbody></tbody>
                         </table>
                         <div class="tfood">
-                            <a class="" href="#blocks-page">View all &nbsp; >>>></a>
+                            <a id="viewblocks" href="#blocks-page">View all &nbsp; >>>></a>
                         </div>
                     </div>
                 </div>
@@ -188,7 +186,7 @@
                             <tbody></tbody>
                         </table>
                         <div class="tfood">
-                            <a class="" href="#txlist-page">View all &nbsp; >>>></a>
+                            <a class=""  id="viewtxlist">View all &nbsp; >>>></a>
                         </div>
                     </div>
                 </div>

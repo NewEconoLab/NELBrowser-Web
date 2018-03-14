@@ -306,7 +306,7 @@ a:hover, a:focus {
     text-align: center;
     height: 38px;
     width: 50px;
-    background: #454F60;
+    background: #198CEE;
     border-radius: 5px 0 0 5px;
     display: table-cell;
     vertical-align: middle;
@@ -322,7 +322,7 @@ a:hover, a:focus {
     text-align: center;
     height: 38px;
     width: 50px;
-    background: #151A1E;
+    background: #198CEE;
     border-radius: 0 5px 5px 0;
     display: table-cell;
     vertical-align: middle;
@@ -332,15 +332,19 @@ a:hover, a:focus {
     -ms-user-select: none;
     user-select: none;
 }
-.page-previous.disabled, .page-next.disabled {
+
+.page-previous.disabled, 
+.page-next.disabled {
     background: #0E5C9E;
 }
 
-.page-previous:hover, .page-next:hover {
+.page-previous:hover, 
+.page-next:hover {
     background: #4DADFF;
 }
 
-.page-next.disabled:hover, .page-previous.disabled:hover {
+.page-next.disabled:hover, 
+.page-previous.disabled:hover {
     background: #0E5C9E;
 }
 

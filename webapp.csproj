@@ -106,6 +106,7 @@
     <TypeScriptCompile Include="src\pages\addressInfo.ts" />
     <TypeScriptCompile Include="src\pages\blockInfo.ts" />
     <TypeScriptCompile Include="src\pages\html-str.ts" />
+    <TypeScriptCompile Include="src\pages\index.ts" />
     <TypeScriptCompile Include="src\pages\txInfo.ts" />
     <TypeScriptCompile Include="src\app.ts" />
     <TypeScriptCompile Include="src\Blocks.ts" />
