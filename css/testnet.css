@@ -398,13 +398,16 @@ table>tbody>tr {
     background-color: #454F60;border-collapse: separate;
 }
 
-.list-nel{
-    background-color: #454F60;
-}
-
 .list-body>.line:nth-of-type(odd){
     background-color: #505F79;
 }
+
+.list-head > .line > .title-nel,
+.list-body > .line > .title-nel,
+.list-body > .line > .content-nel {
+    color:#fff;
+}
+
 .table-nel>tbody tr:last-of-type {
     border-collapse: separate;
     border-radius: 5px 5px 5px 5px;

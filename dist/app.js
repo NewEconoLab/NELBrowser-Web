@@ -548,11 +548,121 @@ var WebBrowser;
 })(WebBrowser || (WebBrowser = {}));
 var WebBrowser;
 (function (WebBrowser) {
-    var page;
-    (function (page) {
-        page.addressInfo = document.createElement("div");
-        page.addressInfo.innerHTML =
-            `
+    class Block {
+        start() {
+            this.div = document.getElementById("block-info");
+            this.div.hidden = true;
+            this.div.innerHTML = WebBrowser.pages.block;
+        }
+    }
+    WebBrowser.Block = Block;
+})(WebBrowser || (WebBrowser = {}));
+var WebBrowser;
+(function (WebBrowser) {
+    class Address {
+        start() {
+            this.div = document.getElementById("address-info");
+            this.div.hidden = true;
+            this.div.innerHTML = WebBrowser.pages.addres;
+        }
+    }
+    WebBrowser.Address = Address;
+})(WebBrowser || (WebBrowser = {}));
+var WebBrowser;
+(function (WebBrowser) {
+    class Transaction {
+        start() {
+            this.div = document.getElementById("transaction-info");
+            this.div.hidden = true;
+            this.div.innerHTML = WebBrowser.pages.transaction;
+        }
+    }
+    WebBrowser.Transaction = Transaction;
+})(WebBrowser || (WebBrowser = {}));
+/// <reference path="./blockInfo.ts" />
+/// <reference path="./addressInfo.ts" />
+/// <reference path="./txInfo.ts" />
+var WebBrowser;
+/// <reference path="./blockInfo.ts" />
+/// <reference path="./addressInfo.ts" />
+/// <reference path="./txInfo.ts" />
+(function (WebBrowser) {
+    var pages;
+    (function (pages) {
+        pages.block = `
+    <div class="title"><span>Block Information</span></div>
+    <div class="list-nel">
+      <div class="list-head">
+          <div class="line"><div class="title-nel"><span>Block 1723980</span></div></div>
+      </div>
+      <div class="list-body">
+          <div class="line"><div class="title-nel"><span>Hash</span></div> <div class="content-nel"><span id="hash"></span></div></div>
+          <div class="line"><div class="title-nel"><span>Index</span></div> <div class="content-nel"><span id="index"></span></div></div>
+          <div class="line"><div class="title-nel"><span>Time</span></div> <div class="content-nel"><span id="time"></span></div></div>
+          <div class="line"><div class="title-nel"><span>Size</span></div><div class="content-nel"><span id="size"></span></div></div>
+          <div class="line"><div class="title-nel"><span>Previous Block</span></div><div class="content-nel"></div><span></span></div>
+          <div class="line"><div class="title-nel"><span>Next Block</span></div><div class="content-nel"></div><span></span></div>
+      </div>
+    </div>
+    <div class="title">
+        <span>Transactions</span>
+    </div>
+    <table class="table table-nel cool">
+        <thead>
+            <tr>
+                <th>TXID</th>
+                <th>Type</th>
+                <th>Size</th>
+                <th>Vesion</th>
+            </tr>
+        </thead>
+        <tbody id="txs"></tbody>
+    </table>
+    `;
+        pages.transaction = `
+    <div class="title"><span>Transaction Information</span></div>
+    <div class="list-nel">
+      <div class="list-head">
+          <div class="line"><div class="title-nel"><span>Block 1723980</span></div></div>
+      </div>
+      <div class="list-body">
+          <div class="line"><div class="title-nel"><span>TXID</span></div> <div class="content-nel"><span id="hash"></span></div></div>
+          <div class="line"><div class="title-nel"><span>Type</span></div> <div class="content-nel"><span id="txInfo"></span></div></div>
+          <div class="line"><div class="title-nel"><span>Time</span></div> <div class="content-nel"><span id="time"></span></div></div>
+          <div class="line"><div class="title-nel"><span>Network Fee</span></div><div class="content-nel"><span>0</span></div></div>
+          <div class="line"><div class="title-nel"><span>System Fee</span></div><div class="content-nel"></div><span>0</span></div>
+          <div class="line"><div class="title-nel"><span>Size</span></div><div class="content-nel"></div><span id="size"></span></div>
+          <div class="line"><div class="title-nel"><span>Included in Block</span></div><div class="content-nel"></div><span id="index"></span></div>
+      </div>
+    </div>
+    <div class="container">
+      <div class="row">
+         <div class="col-md-6">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">
+                      输入
+                    </h3>
+                </div>
+                <ul id="from" class="list-group">
+                </ul>
+            </div> 
+          </div>
+          <div class="col-md-6">
+             <div class="panel panel-default" style="height:100%">
+                <div class="panel-heading">
+                    <h3 class="panel-title">
+                      输出
+                    </h3>
+                </div>
+                <ul id="to" class="list-group">
+                </ul>
+             </div> 
+           </div>
+      </div>
+   </div>
+    `;
+        pages.addres = `
     <div class="title"><span>Address info</span></div>
     <h4 class="cool" id="address"></h4>
     <div id="balance" class="row">
@@ -595,29 +705,55 @@ var WebBrowser;
         <tbody id="utxos"></tbody>
     </table>
     `;
-    })(page = WebBrowser.page || (WebBrowser.page = {}));
+    })(pages = WebBrowser.pages || (WebBrowser.pages = {}));
+})(WebBrowser || (WebBrowser = {}));
+var WebBrowser;
+(function (WebBrowser) {
+    class locationtool {
+        static getNetWork() {
+            var hash = window.location.hash;
+            var arr = hash.split("/");
+            return arr[0].replace("#", "");
+        }
+    }
+    WebBrowser.locationtool = locationtool;
 })(WebBrowser || (WebBrowser = {}));
 /// <reference path="../lib/neo-ts.d.ts"/>
 /// <reference types="jquery" />
 /// <reference types="bootstrap" />
 /// <reference path="Util.ts" />
-/// <reference path="../page/addressInfo.ts" />
+/// <reference path="./pages/blockInfo.ts" />
+/// <reference path="./pages/addressInfo.ts" />
+/// <reference path="./pages/txInfo.ts" />
+/// <reference path="./pages/html-str.ts" />
+/// <reference path="./tools/locationtool.ts" />
 var WebBrowser;
 /// <reference path="../lib/neo-ts.d.ts"/>
 /// <reference types="jquery" />
 /// <reference types="bootstrap" />
 /// <reference path="Util.ts" />
-/// <reference path="../page/addressInfo.ts" />
+/// <reference path="./pages/blockInfo.ts" />
+/// <reference path="./pages/addressInfo.ts" />
+/// <reference path="./pages/txInfo.ts" />
+/// <reference path="./pages/html-str.ts" />
+/// <reference path="./tools/locationtool.ts" />
 (function (WebBrowser) {
     let ajax = new WebBrowser.Ajax();
     class App {
         constructor() {
             this.navbar = new WebBrowser.Navbar();
             this.netWork = new WebBrowser.NetWork();
+            this.block = new WebBrowser.Block();
+            this.address = new WebBrowser.Address();
+            this.transaction = new WebBrowser.Transaction();
         }
         strat() {
+            this.search = new WebBrowser.SearchController();
             this.netWork.start();
             this.navbar.start();
+            this.block.start();
+            this.transaction.start();
+            this.address.start();
             this.redirect();
             document.getElementsByTagName("body")[0].onhashchange = () => { this.redirect(); };
             $("#searchText").focus(() => {
@@ -649,7 +785,8 @@ var WebBrowser;
                     var newDate = new Date();
                     newDate.setTime(item.time * 1000);
                     let html = '';
-                    html += '<tr><td><a class="code" class="code" target="_blank" rel="external nofollow"  href="./page/blockInfo.html?index=' + item.index + '">';
+                    html += '<tr><td><a class="code" class="code" target="_blank" rel="external nofollow"  ';
+                    html += " href ='./#" + WebBrowser.locationtool.getNetWork() + "/block/" + item.index + "' > ";
                     html += item.index + '</a></td><td>' + item.size + ' bytes</td><td>';
                     html += newDate.toLocaleString() + '</td>';
                     html += '<td>' + item.tx.length + '</td></tr>';
@@ -664,7 +801,8 @@ var WebBrowser;
                     txid = txid.substring(0, 4) + '...' + txid.substring(txid.length - 4);
                     let html = "";
                     html += "<tr>";
-                    html += "<td><a class='code' class='code' target='_blank' rel='external nofollow'  href='./page/txInfo.html?txid=" + tx.txid + "'>" + txid + "</a>";
+                    html += "<td><a class='code' class='code' target='_blank' rel='external nofollow' ";
+                    html += " href ='./#" + WebBrowser.locationtool.getNetWork() + "/transaction/" + tx.txid + "' > " + txid + " </a>";
                     html += "</td>";
                     html += "<td>" + tx.type.replace("Transaction", "");
                     html += "</td>";
@@ -709,6 +847,7 @@ var WebBrowser;
         redirect() {
             var href = window.location.href;
             var page = "";
+            var param;
             let hash = location.hash;
             var urlarr = hash.split("/");
             if (urlarr.length == 1) {
@@ -716,6 +855,10 @@ var WebBrowser;
             }
             if (urlarr.length == 2) {
                 page = urlarr[1];
+            }
+            if (urlarr.length == 3) {
+                page = urlarr[1];
+                param = urlarr[2];
             }
             if (urlarr[0] == "") {
                 var newhref = href.replace("#", "");
@@ -786,30 +929,44 @@ var WebBrowser;
                 $("#wallet-page").hide();
                 $("#wallet-btn").removeClass("active");
             }
+            if (page == "block") {
+                this.block.div.hidden = false;
+                let index = param;
+                let block = new WebBrowser.BlockPage();
+                block.queryBlock(index);
+            }
+            else {
+                this.block.div.hidden = true;
+            }
+            if (page == "asset") {
+                let assetid = param;
+                //let ts: TrasctionInfo = new TrasctionInfo();
+                //ts.updateTxInfo(txid);
+            }
+            if (page == "transaction") {
+                this.transaction.div.hidden = false;
+                let txid = param;
+                let ts = new WebBrowser.TrasctionInfo();
+                ts.updateTxInfo(txid);
+            }
+            else {
+                this.transaction.div.hidden = true;
+            }
+            if (page == "address") {
+                this.address.div.hidden = false;
+                let addr = param;
+                let addrInfo = new WebBrowser.AddressControll(addr);
+                addrInfo.addressInfo();
+            }
+            else {
+                this.address.div.hidden = true;
+            }
         }
     }
     window.onload = () => {
         WebBrowser.WWW.rpc_getURL();
         var app = new App();
         app.strat();
-        let page = $('#page').val();
-        let locationutil = new WebBrowser.LocationUtil();
-        new WebBrowser.SearchController();
-        if (page === 'txInfo') {
-            let txid = locationutil.GetQueryString("txid");
-            let ts = new WebBrowser.TrasctionInfo();
-            ts.updateTxInfo(txid);
-        }
-        if (page === 'blockInfo') {
-            let index = Number(locationutil.GetQueryString("index"));
-            let block = new WebBrowser.BlockPage();
-            block.queryBlock(index);
-        }
-        if (page === 'addrInfo') {
-            let addr = locationutil.GetQueryString("addr");
-            let addrInfo = new WebBrowser.AddressControll(addr);
-            addrInfo.addressInfo();
-        }
     };
 })(WebBrowser || (WebBrowser = {}));
 // import * as $ from "jquery";
@@ -1256,19 +1413,13 @@ var WebBrowser;
         constructor() {
             this.locationUtil = new WebBrowser.LocationUtil();
             let page = $('#page').val().toString();
-            let url = "";
             let neoUtil = new WebBrowser.NeoUtil();
-            if (page == 'index') {
-                url = './page/';
-            }
-            else {
-                url = './';
-            }
             $("#searchBtn").click(() => {
+                let url = "./#" + WebBrowser.locationtool.getNetWork();
                 let search = $("#searchText").val().toString();
                 if (search.length == 34) {
                     if (neoUtil.verifyPublicKey(search)) {
-                        window.open(url + 'address.html?addr=' + search);
+                        window.open(url + '/address/' + search);
                     }
                     else {
                         alert('请输入正确的地址');
@@ -1276,10 +1427,10 @@ var WebBrowser;
                 }
                 search = search.replace('0x', '');
                 if (search.length == 64) {
-                    window.open(url + 'txInfo.html?txid=' + search);
+                    window.open(url + '/transaction/' + search);
                 }
                 if (!isNaN(Number(search))) {
-                    window.open(url + 'blockInfo.html?index=' + search);
+                    window.open(url + '/block/' + search);
                 }
             });
         }

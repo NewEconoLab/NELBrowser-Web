@@ -10,23 +10,16 @@ namespace WebBrowser
         constructor()
         {
             let page: string = $('#page').val().toString();
-            let url: string = "";
             let neoUtil: NeoUtil = new NeoUtil();
-            if (page == 'index')
-            {
-                url = './page/';
-            } else
-            {
-                url = './';
-            }
             $("#searchBtn").click(() =>
             {
+                let url: string = "./#" + locationtool.getNetWork();
                 let search: string = $("#searchText").val().toString();
                 if (search.length == 34)
                 {
                     if (neoUtil.verifyPublicKey(search))
                     {
-                        window.open(url + 'address.html?addr=' + search);
+                        window.open(url + '/address/' + search);
                     } else
                     {
                         alert('请输入正确的地址');
@@ -35,11 +28,11 @@ namespace WebBrowser
                 search = search.replace('0x', '');
                 if (search.length == 64)
                 {
-                    window.open ( url + 'txInfo.html?txid=' + search);
+                    window.open ( url + '/transaction/' + search);
                 }
                 if (!isNaN(Number(search)))
                 {
-                    window.open(url + 'blockInfo.html?index=' + search);
+                    window.open(url + '/block/' + search);
                 }
             });
         }

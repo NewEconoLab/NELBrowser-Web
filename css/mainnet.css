@@ -352,7 +352,20 @@ a:hover, a:focus {
     padding-top: 20px;
 }
 
+.list-nel {
+    background-color: #fff;
+    border-collapse: separate;    
+}
 
+.list-body > .line:nth-of-type(odd) {
+    background-color: #F5F5F5
+}
+
+.list-head > .line > .title-nel,
+.list-body > .line > .title-nel,
+.list-body > .line > .content-nel {
+    color: #333333;
+}
 
 .table-nel > div:nth-of-type(odd) {
     background-color: #F5F5F5;

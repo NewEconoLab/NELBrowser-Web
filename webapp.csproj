@@ -103,9 +103,10 @@
     <Content Include="index.html" />
     <TypeScriptCompile Include="lib\code.d.ts" />
     <TypeScriptCompile Include="lib\neo-ts.d.ts" />
-    <TypeScriptCompile Include="page\addressInfo.ts" />
-    <TypeScriptCompile Include="page\blockInfo.ts" />
-    <TypeScriptCompile Include="page\txInfo.ts" />
+    <TypeScriptCompile Include="src\pages\addressInfo.ts" />
+    <TypeScriptCompile Include="src\pages\blockInfo.ts" />
+    <TypeScriptCompile Include="src\pages\html-str.ts" />
+    <TypeScriptCompile Include="src\pages\txInfo.ts" />
     <TypeScriptCompile Include="src\app.ts" />
     <TypeScriptCompile Include="src\Blocks.ts" />
     <TypeScriptCompile Include="src\controllers\AddressControll.ts" />
@@ -119,6 +120,7 @@
     <TypeScriptCompile Include="src\PagesController.ts" />
     <TypeScriptCompile Include="src\PageViews.ts" />
     <TypeScriptCompile Include="src\tools\cointool.ts" />
+    <TypeScriptCompile Include="src\tools\locationtool.ts" />
     <TypeScriptCompile Include="src\tools\wwwtool.ts" />
     <TypeScriptCompile Include="src\Trasction.ts" />
     <TypeScriptCompile Include="src\Util.ts" />
