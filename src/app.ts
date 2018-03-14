@@ -15,6 +15,7 @@ namespace WebBrowser
         strat()
         {
             this.netWork.start();
+            this.navbar.start();
             this.redirect();
             document.getElementsByTagName("body")[0].onhashchange = () => { this.redirect() };
 
@@ -156,45 +157,45 @@ namespace WebBrowser
             $("#brow-btn").addClass("active");
             $("#index-btn").removeClass("active");
         }
-        if (page === '#blocks-page')
+        if (page === 'blocks')
         {
             // let blocks=new BlocksControll();
             // blocks.start();
             this.blocksPage();
-            $(page).show();
+            $("#blocks-page").show();
             $("#blocks-btn").addClass("active");
         } else
         {
             $('#blocks-page').hide();
             $("#blocks-btn").removeClass("active");
         }
-        if (page === '#txlist-page')
+        if (page === 'transactions')
         {
             let ts: Trasctions = new Trasctions();
-            $(page).show();
+            $("#txlist-page").show();
             $("#txlist-btn").addClass("active");
         } else
         {
             $('#txlist-page').hide();
             $("#txlist-btn").removeClass("active");
         }
-        if (page === '#addrs-page')
+        if (page === 'addresses')
         {
             let addrlist: addrlistControll = new addrlistControll();
             addrlist.start();
-            $(page).show();
+            $("#addrs-page").show();
             $("#addrs-btn").addClass("active");
         } else
         {
             $('#addrs-page').hide();
             $("#addrs-btn").removeClass("active");
         }
-        if (page === '#asset-page')
+        if (page === 'assets')
         {
             //启动asset管理器
             let assetControll: AssetControll = new AssetControll();
             assetControll.allAsset();
-            $(page).show();
+            $("#asset-page").show();
             $("#asset-btn").addClass("active");
             $("#brow-btn").removeClass("active");
         } else

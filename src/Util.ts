@@ -10,11 +10,13 @@ namespace WebBrowser
          */
         public async post(method: string, params: any[]): Promise<any>
         {
+            var href: string[] = window.location.href.split("#");
+            var arr = href[1].split("/");
             let promise = new Promise<any>((resolve, reject) =>
             {
                 $.ajax({
                     type: 'POST',
-                    url: 'http://47.96.168.8:81/api/' + sessionStorage.getItem('network'),
+                    url: 'http://47.96.168.8:81/api/' + arr[0],
                     data: JSON.stringify({
                         "jsonrpc": "2.0",
                         "method": method,
@@ -57,11 +59,13 @@ namespace WebBrowser
          */
         public async get(): Promise<any>
         {
+            var href: string[] = window.location.href.split("#");
+            var arr = href[1].split("/");
             let promise = new Promise<any>((resolve, reject) =>
             {
                 $.ajax({
                     type: 'GET',
-                    url: 'https://47.96.168.8:4431/api/' + sessionStorage.getItem('network') + '?jsonrpc=2.0&method=getblock&params=%5b1000%5d&id=1001',
+                    url: 'https://47.96.168.8:4431/api/' + arr[0] + '?jsonrpc=2.0&method=getblock&params=%5b1000%5d&id=1001',
 
                     success: (data, status) =>
                     {

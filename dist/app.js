@@ -18,10 +18,12 @@ var WebBrowser;
          */
         post(method, params) {
             return __awaiter(this, void 0, void 0, function* () {
+                var href = window.location.href.split("#");
+                var arr = href[1].split("/");
                 let promise = new Promise((resolve, reject) => {
                     $.ajax({
                         type: 'POST',
-                        url: 'http://47.96.168.8:81/api/' + sessionStorage.getItem('network'),
+                        url: 'http://47.96.168.8:81/api/' + arr[0],
                         data: JSON.stringify({
                             "jsonrpc": "2.0",
                             "method": method,
@@ -58,10 +60,12 @@ var WebBrowser;
          */
         get() {
             return __awaiter(this, void 0, void 0, function* () {
+                var href = window.location.href.split("#");
+                var arr = href[1].split("/");
                 let promise = new Promise((resolve, reject) => {
                     $.ajax({
                         type: 'GET',
-                        url: 'https://47.96.168.8:4431/api/' + sessionStorage.getItem('network') + '?jsonrpc=2.0&method=getblock&params=%5b1000%5d&id=1001',
+                        url: 'https://47.96.168.8:4431/api/' + arr[0] + '?jsonrpc=2.0&method=getblock&params=%5b1000%5d&id=1001',
                         success: (data, status) => {
                             resolve(data['result']);
                         },
@@ -613,6 +617,7 @@ var WebBrowser;
         }
         strat() {
             this.netWork.start();
+            this.navbar.start();
             this.redirect();
             document.getElementsByTagName("body")[0].onhashchange = () => { this.redirect(); };
             $("#searchText").focus(() => {
@@ -729,41 +734,41 @@ var WebBrowser;
                 $("#brow-btn").addClass("active");
                 $("#index-btn").removeClass("active");
             }
-            if (page === '#blocks-page') {
+            if (page === 'blocks') {
                 // let blocks=new BlocksControll();
                 // blocks.start();
                 this.blocksPage();
-                $(page).show();
+                $("#blocks-page").show();
                 $("#blocks-btn").addClass("active");
             }
             else {
                 $('#blocks-page').hide();
                 $("#blocks-btn").removeClass("active");
             }
-            if (page === '#txlist-page') {
+            if (page === 'transactions') {
                 let ts = new WebBrowser.Trasctions();
-                $(page).show();
+                $("#txlist-page").show();
                 $("#txlist-btn").addClass("active");
             }
             else {
                 $('#txlist-page').hide();
                 $("#txlist-btn").removeClass("active");
             }
-            if (page === '#addrs-page') {
+            if (page === 'addresses') {
                 let addrlist = new WebBrowser.addrlistControll();
                 addrlist.start();
-                $(page).show();
+                $("#addrs-page").show();
                 $("#addrs-btn").addClass("active");
             }
             else {
                 $('#addrs-page').hide();
                 $("#addrs-btn").removeClass("active");
             }
-            if (page === '#asset-page') {
+            if (page === 'assets') {
                 //启动asset管理器
                 let assetControll = new WebBrowser.AssetControll();
                 assetControll.allAsset();
-                $(page).show();
+                $("#asset-page").show();
                 $("#asset-btn").addClass("active");
                 $("#brow-btn").removeClass("active");
             }
@@ -973,12 +978,43 @@ var WebBrowser;
 (function (WebBrowser) {
     class Navbar {
         constructor() {
+            this.indexBtn = document.getElementById("index-btn");
+            this.indexa = document.getElementById("indexa");
             this.browBtn = document.getElementById("brow-btn");
             this.blockBtn = document.getElementById("blocks-btn");
+            this.blocka = document.getElementById("blocksa");
             this.txlistBtn = document.getElementById("txlist-btn");
+            this.txlista = document.getElementById("txlista");
             this.addrsBtn = document.getElementById("addrs-btn");
+            this.addrsa = document.getElementById("addrsa");
             this.assetBtn = document.getElementById("asset-btn");
+            this.asseta = document.getElementById("assetsa");
             this.walletBtn = document.getElementById("wallet-btn");
+            this.walleta = document.getElementById("walleta");
+        }
+        start() {
+            this.indexa.onclick = () => {
+                this.skip("");
+            };
+            this.blocka.onclick = () => {
+                this.skip("/blocks");
+            };
+            this.txlista.onclick = () => {
+                this.skip("/transactions");
+            };
+            this.addrsa.onclick = () => {
+                this.skip("/addresses");
+            };
+            this.asseta.onclick = () => {
+                this.skip("/assets");
+            };
+        }
+        skip(page) {
+            var href = window.location.href.split("#");
+            var arr = href[1].split("/");
+            var net = "#" + arr[0];
+            var url = href[0] + net + page;
+            window.location.href = url;
         }
     }
     WebBrowser.Navbar = Navbar;
