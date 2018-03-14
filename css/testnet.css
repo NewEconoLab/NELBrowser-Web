@@ -401,7 +401,6 @@ table>tbody>tr {
 .list-body>.line:nth-of-type(odd){
     background-color: #505F79;
 }
-
 .list-head > .line > .title-nel,
 .list-body > .line > .title-nel,
 .list-body > .line > .content-nel {
