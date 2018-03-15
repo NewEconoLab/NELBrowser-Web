@@ -80,8 +80,11 @@
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="fonts\search.svg" />
     <Content Include="img\bs-docs-masthead-pattern.png" />
+    <Content Include="img\close.svg" />
     <Content Include="img\icon.png" />
     <Content Include="img\log.png" />
+    <Content Include="img\open.svg" />
+    <Content Include="img\turnto.svg" />
     <Content Include="lib\asset\asmjs.js" />
     <Content Include="lib\asset\flash.swf" />
     <Content Include="lib\base64js.min.js" />
