@@ -261,6 +261,7 @@ var WebBrowser;
             this.block = new WebBrowser.Block();
             this.address = new WebBrowser.Address();
             this.transaction = new WebBrowser.Transaction();
+            this.search = new WebBrowser.SearchController();
             this.assetControll = new WebBrowser.AssetControll();
             this.viewtxlist = document.getElementById("viewtxlist");
             this.viewblocks = document.getElementById("viewblocks");
@@ -269,7 +270,6 @@ var WebBrowser;
             this.alltxlist = document.getElementById("alltxlist");
         }
         strat() {
-            this.search = new WebBrowser.SearchController();
             this.netWork.start();
             this.block.start();
             this.transaction.start();
@@ -279,22 +279,25 @@ var WebBrowser;
             this.assetinfo = new WebBrowser.AssetInfo();
             this.assetinfo.start(this);
             this.redirect();
-            document.getElementsByTagName("body")[0].onhashchange = () => { this.redirect(); };
+            document.getElementsByTagName("body")[0].onhashchange = () => {
+                this.redirect();
+            };
             $("#searchText").focus(() => {
                 $("#nel-search").addClass("nel-input");
             });
             $("#searchText").focusout(() => {
                 $("#nel-search").removeClass("nel-input");
             });
-            this.viewtxlist.href = "./#" + WebBrowser.locationtool.getNetWork() + "/transactions";
-            this.viewblocks.href = "./#" + WebBrowser.locationtool.getNetWork() + "/blocks";
-            this.alladdress.href = "./#" + WebBrowser.locationtool.getNetWork() + "/addresses";
-            this.allblock.href = "./#" + WebBrowser.locationtool.getNetWork() + "/blocks";
-            this.alltxlist.href = "./#" + WebBrowser.locationtool.getNetWork() + "/transactions";
         }
         //主页
         indexPage() {
             return __awaiter(this, void 0, void 0, function* () {
+                this.viewtxlist.href = "./#" + WebBrowser.locationtool.getNetWork() + "/transactions";
+                this.viewblocks.href = "./#" + WebBrowser.locationtool.getNetWork() + "/blocks";
+                this.alladdress.href = "./#" + WebBrowser.locationtool.getNetWork() + "/addresses";
+                this.allblock.href = "./#" + WebBrowser.locationtool.getNetWork() + "/blocks";
+                this.alltxlist.href = "./#" + WebBrowser.locationtool.getNetWork() + "/transactions";
+                this.search.start();
                 //查询区块高度(区块数量-1)
                 let blockCount = yield this.ajax.post('getblockcount', []);
                 let blockHeight = blockCount[0]['blockcount'] - 1;
@@ -407,8 +410,6 @@ var WebBrowser;
                 $("#index-btn").removeClass("active");
             }
             if (page === 'blocks') {
-                // let blocks=new BlocksControll();
-                // blocks.start();
                 this.blocksPage();
                 $("#blocks-page").show();
                 $("#blocks-btn").addClass("active");
@@ -448,8 +449,6 @@ var WebBrowser;
                 $("#asset-btn").removeClass("active");
             }
             if (page == "#wallet-page") {
-                //let wallet: WalletControll = new WalletControll();
-                //$(page).show();
                 $("#wallet-btn").addClass("active");
                 $("#brow-btn").removeClass("active");
             }
@@ -495,7 +494,7 @@ var WebBrowser;
                 this.assetinfo.view(id);
             }
             else {
-                this.address.div.hidden = true;
+                this.assetinfo.div.hidden = true;
             }
         }
     }
@@ -949,10 +948,12 @@ var WebBrowser;
     class SearchController {
         constructor() {
             this.locationUtil = new WebBrowser.LocationUtil();
-            let page = $('#page').val().toString();
-            let url = "./#" + WebBrowser.locationtool.getNetWork();
+        }
+        start() {
             let neoUtil = new WebBrowser.NeoUtil();
             $("#searchBtn").click(() => {
+                let page = $('#page').val().toString();
+                let url = "./#" + WebBrowser.locationtool.getNetWork();
                 let search = $("#searchText").val().toString();
                 if (search.length == 34) {
                     if (neoUtil.verifyPublicKey(search)) {

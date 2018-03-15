@@ -7,13 +7,13 @@ namespace WebBrowser
     export class SearchController
     {
         public locationUtil: LocationUtil = new LocationUtil();
-        constructor()
+        start()
         {
-            let page: string = $('#page').val().toString();
-            let url: string = "./#" + locationtool.getNetWork();
             let neoUtil: NeoUtil = new NeoUtil();
             $("#searchBtn").click(() =>
             {
+                let page: string = $('#page').val().toString();
+                let url: string = "./#" + locationtool.getNetWork();
                 let search: string = $("#searchText").val().toString();
                 if (search.length == 34)
                 {
@@ -28,7 +28,7 @@ namespace WebBrowser
                 search = search.replace('0x', '');
                 if (search.length == 64)
                 {
-                    window.open ( url + '/transaction/' + search);
+                    window.open(url + '/transaction/' + search);
                 }
                 if (!isNaN(Number(search)))
                 {

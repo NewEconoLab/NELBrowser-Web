@@ -40,39 +40,24 @@
           <div class="list-body">
               <div class="line"><div class="title-nel"><span>TXID</span></div> <div class="content-nel"><span id="hash"></span></div></div>
               <div class="line"><div class="title-nel"><span>Type</span></div> <div class="content-nel"><span id="txInfo"></span></div></div>
-              <div class="line"><div class="title-nel"><span>Time</span></div> <div class="content-nel"><span id="time"></span></div></div>
-              <div class="line"><div class="title-nel"><span>Network Fee</span></div><div class="content-nel"><span>0</span></div></div>
-              <div class="line"><div class="title-nel"><span>System Fee</span></div><div class="content-nel"></div><span>0</span></div>
-              <div class="line"><div class="title-nel"><span>Size</span></div><div class="content-nel"></div><span id="size"></span></div>
+              <div class="line">
+                  <div class="title-nel"><span>Time</span></div> <div class="content-nel"><span id="time"></span></div><div class="end"><img src="../img/open.svg" /></div>
+
+                  <div class="transaction" style="width:100%">
+                      <div class="formaddr" style="width:41.3%">
+                          <div class="item"><div class="address"><a>ALhQkZd36ACWhaW4r29hqSgoN5ZxisvUns</a></div><ul class="amount"><li>78 Gas</li><li>78 Neo</li></ul></div>
+                          <div class="item"><div class="address"><a>ALhQkZd36ACWhaW4r29hqSgoN5ZxisvUns</a></div><ul class="amount"><li>78 Gas</li><li>78 Neo</li></ul></div>
+                          <div class="item"><div class="address"><a>ALhQkZd36ACWhaW4r29hqSgoN5ZxisvUns</a></div><ul class="amount"><li>78 Gas</li><li>78 Neo</li></ul></div>
+                      </div>
+                      <div class="turnto" style="width:18.6%"><img src="../img/turnto.svg" /></div>
+                      <div class="toaddr" style="width:41.3%"><div class="item"><div class="address"><a>ALhQkZd36ACWhaW4r29hqSgoN5ZxisvUns</a></div><ul class="amount"><li>78 Gas</li><li>78 Neo</li></ul></div></div>
+                  </div>
+              </div>
+              <div class="line"><div class="title-nel"><span>System Fee</span></div><div class="content-nel"><span>0</span></div><div class="end"><img src="../img/open.svg" /></div></div>
+              <div class="line"><div class="title-nel"><span>Size</span></div><div class="content-nel"><span id="size"></span></div></div>
               <div class="line"><div class="title-nel"><span>Included in Block</span></div><div class="content-nel"></div><span id="index"></span></div>
           </div>
         </div>
-        <div class="container">
-          <div class="row">
-             <div class="col-md-6">
-                <div class="panel panel-default">
-                    <div class="panel-heading">
-                        <h3 class="panel-title">
-                          输入
-                        </h3>
-                    </div>
-                    <ul id="from" class="list-group">
-                    </ul>
-                </div> 
-              </div>
-              <div class="col-md-6">
-                 <div class="panel panel-default" style="height:100%">
-                    <div class="panel-heading">
-                        <h3 class="panel-title">
-                          输出
-                        </h3>
-                    </div>
-                    <ul id="to" class="list-group">
-                    </ul>
-                 </div> 
-               </div>
-          </div>
-       </div>
       </div>
 
     </div> <!-- /container -->
@@ -85,7 +70,7 @@
     <script src="../lib/neo-ts.js"></script>
     <script src="../lib/jquery.min.js"></script>
     <script src="../lib/bootstrap.min.js"></script>
-    <script src="../dist/app.js"></script>
+    <!--<script src="../dist/app.js"></script>-->
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
   </body>
 </html>

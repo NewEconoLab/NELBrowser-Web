@@ -20,7 +20,7 @@ namespace WebBrowser
         block: Block = new Block();
         address: Address = new Address();
         transaction: Transaction = new Transaction();
-        search: SearchController;
+        search: SearchController = new SearchController();
         assetControll: AssetControll = new AssetControll();
         assetinfo: AssetInfo;
         viewtxlist: HTMLAnchorElement = document.getElementById("viewtxlist") as HTMLAnchorElement;
@@ -30,7 +30,6 @@ namespace WebBrowser
         alltxlist: HTMLAnchorElement = document.getElementById("alltxlist") as HTMLAnchorElement;
         strat()
         {
-            this.search = new SearchController();
             this.netWork.start();
             this.block.start();
             this.transaction.start();
@@ -40,7 +39,10 @@ namespace WebBrowser
             this.assetinfo = new AssetInfo();
             this.assetinfo.start(this);
             this.redirect();
-            document.getElementsByTagName("body")[0].onhashchange = () => { this.redirect() };
+            document.getElementsByTagName("body")[0].onhashchange = () =>
+            {
+                this.redirect()
+            };
 
             $("#searchText").focus(() =>
             {
@@ -51,17 +53,18 @@ namespace WebBrowser
                 $("#nel-search").removeClass("nel-input");
             });
 
-            this.viewtxlist.href = "./#" + locationtool.getNetWork() + "/transactions";
-            this.viewblocks.href = "./#" + locationtool.getNetWork() + "/blocks";
-            
-            this.alladdress.href = "./#" + locationtool.getNetWork() + "/addresses";
-            this.allblock.href = "./#" + locationtool.getNetWork() + "/blocks";
-            this.alltxlist.href = "./#" + locationtool.getNetWork() + "/transactions";
         }
         
         //主页
         async indexPage()
         {
+            this.viewtxlist.href = "./#" + locationtool.getNetWork() + "/transactions";
+            this.viewblocks.href = "./#" + locationtool.getNetWork() + "/blocks";
+
+            this.alladdress.href = "./#" + locationtool.getNetWork() + "/addresses";
+            this.allblock.href = "./#" + locationtool.getNetWork() + "/blocks";
+            this.alltxlist.href = "./#" + locationtool.getNetWork() + "/transactions";
+            this.search.start();
             //查询区块高度(区块数量-1)
             let blockCount = await this.ajax.post('getblockcount', []);
             let blockHeight = blockCount[0]['blockcount'] - 1;
@@ -160,7 +163,7 @@ namespace WebBrowser
         {
             var href = window.location.href;
             var page: string = "";
-            var param: any;
+            var param: any; 
             let hash = location.hash;
             var urlarr: string[] = hash.split("/");
             if (urlarr.length == 1)
@@ -197,8 +200,6 @@ namespace WebBrowser
             }
             if (page === 'blocks')
             {
-                // let blocks=new BlocksControll();
-                // blocks.start();
                 this.blocksPage();
                 $("#blocks-page").show();
                 $("#blocks-btn").addClass("active");
@@ -242,8 +243,6 @@ namespace WebBrowser
             }
             if (page == "#wallet-page")
             {
-                //let wallet: WalletControll = new WalletControll();
-                //$(page).show();
                 $("#wallet-btn").addClass("active");
                 $("#brow-btn").removeClass("active");
 
@@ -296,7 +295,7 @@ namespace WebBrowser
 
             } else
             {
-                this.address.div.hidden = true;
+                this.assetinfo.div.hidden = true;
             }
 
         }

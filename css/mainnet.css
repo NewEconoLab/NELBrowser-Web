@@ -142,6 +142,17 @@
     background: #198CEE;
     border: 1px solid #D2E2EF;
     border-radius: 5px;
+    color: #D2E2EF;
+}
+
+#nel-search>input:-ms-input-placeholder {
+    color: #D2E2EF;
+    opacity: 1;
+}
+
+#nel-search > input::-webkit-input-placeholder {
+    color: #D2E2EF;
+    opacity: 1;
 }
 
 @media (max-width: 767px) {
@@ -303,7 +314,6 @@ a:hover, a:focus {
 
 .page-previous {
     text-align: center;
-    text-align: center;
     height: 38px;
     width: 50px;
     background: #198CEE;
@@ -318,7 +328,6 @@ a:hover, a:focus {
 }
 
 .page-next {
-    text-align: center;
     text-align: center;
     height: 38px;
     width: 50px;
