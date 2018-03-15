@@ -104,6 +104,7 @@
     <TypeScriptCompile Include="lib\code.d.ts" />
     <TypeScriptCompile Include="lib\neo-ts.d.ts" />
     <TypeScriptCompile Include="src\pages\addressInfo.ts" />
+    <TypeScriptCompile Include="src\pages\asset.ts" />
     <TypeScriptCompile Include="src\pages\blockInfo.ts" />
     <TypeScriptCompile Include="src\pages\html-str.ts" />
     <TypeScriptCompile Include="src\pages\index.ts" />

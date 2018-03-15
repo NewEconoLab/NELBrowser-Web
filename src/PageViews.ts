@@ -117,13 +117,11 @@ namespace WebBrowser
         {
             $("#assets").empty();
             $("#nep5ass").empty();
-            console.log("assets:" + JSON.stringify(this.assets));
-            console.log("nep5s:" + JSON.stringify(this.nep5s));
             this.assets.forEach((asset: Asset) =>
             {
                 let html = '';
                 html += '<tr>';
-                html += '<td>' + asset.names + '</td>';
+                html += '<td> <a href="./#' + locationtool.getNetWork() + '/asset/' + asset.id + '">' + asset.names + '</a></td>';
                 html += '<td>' + asset.type + '</td>';
                 html += '<td>' + (asset.amount <= 0 ? asset.available : asset.amount); + '</td>';
                 html += '<td>' + asset.precision + '</td>';

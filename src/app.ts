@@ -4,6 +4,7 @@
 /// <reference path="./pages/blockInfo.ts" />
 /// <reference path="./pages/addressInfo.ts" />
 /// <reference path="./pages/txInfo.ts" />
+/// <reference path="./pages/asset.ts" />
 /// <reference path="./pages/html-str.ts" />
 /// <reference path="./tools/locationtool.ts" />
 /// <reference path="./pages/index.ts"/>
@@ -11,7 +12,7 @@
 namespace WebBrowser
 {
 
-    class App
+    export class App
     {
         ajax: Ajax = new Ajax();
         navbar: Navbar = new Navbar();
@@ -20,6 +21,8 @@ namespace WebBrowser
         address: Address = new Address();
         transaction: Transaction = new Transaction();
         search: SearchController;
+        assetControll: AssetControll = new AssetControll();
+        assetinfo: AssetInfo;
         viewtxlist: HTMLAnchorElement = document.getElementById("viewtxlist") as HTMLAnchorElement;
         viewblocks: HTMLAnchorElement = document.getElementById("viewblocks") as HTMLAnchorElement;
         alladdress: HTMLAnchorElement = document.getElementById("alladdress") as HTMLAnchorElement;
@@ -32,8 +35,11 @@ namespace WebBrowser
             this.block.start();
             this.transaction.start();
             this.address.start();
-            this.redirect();
             this.navbar.start();
+            this.assetControll.start();
+            this.assetinfo = new AssetInfo();
+            this.assetinfo.start(this);
+            this.redirect();
             document.getElementsByTagName("body")[0].onhashchange = () => { this.redirect() };
 
             $("#searchText").focus(() =>
@@ -225,8 +231,7 @@ namespace WebBrowser
             if (page === 'assets')
             {
                 //启动asset管理器
-                let assetControll: AssetControll = new AssetControll();
-                assetControll.allAsset();
+                this.assetControll.allAsset();
                 $("#asset-page").show();
                 $("#asset-btn").addClass("active");
                 $("#brow-btn").removeClass("active");
@@ -279,6 +284,16 @@ namespace WebBrowser
                 let addr: string = param;
                 let addrInfo: AddressControll = new AddressControll(addr);
                 addrInfo.addressInfo();
+            } else
+            {
+                this.address.div.hidden = true;
+            }
+            if (page == "asset")
+            {
+                this.assetinfo.div.hidden = false;
+                let id: string = param;
+                this.assetinfo.view(id);
+
             } else
             {
                 this.address.div.hidden = true;

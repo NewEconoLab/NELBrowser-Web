@@ -16,7 +16,7 @@ namespace WebBrowser
             {
                 $.ajax({
                     type: 'POST',
-                    url: 'http://47.96.168.8:81/api/' + arr[0],
+                    url: 'https://api.nel.group/api/' + arr[0],
                     data: JSON.stringify({
                         "jsonrpc": "2.0",
                         "method": method,
@@ -65,7 +65,7 @@ namespace WebBrowser
             {
                 $.ajax({
                     type: 'GET',
-                    url: 'https://47.96.168.8:4431/api/' + arr[0] + '?jsonrpc=2.0&method=getblock&params=%5b1000%5d&id=1001',
+                    url: 'https://api.nel.group/api/' + arr[0] + '?jsonrpc=2.0&method=getblock&params=%5b1000%5d&id=1001',
 
                     success: (data, status) =>
                     {

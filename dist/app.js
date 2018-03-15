@@ -39,6 +39,39 @@ var WebBrowser;
     }
     WebBrowser.Transaction = Transaction;
 })(WebBrowser || (WebBrowser = {}));
+var WebBrowser;
+(function (WebBrowser) {
+    class AssetInfo {
+        start(app) {
+            this.app = app;
+            this.div = document.getElementById("asset-info");
+            this.div.hidden = true;
+        }
+        view(assetid) {
+            this.div.innerHTML = WebBrowser.pages.asset;
+            this.app.ajax.post('getallasset', []).then((arr) => {
+                var asset = arr.find((value) => {
+                    return value.id == assetid;
+                });
+                if (asset.id == WebBrowser.AssetEnum.NEO) {
+                    asset.name = [{ lang: 'en', name: 'NEO' }];
+                }
+                if (asset.id == WebBrowser.AssetEnum.GAS) {
+                    asset.name = [{ lang: 'en', name: "GAS" }];
+                }
+                let name = asset.name.map((name) => { return name.name; });
+                asset.names = name.join("|");
+                $("#name").text(asset.names);
+                $("#type").text(asset.type);
+                $("#id").text(asset.id);
+                $("#available").text(asset.available);
+                $("#precision").text(asset.precision);
+                $("#admin").text(asset.admin);
+            });
+        }
+    }
+    WebBrowser.AssetInfo = AssetInfo;
+})(WebBrowser || (WebBrowser = {}));
 /// <reference path="./blockInfo.ts" />
 /// <reference path="./addressInfo.ts" />
 /// <reference path="./txInfo.ts" />
@@ -95,7 +128,7 @@ var WebBrowser;
           <div class="line"><div class="title-nel"><span>Included in Block</span></div><div class="content-nel"><span id="index"></span></div></div>
       </div>
     </div>
-    <div class="container">
+    <div style="padding-top:25px">
       <div class="row">
          <div class="col-md-6">
             <div class="list-nel">
@@ -161,6 +194,22 @@ var WebBrowser;
             <tbody id="utxos"></tbody>
         </table>
     `;
+        pages.asset = `
+    <div class="title"><span>Asset Information</span></div>
+    <div class="list-nel">
+      <div class="list-head">
+          <div class="line"><div class="title-nel"><span>Asset information</span></div></div>
+      </div>
+      <div class="list-body">
+          <div class="line"><div class="title-nel"><span>Asset</span></div> <div class="content-nel"><span id="name"></span></div></div>
+          <div class="line"><div class="title-nel"><span>Type</span></div> <div class="content-nel"><span id="type"></span></div></div>
+          <div class="line"><div class="title-nel"><span>ID</span></div> <div class="content-nel"><span id="id"></span></div></div>
+          <div class="line"><div class="title-nel"><span>Available</span></div><div class="content-nel"><span id="available"></span></div></div>
+          <div class="line"><div class="title-nel"><span>Precision</span></div><div class="content-nel"><span id="precision"></span></div></div>
+          <div class="line"><div class="title-nel"><span>Admin</span></div><div class="content-nel"><span id="admin"></span></div></div>
+      </div>
+    </div>
+    `;
     })(pages = WebBrowser.pages || (WebBrowser.pages = {}));
 })(WebBrowser || (WebBrowser = {}));
 var WebBrowser;
@@ -188,6 +237,7 @@ var WebBrowser;
 /// <reference path="./pages/blockInfo.ts" />
 /// <reference path="./pages/addressInfo.ts" />
 /// <reference path="./pages/txInfo.ts" />
+/// <reference path="./pages/asset.ts" />
 /// <reference path="./pages/html-str.ts" />
 /// <reference path="./tools/locationtool.ts" />
 /// <reference path="./pages/index.ts"/>
@@ -198,6 +248,7 @@ var WebBrowser;
 /// <reference path="./pages/blockInfo.ts" />
 /// <reference path="./pages/addressInfo.ts" />
 /// <reference path="./pages/txInfo.ts" />
+/// <reference path="./pages/asset.ts" />
 /// <reference path="./pages/html-str.ts" />
 /// <reference path="./tools/locationtool.ts" />
 /// <reference path="./pages/index.ts"/>
@@ -210,6 +261,7 @@ var WebBrowser;
             this.block = new WebBrowser.Block();
             this.address = new WebBrowser.Address();
             this.transaction = new WebBrowser.Transaction();
+            this.assetControll = new WebBrowser.AssetControll();
             this.viewtxlist = document.getElementById("viewtxlist");
             this.viewblocks = document.getElementById("viewblocks");
             this.alladdress = document.getElementById("alladdress");
@@ -222,8 +274,11 @@ var WebBrowser;
             this.block.start();
             this.transaction.start();
             this.address.start();
-            this.redirect();
             this.navbar.start();
+            this.assetControll.start();
+            this.assetinfo = new WebBrowser.AssetInfo();
+            this.assetinfo.start(this);
+            this.redirect();
             document.getElementsByTagName("body")[0].onhashchange = () => { this.redirect(); };
             $("#searchText").focus(() => {
                 $("#nel-search").addClass("nel-input");
@@ -383,8 +438,7 @@ var WebBrowser;
             }
             if (page === 'assets') {
                 //启动asset管理器
-                let assetControll = new WebBrowser.AssetControll();
-                assetControll.allAsset();
+                this.assetControll.allAsset();
                 $("#asset-page").show();
                 $("#asset-btn").addClass("active");
                 $("#brow-btn").removeClass("active");
@@ -435,8 +489,17 @@ var WebBrowser;
             else {
                 this.address.div.hidden = true;
             }
+            if (page == "asset") {
+                this.assetinfo.div.hidden = false;
+                let id = param;
+                this.assetinfo.view(id);
+            }
+            else {
+                this.address.div.hidden = true;
+            }
         }
     }
+    WebBrowser.App = App;
     window.onload = () => {
         WebBrowser.WWW.rpc_getURL();
         var app = new App();
@@ -1102,10 +1165,14 @@ var WebBrowser;
         constructor() {
             this.ajax = new WebBrowser.Ajax();
         }
+        start() {
+            return __awaiter(this, void 0, void 0, function* () {
+            });
+        }
         allAsset() {
             return __awaiter(this, void 0, void 0, function* () {
-                let allAsset = yield this.ajax.post('getallasset', []);
-                allAsset.map((asset) => {
+                this.assets = yield this.ajax.post('getallasset', []);
+                this.assets.map((asset) => {
                     if (asset.id == WebBrowser.AssetEnum.NEO) {
                         asset.name = [{ lang: 'en', name: 'NEO' }];
                     }
@@ -1130,7 +1197,7 @@ var WebBrowser;
                     }
                     nep5s.push(assetnep5);
                 }
-                let assetView = new WebBrowser.AssetsView(allAsset, nep5s);
+                let assetView = new WebBrowser.AssetsView(this.assets, nep5s);
                 yield assetView.loadView(); //调用loadView方法渲染页面
             });
         }
@@ -1676,12 +1743,10 @@ var WebBrowser;
         loadView() {
             $("#assets").empty();
             $("#nep5ass").empty();
-            console.log("assets:" + JSON.stringify(this.assets));
-            console.log("nep5s:" + JSON.stringify(this.nep5s));
             this.assets.forEach((asset) => {
                 let html = '';
                 html += '<tr>';
-                html += '<td>' + asset.names + '</td>';
+                html += '<td> <a href="./#' + WebBrowser.locationtool.getNetWork() + '/asset/' + asset.id + '">' + asset.names + '</a></td>';
                 html += '<td>' + asset.type + '</td>';
                 html += '<td>' + (asset.amount <= 0 ? asset.available : asset.amount);
                 +'</td>';
@@ -1817,7 +1882,7 @@ var WebBrowser;
                 let promise = new Promise((resolve, reject) => {
                     $.ajax({
                         type: 'POST',
-                        url: 'http://47.96.168.8:81/api/' + arr[0],
+                        url: 'https://api.nel.group/api/' + arr[0],
                         data: JSON.stringify({
                             "jsonrpc": "2.0",
                             "method": method,
@@ -1859,7 +1924,7 @@ var WebBrowser;
                 let promise = new Promise((resolve, reject) => {
                     $.ajax({
                         type: 'GET',
-                        url: 'https://47.96.168.8:4431/api/' + arr[0] + '?jsonrpc=2.0&method=getblock&params=%5b1000%5d&id=1001',
+                        url: 'https://api.nel.group/api/' + arr[0] + '?jsonrpc=2.0&method=getblock&params=%5b1000%5d&id=1001',
                         success: (data, status) => {
                             resolve(data['result']);
                         },

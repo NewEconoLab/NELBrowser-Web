@@ -50,7 +50,7 @@ namespace WebBrowser.pages
           <div class="line"><div class="title-nel"><span>Included in Block</span></div><div class="content-nel"><span id="index"></span></div></div>
       </div>
     </div>
-    <div class="container">
+    <div style="padding-top:25px">
       <div class="row">
          <div class="col-md-6">
             <div class="list-nel">
@@ -117,4 +117,22 @@ namespace WebBrowser.pages
             <tbody id="utxos"></tbody>
         </table>
     `;
+    export var asset: string =
+        `
+    <div class="title"><span>Asset Information</span></div>
+    <div class="list-nel">
+      <div class="list-head">
+          <div class="line"><div class="title-nel"><span>Asset information</span></div></div>
+      </div>
+      <div class="list-body">
+          <div class="line"><div class="title-nel"><span>Asset</span></div> <div class="content-nel"><span id="name"></span></div></div>
+          <div class="line"><div class="title-nel"><span>Type</span></div> <div class="content-nel"><span id="type"></span></div></div>
+          <div class="line"><div class="title-nel"><span>ID</span></div> <div class="content-nel"><span id="id"></span></div></div>
+          <div class="line"><div class="title-nel"><span>Available</span></div><div class="content-nel"><span id="available"></span></div></div>
+          <div class="line"><div class="title-nel"><span>Precision</span></div><div class="content-nel"><span id="precision"></span></div></div>
+          <div class="line"><div class="title-nel"><span>Admin</span></div><div class="content-nel"><span id="admin"></span></div></div>
+      </div>
+    </div>
+    `;
+
 }

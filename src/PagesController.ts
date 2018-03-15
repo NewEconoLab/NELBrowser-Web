@@ -260,14 +260,15 @@ namespace WebBrowser
     export class AssetControll
     {
         private ajax: Ajax = new Ajax();
-        constructor()
+        assets: Asset[];
+        constructor() { }
+        async start()
         {
-            
         }
         public async allAsset()
         {
-            let allAsset: Asset[] = await this.ajax.post('getallasset', []);
-            allAsset.map((asset) =>
+            this.assets = await this.ajax.post('getallasset', []);
+            this.assets.map((asset) =>
             {
                 if (asset.id == AssetEnum.NEO)
                 {
@@ -296,7 +297,7 @@ namespace WebBrowser
                     assetnep5.id = nep5asids[n];
                 } nep5s.push(assetnep5);
             }
-            let assetView: AssetsView = new AssetsView(allAsset, nep5s);
+            let assetView: AssetsView = new AssetsView(this.assets, nep5s);
             await assetView.loadView();   //调用loadView方法渲染页面
 
 
