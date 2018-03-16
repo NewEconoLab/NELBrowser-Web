@@ -340,7 +340,6 @@ table>tbody>tr {
 
 .page-previous {
     text-align: center;
-    text-align: center;
     height: 38px;
     width: 50px;
     background: #454F60;
@@ -355,7 +354,6 @@ table>tbody>tr {
 }
 
 .page-next {
-    text-align: center;
     text-align: center;
     height: 38px;
     width: 50px;
@@ -401,10 +399,16 @@ table>tbody>tr {
 .list-body>.line:nth-of-type(odd){
     background-color: #505F79;
 }
-.list-head > .line > .title-nel,
-.list-body > .line > .title-nel,
-.list-body > .line > .content-nel {
-    color:#fff;
+
+
+.list-head .title-content,
+.list-head .line .title-nel,
+.list-body .line .title-nel,
+.list-body .line .content-nel {
+    color: #fff;
+}
+.amount {
+    color: #fff;
 }
 
 .table-nel>tbody tr:last-of-type {

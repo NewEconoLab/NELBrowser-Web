@@ -374,11 +374,17 @@ a:hover, a:focus {
     background-color: #F5F5F5
 }
 
-.list-head > .line > .title-nel,
-.list-body > .line > .title-nel,
-.list-body > .line > .content-nel {
+.list-head .title-content,
+.list-head .line .title-nel,
+.list-body .line .title-nel,
+.list-body .line .content-nel {
     color: #333333;
 }
+
+.amount {
+    color: #333333;
+}
+
 
 .table-nel > div:nth-of-type(odd) {
     background-color: #F5F5F5;

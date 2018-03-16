@@ -22,6 +22,55 @@
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
     <![endif]-->
+    <style type="text/css">
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        #parent > li > a {
+            background: #999999;
+            display: block;
+            width: 200px;
+            border: 1px solid #ECEEF2;
+        }
+
+        li {
+            line-height: 40px;
+            display: block;
+        }
+
+            li p {
+                display: inline-block;
+                width: 0px;
+                height: 0px;
+                border-left: 5px solid transparent;
+                border-right: 5px solid transparent;
+                border-top: 5px solid#2f2f2f;
+            }
+
+            li > ul {
+                display: none;
+            }
+
+                li > ul > li {
+                    border: 1px solid #DEDEDE;
+                    width: 199px;
+                }
+
+        #parent a:target + ul {
+            display: block;
+        }
+
+        #parent a:target > p {
+            display: inline-block;
+            width: 0px;
+            height: 0px;
+            border-top: 5px solid transparent;
+            border-bottom: 5px solid transparent;
+            border-left: 5px solid#2f2f2f;
+        }
+    </style>
 </head>
 
   <body>
@@ -31,34 +80,47 @@
       <!-- Static navbar -->
 
       <!-- Main component for a primary marketing message or call to action -->
-      <div class="">
-        <div class="title"><span>Transaction Information</span></div>
-        <div class="list-nel">
-          <div class="list-head">
-              <div class="line"><div class="title-nel"><span>Block 1723980</span></div></div>
-          </div>
-          <div class="list-body">
-              <div class="line"><div class="title-nel"><span>TXID</span></div> <div class="content-nel"><span id="hash"></span></div></div>
-              <div class="line"><div class="title-nel"><span>Type</span></div> <div class="content-nel"><span id="txInfo"></span></div></div>
-              <div class="line">
-                  <div class="title-nel"><span>Time</span></div> <div class="content-nel"><span id="time"></span></div><div class="end"><img src="../img/open.svg" /></div>
+        <div class="">
+            <div class="title"><span>Transaction Information</span></div>
 
-                  <div class="transaction" style="width:100%">
-                      <div class="formaddr" style="width:41.3%">
-                          <div class="item"><div class="address"><a>ALhQkZd36ACWhaW4r29hqSgoN5ZxisvUns</a></div><ul class="amount"><li>78 Gas</li><li>78 Neo</li></ul></div>
-                          <div class="item"><div class="address"><a>ALhQkZd36ACWhaW4r29hqSgoN5ZxisvUns</a></div><ul class="amount"><li>78 Gas</li><li>78 Neo</li></ul></div>
-                          <div class="item"><div class="address"><a>ALhQkZd36ACWhaW4r29hqSgoN5ZxisvUns</a></div><ul class="amount"><li>78 Gas</li><li>78 Neo</li></ul></div>
-                      </div>
-                      <div class="turnto" style="width:18.6%"><img src="../img/turnto.svg" /></div>
-                      <div class="toaddr" style="width:41.3%"><div class="item"><div class="address"><a>ALhQkZd36ACWhaW4r29hqSgoN5ZxisvUns</a></div><ul class="amount"><li>78 Gas</li><li>78 Neo</li></ul></div></div>
-                  </div>
-              </div>
-              <div class="line"><div class="title-nel"><span>System Fee</span></div><div class="content-nel"><span>0</span></div><div class="end"><img src="../img/open.svg" /></div></div>
-              <div class="line"><div class="title-nel"><span>Size</span></div><div class="content-nel"><span id="size"></span></div></div>
-              <div class="line"><div class="title-nel"><span>Included in Block</span></div><div class="content-nel"></div><span id="index"></span></div>
-          </div>
+            <div class="list-nel">
+                <div class="list-head">
+                    <div class="line">
+                        <div class="title-content"><span>TXID</span></div>
+                        <div class="title-content"><span>Type</span></div>
+                        <div class="title-content"><span>Size</span></div>
+                        <div class="title-content"><span>Time</span></div>
+                        <div class="title-nel" style="width:60px;"></div>
+                    </div>
+                </div>
+                <div class="list-body" id="transactions">
+                    <div class="line">
+                        <div class="line-general">
+                            <div class="content-nel"><span>23d9400f219d50f4c64aaf3…</span></div>
+                            <div class="content-nel"><span>Contract</span></div>
+                            <div class="content-nel"><span>210 Bytes</span></div>
+                            <div class="content-nel"><span>13:52:55 2018-02-14</span></div>
+                        </div>
+                        <a class="end" onclick="txgeneral(this)"><img src="../img/open.svg" /></a>
+                        <div class="transaction" style="width:100%">
+                            <div class="formaddr" style="width:41.3%">
+                                <div class="item"><div class="address"><a>ALhQkZd36ACWhaW4r29hqSgoN5ZxisvUns</a></div><ul class="amount"><li>78 Gas</li><li>78 Neo</li></ul></div>
+                                <div class="item"><div class="address"><a>ALhQkZd36ACWhaW4r29hqSgoN5ZxisvUns</a></div><ul class="amount"><li>78 Gas</li><li>78 Neo</li></ul></div>
+                                <div class="item"><div class="address"><a>ALhQkZd36ACWhaW4r29hqSgoN5ZxisvUns</a></div><ul class="amount"><li>78 Gas</li><li>78 Neo</li></ul></div>
+                            </div>
+                            <div class="turnto"><img src="../img/turnto.svg" /></div>
+                            <div class="toaddr" style="width:41.3%">
+                                <div class="item">
+                                    <div class="address"><a>ALhQkZd36ACWhaW4r29hqSgoN5ZxisvUns</a></div>
+                                    <ul class="amount"><li>78 Gas</li><li>78 Neo</li></ul>
+                                </div>
+                            </div>
+                            <div style="width:60px;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
 
     </div> <!-- /container -->
 

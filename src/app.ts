@@ -309,3 +309,19 @@ namespace WebBrowser
     }
     
 }
+function txgeneral(obj: HTMLAnchorElement)
+{
+    var div: HTMLDivElement = obj.parentNode as HTMLDivElement;
+    var tran: HTMLDivElement = div.getElementsByClassName("transaction")[0] as HTMLDivElement;
+    if (tran.style.display=="")
+    {
+        tran.style.display = "none";
+        obj.classList.remove("active");
+    } else
+    {
+        tran.style.display = "";
+        obj.classList.add("active");
+    }
+
+
+}

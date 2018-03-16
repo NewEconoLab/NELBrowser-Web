@@ -505,6 +505,18 @@ var WebBrowser;
         app.strat();
     };
 })(WebBrowser || (WebBrowser = {}));
+function txgeneral(obj) {
+    var div = obj.parentNode;
+    var tran = div.getElementsByClassName("transaction")[0];
+    if (tran.style.display == "") {
+        tran.style.display = "none";
+        obj.classList.remove("active");
+    }
+    else {
+        tran.style.display = "";
+        obj.classList.add("active");
+    }
+}
 // import * as $ from "jquery";
 /// <reference types="jquery" />
 var WebBrowser;
@@ -2448,28 +2460,20 @@ var WebBrowser;
         //更新交易记录
         updateTrasctions(pageUtil, txType) {
             return __awaiter(this, void 0, void 0, function* () {
+                this.txlist.find("#transactions").empty();
                 //分页查询交易记录
                 let txs = yield this.ajax.post('getrawtransactions', [pageUtil.pageSize, pageUtil.currentPage, txType]);
+                console.log(txs);
                 this.txlist.find("table").children("tbody").empty();
                 txs.forEach((tx) => {
-                    let txid = tx.txid;
+                });
+                for (var n = 0; n < pageUtil.pageSize; n++) {
+                    let txid = txs[n].txid;
                     txid = txid.replace('0x', '');
                     txid = txid.substring(0, 6) + '...' + txid.substring(txid.length - 6);
-                    let html = "";
-                    html += "<tr>";
-                    html += "<td><a class='code' target='_blank' rel='external nofollow' href='./#" + WebBrowser.locationtool.getNetWork() + "/transaction/" + tx.txid + "'>" + txid;
-                    html += "</a></td>";
-                    html += "<td><a href='./#" + WebBrowser.locationtool.getNetWork() + "/block/" + tx.blockindex + "'>" + tx.blockindex;
-                    html += "</a></td>";
-                    html += "<td>" + tx.type.replace("Transaction", "");
-                    html += "</td>";
-                    html += "<td>" + (tx.gas == undefined ? '0' : tx.gas);
-                    html += "</td>";
-                    html += "<td>" + tx.size + " bytes";
-                    html += "</td>";
-                    html += "</tr>";
-                    this.txlist.find("table").children("tbody").append(html);
-                });
+                    let html = yield this.getTxLine(txid, txs[n].type, txs[n].size.toString(), txs[n].blockindex.toString(), txs[n].vin, txs[n].vout);
+                    this.txlist.find("#transactions").append(html);
+                }
                 WebBrowser.pageCut(this.pageUtil);
             });
         }
@@ -2483,6 +2487,86 @@ var WebBrowser;
                 //初始化交易列表
                 this.pageUtil = new WebBrowser.PageUtil(txCount, 15);
                 this.updateTrasctions(this.pageUtil, $("#TxType").val());
+            });
+        }
+        getTxLine(id, type, size, index, vins, vouts) {
+            return __awaiter(this, void 0, void 0, function* () {
+                let allAsset = yield this.ajax.post('getallasset', []);
+                allAsset.map((asset) => {
+                    if (asset.id == WebBrowser.AssetEnum.NEO) {
+                        asset.name = [{ lang: 'en', name: 'NEO' }];
+                    }
+                    if (asset.id == WebBrowser.AssetEnum.GAS) {
+                        asset.name = [{ lang: 'en', name: "GAS" }];
+                    }
+                });
+                let arr = new Array();
+                for (let index = 0; index < vins.length; index++) {
+                    const vin = vins[index];
+                    try {
+                        let txInfos = yield this.ajax.post('getrawtransaction', [vin.txid]);
+                        let vout = txInfos[0].vout[vin.vout];
+                        let address = vout.address;
+                        let value = vout.value;
+                        let name = allAsset.find(val => val.id == vout.asset).name.map(name => { return name.name; }).join("|");
+                        arr.push({ vin: vin.txid, vout: vin.vout, addr: address, name: name, amount: value });
+                    }
+                    catch (error) {
+                    }
+                }
+                let arra = TrasctionInfo.groupByaddr(arr);
+                let form = "";
+                for (let index = 0; index < arra.length; index++) {
+                    const item = arra[index];
+                    let li = '';
+                    for (let i = 0; i < item.data.length; i++) {
+                        const element = item.data[i];
+                        li += `<li>` + element.amount + ` ` + element.name + `</li>`;
+                    }
+                    form +=
+                        `
+                <div class="item"><div class="address"><a>` + item.addr + `</a></div><ul class="amount">` + li + `</ul></div>
+                `;
+                }
+                let tostr = "";
+                vouts.forEach(vout => {
+                    let name = allAsset.find(val => val.id == vout.asset).name.map(name => name.name).join("|");
+                    let sign = "";
+                    if (arra.find(item => item.addr == vout.address)) {
+                        sign = "(change)";
+                    }
+                    tostr +=
+                        `
+                <div class="item">
+                    <div class="address"><a>` + vout.address + `</a></div>
+                    <ul class="amount"><li>` + vout.value + ` ` + name + sign + `</li></ul>
+                </div>
+                `;
+                });
+                var res = `
+            <div class="formaddr" style="width:41.3%">
+                ` + form + `
+            </div>
+            <div class="turnto"><img src="../img/turnto.svg" /></div>
+            <div class="toaddr" style="width:41.3%">
+                ` + tostr + `
+            </div>
+            <div style="width:60px;"></div>
+            `;
+                return `
+            <div class="line">
+                <div class="line-general">
+                    <div class="content-nel"><span>` + id + `</span></div>
+                    <div class="content-nel"><span>` + type.replace("Transaction", "") + `</span></div>
+                    <div class="content-nel"><span>` + size + ` bytes</span></div>
+                    <div class="content-nel"><span>` + index + `</span></div>
+                </div>
+                <a onclick="txgeneral(this)" class="end" id="genbtn"><img src="../img/open.svg" /></a>
+                <div class="transaction" style="width:100%;display: none;">
+                    ` + res + `
+                </div>
+            </div>
+            `;
             });
         }
     }
@@ -2525,7 +2609,7 @@ var WebBrowser;
                     catch (error) {
                     }
                 }
-                let array = this.groupByaddr(arr);
+                let array = TrasctionInfo.groupByaddr(arr);
                 for (let index = 0; index < array.length; index++) {
                     const item = array[index];
                     let html = "";
@@ -2553,7 +2637,7 @@ var WebBrowser;
                 });
             });
         }
-        groupByaddr(arr) {
+        static groupByaddr(arr) {
             var map = {}, dest = [];
             for (var i = 0; i < arr.length; i++) {
                 var ai = arr[i];

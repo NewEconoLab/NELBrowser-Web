@@ -242,18 +242,20 @@
                     </select>
                 </div>
             </div>
-            <table class="table cool table-nel">
-                <thead>
-                    <tr>
-                        <th>TXID</th>
-                        <th>block index</th>
-                        <th>type</th>
-                        <th>cost</th>
-                        <th>size</th>
-                    </tr>
-                </thead>
-                <tbody id="transactions"></tbody>
-            </table>
+
+            <div class="list-nel">
+                <div class="list-head">
+                    <div class="line">
+                        <div class="title-content"><span>TXID</span></div>
+                        <div class="title-content"><span>Type</span></div>
+                        <div class="title-content"><span>Size</span></div>
+                        <div class="title-content"><span>Index</span></div>
+                        <div class="title-nel" style="width:60px;"></div>
+                    </div>
+                </div>
+                <div class="list-body" id="transactions">
+                </div>
+            </div>
             <div class="page-number">
                 <span>blocks 1 to 15 of 36</span>
             </div>
