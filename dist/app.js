@@ -119,13 +119,12 @@ var WebBrowser;
           <div class="line"><div class="title-nel"><span>Block 1723980</span></div></div>
       </div>
       <div class="list-body">
-          <div class="line"><div class="title-nel"><span>TXID</span></div> <div class="content-nel"><span id="hash"></span></div></div>
-          <div class="line"><div class="title-nel"><span>Type</span></div> <div class="content-nel"><span id="txInfo"></span></div></div>
-          <div class="line"><div class="title-nel"><span>Time</span></div> <div class="content-nel"><span id="time"></span></div></div>
-          <div class="line"><div class="title-nel"><span>Network Fee</span></div><div class="content-nel"><span>0</span></div></div>
-          <div class="line"><div class="title-nel"><span>System Fee</span></div><div class="content-nel"><span>0</span></div></div>
-          <div class="line"><div class="title-nel"><span>Size</span></div><div class="content-nel"><span id="size"></span></div></div>
-          <div class="line"><div class="title-nel"><span>Included in Block</span></div><div class="content-nel"><span id="index"></span></div></div>
+          <div class="line"><div class="title-nel"><span>TXID</span></div> <div class="content-nel"><span id="txid"></span></div></div>
+          <div class="line"><div class="title-nel"><span>Type</span></div> <div class="content-nel"><span id="type"></span></div></div>
+          <div class="line"><div class="title-nel"><span>Network Fee</span></div><div class="content-nel"><span id="netfee"></span></div></div>
+          <div class="line"><div class="title-nel"><span>System Fee</span></div><div class="content-nel"><span id="sysfee"></span></div></div>
+          <div class="line"><div class="title-nel"><span>Size</span></div><div class="content-nel"><span id="txsize"></span></div></div>
+          <div class="line"><div class="title-nel"><span>Included in Block</span></div><div class="content-nel"><span id="blockindex"></span></div></div>
       </div>
     </div>
     <div style="padding-top:25px">
@@ -515,6 +514,9 @@ function txgeneral(obj) {
     else {
         tran.style.display = "";
         obj.classList.add("active");
+        var vins = tran.getAttribute('vins');
+        var vouts = tran.getAttribute('vouts');
+        WebBrowser.Trasctions.getTxgeneral(vins, vouts, tran);
     }
 }
 // import * as $ from "jquery";
@@ -2469,8 +2471,6 @@ var WebBrowser;
                 });
                 for (var n = 0; n < pageUtil.pageSize; n++) {
                     let txid = txs[n].txid;
-                    txid = txid.replace('0x', '');
-                    txid = txid.substring(0, 6) + '...' + txid.substring(txid.length - 6);
                     let html = yield this.getTxLine(txid, txs[n].type, txs[n].size.toString(), txs[n].blockindex.toString(), txs[n].vin, txs[n].vout);
                     this.txlist.find("#transactions").append(html);
                 }
@@ -2489,9 +2489,31 @@ var WebBrowser;
                 this.updateTrasctions(this.pageUtil, $("#TxType").val());
             });
         }
-        getTxLine(id, type, size, index, vins, vouts) {
+        getTxLine(txid, type, size, index, vins, vouts) {
             return __awaiter(this, void 0, void 0, function* () {
-                let allAsset = yield this.ajax.post('getallasset', []);
+                var id = txid.replace('0x', '');
+                id = txid.substring(0, 6) + '...' + id.substring(txid.length - 6);
+                return `
+            <div class="line">
+                <div class="line-general">
+                    <div class="content-nel"><span><a href="./#` + WebBrowser.locationtool.getNetWork() + `/transaction/` + txid + `" >` + id + `</a></span></div>
+                    <div class="content-nel"><span>` + type.replace("Transaction", "") + `</span></div>
+                    <div class="content-nel"><span>` + size + ` bytes</span></div>
+                    <div class="content-nel"><span><a href="./#` + WebBrowser.locationtool.getNetWork() + `/block/` + index + `" >` + index + `</a></span></div>
+                </div>
+                <a onclick="txgeneral(this)" class="end" id="genbtn"><img src="../img/open.svg" /></a>
+                <div class="transaction" style="width:100%;display: none;" vins='` + JSON.stringify(vins) + `' vouts='` + JSON.stringify(vouts) + `'>
+                </div>
+            </div>
+            `;
+            });
+        }
+        static getTxgeneral(vins, vouts, div) {
+            return __awaiter(this, void 0, void 0, function* () {
+                vins = JSON.parse(vins);
+                vouts = JSON.parse(vouts);
+                var ajax = new WebBrowser.Ajax();
+                let allAsset = yield ajax.post('getallasset', []);
                 allAsset.map((asset) => {
                     if (asset.id == WebBrowser.AssetEnum.NEO) {
                         asset.name = [{ lang: 'en', name: 'NEO' }];
@@ -2504,7 +2526,7 @@ var WebBrowser;
                 for (let index = 0; index < vins.length; index++) {
                     const vin = vins[index];
                     try {
-                        let txInfos = yield this.ajax.post('getrawtransaction', [vin.txid]);
+                        let txInfos = yield ajax.post('getrawtransaction', [vin.txid]);
                         let vout = txInfos[0].vout[vin.vout];
                         let address = vout.address;
                         let value = vout.value;
@@ -2553,20 +2575,7 @@ var WebBrowser;
             </div>
             <div style="width:60px;"></div>
             `;
-                return `
-            <div class="line">
-                <div class="line-general">
-                    <div class="content-nel"><span>` + id + `</span></div>
-                    <div class="content-nel"><span>` + type.replace("Transaction", "") + `</span></div>
-                    <div class="content-nel"><span>` + size + ` bytes</span></div>
-                    <div class="content-nel"><span>` + index + `</span></div>
-                </div>
-                <a onclick="txgeneral(this)" class="end" id="genbtn"><img src="../img/open.svg" /></a>
-                <div class="transaction" style="width:100%;display: none;">
-                    ` + res + `
-                </div>
-            </div>
-            `;
+                div.innerHTML = res;
             });
         }
     }
@@ -2583,9 +2592,11 @@ var WebBrowser;
                 let txInfos = yield this.ajax.post('getrawtransaction', [txid]);
                 let txInfo = txInfos[0];
                 $("#type").text(txInfo.type.replace("Transaction", ""));
-                $("#txInfo").text("Hash: " + txInfo.txid);
-                $("#index").text(txInfo.blockindex);
-                $("#size").text(txInfo.size + " bytes");
+                $("#txid").text(txInfo.txid);
+                $("#blockindex").append("<a href='./#" + WebBrowser.locationtool.getNetWork() + "/block/" + txInfo.blockindex + "'>" + txInfo.blockindex + "</a>");
+                $("#txsize").append(txInfo.size + " bytes");
+                $("#sysfee").text(txInfo["sys_fee"] + " gas");
+                $("#netfee").text(txInfo["net_fee"] + " gas");
                 let allAsset = yield this.ajax.post('getallasset', []);
                 allAsset.map((asset) => {
                     if (asset.id == WebBrowser.AssetEnum.NEO) {

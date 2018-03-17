@@ -317,10 +317,14 @@ function txgeneral(obj: HTMLAnchorElement)
     {
         tran.style.display = "none";
         obj.classList.remove("active");
+
     } else
     {
         tran.style.display = "";
         obj.classList.add("active");
+        var vins = tran.getAttribute('vins');
+        var vouts = tran.getAttribute('vouts')
+        WebBrowser.Trasctions.getTxgeneral(vins, vouts, tran)
     }
 
 

@@ -62,8 +62,6 @@ namespace WebBrowser
             for (var n = 0; n < pageUtil.pageSize; n++)
             {
                 let txid = txs[n].txid;
-                txid = txid.replace('0x', '');
-                txid = txid.substring(0, 6) + '...' + txid.substring(txid.length - 6);
                 let html: string = await this.getTxLine(txid, txs[n].type, txs[n].size.toString(), txs[n].blockindex.toString(), txs[n].vin, txs[n].vout);
                 this.txlist.find("#transactions").append(html);
             }
@@ -83,9 +81,30 @@ namespace WebBrowser
         }
         
 
-        async getTxLine(id: string, type: string, size: string, index: string, vins, vouts)
+        async getTxLine(txid: string, type: string, size: string, index: string, vins, vouts)
         {
-            let allAsset: Asset[] = await this.ajax.post('getallasset', []);
+            var id = txid.replace('0x', '');
+            id = txid.substring(0, 6) + '...' + id.substring(txid.length - 6);
+            return `
+            <div class="line">
+                <div class="line-general">
+                    <div class="content-nel"><span><a href="./#`+ locationtool.getNetWork() + `/transaction/` + txid + `" >` + id + `</a></span></div>
+                    <div class="content-nel"><span>`+ type.replace("Transaction","") + `</span></div>
+                    <div class="content-nel"><span>`+ size + ` bytes</span></div>
+                    <div class="content-nel"><span><a href="./#`+ locationtool.getNetWork() + `/block/` + index + `" >` + index +`</a></span></div>
+                </div>
+                <a onclick="txgeneral(this)" class="end" id="genbtn"><img src="../img/open.svg" /></a>
+                <div class="transaction" style="width:100%;display: none;" vins='`+ JSON.stringify(vins) + `' vouts='` + JSON.stringify(vouts) +`'>
+                </div>
+            </div>
+            `;
+        }
+        static async getTxgeneral(vins, vouts, div: HTMLDivElement)
+        {
+            vins = JSON.parse(vins);
+            vouts = JSON.parse(vouts);
+           var ajax: Ajax = new Ajax();
+            let allAsset: Asset[] = await ajax.post('getallasset', []);
             allAsset.map((asset) =>
             {
                 if (asset.id == AssetEnum.NEO)
@@ -104,7 +123,7 @@ namespace WebBrowser
                 const vin = vins[index];
                 try
                 {
-                    let txInfos: Tx[] = await this.ajax.post('getrawtransaction', [vin.txid]);
+                    let txInfos: Tx[] = await ajax.post('getrawtransaction', [vin.txid]);
                     let vout = txInfos[0].vout[vin.vout]
                     let address: string = vout.address;
                     let value: string = vout.value;
@@ -160,20 +179,7 @@ namespace WebBrowser
             </div>
             <div style="width:60px;"></div>
             `
-            return `
-            <div class="line">
-                <div class="line-general">
-                    <div class="content-nel"><span>`+ id + `</span></div>
-                    <div class="content-nel"><span>`+ type.replace("Transaction","") + `</span></div>
-                    <div class="content-nel"><span>`+ size + ` bytes</span></div>
-                    <div class="content-nel"><span>`+ index +`</span></div>
-                </div>
-                <a onclick="txgeneral(this)" class="end" id="genbtn"><img src="../img/open.svg" /></a>
-                <div class="transaction" style="width:100%;display: none;">
-                    `+ res +`
-                </div>
-            </div>
-            `;
+            div.innerHTML = res;
         }
     }
 
@@ -189,9 +195,11 @@ namespace WebBrowser
             let txInfos: Tx[] = await this.ajax.post('getrawtransaction', [txid]);
             let txInfo: Tx = txInfos[0];
             $("#type").text(txInfo.type.replace("Transaction", ""));
-            $("#txInfo").text("Hash: " + txInfo.txid);
-            $("#index").text(txInfo.blockindex);
-            $("#size").text(txInfo.size + " bytes");
+            $("#txid").text(txInfo.txid);
+            $("#blockindex").append("<a href='./#" + locationtool.getNetWork() + "/block/" + txInfo.blockindex + "'>" + txInfo.blockindex  + "</a>");
+            $("#txsize").append(txInfo.size + " bytes");
+            $("#sysfee").text(txInfo["sys_fee"] + " gas");
+            $("#netfee").text(txInfo["net_fee"] + " gas");
 
             let allAsset: Asset[] = await this.ajax.post('getallasset', []);
             allAsset.map((asset) =>
