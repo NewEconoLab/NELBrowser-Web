@@ -19,7 +19,7 @@ namespace WebBrowser
         {
             //$("#balance").empty();
             $("#utxos").empty();
-            $("#address").text('address | ' + this.address);
+            $("#address").text( this.address);
             // console.log(this.balances);
             this.balances.forEach((balance: Balance) =>
             {

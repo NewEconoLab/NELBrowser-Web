@@ -1677,7 +1677,7 @@ var WebBrowser;
         loadView() {
             //$("#balance").empty();
             $("#utxos").empty();
-            $("#address").text('address | ' + this.address);
+            $("#address").text(this.address);
             // console.log(this.balances);
             this.balances.forEach((balance) => {
                 let html = '';
