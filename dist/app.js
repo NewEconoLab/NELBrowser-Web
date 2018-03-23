@@ -1081,7 +1081,7 @@ var WebBrowser;
                 });
                 ;
                 if (balances.length < 1) {
-                    alert("当前地址余额为零");
+                    alert("This address has no record of transactions");
                 }
                 balances.map((balance) => {
                     if (balance.asset == WebBrowser.AssetEnum.NEO) {
