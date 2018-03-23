@@ -946,7 +946,7 @@ var WebBrowser;
             });
         }
     }
-    WWW.api = "http://47.96.168.8:81/api/testnet";
+    WWW.api = "https://47.96.168.8:81/api/testnet";
     WWW.rpc = "";
     WWW.rpcName = "";
     WebBrowser.WWW = WWW;

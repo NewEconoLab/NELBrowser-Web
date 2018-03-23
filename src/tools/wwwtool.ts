@@ -2,7 +2,7 @@
 {
     export class WWW
     {
-        static api: string = "http://47.96.168.8:81/api/testnet";
+        static api: string = "https://47.96.168.8:81/api/testnet";
         static rpc: string = "";
         static rpcName: string = "";
         static makeRpcUrl(url: string, method: string, ..._params: any[])
