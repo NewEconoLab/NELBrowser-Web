@@ -888,7 +888,7 @@ var WebBrowser;
         }
         static api_getHeight() {
             return __awaiter(this, void 0, void 0, function* () {
-                var str = WWW.makeRpcUrl(WWW.api, "getblockcount");
+                var str = WWW.makeRpcUrl(WWW.api + WebBrowser.locationtool.getNetWork(), "getblockcount");
                 var result = yield fetch(str, { "method": "get" });
                 var json = yield result.json();
                 var r = json["result"];
@@ -898,7 +898,7 @@ var WebBrowser;
         }
         static api_getAllAssets() {
             return __awaiter(this, void 0, void 0, function* () {
-                var str = WWW.makeRpcUrl(WWW.api, "getallasset");
+                var str = WWW.makeRpcUrl(WWW.api + WebBrowser.locationtool.getNetWork(), "getallasset");
                 var result = yield fetch(str, { "method": "get" });
                 var json = yield result.json();
                 var r = json["result"];
@@ -907,7 +907,7 @@ var WebBrowser;
         }
         static api_getUTXO(address) {
             return __awaiter(this, void 0, void 0, function* () {
-                var str = WWW.makeRpcUrl(WWW.api, "getutxo", address);
+                var str = WWW.makeRpcUrl(WWW.api + WebBrowser.locationtool.getNetWork(), "getutxo", address);
                 var result = yield fetch(str, { "method": "get" });
                 var json = yield result.json();
                 var r = json["result"];
@@ -925,7 +925,7 @@ var WebBrowser;
         }
         static rpc_getURL() {
             return __awaiter(this, void 0, void 0, function* () {
-                var str = WWW.makeRpcUrl(WWW.api, "getnoderpcapi");
+                var str = WWW.makeRpcUrl(WWW.api + WebBrowser.locationtool.getNetWork(), "getnoderpcapi");
                 var result = yield fetch(str, { "method": "get" });
                 var json = yield result.json();
                 var r = json["result"][0];
@@ -946,7 +946,7 @@ var WebBrowser;
             });
         }
     }
-    WWW.api = "https://47.96.168.8:81/api/testnet";
+    WWW.api = "https://api.nel.group/api/";
     WWW.rpc = "";
     WWW.rpcName = "";
     WebBrowser.WWW = WWW;

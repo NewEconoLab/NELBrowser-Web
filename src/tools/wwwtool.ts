@@ -2,7 +2,7 @@
 {
     export class WWW
     {
-        static api: string = "https://47.96.168.8:81/api/testnet";
+        static api: string = "https://api.nel.group/api/";
         static rpc: string = "";
         static rpcName: string = "";
         static makeRpcUrl(url: string, method: string, ..._params: any[])
@@ -39,7 +39,7 @@
 
         static async  api_getHeight()
         {
-            var str = WWW.makeRpcUrl(WWW.api, "getblockcount");
+            var str = WWW.makeRpcUrl(WWW.api + locationtool.getNetWork(), "getblockcount");
             var result = await fetch(str, { "method": "get" });
             var json = await result.json();
             var r = json["result"];
@@ -48,7 +48,7 @@
         }
         static async api_getAllAssets()
         {
-            var str = WWW.makeRpcUrl(WWW.api, "getallasset");
+            var str = WWW.makeRpcUrl(WWW.api + locationtool.getNetWork(), "getallasset");
             var result = await fetch(str, { "method": "get" });
             var json = await result.json();
             var r = json["result"];
@@ -56,7 +56,7 @@
         }
         static async api_getUTXO(address: string)
         {
-            var str = WWW.makeRpcUrl(WWW.api, "getutxo", address);
+            var str = WWW.makeRpcUrl(WWW.api + locationtool.getNetWork(), "getutxo", address);
             var result = await fetch(str, { "method": "get" });
             var json = await result.json();
             var r = json["result"];
@@ -75,7 +75,7 @@
 
         static async rpc_getURL()
         {
-            var str = WWW.makeRpcUrl(WWW.api, "getnoderpcapi");
+            var str = WWW.makeRpcUrl(WWW.api + locationtool.getNetWork(), "getnoderpcapi");
             var result = await fetch(str, { "method": "get" });
             var json = await result.json();
             var r = json["result"][0];
