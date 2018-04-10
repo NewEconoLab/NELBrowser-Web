@@ -74,6 +74,12 @@ body:after {
     padding-top: 80px;
     padding-bottom: 40px;
 }
+.title span {
+    font-family: PingFangSC-Medium;
+    font-size: 20px;
+    line-height: 20px;
+    padding-left: 8px;
+}
 .caption {
     margin: 0 auto;
     height: 60%;
@@ -179,6 +185,14 @@ body:after {
 }
 
 
+.dropdown-nel li:first-child a {
+    border-radius: 5px 5px 0 0;
+}
+
+.dropdown-nel li:last-child a {
+    border-radius: 0 0 5px 5px;
+}
+
 .list-nel{
     border-radius: 5px 5px 5px 5px;
 }
@@ -260,7 +274,6 @@ body:after {
     font-size: 16px;
     line-height: 16px;
 }
-
 
 .transaction {
     display: -moz-box;

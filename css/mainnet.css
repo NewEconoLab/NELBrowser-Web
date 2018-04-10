@@ -105,7 +105,11 @@
     height: 38px;
     padding-top: 8px;
 }
-
+.dropdown-nel > li > a:hover, .dropdown-nel > li > a:focus {
+    color: #262626;
+    text-decoration: none;
+    background-color: #f5f5f5;
+}
 .dropdown-nel > li > a:hover, .dropdown-nel > li > a:focus {
     color: #262626;
     text-decoration: none;
@@ -117,20 +121,12 @@
     text-decoration: none;
     outline: 0;
     background: #77BCF6;
-    border-radius: 5px 0 0 0 0 5px 0 0 0 0 0 0;
 }
 
-.dropdown-nel > .disabled > a, .dropdown-nel > .disabled > a:hover, .dropdown-nel > .disabled > a:focus {
-    color: #777;
-}
+    .dropdown-nel > .disabled > a, .dropdown-nel > .disabled > a:hover, .dropdown-nel > .disabled > a:focus {
+        color: #777;
+    }
 
-#testa {
-    border-radius: 5px 5px 0px 0px;
-}
-
-#maina {
-    border-radius: 0px 0px 5px 5px;
-}
 
 .dropdown-header {
     display: block;
@@ -266,11 +262,7 @@
 }
 
 .title>span {
-    font-family: PingFangSC-Medium;
-    font-size: 20px;
-    line-height: 20px;
-    padding-bottom: 8px;
-    border-bottom: 4px solid #198CEE;
+    border-left: 4px solid #198CEE;
 }
 
 .caption .title-summary {

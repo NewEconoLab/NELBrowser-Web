@@ -122,12 +122,6 @@ jumbotron{
     text-align:center;
 }
 
-#testa{
-    border-radius:5px 5px 0px 0px;
-}
-#maina {
-    border-radius: 0px 0px 5px 5px;
-}
 
 .dropdown-nel>li>a:hover, 
 .dropdown-nel>li>a:focus {
@@ -290,11 +284,8 @@ a:hover, a:focus {
 }
 
 .title>span {
-    font-family: PingFangSC-Medium;
-    font-size: 20px;
     color: #FFFFFF;
-    line-height: 20px;
-    border-bottom: 4px solid #198CEE;
+    border-left: 4px solid #198CEE;
 }
 
 .caption .title-summary {
