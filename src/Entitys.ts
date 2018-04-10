@@ -186,6 +186,15 @@ namespace WebBrowser
         id: string;
     }
 
+    export class nep5Asset
+    {
+        assetid: string;
+        totalsupply: string;
+        name: string;
+        symbol: string;
+        decimals: string;
+    }
+
     export interface result
     {
         err: boolean, result: any

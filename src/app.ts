@@ -303,7 +303,7 @@ namespace WebBrowser
 
     window.onload = () =>
     {
-        WWW.rpc_getURL();
+        //WWW.rpc_getURL();
         var app = new App();
         app.strat();
     }

@@ -36,6 +36,14 @@
             return body;
         }
 
+        static async getallnep5asset()
+        {
+            var str = WWW.makeRpcUrl(WWW.api + locationtool.getNetWork(), "getallnep5asset",[20,1]);
+            var result = await fetch(str, { "method": "get" });
+            var json = await result.json();
+            var r: nep5Asset[] = json["result"];
+            return r;
+        }
 
         static async  api_getHeight()
         {

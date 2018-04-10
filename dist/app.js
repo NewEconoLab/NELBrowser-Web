@@ -499,7 +499,7 @@ var WebBrowser;
     }
     WebBrowser.App = App;
     window.onload = () => {
-        WebBrowser.WWW.rpc_getURL();
+        //WWW.rpc_getURL();
         var app = new App();
         app.strat();
     };
@@ -658,6 +658,9 @@ var WebBrowser;
     class Nep5as {
     }
     WebBrowser.Nep5as = Nep5as;
+    class nep5Asset {
+    }
+    WebBrowser.nep5Asset = nep5Asset;
     let AssetEnum;
     (function (AssetEnum) {
         AssetEnum["NEO"] = "0xc56f33fc6ecfcd0c225c4ab356fee59390af8560be0e930faebe74a6daff7c9b";
@@ -885,6 +888,15 @@ var WebBrowser;
             }
             body["params"] = params;
             return body;
+        }
+        static getallnep5asset() {
+            return __awaiter(this, void 0, void 0, function* () {
+                var str = WWW.makeRpcUrl(WWW.api + WebBrowser.locationtool.getNetWork(), "getallnep5asset", [20, 1]);
+                var result = yield fetch(str, { "method": "get" });
+                var json = yield result.json();
+                var r = json["result"];
+                return r;
+            });
         }
         static api_getHeight() {
             return __awaiter(this, void 0, void 0, function* () {
