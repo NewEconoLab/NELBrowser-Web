@@ -100,9 +100,6 @@
     <Content Include="lib\neo-ts.js.map" />
     <Content Include="lib\rollup\aes.js" />
     <Content Include="lib\scrypt.js" />
-    <Content Include="page\address.html" />
-    <Content Include="page\blockInfo.html" />
-    <Content Include="page\txInfo.html" />
     <Content Include="index.html" />
     <TypeScriptCompile Include="lib\code.d.ts" />
     <TypeScriptCompile Include="lib\neo-ts.d.ts" />

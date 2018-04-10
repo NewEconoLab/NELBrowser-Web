@@ -274,7 +274,6 @@ var WebBrowser;
             this.transaction.start();
             this.address.start();
             this.navbar.start();
-            this.assetControll.start();
             this.assetinfo = new WebBrowser.AssetInfo();
             this.assetinfo.start(this);
             this.redirect();
