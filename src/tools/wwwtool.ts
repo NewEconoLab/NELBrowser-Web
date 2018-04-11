@@ -1,13 +1,13 @@
-﻿namespace WebBrowser
+﻿
+namespace WebBrowser
 {
     export class WWW
     {
         static api: string = "https://api.nel.group/api/";
-        static rpc: string = "";
-        static rpcName: string = "";
-        static makeRpcUrl(url: string, method: string, ..._params: any[])
-        {
 
+        static makeRpcUrl(method: string, ..._params: any[])
+        {
+            var url = WWW.api + locationtool.getNetWork();
 
             if (url[url.length - 1] != '/')
                 url = url + "/";
@@ -35,28 +35,73 @@
             body["params"] = params;
             return body;
         }
-
-        static async getallnep5asset()
-        {
-            var str = WWW.makeRpcUrl(WWW.api + locationtool.getNetWork(), "getallnep5asset",[20,1]);
-            var result = await fetch(str, { "method": "get" });
-            var json = await result.json();
-            var r: nep5Asset[] = json["result"];
-            return r;
-        }
-
+        //获得高度
         static async  api_getHeight()
         {
-            var str = WWW.makeRpcUrl(WWW.api + locationtool.getNetWork(), "getblockcount");
+            var str = WWW.makeRpcUrl( "getblockcount");
             var result = await fetch(str, { "method": "get" });
             var json = await result.json();
             var r = json["result"];
             var height = parseInt(r[0]["blockcount"] as string) - 1;
             return height;
         }
+        //获得交易总数
+        static async gettxcount()
+        {
+            var str = WWW.makeRpcUrl(  "gettxcount" );
+            var result = await fetch(str, { "method": "get" });
+            var json = await result.json();
+            var r = json["result"];
+            return r[0]['txcount'] as number;
+        }
+        //地址总数
+        static async getaddrcount()
+        {
+            var str = WWW.makeRpcUrl(  "getaddrcount" );
+            var result = await fetch(str, { "method": "get" });
+            var json = await result.json();
+            var r = json["result"];
+            return r[0]['addrcount'] as number;
+        }
+        //查询区块列表
+        static async getblocks( size: number, page: number )
+        {
+            var str = WWW.makeRpcUrl(  "getblocks", size, page );
+            var result = await fetch( str, { "method": "get" } );
+            var json = await result.json();
+            var r = json["result"];
+            return r as Block[];
+        }
+        //查询交易列表
+        static async getrawtransactions( size: number, page: number, txtype: string )
+        {
+            var str = WWW.makeRpcUrl( "getrawtransactions", size, page, txtype );
+            var result = await fetch( str, { "method": "get" } );
+            var json = await result.json();
+            var r = json["result"];
+            return r as Tx[];
+        }
+
+        static async getrawtransaction( txid: string )
+        {
+            var str = WWW.makeRpcUrl( "getrawtransaction", txid );
+            var result = await fetch( str, { "method": "get" } );
+            var json = await result.json();
+            var r = json["result"];
+            return r[0] as Tx;
+        }
+
+        static async getallnep5asset() {
+            var str = WWW.makeRpcUrl( "getallnep5asset", [20, 1]);
+            var result = await fetch(str, { "method": "get" });
+            var json = await result.json();
+            var r: nep5Asset[] = json["result"];
+            return r;
+        }
+
         static async api_getAllAssets()
         {
-            var str = WWW.makeRpcUrl(WWW.api + locationtool.getNetWork(), "getallasset");
+            var str = WWW.makeRpcUrl( "getallasset");
             var result = await fetch(str, { "method": "get" });
             var json = await result.json();
             var r = json["result"];
@@ -64,43 +109,12 @@
         }
         static async api_getUTXO(address: string)
         {
-            var str = WWW.makeRpcUrl(WWW.api + locationtool.getNetWork(), "getutxo", address);
+            var str = WWW.makeRpcUrl( "getutxo", address);
             var result = await fetch(str, { "method": "get" });
             var json = await result.json();
             var r = json["result"];
             return r;
-
         }
 
-        static async rpc_postRawTransaction(data: Uint8Array)
-        {
-            var postdata = WWW.makeRpcPostBody("sendrawtransaction", data.toHexString());
-            var result = await fetch(WWW.rpc, { "method": "post", "body": JSON.stringify(postdata) });
-            var json = await result.json();
-            var r = json["result"];
-            return r;
-        }
-
-        static async rpc_getURL()
-        {
-            var str = WWW.makeRpcUrl(WWW.api + locationtool.getNetWork(), "getnoderpcapi");
-            var result = await fetch(str, { "method": "get" });
-            var json = await result.json();
-            var r = json["result"][0];
-            var url = r.nodeList[0];
-            WWW.rpc = url;
-            WWW.rpcName = r.nodeType;
-            return url;
-        }
-
-        static async  rpc_getHeight()
-        {
-            var str = WWW.makeRpcUrl(WWW.rpc, "getblockcount");
-            var result = await fetch(str, { "method": "get" });
-            var json = await result.json();
-            var r = json["result"];
-            var height = parseInt(r as string) - 1;
-            return height;
-        }
     }
 }

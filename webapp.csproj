@@ -108,6 +108,7 @@
     <TypeScriptCompile Include="src\pages\blockInfo.ts" />
     <TypeScriptCompile Include="src\pages\html-str.ts" />
     <TypeScriptCompile Include="src\pages\index.ts" />
+    <TypeScriptCompile Include="src\pages\transactions.ts" />
     <TypeScriptCompile Include="src\pages\txInfo.ts" />
     <TypeScriptCompile Include="src\app.ts" />
     <TypeScriptCompile Include="src\Blocks.ts" />
@@ -123,6 +124,8 @@
     <TypeScriptCompile Include="src\PageViews.ts" />
     <TypeScriptCompile Include="src\tools\cointool.ts" />
     <TypeScriptCompile Include="src\tools\locationtool.ts" />
+    <TypeScriptCompile Include="src\tools\numbertool.ts" />
+    <TypeScriptCompile Include="src\tools\routetool.ts" />
     <TypeScriptCompile Include="src\tools\wwwtool.ts" />
     <TypeScriptCompile Include="src\Trasction.ts" />
     <TypeScriptCompile Include="src\Util.ts" />

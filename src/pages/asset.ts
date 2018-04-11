@@ -1,8 +1,7 @@
 ﻿namespace WebBrowser
 {
-    export class AssetInfo
+    export class AssetInfo implements Page
     {
-        app: App;
         div: HTMLDivElement;
         name: HTMLSpanElement;
         type: HTMLSpanElement;
@@ -10,9 +9,8 @@
         available: HTMLSpanElement;
         precision: HTMLSpanElement;
         admin: HTMLSpanElement;
-        start(app: App)
+        start()
         {
-            this.app = app;
             this.div = document.getElementById("asset-info") as HTMLDivElement;
             this.div.hidden = true;
         }
@@ -20,7 +18,7 @@
         {
             
             this.div.innerHTML = pages.asset;
-            this.app.ajax.post('getallasset', []).then((arr: Asset[]) =>
+            WWW.api_getAllAssets().then((arr: Asset[]) =>
             {
                 var asset = arr.find((value) =>
                 {

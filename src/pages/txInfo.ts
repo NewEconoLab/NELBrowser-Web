@@ -1,6 +1,6 @@
 namespace WebBrowser
 {
-    export class Transaction
+    export class Transaction implements Page
     {
         div: HTMLDivElement;
 

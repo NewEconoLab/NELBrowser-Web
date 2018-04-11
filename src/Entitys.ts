@@ -97,6 +97,44 @@ namespace WebBrowser
         }[];
     }
 
+    export class Url
+    {
+        static href_blocks()
+        {
+            return './#' + locationtool.getNetWork() + '/blocks'
+        }
+        static href_transactions()
+        {
+            return './#' + locationtool.getNetWork() + '/transactions'
+        }
+        static href_addresses()
+        {
+            return './#' + locationtool.getNetWork() + '/addresses'
+        }
+        static href_assets()
+        {
+            return './#' + locationtool.getNetWork() + '/assets'
+        }
+        static href_block( block: number )
+        {
+            return "./#" + locationtool.getNetWork() + "/block/" + block;
+        }
+        static href_transaction( tx: string )
+        {
+            return "./#" + locationtool.getNetWork() + "/transaction/" + tx;
+        }
+        static href_address( addr: string )
+        {
+            return "./#" + locationtool.getNetWork() + "/address/" + addr;
+        }
+    }
+
+    export interface Page
+    {
+        div: HTMLDivElement;
+        start(): void;
+    }
+
     export interface Block
     {
         hash: string;
@@ -234,6 +272,6 @@ namespace WebBrowser
 
     export let network: string = "mainnet";
 
-
+    
 
 }

@@ -6,8 +6,14 @@
 /// <reference path="./pages/txInfo.ts" />
 /// <reference path="./pages/asset.ts" />
 /// <reference path="./pages/html-str.ts" />
-/// <reference path="./tools/locationtool.ts" />
 /// <reference path="./pages/index.ts"/>
+/// <reference path="./pages/transactions.ts"/>
+/// <reference path="./tools/locationtool.ts" />
+/// <reference path="./tools/numbertool.ts" />
+/// <reference path="./Util.ts" />
+/// <reference path="./Navbar.ts" />
+/// <reference path="./Network.ts" />
+/// <reference path="./PagesController.ts" />
 
 namespace WebBrowser
 {
@@ -20,24 +26,24 @@ namespace WebBrowser
         block: Block = new Block();
         address: Address = new Address();
         transaction: Transaction = new Transaction();
+        transactions: Transactions = new Transactions();
         search: SearchController = new SearchController();
         assetControll: AssetControll = new AssetControll();
+        indexpage: Index = new Index();
         assetinfo: AssetInfo;
-        viewtxlist: HTMLAnchorElement = document.getElementById("viewtxlist") as HTMLAnchorElement;
-        viewblocks: HTMLAnchorElement = document.getElementById("viewblocks") as HTMLAnchorElement;
-        alladdress: HTMLAnchorElement = document.getElementById("alladdress") as HTMLAnchorElement;
-        allblock: HTMLAnchorElement = document.getElementById("allblock") as HTMLAnchorElement;
-        alltxlist: HTMLAnchorElement = document.getElementById("alltxlist") as HTMLAnchorElement;
         strat()
         {
             this.netWork.start();
+            this.navbar.start();
             this.block.start();
             this.transaction.start();
             this.address.start();
-            this.navbar.start();
             this.assetinfo = new AssetInfo();
-            this.assetinfo.start(this);
+            this.assetinfo.start();
             this.redirect();
+            this.transactions.start();
+            this.indexpage.start();
+            this.search.start();
             document.getElementsByTagName("body")[0].onhashchange = () =>
             {
                 this.redirect()
@@ -54,77 +60,6 @@ namespace WebBrowser
 
         }
         
-        //主页
-        async indexPage()
-        {
-            this.viewtxlist.href = "./#" + locationtool.getNetWork() + "/transactions";
-            this.viewblocks.href = "./#" + locationtool.getNetWork() + "/blocks";
-
-            this.alladdress.href = "./#" + locationtool.getNetWork() + "/addresses";
-            this.allblock.href = "./#" + locationtool.getNetWork() + "/blocks";
-            this.alltxlist.href = "./#" + locationtool.getNetWork() + "/transactions";
-            this.search.start();
-            //查询区块高度(区块数量-1)
-            let blockCount = await this.ajax.post('getblockcount', []);
-            let blockHeight = blockCount[0]['blockcount'] - 1;
-            $("#blockHeight").text(blockHeight.toLocaleString());//显示在页面
-
-            //查询交易数量
-            let txCount = await this.ajax.post('gettxcount', []);
-            txCount = txCount[0]['txcount'];
-            $("#txcount").text(txCount.toLocaleString());//显示在页面
-
-            //查询地址总数
-            let addrCount: number = await this.ajax.post('getaddrcount', [])
-            addrCount = addrCount[0]['addrcount'];
-            $("#addrCount").text(addrCount.toLocaleString());
-            $("#index-page").find("#blocks").children("tbody").empty();
-            //分页查询区块数据
-            let blocks: Block[] = await this.ajax.post('getblocks', [10, 1]);
-            blocks.forEach((item, index, input) =>
-            {
-                var newDate = new Date();
-                newDate.setTime(item.time * 1000);
-                let html = '';
-                html += '<tr><td><a class="code" class="code" target="_blank" rel="external nofollow"  '
-                html += " href ='./#" + locationtool.getNetWork() + "/block/" + item.index + "' > ";
-                html += item.index + '</a></td><td>' + item.size + ' bytes</td><td>';
-                html += newDate.toLocaleString() + '</td>';
-                html += '<td>' + item.tx.length + '</td></tr>';
-                $("#index-page").find("#blocks").append(html);
-            });
-
-            //分页查询交易记录
-            let txs: {
-                txid: string,
-                size: number,
-                type: string,
-                version: number,
-                blockindex: number,
-                gas: string,
-            }[] = await this.ajax.post('getrawtransactions', [10, 1]);
-            $("#index-page").find("#transactions").children("tbody").empty();
-            txs.forEach((tx) =>
-            {
-                let txid: string = tx.txid;
-                txid = txid.replace('0x', '');
-                txid = txid.substring(0, 4) + '...' + txid.substring(txid.length - 4);
-                let html: string = "";
-                html += "<tr>"
-                html += "<td><a class='code' class='code' target='_blank' rel='external nofollow' ";
-                html += " href ='./#" + locationtool.getNetWork() + "/transaction/" + tx.txid + "' > " + txid + " </a>"
-                html += "</td>"
-                html += "<td>" + tx.type.replace("Transaction", "");
-                html += "</td>"
-                html += "<td>" + tx.blockindex
-                html += "</td>"
-                html += "<td>" + tx.size + " bytes"
-                html += "</td>"
-                html += "</tr>"
-                $("#index-page").find("#transactions").children("tbody").append(html);
-            });
-
-        };
 
         //区块列表
         async blocksPage()
@@ -187,7 +122,6 @@ namespace WebBrowser
             this.netWork.changeNetWork(urlarr[0]);
             if (page === '#mainnet' || page === "#testnet")
             {
-                this.indexPage();
                 $('#index-page').show();
                 $("#index-btn").addClass("active");
                 $("#brow-btn").removeClass("active");
@@ -209,7 +143,6 @@ namespace WebBrowser
             }
             if (page === 'transactions')
             {
-                let ts: Trasctions = new Trasctions();
                 $("#txlist-page").show();
                 $("#txlist-btn").addClass("active");
             } else
@@ -308,22 +241,22 @@ namespace WebBrowser
     }
     
 }
-function txgeneral(obj: HTMLAnchorElement)
+function txgeneral( obj: HTMLAnchorElement )
 {
     var div: HTMLDivElement = obj.parentNode as HTMLDivElement;
-    var tran: HTMLDivElement = div.getElementsByClassName("transaction")[0] as HTMLDivElement;
-    if (tran.style.display=="")
+    var tran: HTMLDivElement = div.getElementsByClassName( "transaction" )[0] as HTMLDivElement;
+    if ( tran.style.display == "" )
     {
         tran.style.display = "none";
-        obj.classList.remove("active");
+        obj.classList.remove( "active" );
 
     } else
     {
         tran.style.display = "";
-        obj.classList.add("active");
-        var vins = tran.getAttribute('vins');
-        var vouts = tran.getAttribute('vouts')
-        WebBrowser.Trasctions.getTxgeneral(vins, vouts, tran)
+        obj.classList.add( "active" );
+        var vins = tran.getAttribute( 'vins' );
+        var vouts = tran.getAttribute( 'vouts' )
+        WebBrowser.Transactions.getTxgeneral( vins, vouts, tran )
     }
 
 

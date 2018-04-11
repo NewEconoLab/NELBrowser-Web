@@ -1,6 +1,6 @@
 namespace WebBrowser
 {
-    export class Address
+    export class Address implements Page
     {
         div: HTMLDivElement;
         start()

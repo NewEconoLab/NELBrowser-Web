@@ -1,6 +1,6 @@
 namespace WebBrowser
 {
-    export class Block
+    export class Block implements Page
     {
         div: HTMLDivElement;
 

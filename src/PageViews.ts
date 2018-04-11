@@ -1,4 +1,3 @@
-// import * as $ from "jquery";
 namespace WebBrowser
 {
     export class AddressInfoView
@@ -32,15 +31,15 @@ namespace WebBrowser
             });
             this.utxo.forEach((utxo: Utxo) =>
             {
-                let html = '';
-                html += "<tr>"
-                html += "<td class='code'>" + utxo.asset;
-                html += "</td>"
-                html += "<td>" + utxo.value;
-                html += "</td>"
-                html += "<td><a class='code' target='_blank' rel='external nofollow' href='./#" + locationtool.getNetWork()+"/transaction/" + utxo.txid + "'>" + utxo.txid
-                html += "</a>[" + utxo.n + "]</td>"
-                html += "</tr>"
+                let html = `
+                <tr>
+                <td class='code'>` + utxo.asset+`
+                </td>
+                <td>` + utxo.value+`
+                </td>
+                <td><a class='code' target='_blank' href='`+ Url.href_transaction( utxo.txid) + `'>` + utxo.txid +`
+                </a>[` + utxo.n + `]</td>
+                </tr>`
                 $("#utxos").append(html);
             });
         }
@@ -84,18 +83,17 @@ namespace WebBrowser
         public loadView(addrlist: Addr[])
         {
             $("#addrlist").empty();
-            let html = '';
             addrlist.forEach(item =>
             {
-                html += '<tr>';
-                html += '<td><a class="code" target="_blank" rel="external nofollow" '
-                html += 'href="./#' + locationtool.getNetWork() + "/address/" + item.addr + '">' + item.addr + '</a></td>';
-                html += '<td>' + item.firstDate + '</td>';
-                html += '<td>' + item.lastDate + '</td>';
-                html += '<td>' + item.txcount + '</td>';
-                html += '</tr>';
+                let href = `./#` + locationtool.getNetWork() + `/address/` + item.addr;
+                let html =`
+                <tr>
+                <td><a class="code" target="_blank" href="`+ href + `">` + item.addr + `</a></td>
+                <td>` + item.firstDate + `</td>
+                <td>`+ item.lastDate + `</td>
+                <td>` + item.txcount + `</td></tr>`;
+                $('#addrlist').append(html);
             });
-            $('#addrlist').append(html);
         }
     }
 
@@ -119,25 +117,24 @@ namespace WebBrowser
             $("#nep5ass").empty();
             this.assets.forEach((asset: Asset) =>
             {
-                let html = '';
-                html += '<tr>';
-                html += '<td> <a href="./#' + locationtool.getNetWork() + '/asset/' + asset.id + '">' + asset.names + '</a></td>';
-                html += '<td>' + asset.type + '</td>';
-                html += '<td>' + (asset.amount <= 0 ? asset.available : asset.amount); + '</td>';
-                html += '<td>' + asset.precision + '</td>';
-                html += '</tr>';
+                let href = './#' + locationtool.getNetWork() + '/asset/' + asset.id ;
+                let html = `
+                <tr>
+                <td> <a href="`+ href +`">` + asset.names + `</a></td>
+                <td>` + asset.type + `</td>
+                <td>` + (asset.amount <= 0 ? asset.available : asset.amount) +`</td>
+                <td>` + asset.precision + `</td>
+                </tr>`;
                 $("#assets").append(html);
             });
             this.nep5s.forEach((asset: Asset) =>
             {
-                let html = '';
-                html += '<tr>';
-                html += '<td>' + asset.names + '</td>';
-                html += '<td>' + asset.type + '</td>';
-                html += '<td>' + asset.names + '</td>';
-                html += '<td>' + (asset.amount <= 0 ? asset.available : asset.amount); + '</td>';
-                html += '<td>' + asset.names + '</td>';
-                html += '</tr>';
+                let html = `
+                <tr>
+                <td>` + asset.names + `</td>
+                <td>`+ asset.type + `</td><td>` + asset.names + `</td>
+                <td>` + (asset.amount <= 0 ? asset.available : asset.amount); + `</td>
+                <td>` + asset.names + `</td></tr>`;
                 $("#nep5ass").append(html);
             });
         }
@@ -192,16 +189,13 @@ namespace WebBrowser
         {
             $("#wallet-details").empty();
             let html: string = "";
-            let ul = '';
+            let lis = '';
             for (let n = 0; n < detail.balances.length; n++)
             {
                 const balance = detail.balances[n];
                 let name = balance.name.map((name) => { return name.name }).join('|');
-                ul += '<li class="list-group-item"> ' + name + ' : ' + balance.balance + '</li>';
+                lis += '<li class="list-group-item"> ' + name + ' : ' + balance.balance + '</li>';
             }
-            detail.balances.forEach((balance: Balance) =>
-            {
-            });
             html += '<div class="row"><div class=" col-lg-6">';
             html += '<div class="panel panel-default" style="height:100%">';
             html += '<div class="panel-heading">';
@@ -216,7 +210,7 @@ namespace WebBrowser
             html += '<h3 class="panel-title code" >Balance</h3>';
             html += '</div>';
             html += '<ul id="balance-wallet" class="list-group" >';
-            html += ul;
+            html += lis;
             html += '</ul>';
             html += '</div></div>';
             $("#wallet-details").append(html);
@@ -244,15 +238,15 @@ namespace WebBrowser
             $("#wallet-utxos").empty();
             utxos.forEach((utxo) =>
             {
-                let html = '';
-                html += "<tr>"
-                html += "<td class='code'>" + utxo.name;
-                html += "</td>"
-                html += "<td>" + utxo.value;
-                html += "</td>"
-                html += "<td><a class='code' target='_blank' rel='external nofollow' href='./#" + locationtool.getNetWork() +"/transaction/"+ utxo.txid + "'>" + utxo.txid
-                html += "</a>[" + utxo.n + "]</td>"
-                html += "</tr>"
+                let html = `
+                <tr>
+                <td class='code'>` + utxo.name+`
+                </td>
+                <td>` + utxo.value+`
+                </td>
+                <td><a class='code' target='_blank' rel='external nofollow' href='`+ Url.href_transaction( utxo.txid )+`'>` + utxo.txid+`
+                </a>[" + utxo.n + "]</td>"
+                </tr>`
                 $("#wallet-utxos").append(html);
             });
         }
