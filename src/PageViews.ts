@@ -85,7 +85,7 @@ namespace WebBrowser
             $("#addrlist").empty();
             addrlist.forEach(item =>
             {
-                let href = `./#` + locationtool.getNetWork() + `/address/` + item.addr;
+                let href = locationtool.getUrl() + `/address/` + item.addr;
                 let html =`
                 <tr>
                 <td><a class="code" target="_blank" href="`+ href + `">` + item.addr + `</a></td>

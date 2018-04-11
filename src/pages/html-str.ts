@@ -1,6 +1,6 @@
-﻿/// <reference path="./blockInfo.ts" />
-/// <reference path="./addressInfo.ts" />
-/// <reference path="./txInfo.ts" />
+﻿/// <reference path="./block.ts" />
+/// <reference path="./address.ts" />
+/// <reference path="./transaction.ts" />
 namespace WebBrowser.pages
 {
     export var block: string = `

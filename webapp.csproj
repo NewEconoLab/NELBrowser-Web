@@ -103,20 +103,16 @@
     <Content Include="index.html" />
     <TypeScriptCompile Include="lib\code.d.ts" />
     <TypeScriptCompile Include="lib\neo-ts.d.ts" />
-    <TypeScriptCompile Include="src\pages\addressInfo.ts" />
+    <TypeScriptCompile Include="src\pages\address.ts" />
+    <TypeScriptCompile Include="src\pages\addresses.ts" />
     <TypeScriptCompile Include="src\pages\asset.ts" />
-    <TypeScriptCompile Include="src\pages\blockInfo.ts" />
+    <TypeScriptCompile Include="src\pages\assets.ts" />
+    <TypeScriptCompile Include="src\pages\block.ts" />
     <TypeScriptCompile Include="src\pages\html-str.ts" />
     <TypeScriptCompile Include="src\pages\index.ts" />
     <TypeScriptCompile Include="src\pages\transactions.ts" />
-    <TypeScriptCompile Include="src\pages\txInfo.ts" />
     <TypeScriptCompile Include="src\app.ts" />
-    <TypeScriptCompile Include="src\Blocks.ts" />
-    <TypeScriptCompile Include="src\controllers\AddressControll.ts" />
-    <TypeScriptCompile Include="src\controllers\AssetsControll.ts" />
-    <TypeScriptCompile Include="src\controllers\BlocksControll.ts" />
-    <TypeScriptCompile Include="src\controllers\TransactionsControll.ts" />
-    <TypeScriptCompile Include="src\controllers\WalletControll.ts" />
+    <TypeScriptCompile Include="src\pages\blocks.ts" />
     <TypeScriptCompile Include="src\Entitys.ts" />
     <TypeScriptCompile Include="src\Navbar.ts" />
     <TypeScriptCompile Include="src\Network.ts" />
@@ -124,10 +120,11 @@
     <TypeScriptCompile Include="src\PageViews.ts" />
     <TypeScriptCompile Include="src\tools\cointool.ts" />
     <TypeScriptCompile Include="src\tools\locationtool.ts" />
+    <TypeScriptCompile Include="src\tools\neotool.ts" />
     <TypeScriptCompile Include="src\tools\numbertool.ts" />
     <TypeScriptCompile Include="src\tools\routetool.ts" />
     <TypeScriptCompile Include="src\tools\wwwtool.ts" />
-    <TypeScriptCompile Include="src\Trasction.ts" />
+    <TypeScriptCompile Include="src\pages\transaction.ts" />
     <TypeScriptCompile Include="src\Util.ts" />
   </ItemGroup>
   <ItemGroup>

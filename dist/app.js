@@ -9,19 +9,101 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 var WebBrowser;
 (function (WebBrowser) {
     class Block {
-        start() {
+        constructor() {
             this.div = document.getElementById("block-info");
+        }
+        close() {
+            this.div.hidden = false;
+        }
+        start() {
             this.div.hidden = true;
             this.div.innerHTML = WebBrowser.pages.block;
         }
     }
     WebBrowser.Block = Block;
 })(WebBrowser || (WebBrowser = {}));
+/// <reference types="jquery" />
+var WebBrowser;
+/// <reference types="jquery" />
+(function (WebBrowser) {
+    class Blocks {
+        constructor() {
+            this.div = document.getElementById('blocks-page');
+        }
+        start() {
+            this.updateBlocks(new WebBrowser.PageUtil(1, 15));
+            this.div.hidden = false;
+        }
+        close() {
+            this.div.hidden = true;
+        }
+        updateBlocks(pageUtil) {
+            return __awaiter(this, void 0, void 0, function* () {
+                let blocks = yield WebBrowser.WWW.getblocks(pageUtil.pageSize, pageUtil.currentPage);
+                console.log("blocks-page");
+                $("#blocks-page").children("table").children("tbody").empty();
+                if (pageUtil.totalPage - pageUtil.currentPage) {
+                    $("#blocks-page").find("#next").removeClass('disabled');
+                }
+                else {
+                    $("#blocks-page").find("#next").addClass('disabled');
+                }
+                if (pageUtil.currentPage - 1) {
+                    $("#blocks-page").find("#previous").removeClass('disabled');
+                }
+                else {
+                    $("#blocks-page").find("#previous").addClass('disabled');
+                }
+                let newDate = new Date();
+                blocks.forEach((item, index, input) => {
+                    newDate.setTime(item.time * 1000);
+                    let html = `
+                <tr>
+                <td><a href="` + WebBrowser.Url.href_block(item.index) + `">` + item.index + `</a></td>
+                <td>` + item.size + ` bytes</td><td>` + newDate.toLocaleString() + `</td>
+                </tr>`;
+                    $("#blocks-page").find("tbody").append(html);
+                });
+            });
+        }
+        queryBlock(index) {
+            return __awaiter(this, void 0, void 0, function* () {
+                let ajax = new WebBrowser.Ajax();
+                let newDate = new Date();
+                let blocks = yield ajax.post('getblock', [index]);
+                let block = blocks[0];
+                console.log(block);
+                newDate.setTime(block.time * 1000);
+                $("#hash").text(block.hash);
+                $("#size").text(block.size + ' byte');
+                $("#time").text(newDate.toLocaleString());
+                $("#version").text(block.version);
+                $("#index").text(block.index);
+                let txs = block.tx;
+                txs.forEach(tx => {
+                    $("#txs").append(`
+                    <tr>
+                        <td><a href="` + WebBrowser.Url.href_transaction(tx.txid) + `> + tx.txid + '</a></td>
+                        <td>` + tx.type + `</td>
+                        <td>` + tx.size + ` bytes</td>
+                        <td>` + tx.version + `</td>
+                    </tr>`);
+                });
+            });
+        }
+    }
+    WebBrowser.Blocks = Blocks;
+})(WebBrowser || (WebBrowser = {}));
 var WebBrowser;
 (function (WebBrowser) {
     class Address {
-        start() {
+        constructor() {
             this.div = document.getElementById("address-info");
+        }
+        close() {
+            throw new Error("Method not implemented.");
+        }
+        start() {
             this.div.hidden = true;
             this.div.innerHTML = WebBrowser.pages.addres;
         }
@@ -30,20 +112,101 @@ var WebBrowser;
 })(WebBrowser || (WebBrowser = {}));
 var WebBrowser;
 (function (WebBrowser) {
-    class Transaction {
-        start() {
-            this.div = document.getElementById("transaction-info");
+    //地址列表
+    class Addresses {
+        constructor() {
+            this.div = document.getElementById('addrs-page');
+            this.ajax = new WebBrowser.Ajax();
+            $("#addrs-page").find("#next").click(() => {
+                if (this.pageUtil.currentPage == this.pageUtil.totalPage) {
+                    alert('当前页已经是最后一页了');
+                    return;
+                }
+                else {
+                    this.pageUtil.currentPage += 1;
+                    this.addrlistInit();
+                }
+            });
+            $("#addrs-page").find("#previous").click(() => {
+                if (this.pageUtil.currentPage <= 1) {
+                    alert('当前已经是第一页了');
+                    return;
+                }
+                else {
+                    this.pageUtil.currentPage -= 1;
+                    this.addrlistInit();
+                }
+            });
+        }
+        close() {
             this.div.hidden = true;
-            this.div.innerHTML = WebBrowser.pages.transaction;
+        }
+        /**
+         * addrlistInit
+         */
+        addrlistInit() {
+            return __awaiter(this, void 0, void 0, function* () {
+                let addrcount = yield this.ajax.post('getaddrcount', []).catch((e) => {
+                    alert(e);
+                });
+                if (addrcount.length == 0) {
+                    alert('此地址余额为空，utxo为空');
+                }
+                this.pageUtil.totalCount = addrcount[0]['addrcount'];
+                let addrlist = yield this.ajax.post('getaddrs', [this.pageUtil.pageSize, this.pageUtil.currentPage]);
+                let newDate = new Date();
+                addrlist.map((item) => {
+                    newDate.setTime(item.firstuse.blocktime.$date);
+                    item.firstDate = newDate.toLocaleString();
+                    newDate.setTime(item.lastuse.blocktime.$date);
+                    item.lastDate = newDate.toLocaleString();
+                });
+                this.loadView(addrlist);
+                WebBrowser.pageCut(this.pageUtil);
+            });
+        }
+        /**
+         * start
+         */
+        start() {
+            return __awaiter(this, void 0, void 0, function* () {
+                let prom = yield this.ajax.post('getaddrcount', []);
+                this.pageUtil = new WebBrowser.PageUtil(prom[0]['addrcount'], 15);
+                this.addrlistInit();
+                this.addrlistInit();
+                this.div.hidden = false;
+            });
+        }
+        /**
+         * loadView
+         */
+        loadView(addrlist) {
+            $("#addrlist").empty();
+            addrlist.forEach(item => {
+                let href = WebBrowser.Url.href_address(item.addr);
+                let html = `
+                <tr>
+                <td><a class="code" target="_blank" href="` + href + `">` + item.addr + `</a></td>
+                <td>` + item.firstDate + `</td>
+                <td>` + item.lastDate + `</td>
+                <td>` + item.txcount + `</td></tr>`;
+                $('#addrlist').append(html);
+            });
         }
     }
-    WebBrowser.Transaction = Transaction;
+    WebBrowser.Addresses = Addresses;
 })(WebBrowser || (WebBrowser = {}));
 var WebBrowser;
 (function (WebBrowser) {
     class AssetInfo {
-        start() {
+        constructor() {
             this.div = document.getElementById("asset-info");
+        }
+        start() {
+            this.div.hidden = false;
+            this.view(WebBrowser.locationtool.getParam());
+        }
+        close() {
             this.div.hidden = true;
         }
         view(assetid) {
@@ -71,13 +234,193 @@ var WebBrowser;
     }
     WebBrowser.AssetInfo = AssetInfo;
 })(WebBrowser || (WebBrowser = {}));
-/// <reference path="./blockInfo.ts" />
-/// <reference path="./addressInfo.ts" />
-/// <reference path="./txInfo.ts" />
 var WebBrowser;
-/// <reference path="./blockInfo.ts" />
-/// <reference path="./addressInfo.ts" />
-/// <reference path="./txInfo.ts" />
+(function (WebBrowser) {
+    //资产页面管理器
+    class Assets {
+        constructor() {
+            this.div = document.getElementById("asset-page");
+        }
+        close() {
+            this.div.hidden = true;
+        }
+        start() {
+            return __awaiter(this, void 0, void 0, function* () {
+                this.allAsset();
+                this.div.hidden = false;
+            });
+        }
+        allAsset() {
+            return __awaiter(this, void 0, void 0, function* () {
+                var assets = yield WebBrowser.WWW.api_getAllAssets();
+                assets.map((asset) => {
+                    if (asset.id == WebBrowser.AssetEnum.NEO) {
+                        asset.name = [{ lang: 'en', name: 'NEO' }];
+                    }
+                    if (asset.id == WebBrowser.AssetEnum.GAS) {
+                        asset.name = [{ lang: 'en', name: "GAS" }];
+                    }
+                    let name = asset.name.map((name) => { return name.name; });
+                    asset.names = name.join("|");
+                });
+                let nep5Info = new WebBrowser.GetNep5Info();
+                let storutil = new WebBrowser.StorageUtil();
+                let nep5asids = storutil.getStorage("assetIds_nep5", "|");
+                let nep5s = new Array();
+                for (let n = 0; n < nep5asids.length; n++) {
+                    let res = yield nep5Info.getInfo(nep5asids[n]);
+                    let assetnep5 = new WebBrowser.Nep5as();
+                    if (!res.err) {
+                        assetnep5.names = res.result["name"];
+                        assetnep5.type = res.result["symbol"];
+                        assetnep5.amount = res.result["totalsupply"];
+                        assetnep5.id = nep5asids[n];
+                    }
+                    nep5s.push(assetnep5);
+                }
+                this.loadView(assets, nep5s); //调用loadView方法渲染页面
+            });
+        }
+        /**
+         * loadView 页面展现
+         */
+        loadView(assets, nep5ass) {
+            $("#assets").empty();
+            $("#nep5ass").empty();
+            assets.forEach((asset) => {
+                let href = './#' + WebBrowser.locationtool.getNetWork() + '/asset/' + asset.id;
+                let html = `
+                <tr>
+                <td> <a href="` + href + `">` + asset.names + `</a></td>
+                <td>` + asset.type + `</td>
+                <td>` + (asset.amount <= 0 ? asset.available : asset.amount) + `</td>
+                <td>` + asset.precision + `</td>
+                </tr>`;
+                $("#assets").append(html);
+            });
+            nep5ass.forEach((asset) => {
+                let html = `
+                <tr>
+                <td>` + asset.names + `</td>
+                <td>` + asset.type + `</td><td>` + asset.names + `</td>
+                <td>` + (asset.amount <= 0 ? asset.available : asset.amount);
+                +`</td>
+                <td>` + asset.names + `</td></tr>`;
+                $("#nep5ass").append(html);
+            });
+        }
+    }
+    WebBrowser.Assets = Assets;
+})(WebBrowser || (WebBrowser = {}));
+var WebBrowser;
+(function (WebBrowser) {
+    /**
+     * @class 交易详情
+     */
+    class Transaction {
+        constructor() {
+            this.div = document.getElementById("transaction-info");
+        }
+        close() {
+            this.div.hidden = true;
+        }
+        updateTxInfo(txid) {
+            return __awaiter(this, void 0, void 0, function* () {
+                let txInfo = yield WebBrowser.WWW.getrawtransaction(txid);
+                $("#type").text(txInfo.type.replace("Transaction", ""));
+                $("#txid").text(txInfo.txid);
+                $("#blockindex").append("<a href='" + WebBrowser.Url.href_block(txInfo.blockindex) + "</a>");
+                $("#txsize").append(txInfo.size + " bytes");
+                $("#sysfee").text(txInfo["sys_fee"] + " gas");
+                $("#netfee").text(txInfo["net_fee"] + " gas");
+                let allAsset = yield WebBrowser.WWW.api_getAllAssets();
+                allAsset.map((asset) => {
+                    if (asset.id == WebBrowser.AssetEnum.NEO) {
+                        asset.name = [{ lang: 'en', name: 'NEO' }];
+                    }
+                    if (asset.id == WebBrowser.AssetEnum.GAS) {
+                        asset.name = [{ lang: 'en', name: "GAS" }];
+                    }
+                });
+                let arr = new Array();
+                for (let index = 0; index < txInfo.vin.length; index++) {
+                    const vin = txInfo.vin[index];
+                    try {
+                        let txInfo = yield WebBrowser.WWW.getrawtransaction(vin.txid);
+                        let vout = txInfo.vout[vin.vout];
+                        let address = vout.address;
+                        let value = vout.value;
+                        let name = allAsset.find(val => val.id == vout.asset).name.map(name => { return name.name; }).join("|");
+                        arr.push({ vin: vin.txid, vout: vin.vout, addr: address, name: name, amount: value });
+                    }
+                    catch (error) {
+                    }
+                }
+                let array = Transaction.groupByaddr(arr);
+                for (let index = 0; index < array.length; index++) {
+                    const item = array[index];
+                    let html = "";
+                    html += '<div class="line" > <div class="title-nel" > <span>Address </span></div >';
+                    html += '<div class="content-nel" > <span id="size" >' + item.addr + ' </span></div > </div>';
+                    for (let i = 0; i < item.data.length; i++) {
+                        const element = item.data[i];
+                        html += '<div class="line" > <div class="title-nel" > <span>' + element.name + ' </span></div >';
+                        html += '<div class="content-nel" > <span id="size" >' + element.amount + ' </span></div > </div>';
+                    }
+                    $("#from").append(html);
+                }
+                txInfo.vout.forEach(vout => {
+                    let name = allAsset.find(val => val.id == vout.asset).name.map(name => name.name).join("|");
+                    let sign = "";
+                    if (array.find(item => item.addr == vout.address)) {
+                        sign = "(change)";
+                    }
+                    let html = "";
+                    html += '<div class="line" > <div class="title-nel" > <span>Address </span></div >';
+                    html += '<div class="content-nel" > <span id="size" >' + vout.address + ' </span></div > </div>';
+                    html += '<div class="line" > <div class="title-nel" > <span>' + name + ' </span></div >';
+                    html += '<div class="content-nel" > <span id="size" >' + vout.value + sign + ' </span></div > </div>';
+                    $("#to").append(html);
+                });
+            });
+        }
+        static groupByaddr(arr) {
+            var map = {}, dest = [];
+            for (var i = 0; i < arr.length; i++) {
+                var ai = arr[i];
+                if (!map[ai.addr]) {
+                    dest.push({
+                        addr: ai.addr,
+                        data: [ai]
+                    });
+                    map[ai.addr] = ai;
+                }
+                else {
+                    for (var j = 0; j < dest.length; j++) {
+                        var dj = dest[j];
+                        if (dj.addr == ai.addr) {
+                            dj.data.push(ai);
+                            break;
+                        }
+                    }
+                }
+            }
+            return dest;
+        }
+        start() {
+            this.div.innerHTML = WebBrowser.pages.transaction;
+            this.div.hidden = false;
+        }
+    }
+    WebBrowser.Transaction = Transaction;
+})(WebBrowser || (WebBrowser = {}));
+/// <reference path="./block.ts" />
+/// <reference path="./address.ts" />
+/// <reference path="./transaction.ts" />
+var WebBrowser;
+/// <reference path="./block.ts" />
+/// <reference path="./address.ts" />
+/// <reference path="./transaction.ts" />
 (function (WebBrowser) {
     var pages;
     (function (pages) {
@@ -223,6 +566,9 @@ var WebBrowser;
             this.allblock = document.getElementById("allblock");
             this.alltxlist = document.getElementById("alltxlist");
         }
+        close() {
+            this.div.hidden = true;
+        }
         start() {
             return __awaiter(this, void 0, void 0, function* () {
                 this.viewtxlist.href = WebBrowser.Url.href_transactions();
@@ -278,6 +624,7 @@ var WebBrowser;
                 });
                 $("#index-page").find("#blocks").children("tbody").append(html_blocks);
                 $("#index-page").find("#transactions").children("tbody").append(html_txs);
+                this.div.hidden = false;
             });
         }
     }
@@ -357,25 +704,25 @@ var WebBrowser;
     WebBrowser.PageUtil = PageUtil;
     class Url {
         static href_blocks() {
-            return './#' + WebBrowser.locationtool.getNetWork() + '/blocks';
+            return WebBrowser.locationtool.getUrl() + '/blocks';
         }
         static href_transactions() {
-            return './#' + WebBrowser.locationtool.getNetWork() + '/transactions';
+            return WebBrowser.locationtool.getUrl() + '/transactions';
         }
         static href_addresses() {
-            return './#' + WebBrowser.locationtool.getNetWork() + '/addresses';
+            return WebBrowser.locationtool.getUrl() + '/addresses';
         }
         static href_assets() {
-            return './#' + WebBrowser.locationtool.getNetWork() + '/assets';
+            return WebBrowser.locationtool.getUrl() + '/assets';
         }
         static href_block(block) {
-            return "./#" + WebBrowser.locationtool.getNetWork() + "/block/" + block;
+            return WebBrowser.locationtool.getUrl() + "/block/" + block;
         }
         static href_transaction(tx) {
-            return "./#" + WebBrowser.locationtool.getNetWork() + "/transaction/" + tx;
+            return WebBrowser.locationtool.getUrl() + "/transaction/" + tx;
         }
         static href_address(addr) {
-            return "./#" + WebBrowser.locationtool.getNetWork() + "/address/" + addr;
+            return WebBrowser.locationtool.getUrl() + "/address/" + addr;
         }
     }
     WebBrowser.Url = Url;
@@ -419,8 +766,8 @@ var WebBrowser;
      */
     class Transactions {
         constructor() {
+            this.div = document.getElementById("txlist-page");
             this.txlist = $("#txlist-page");
-            this.start();
             //监听交易列表选择框
             $("#TxType").change(() => {
                 this.updateTrasctions(this.pageUtil, $("#TxType").val());
@@ -446,6 +793,9 @@ var WebBrowser;
                 }
             });
         }
+        close() {
+            this.div.hidden = true;
+        }
         //更新交易记录
         updateTrasctions(pageUtil, txType) {
             return __awaiter(this, void 0, void 0, function* () {
@@ -467,11 +817,11 @@ var WebBrowser;
          */
         start() {
             return __awaiter(this, void 0, void 0, function* () {
-                this.div = document.getElementById("txlist-page");
                 let txCount = yield WebBrowser.WWW.gettxcount();
                 //初始化交易列表
                 this.pageUtil = new WebBrowser.PageUtil(txCount, 15);
                 this.updateTrasctions(this.pageUtil, $("#TxType").val());
+                this.div.hidden = false;
             });
         }
         getTxLine(txid, type, size, index, vins, vouts) {
@@ -481,10 +831,10 @@ var WebBrowser;
                 return `
             <div class="line">
                 <div class="line-general">
-                    <div class="content-nel"><span><a href="./#` + WebBrowser.locationtool.getNetWork() + `/transaction/` + txid + `" >` + id + `</a></span></div>
+                    <div class="content-nel"><span><a href="` + WebBrowser.Url.href_transaction(txid) + `" >` + id + `</a></span></div>
                     <div class="content-nel"><span>` + type.replace("Transaction", "") + `</span></div>
                     <div class="content-nel"><span>` + size + ` bytes</span></div>
-                    <div class="content-nel"><span><a href="./#` + WebBrowser.locationtool.getNetWork() + `/block/` + index + `" >` + index + `</a></span></div>
+                    <div class="content-nel"><span><a href="` + WebBrowser.Url.href_block(parseInt(index)) + `" >` + index + `</a></span></div>
                 </div>
                 <a onclick="txgeneral(this)" class="end" id="genbtn"><img src="../img/open.svg" /></a>
                 <div class="transaction" style="width:100%;display: none;" vins='` + JSON.stringify(vins) + `' vouts='` + JSON.stringify(vouts) + `'>
@@ -521,7 +871,7 @@ var WebBrowser;
                     catch (error) {
                     }
                 }
-                let arra = WebBrowser.TrasctionInfo.groupByaddr(arr);
+                let arra = WebBrowser.Transaction.groupByaddr(arr);
                 let form = "";
                 for (let index = 0; index < arra.length; index++) {
                     const item = arra[index];
@@ -571,8 +921,29 @@ var WebBrowser;
     class locationtool {
         static getNetWork() {
             var hash = window.location.hash;
-            var arr = hash.split("/");
+            let arr = hash.split("/");
             return arr[0].replace("#", "");
+        }
+        static getUrl() {
+            var href = window.location.href;
+            let arr = href.split("#");
+            var hash = window.location.hash;
+            let hasharr = hash.split("/");
+            return arr[0] + hasharr[0];
+        }
+        static getPage() {
+            var page = location.hash;
+            var arr = page.split('/');
+            if (arr.length == 1 && (arr[0] == "#mainnet" || arr[0] == "#testnet"))
+                page = 'explorer';
+            else
+                page = arr[1];
+            return page;
+        }
+        static getParam() {
+            var page = location.hash;
+            var arr = page.split('/');
+            return arr[2];
         }
     }
     WebBrowser.locationtool = locationtool;
@@ -593,6 +964,71 @@ var WebBrowser;
         }
     }
     WebBrowser.NumberTool = NumberTool;
+})(WebBrowser || (WebBrowser = {}));
+/// <reference path="../app.ts"/>
+/// <reference path="../Entitys.ts"/>
+var WebBrowser;
+/// <reference path="../app.ts"/>
+/// <reference path="../Entitys.ts"/>
+(function (WebBrowser) {
+    class Route {
+        constructor() {
+            this.pagelist = new Array();
+        }
+        start(app) {
+            var hash = location.hash;
+            if (hash == "") {
+                window.location.hash = "#mainnet";
+                return;
+            }
+            let arr = hash.split('/');
+            if (arr[0] == '#mainnet')
+                app.netWork.changeNetWork('mainnet');
+            if (arr[0] == "#testnet")
+                app.netWork.changeNetWork('testnet');
+            this.app = app;
+            this.pagelist.push(app.indexpage);
+            this.pagelist.push(app.blocks);
+            this.pagelist.push(app.transactions);
+            this.pagelist.push(app.addresses);
+            this.pagelist.push(app.assets);
+            this.closePages();
+            var page = this.render();
+            page.start();
+        }
+        render() {
+            switch (WebBrowser.locationtool.getPage()) {
+                case "explorer":
+                    this.app.navbar.indexBtn.classList.add("active");
+                    return this.app.indexpage;
+                case "blocks":
+                    this.app.navbar.blockBtn.classList.add("active");
+                    return this.app.blocks;
+                case "transactions":
+                    this.app.navbar.txlistBtn.classList.add("active");
+                    return this.app.transactions;
+                case "addresses":
+                    this.app.navbar.addrsBtn.classList.add("active");
+                    return this.app.addresses;
+                case "assets":
+                    this.app.navbar.assetBtn.classList.add("active");
+                    return this.app.assets;
+            }
+        }
+        closePages() {
+            let i = 0;
+            while (i < this.pagelist.length) {
+                this.pagelist[i].close();
+                i++;
+                this.app.navbar.indexBtn.classList.remove("active");
+                this.app.navbar.blockBtn.classList.remove("active");
+                this.app.navbar.txlistBtn.classList.remove("active");
+                this.app.navbar.addrsBtn.classList.remove("active");
+                this.app.navbar.assetBtn.classList.remove("active");
+            }
+        }
+    }
+    WebBrowser.Route = Route;
 })(WebBrowser || (WebBrowser = {}));
 ///<reference path="../lib/neo-ts.d.ts"/>
 /// <reference types="jquery" />
@@ -1136,6 +1572,195 @@ var WebBrowser;
 })(WebBrowser || (WebBrowser = {}));
 var WebBrowser;
 (function (WebBrowser) {
+    class Neotool {
+        constructor() { }
+        /**
+         * verifyPublicKey 验证公钥
+         * @param publicKey 公钥
+         */
+        static verifyPublicKey(publicKey) {
+            var array = Neo.Cryptography.Base58.decode(publicKey);
+            //var hexstr = array.toHexString();
+            //var salt = array.subarray(0, 1);
+            //var hash = array.subarray(1, 1 + 20);
+            var check = array.subarray(21, 21 + 4); //
+            var checkdata = array.subarray(0, 21); //
+            var hashd = Neo.Cryptography.Sha256.computeHash(checkdata); //
+            hashd = Neo.Cryptography.Sha256.computeHash(hashd); //
+            var hashd = hashd.slice(0, 4); //
+            var checked = new Uint8Array(hashd); //
+            var error = false;
+            for (var i = 0; i < 4; i++) {
+                if (checked[i] != check[i]) {
+                    error = true;
+                    break;
+                }
+            }
+            return !error;
+        }
+        /**
+         * wifDecode wif解码
+         * @param wif wif私钥
+         */
+        static wifDecode(wif) {
+            let result = { err: false, result: { pubkey: "", prikey: "", address: "" } };
+            var prikey;
+            var pubkey;
+            var address;
+            try {
+                prikey = ThinNeo.Helper.GetPrivateKeyFromWIF(wif);
+                var hexstr = prikey.toHexString();
+                result.result.prikey = hexstr;
+            }
+            catch (e) {
+                result.err = true;
+                result.result = e.message;
+                return result;
+            }
+            try {
+                pubkey = ThinNeo.Helper.GetPublicKeyFromPrivateKey(prikey);
+                var hexstr = pubkey.toHexString();
+                result.result.pubkey = hexstr;
+            }
+            catch (e) {
+                result.err = true;
+                result.result = e.message;
+                return result;
+            }
+            try {
+                address = ThinNeo.Helper.GetAddressFromPublicKey(pubkey);
+                result.result.address = address;
+            }
+            catch (e) {
+                result.err = true;
+                result.result = e.message;
+                return result;
+            }
+            return result;
+        }
+        /**
+         * nep2FromWif
+         */
+        static nep2FromWif(wif, password) {
+            var prikey;
+            var pubkey;
+            var address;
+            let res = { err: false, result: { address: "", nep2: "" } };
+            try {
+                prikey = ThinNeo.Helper.GetPrivateKeyFromWIF(wif);
+                var n = 16384;
+                var r = 8;
+                var p = 8;
+                ThinNeo.Helper.GetNep2FromPrivateKey(prikey, password, n, r, p, (info, result) => {
+                    res.err = false;
+                    res.result.nep2 = result;
+                    pubkey = ThinNeo.Helper.GetPublicKeyFromPrivateKey(prikey);
+                    var hexstr = pubkey.toHexString();
+                    address = ThinNeo.Helper.GetAddressFromPublicKey(pubkey);
+                    res.result.address = address;
+                    return res;
+                });
+            }
+            catch (e) {
+                res.err = true;
+                res.result = e.message;
+                return res;
+            }
+        }
+        /**
+         * nep2TOWif
+         */
+        static nep2ToWif(nep2, password) {
+            return __awaiter(this, void 0, void 0, function* () {
+                var prikey;
+                var pubkey;
+                var address;
+                let promise = new Promise((resolve, reject) => {
+                    let n = 16384;
+                    var r = 8;
+                    var p = 8;
+                    ThinNeo.Helper.GetPrivateKeyFromNep2(nep2, password, n, r, p, (info, result) => {
+                        //spanNep2.textContent = "info=" + info + " result=" + result;
+                        console.log("result=" + "info=" + info + " result=" + result);
+                        prikey = result;
+                        if (prikey != null) {
+                            var pubkey = ThinNeo.Helper.GetPublicKeyFromPrivateKey(prikey);
+                            var address = ThinNeo.Helper.GetAddressFromPublicKey(pubkey);
+                            var wif = ThinNeo.Helper.GetWifFromPrivateKey(prikey);
+                            console.log('1:' + address);
+                            resolve({ err: false, result: { pubkey, address, prikey } });
+                        }
+                        else {
+                            // spanWif.textContent = "result=" + "info=" + info + " result=" + result;
+                            reject({ err: false, result: result });
+                        }
+                    });
+                });
+                return promise;
+            });
+        }
+        /**
+         * nep6Load
+         */
+        static nep6Load(wallet, password) {
+            return __awaiter(this, void 0, void 0, function* () {
+                // let promise:Promise<result> = new Promise((resolve,reject)=>{
+                try {
+                    //getPrivateKey 是异步方法，且同时只能执行一个
+                    var istart = 0;
+                    let res = new Array();
+                    var getkey = null;
+                    // getkey = async (keyindex: number) => {
+                    for (let keyindex = 0; keyindex < wallet.accounts.length; keyindex++) {
+                        let account = wallet.accounts[keyindex];
+                        try {
+                            let result = yield this.getPriKeyfromAccount(wallet.scrypt, password, account);
+                            res.push(result.result);
+                        }
+                        catch (error) {
+                            console.error(error);
+                            return { err: true, result: error };
+                        }
+                    }
+                    return { err: false, result: res };
+                }
+                catch (e) {
+                }
+                // });
+                // return promise;
+            });
+        }
+        /**
+         * getPriKeyform
+         */
+        static getPriKeyfromAccount(scrypt, password, account) {
+            return __awaiter(this, void 0, void 0, function* () {
+                let promise = new Promise((resolve, reject) => {
+                    account.getPrivateKey(scrypt, password, (info, result) => {
+                        if (info == "finish") {
+                            var pubkey = ThinNeo.Helper.GetPublicKeyFromPrivateKey(result);
+                            var address = ThinNeo.Helper.GetAddressFromPublicKey(pubkey);
+                            var wif = ThinNeo.Helper.GetWifFromPrivateKey(result);
+                            var hexkey = result.toHexString();
+                            console.log(info + "|" + address + " wif=" + wif);
+                            resolve({ err: false, result: { pubkey: pubkey, address: address, prikey: result } });
+                        }
+                        else {
+                            // info2.textContent += info + "|" + result;
+                            reject({ err: true, result: result });
+                        }
+                    });
+                });
+                return promise;
+            });
+        }
+    }
+    WebBrowser.Neotool = Neotool;
+})(WebBrowser || (WebBrowser = {}));
+/// <reference path="./tools/neotool.ts" />
+var WebBrowser;
+/// <reference path="./tools/neotool.ts" />
+(function (WebBrowser) {
     class Navbar {
         constructor() {
             this.indexBtn = document.getElementById("index-btn");
@@ -1151,6 +1776,8 @@ var WebBrowser;
             this.asseta = document.getElementById("assetsa");
             this.walletBtn = document.getElementById("wallet-btn");
             this.walleta = document.getElementById("walleta");
+            this.searchBtn = document.getElementById("searchBtn");
+            this.searchText = document.getElementById("searchText");
         }
         start() {
             this.indexa.onclick = () => {
@@ -1168,13 +1795,30 @@ var WebBrowser;
             this.asseta.onclick = () => {
                 this.skip("/assets");
             };
+            this.searchBtn.onclick = () => {
+                this.jump();
+            };
         }
         skip(page) {
-            var href = window.location.href.split("#");
-            var arr = href[1].split("/");
-            var net = "#" + arr[0];
-            var url = href[0] + net + page;
-            window.location.href = url;
+            window.location.href = WebBrowser.locationtool.getUrl() + page;
+        }
+        jump() {
+            let search = this.searchText.value;
+            if (search.length == 34) {
+                if (WebBrowser.Neotool.verifyPublicKey(search)) {
+                    window.open(WebBrowser.locationtool.getUrl() + '/address/' + search);
+                }
+                else {
+                    alert('请输入正确的地址');
+                }
+            }
+            search = search.replace('0x', '');
+            if (search.length == 64) {
+                window.open(WebBrowser.locationtool.getUrl() + '/transaction/' + search);
+            }
+            if (!isNaN(Number(search))) {
+                window.open(WebBrowser.locationtool.getUrl() + '/block/' + search);
+            }
         }
     }
     WebBrowser.Navbar = Navbar;
@@ -1207,13 +1851,13 @@ var WebBrowser;
             };
         }
         changeNetWork(net) {
-            if (net == "#testnet") {
+            if (net == "testnet") {
                 this.title.innerText = "TestNet";
                 this.testbtn.classList.add("active");
                 this.mainbtn.classList.remove("active");
                 this.css.href = "./css/testnet.css";
             }
-            if (net == "#mainnet") {
+            if (net == "mainnet") {
                 this.title.innerText = "MainNet";
                 this.mainbtn.classList.add("active");
                 this.testbtn.classList.remove("active");
@@ -1439,35 +2083,6 @@ var WebBrowser;
 /// <reference path="./tools/cointool.ts" />
 /// <reference path="./tools/wwwtool.ts" />
 (function (WebBrowser) {
-    class SearchController {
-        constructor() {
-            this.locationUtil = new WebBrowser.LocationUtil();
-        }
-        start() {
-            let neoUtil = new WebBrowser.NeoUtil();
-            $("#searchBtn").click(() => {
-                let page = $('#page').val().toString();
-                let url = "./#" + WebBrowser.locationtool.getNetWork();
-                let search = $("#searchText").val().toString();
-                if (search.length == 34) {
-                    if (neoUtil.verifyPublicKey(search)) {
-                        window.open(url + '/address/' + search);
-                    }
-                    else {
-                        alert('请输入正确的地址');
-                    }
-                }
-                search = search.replace('0x', '');
-                if (search.length == 64) {
-                    window.open(url + '/transaction/' + search);
-                }
-                if (!isNaN(Number(search))) {
-                    window.open(url + '/block/' + search);
-                }
-            });
-        }
-    }
-    WebBrowser.SearchController = SearchController;
     class AddressControll {
         constructor(address) {
             this.ajax = new WebBrowser.Ajax();
@@ -1790,15 +2405,19 @@ var WebBrowser;
 /// <reference path="../lib/neo-ts.d.ts"/>
 /// <reference types="jquery" />
 /// <reference types="bootstrap" />
-/// <reference path="./pages/blockInfo.ts" />
-/// <reference path="./pages/addressInfo.ts" />
-/// <reference path="./pages/txInfo.ts" />
+/// <reference path="./pages/block.ts" />
+/// <reference path="./pages/blocks.ts" />
+/// <reference path="./pages/address.ts" />
+/// <reference path="./pages/addresses.ts" />
 /// <reference path="./pages/asset.ts" />
+/// <reference path="./pages/assets.ts" />
 /// <reference path="./pages/html-str.ts" />
 /// <reference path="./pages/index.ts"/>
 /// <reference path="./pages/transactions.ts"/>
+/// <reference path="./pages/transaction.ts"/>
 /// <reference path="./tools/locationtool.ts" />
 /// <reference path="./tools/numbertool.ts" />
+/// <reference path="./tools/routetool.ts" />
 /// <reference path="./Util.ts" />
 /// <reference path="./Navbar.ts" />
 /// <reference path="./Network.ts" />
@@ -1807,15 +2426,19 @@ var WebBrowser;
 /// <reference path="../lib/neo-ts.d.ts"/>
 /// <reference types="jquery" />
 /// <reference types="bootstrap" />
-/// <reference path="./pages/blockInfo.ts" />
-/// <reference path="./pages/addressInfo.ts" />
-/// <reference path="./pages/txInfo.ts" />
+/// <reference path="./pages/block.ts" />
+/// <reference path="./pages/blocks.ts" />
+/// <reference path="./pages/address.ts" />
+/// <reference path="./pages/addresses.ts" />
 /// <reference path="./pages/asset.ts" />
+/// <reference path="./pages/assets.ts" />
 /// <reference path="./pages/html-str.ts" />
 /// <reference path="./pages/index.ts"/>
 /// <reference path="./pages/transactions.ts"/>
+/// <reference path="./pages/transaction.ts"/>
 /// <reference path="./tools/locationtool.ts" />
 /// <reference path="./tools/numbertool.ts" />
+/// <reference path="./tools/routetool.ts" />
 /// <reference path="./Util.ts" />
 /// <reference path="./Navbar.ts" />
 /// <reference path="./Network.ts" />
@@ -1827,27 +2450,22 @@ var WebBrowser;
             this.navbar = new WebBrowser.Navbar();
             this.netWork = new WebBrowser.NetWork();
             this.block = new WebBrowser.Block();
+            this.blocks = new WebBrowser.Blocks();
             this.address = new WebBrowser.Address();
+            this.addresses = new WebBrowser.Addresses();
             this.transaction = new WebBrowser.Transaction();
             this.transactions = new WebBrowser.Transactions();
-            this.search = new WebBrowser.SearchController();
-            this.assetControll = new WebBrowser.AssetControll();
+            this.assets = new WebBrowser.Assets();
             this.indexpage = new WebBrowser.Index();
+            this.assetinfo = new WebBrowser.AssetInfo();
+            this.routet = new WebBrowser.Route();
         }
         strat() {
             this.netWork.start();
             this.navbar.start();
-            this.block.start();
-            this.transaction.start();
-            this.address.start();
-            this.assetinfo = new WebBrowser.AssetInfo();
-            this.assetinfo.start();
-            this.redirect();
-            this.transactions.start();
-            this.indexpage.start();
-            this.search.start();
+            this.routet.start(this);
             document.getElementsByTagName("body")[0].onhashchange = () => {
-                this.redirect();
+                this.routet.start(this);
             };
             $("#searchText").focus(() => {
                 $("#nel-search").addClass("nel-input");
@@ -1863,7 +2481,7 @@ var WebBrowser;
                 let blockCount = yield this.ajax.post('getblockcount', []);
                 //分页查询区块数据
                 let pageUtil = new WebBrowser.PageUtil(blockCount[0]['blockcount'], 15);
-                let block = new WebBrowser.BlockPage();
+                let block = new WebBrowser.Blocks();
                 block.updateBlocks(pageUtil);
                 //监听下一页
                 $("#blocks-page").find("#next").click(() => {
@@ -1883,125 +2501,6 @@ var WebBrowser;
                     block.updateBlocks(pageUtil);
                 });
             });
-        }
-        redirect() {
-            var href = window.location.href;
-            var page = "";
-            var param;
-            let hash = location.hash;
-            var urlarr = hash.split("/");
-            if (urlarr.length == 1) {
-                page = urlarr[0];
-            }
-            if (urlarr.length == 2) {
-                page = urlarr[1];
-            }
-            if (urlarr.length == 3) {
-                page = urlarr[1];
-                param = urlarr[2];
-            }
-            if (urlarr[0] == "") {
-                var newhref = href.replace("#", "");
-                newhref += "#mainnet";
-                window.location.href = newhref;
-            }
-            this.netWork.changeNetWork(urlarr[0]);
-            if (page === '#mainnet' || page === "#testnet") {
-                $('#index-page').show();
-                $("#index-btn").addClass("active");
-                $("#brow-btn").removeClass("active");
-            }
-            else {
-                $('#index-page').hide();
-                $("#brow-btn").addClass("active");
-                $("#index-btn").removeClass("active");
-            }
-            if (page === 'blocks') {
-                this.blocksPage();
-                $("#blocks-page").show();
-                $("#blocks-btn").addClass("active");
-            }
-            else {
-                $('#blocks-page').hide();
-                $("#blocks-btn").removeClass("active");
-            }
-            if (page === 'transactions') {
-                $("#txlist-page").show();
-                $("#txlist-btn").addClass("active");
-            }
-            else {
-                $('#txlist-page').hide();
-                $("#txlist-btn").removeClass("active");
-            }
-            if (page === 'addresses') {
-                let addrlist = new WebBrowser.addrlistControll();
-                addrlist.start();
-                $("#addrs-page").show();
-                $("#addrs-btn").addClass("active");
-            }
-            else {
-                $('#addrs-page').hide();
-                $("#addrs-btn").removeClass("active");
-            }
-            if (page === 'assets') {
-                //启动asset管理器
-                this.assetControll.allAsset();
-                $("#asset-page").show();
-                $("#asset-btn").addClass("active");
-                $("#brow-btn").removeClass("active");
-            }
-            else {
-                $('#asset-page').hide();
-                $("#asset-btn").removeClass("active");
-            }
-            if (page == "#wallet-page") {
-                $("#wallet-btn").addClass("active");
-                $("#brow-btn").removeClass("active");
-            }
-            else {
-                $("#wallet-page").hide();
-                $("#wallet-btn").removeClass("active");
-            }
-            if (page == "block") {
-                this.block.div.hidden = false;
-                let index = param;
-                let block = new WebBrowser.BlockPage();
-                block.queryBlock(index);
-            }
-            else {
-                this.block.div.hidden = true;
-            }
-            if (page == "asset") {
-                let assetid = param;
-                //let ts: TrasctionInfo = new TrasctionInfo();
-                //ts.updateTxInfo(txid);
-            }
-            if (page == "transaction") {
-                this.transaction.div.hidden = false;
-                let txid = param;
-                let ts = new WebBrowser.TrasctionInfo();
-                ts.updateTxInfo(txid);
-            }
-            else {
-                this.transaction.div.hidden = true;
-            }
-            if (page == "address") {
-                this.address.div.hidden = false;
-                let addr = param;
-                let addrInfo = new WebBrowser.AddressControll(addr);
-                addrInfo.addressInfo();
-            }
-            else {
-                this.address.div.hidden = true;
-            }
-            if (page == "asset") {
-                this.assetinfo.div.hidden = false;
-                let id = param;
-                this.assetinfo.view(id);
-            }
-            else {
-                this.assetinfo.div.hidden = true;
-            }
         }
     }
     WebBrowser.App = App;
@@ -2026,70 +2525,6 @@ function txgeneral(obj) {
         WebBrowser.Transactions.getTxgeneral(vins, vouts, tran);
     }
 }
-// import * as $ from "jquery";
-/// <reference types="jquery" />
-var WebBrowser;
-// import * as $ from "jquery";
-/// <reference types="jquery" />
-(function (WebBrowser) {
-    class BlockPage {
-        constructor() {
-            $("#searchBtn").click(() => {
-                window.location.href = './blockInfo.html?index=' + $("#searchText").val();
-            });
-        }
-        updateBlocks(pageUtil) {
-            return __awaiter(this, void 0, void 0, function* () {
-                let ajax = new WebBrowser.Ajax();
-                let blocks = yield ajax.post('getblocks', [pageUtil.pageSize, pageUtil.currentPage]);
-                console.log("blocks-page");
-                $("#blocks-page").children("table").children("tbody").empty();
-                if (pageUtil.totalPage - pageUtil.currentPage) {
-                    $("#blocks-page").find("#next").removeClass('disabled');
-                }
-                else {
-                    $("#blocks-page").find("#next").addClass('disabled');
-                }
-                if (pageUtil.currentPage - 1) {
-                    $("#blocks-page").find("#previous").removeClass('disabled');
-                }
-                else {
-                    $("#blocks-page").find("#previous").addClass('disabled');
-                }
-                let newDate = new Date();
-                blocks.forEach((item, index, input) => {
-                    newDate.setTime(item.time * 1000);
-                    let html;
-                    html += '<tr><td>';
-                    html += '<a href="./#' + WebBrowser.locationtool.getNetWork() + '/block/' + item.index + '">';
-                    html += item.index + '</a></td><td>' + item.size;
-                    html += ' bytes</td><td>' + newDate.toLocaleString() + '</td></tr>';
-                    $("#blocks-page").find("tbody").append(html);
-                });
-            });
-        }
-        queryBlock(index) {
-            return __awaiter(this, void 0, void 0, function* () {
-                let ajax = new WebBrowser.Ajax();
-                let newDate = new Date();
-                let blocks = yield ajax.post('getblock', [index]);
-                let block = blocks[0];
-                console.log(block);
-                newDate.setTime(block.time * 1000);
-                $("#hash").text(block.hash);
-                $("#size").text(block.size + ' byte');
-                $("#time").text(newDate.toLocaleString());
-                $("#version").text(block.version);
-                $("#index").text(block.index);
-                let txs = block.tx;
-                txs.forEach(tx => {
-                    $("#txs").append('<tr><td><a href="./#' + WebBrowser.locationtool.getNetWork() + '/transaction/' + tx.txid + '">' + tx.txid + '</a></td><td>' + tx.type + '</td><td>' + tx.size + ' bytes</td><td>' + tx.version + '</td></tr>');
-                });
-            });
-        }
-    }
-    WebBrowser.BlockPage = BlockPage;
-})(WebBrowser || (WebBrowser = {}));
 var WebBrowser;
 (function (WebBrowser) {
     class AddressInfoView {
@@ -2160,7 +2595,7 @@ var WebBrowser;
         loadView(addrlist) {
             $("#addrlist").empty();
             addrlist.forEach(item => {
-                let href = `./#` + WebBrowser.locationtool.getNetWork() + `/address/` + item.addr;
+                let href = WebBrowser.locationtool.getUrl() + `/address/` + item.addr;
                 let html = `
                 <tr>
                 <td><a class="code" target="_blank" href="` + href + `">` + item.addr + `</a></td>
@@ -2301,101 +2736,5 @@ var WebBrowser;
         }
     }
     WebBrowser.WalletView = WalletView;
-})(WebBrowser || (WebBrowser = {}));
-// import * as $ from "jquery";
-/// <reference path ="Util.ts"/>
-var WebBrowser;
-// import * as $ from "jquery";
-/// <reference path ="Util.ts"/>
-(function (WebBrowser) {
-    /**
-     * @class 交易详情
-     */
-    class TrasctionInfo {
-        updateTxInfo(txid) {
-            return __awaiter(this, void 0, void 0, function* () {
-                let txInfo = yield WebBrowser.WWW.getrawtransaction(txid);
-                $("#type").text(txInfo.type.replace("Transaction", ""));
-                $("#txid").text(txInfo.txid);
-                $("#blockindex").append("<a href='./#" + WebBrowser.Url.href_block(txInfo.blockindex) + "</a>");
-                $("#txsize").append(txInfo.size + " bytes");
-                $("#sysfee").text(txInfo["sys_fee"] + " gas");
-                $("#netfee").text(txInfo["net_fee"] + " gas");
-                let allAsset = yield WebBrowser.WWW.api_getAllAssets();
-                allAsset.map((asset) => {
-                    if (asset.id == WebBrowser.AssetEnum.NEO) {
-                        asset.name = [{ lang: 'en', name: 'NEO' }];
-                    }
-                    if (asset.id == WebBrowser.AssetEnum.GAS) {
-                        asset.name = [{ lang: 'en', name: "GAS" }];
-                    }
-                });
-                let arr = new Array();
-                for (let index = 0; index < txInfo.vin.length; index++) {
-                    const vin = txInfo.vin[index];
-                    try {
-                        let txInfo = yield WebBrowser.WWW.getrawtransaction(vin.txid);
-                        let vout = txInfo.vout[vin.vout];
-                        let address = vout.address;
-                        let value = vout.value;
-                        let name = allAsset.find(val => val.id == vout.asset).name.map(name => { return name.name; }).join("|");
-                        arr.push({ vin: vin.txid, vout: vin.vout, addr: address, name: name, amount: value });
-                    }
-                    catch (error) {
-                    }
-                }
-                let array = TrasctionInfo.groupByaddr(arr);
-                for (let index = 0; index < array.length; index++) {
-                    const item = array[index];
-                    let html = "";
-                    html += '<div class="line" > <div class="title-nel" > <span>Address </span></div >';
-                    html += '<div class="content-nel" > <span id="size" >' + item.addr + ' </span></div > </div>';
-                    for (let i = 0; i < item.data.length; i++) {
-                        const element = item.data[i];
-                        html += '<div class="line" > <div class="title-nel" > <span>' + element.name + ' </span></div >';
-                        html += '<div class="content-nel" > <span id="size" >' + element.amount + ' </span></div > </div>';
-                    }
-                    $("#from").append(html);
-                }
-                txInfo.vout.forEach(vout => {
-                    let name = allAsset.find(val => val.id == vout.asset).name.map(name => name.name).join("|");
-                    let sign = "";
-                    if (array.find(item => item.addr == vout.address)) {
-                        sign = "(change)";
-                    }
-                    let html = "";
-                    html += '<div class="line" > <div class="title-nel" > <span>Address </span></div >';
-                    html += '<div class="content-nel" > <span id="size" >' + vout.address + ' </span></div > </div>';
-                    html += '<div class="line" > <div class="title-nel" > <span>' + name + ' </span></div >';
-                    html += '<div class="content-nel" > <span id="size" >' + vout.value + sign + ' </span></div > </div>';
-                    $("#to").append(html);
-                });
-            });
-        }
-        static groupByaddr(arr) {
-            var map = {}, dest = [];
-            for (var i = 0; i < arr.length; i++) {
-                var ai = arr[i];
-                if (!map[ai.addr]) {
-                    dest.push({
-                        addr: ai.addr,
-                        data: [ai]
-                    });
-                    map[ai.addr] = ai;
-                }
-                else {
-                    for (var j = 0; j < dest.length; j++) {
-                        var dj = dest[j];
-                        if (dj.addr == ai.addr) {
-                            dj.data.push(ai);
-                            break;
-                        }
-                    }
-                }
-            }
-            return dest;
-        }
-    }
-    WebBrowser.TrasctionInfo = TrasctionInfo;
 })(WebBrowser || (WebBrowser = {}));
 //# sourceMappingURL=app.js.map

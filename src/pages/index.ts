@@ -3,6 +3,10 @@ namespace WebBrowser
 {
     export class Index implements Page
     {
+        close(): void
+        {
+            this.div.hidden = true;
+        }
         div: HTMLDivElement = document.getElementById('index-page') as HTMLDivElement;
         viewtxlist: HTMLAnchorElement = document.getElementById( "viewtxlist" ) as HTMLAnchorElement;
         viewblocks: HTMLAnchorElement = document.getElementById( "viewblocks" ) as HTMLAnchorElement;
@@ -13,7 +17,6 @@ namespace WebBrowser
         {
             this.viewtxlist.href = Url.href_transactions();
             this.viewblocks.href = Url.href_blocks();
-
             this.alladdress.href = Url.href_addresses();
             this.allblock.href = Url.href_blocks();
             this.alltxlist.href = Url.href_transactions();
@@ -75,6 +78,7 @@ namespace WebBrowser
 
             $( "#index-page" ).find( "#blocks" ).children( "tbody" ).append( html_blocks );
             $( "#index-page" ).find( "#transactions" ).children( "tbody" ).append( html_txs );
+            this.div.hidden = false;
         }
     }
 }

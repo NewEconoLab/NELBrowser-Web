@@ -2,7 +2,7 @@
 {
     export class AssetInfo implements Page
     {
-        div: HTMLDivElement;
+        div: HTMLDivElement = document.getElementById( "asset-info" ) as HTMLDivElement;
         name: HTMLSpanElement;
         type: HTMLSpanElement;
         id: HTMLSpanElement;
@@ -11,12 +11,15 @@
         admin: HTMLSpanElement;
         start()
         {
-            this.div = document.getElementById("asset-info") as HTMLDivElement;
+            this.div.hidden = false;
+            this.view( locationtool.getParam() );
+        }
+        close(): void
+        {
             this.div.hidden = true;
         }
         view(assetid: string)
-        {
-            
+        {            
             this.div.innerHTML = pages.asset;
             WWW.api_getAllAssets().then((arr: Asset[]) =>
             {
@@ -41,8 +44,7 @@
                 $("#id").text(asset.id);
                 $("#available").text(asset.available);
                 $("#precision").text(asset.precision);
-                $("#admin").text(asset.admin);
-                
+                $("#admin").text(asset.admin);                
             })
 
         }

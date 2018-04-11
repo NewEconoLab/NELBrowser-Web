@@ -1,19 +1,23 @@
-// import * as $ from "jquery";
-/// <reference path ="Util.ts"/>
 namespace WebBrowser
 {
 
     /**
      * @class 交易详情
      */
-    export class TrasctionInfo
+    export class Transaction implements Page
     {
+        close(): void
+        {
+            this.div.hidden = true;
+        }
+        div: HTMLDivElement = document.getElementById( "transaction-info" ) as HTMLDivElement;
+
         public async updateTxInfo(txid: string)
         {
             let txInfo: Tx = await WWW.getrawtransaction( txid );
             $("#type").text(txInfo.type.replace("Transaction", ""));
             $( "#txid" ).text( txInfo.txid );
-            $( "#blockindex" ).append( "<a href='./#" + Url.href_block( txInfo.blockindex) + "</a>" );
+            $( "#blockindex" ).append( "<a href='"+ Url.href_block( txInfo.blockindex) + "</a>" );
             $("#txsize").append(txInfo.size + " bytes");
             $("#sysfee").text(txInfo["sys_fee"] + " gas");
             $("#netfee").text(txInfo["net_fee"] + " gas");
@@ -49,7 +53,7 @@ namespace WebBrowser
 
                 }
             }
-            let array = TrasctionInfo.groupByaddr(arr);
+            let array = Transaction.groupByaddr(arr);
             for (let index = 0; index < array.length; index++)
             {
                 const item = array[index];
@@ -113,6 +117,11 @@ namespace WebBrowser
             return dest;
         }
 
+        start()
+        {
+            this.div.innerHTML = pages.transaction;
+            this.div.hidden = false;
+        }
     }
 
 }

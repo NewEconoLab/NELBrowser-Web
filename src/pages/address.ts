@@ -2,10 +2,13 @@ namespace WebBrowser
 {
     export class Address implements Page
     {
-        div: HTMLDivElement;
+        close(): void
+        {
+            throw new Error( "Method not implemented." );
+        }
+        div: HTMLDivElement = document.getElementById( "address-info" ) as HTMLDivElement;
         start()
         {
-            this.div = document.getElementById("address-info") as HTMLDivElement;
             this.div.hidden = true;
             this.div.innerHTML = pages.addres;
         }

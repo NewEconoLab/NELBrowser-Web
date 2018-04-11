@@ -4,40 +4,6 @@
 namespace WebBrowser
 {
 
-    export class SearchController
-    {
-        public locationUtil: LocationUtil = new LocationUtil();
-        start()
-        {
-            let neoUtil: NeoUtil = new NeoUtil();
-            $("#searchBtn").click(() =>
-            {
-                let page: string = $('#page').val().toString();
-                let url: string = "./#" + locationtool.getNetWork();
-                let search: string = $("#searchText").val().toString();
-                if (search.length == 34)
-                {
-                    if (neoUtil.verifyPublicKey(search))
-                    {
-                        window.open(url + '/address/' + search);
-                    } else
-                    {
-                        alert('请输入正确的地址');
-                    }
-                }
-                search = search.replace('0x', '');
-                if (search.length == 64)
-                {
-                    window.open(url + '/transaction/' + search);
-                }
-                if (!isNaN(Number(search)))
-                {
-                    window.open(url + '/block/' + search);
-                }
-            });
-        }
-    }
-
     export class AddressControll
     {
         private ajax: Ajax = new Ajax();

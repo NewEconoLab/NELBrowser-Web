@@ -101,31 +101,31 @@ namespace WebBrowser
     {
         static href_blocks()
         {
-            return './#' + locationtool.getNetWork() + '/blocks'
+            return locationtool.getUrl() + '/blocks';
         }
         static href_transactions()
         {
-            return './#' + locationtool.getNetWork() + '/transactions'
+            return locationtool.getUrl() + '/transactions';
         }
         static href_addresses()
         {
-            return './#' + locationtool.getNetWork() + '/addresses'
+            return locationtool.getUrl() +  '/addresses'
         }
         static href_assets()
         {
-            return './#' + locationtool.getNetWork() + '/assets'
+            return locationtool.getUrl() +  '/assets'
         }
         static href_block( block: number )
         {
-            return "./#" + locationtool.getNetWork() + "/block/" + block;
+            return locationtool.getUrl() +  "/block/" + block;
         }
         static href_transaction( tx: string )
         {
-            return "./#" + locationtool.getNetWork() + "/transaction/" + tx;
+            return locationtool.getUrl() +  "/transaction/" + tx;
         }
         static href_address( addr: string )
         {
-            return "./#" + locationtool.getNetWork() + "/address/" + addr;
+            return locationtool.getUrl() +  "/address/" + addr;
         }
     }
 
@@ -133,6 +133,7 @@ namespace WebBrowser
     {
         div: HTMLDivElement;
         start(): void;
+        close(): void;
     }
 
     export interface Block
@@ -208,13 +209,10 @@ namespace WebBrowser
         id: string;
     }
 
-    export class Nep5as
+    export class Nep5as implements Asset
     {
         type: string;
-        name: {
-            lang: string;
-            name: string;
-        }[];
+        name: { lang: string; name: string; }[];
         names: string;
         amount: number;
         precision: number;

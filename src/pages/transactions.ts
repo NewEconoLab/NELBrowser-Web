@@ -8,13 +8,16 @@ namespace WebBrowser
      */
     export class Transactions implements Page
     {
-        div: HTMLDivElement;
+        close(): void
+        {
+            this.div.hidden = true;
+        }
+        div: HTMLDivElement = document.getElementById( "txlist-page" ) as HTMLDivElement;
         private pageUtil: PageUtil;
         private txlist: JQuery<HTMLElement>;
         constructor()
         {
             this.txlist = $( "#txlist-page" );
-            this.start();
             //监听交易列表选择框
             $( "#TxType" ).change( () =>
             {
@@ -70,11 +73,11 @@ namespace WebBrowser
          */
         public async start()
         {
-            this.div = document.getElementById( "txlist-page" ) as HTMLDivElement;
             let txCount = await WWW.gettxcount();
             //初始化交易列表
             this.pageUtil = new PageUtil( txCount, 15 );
             this.updateTrasctions( this.pageUtil, <string>$( "#TxType" ).val() );
+            this.div.hidden = false;
         }
 
 
@@ -85,10 +88,10 @@ namespace WebBrowser
             return `
             <div class="line">
                 <div class="line-general">
-                    <div class="content-nel"><span><a href="./#`+ locationtool.getNetWork() + `/transaction/` + txid + `" >` + id + `</a></span></div>
+                    <div class="content-nel"><span><a href="`+ Url.href_transaction(txid) + `" >` + id + `</a></span></div>
                     <div class="content-nel"><span>`+ type.replace( "Transaction", "" ) + `</span></div>
                     <div class="content-nel"><span>`+ size + ` bytes</span></div>
-                    <div class="content-nel"><span><a href="./#`+ locationtool.getNetWork() + `/block/` + index + `" >` + index + `</a></span></div>
+                    <div class="content-nel"><span><a href="`+ Url.href_block( parseInt( index) ) + `" >` + index + `</a></span></div>
                 </div>
                 <a onclick="txgeneral(this)" class="end" id="genbtn"><img src="../img/open.svg" /></a>
                 <div class="transaction" style="width:100%;display: none;" vins='`+ JSON.stringify( vins ) + `' vouts='` + JSON.stringify( vouts ) + `'>
@@ -132,7 +135,7 @@ namespace WebBrowser
 
                 }
             }
-            let arra = TrasctionInfo.groupByaddr( arr );
+            let arra = Transaction.groupByaddr( arr );
             let form = "";
             for ( let index = 0; index < arra.length; index++ )
             {

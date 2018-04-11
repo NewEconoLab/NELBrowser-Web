@@ -90,7 +90,6 @@ namespace WebBrowser
                 output.toAddress = ThinNeo.Helper.GetPublicKeyScriptHash_FromAddress(targetaddr);
                 tran.outputs.push(output);
 
-
                 //找零
                 var change = count.subtract(sendcount);
                 if (change.compareTo(Neo.Fixed8.Zero) > 0)
@@ -100,7 +99,6 @@ namespace WebBrowser
                     outputchange.value = change;
                     outputchange.assetId = assetid.hexToBytes().reverse();
                     tran.outputs.push(outputchange);
-
                 }
             }
             else

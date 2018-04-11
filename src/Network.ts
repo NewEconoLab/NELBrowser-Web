@@ -29,13 +29,13 @@
         }
 
         changeNetWork(net: string) {
-            if (net == "#testnet") {
+            if (net == "testnet") {
                 this.title.innerText = "TestNet";
                 this.testbtn.classList.add("active");
                 this.mainbtn.classList.remove("active");
                 this.css.href = "./css/testnet.css";
             }
-            if (net == "#mainnet") {
+            if (net == "mainnet") {
                 this.title.innerText = "MainNet";
                 this.mainbtn.classList.add("active");
                 this.testbtn.classList.remove("active");
