@@ -8,6 +8,7 @@ namespace WebBrowser
         pagelist: Page[] = new Array<Page>();
         start( app: App )
         {
+            CoinTool.initAllAsset();
             var hash = location.hash;
             if ( hash == "" )
             {
@@ -48,9 +49,15 @@ namespace WebBrowser
                 case "addresses":
                     this.app.navbar.addrsBtn.classList.add( "active" );
                     return this.app.addresses;
+                case "address":
+                    this.app.navbar.addrsBtn.classList.add( "active" );
+                    return this.app.address;
                 case "assets":
                     this.app.navbar.assetBtn.classList.add( "active" );
                     return this.app.assets;
+                case "asset":
+                    this.app.navbar.assetBtn.classList.add( "active" );
+                    return this.app.assetinfo;
             }
             
         }

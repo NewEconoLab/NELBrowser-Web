@@ -11,8 +11,8 @@
         admin: HTMLSpanElement;
         start()
         {
-            this.div.hidden = false;
             this.view( locationtool.getParam() );
+            this.div.hidden = false;
         }
         close(): void
         {
@@ -27,18 +27,8 @@
                 {
                     return value.id == assetid;
                 });
-
-                if (asset.id == AssetEnum.NEO)
-                {
-                    asset.name = [{ lang: 'en', name: 'NEO' }];
-                }
-                if (asset.id == AssetEnum.GAS)
-                {
-                    asset.name = [{ lang: 'en', name: "GAS" }];
-                }
-                let name = asset.name.map((name) => { return name.name })
-                asset.names = name.join("|");
-
+                
+                asset.names = CoinTool.assetID2name[asset.id];
                 $("#name").text(asset.names);
                 $("#type").text(asset.type);
                 $("#id").text(asset.id);

@@ -115,6 +115,14 @@ namespace WebBrowser
             var r = json["result"];
             return r;
         }
+        static async api_getbalances( address: string )
+        {
+            var str = WWW.makeRpcUrl( "getbalance", address );
+            var result = await fetch( str, { "method": "get" } );
+            var json = await result.json();
+            var r = json["result"];
+            return r;
+        }
 
     }
 }

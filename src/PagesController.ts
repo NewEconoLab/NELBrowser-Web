@@ -266,7 +266,6 @@ namespace WebBrowser
             let assetView: AssetsView = new AssetsView(this.assets, nep5s);
             await assetView.loadView();   //调用loadView方法渲染页面
 
-
         }
 
 
@@ -284,8 +283,6 @@ namespace WebBrowser
         private text: HTMLAnchorElement;
         constructor()
         {
-
-            
             this.previous = document.createElement("li");
             this.next = document.createElement("li");
             this.ul = document.createElement("ul");

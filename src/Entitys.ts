@@ -127,6 +127,10 @@ namespace WebBrowser
         {
             return locationtool.getUrl() +  "/address/" + addr;
         }
+        static href_asset(asset)
+        {
+            return locationtool.getUrl() + '/asset/'+asset
+        }
     }
 
     export interface Page

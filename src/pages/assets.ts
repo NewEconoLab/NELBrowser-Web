@@ -16,19 +16,6 @@
         async allAsset()
         {
             var assets = await WWW.api_getAllAssets();
-            assets.map( ( asset ) =>
-            {
-                if ( asset.id == AssetEnum.NEO )
-                {
-                    asset.name = [{ lang: 'en', name: 'NEO' }];
-                }
-                if ( asset.id == AssetEnum.GAS )
-                {
-                    asset.name = [{ lang: 'en', name: "GAS" }];
-                }
-                let name = asset.name.map( ( name ) => { return name.name } )
-                asset.names = name.join( "|" );
-            } );
             let nep5Info: GetNep5Info = new GetNep5Info();
             let storutil: StorageUtil = new StorageUtil();
             let nep5asids: string[] = storutil.getStorage( "assetIds_nep5", "|" );
@@ -56,10 +43,10 @@
             $( "#nep5ass" ).empty();
             assets.forEach( ( asset: Asset ) =>
             {
-                let href = './#' + locationtool.getNetWork() + '/asset/' + asset.id;
+                let href = Url.href_asset( asset.id );
                 let html = `
                 <tr>
-                <td> <a href="`+ href + `">` + asset.names + `</a></td>
+                <td> <a href="`+ href + `">` + CoinTool.assetID2name[asset.id] + `</a></td>
                 <td>` + asset.type + `</td>
                 <td>` + ( asset.amount <= 0 ? asset.available : asset.amount ) + `</td>
                 <td>` + asset.precision + `</td>

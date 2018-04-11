@@ -101,11 +101,42 @@ var WebBrowser;
             this.div = document.getElementById("address-info");
         }
         close() {
-            throw new Error("Method not implemented.");
+            this.div.hidden = false;
         }
         start() {
-            this.div.hidden = true;
-            this.div.innerHTML = WebBrowser.pages.addres;
+            return __awaiter(this, void 0, void 0, function* () {
+                this.div.innerHTML = WebBrowser.pages.addres;
+                var address = WebBrowser.locationtool.getParam();
+                var utxos = yield WebBrowser.WWW.api_getUTXO(address);
+                var balances = yield WebBrowser.WWW.api_getbalances(address);
+                this.loadView(address, balances, utxos);
+                this.div.hidden = false;
+            });
+        }
+        loadView(address, balances, utxos) {
+            //$("#balance").empty();
+            $("#utxos").empty();
+            $("#address").text(address);
+            // console.log(this.balances);
+            balances.forEach((balance) => {
+                let html = '';
+                var name = WebBrowser.CoinTool.assetID2name[balance.asset];
+                html += '<div class="line" > <div class="title-nel" > <span>' + name + ' </span></div >';
+                html += '<div class="content-nel" > <span> ' + balance.balance + ' </span></div > </div>';
+                $("#balance").append(html);
+            });
+            utxos.forEach((utxo) => {
+                let html = `
+                <tr>
+                <td class='code'>` + WebBrowser.CoinTool.assetID2name[utxo.asset] + `
+                </td>
+                <td>` + utxo.value + `
+                </td>
+                <td><a class='code' target='_blank' href='` + WebBrowser.Url.href_transaction(utxo.txid) + `'>` + utxo.txid + `
+                </a>[` + utxo.n + `]</td>
+                </tr>`;
+                $("#utxos").append(html);
+            });
         }
     }
     WebBrowser.Address = Address;
@@ -203,8 +234,8 @@ var WebBrowser;
             this.div = document.getElementById("asset-info");
         }
         start() {
-            this.div.hidden = false;
             this.view(WebBrowser.locationtool.getParam());
+            this.div.hidden = false;
         }
         close() {
             this.div.hidden = true;
@@ -215,14 +246,7 @@ var WebBrowser;
                 var asset = arr.find((value) => {
                     return value.id == assetid;
                 });
-                if (asset.id == WebBrowser.AssetEnum.NEO) {
-                    asset.name = [{ lang: 'en', name: 'NEO' }];
-                }
-                if (asset.id == WebBrowser.AssetEnum.GAS) {
-                    asset.name = [{ lang: 'en', name: "GAS" }];
-                }
-                let name = asset.name.map((name) => { return name.name; });
-                asset.names = name.join("|");
+                asset.names = WebBrowser.CoinTool.assetID2name[asset.id];
                 $("#name").text(asset.names);
                 $("#type").text(asset.type);
                 $("#id").text(asset.id);
@@ -253,16 +277,6 @@ var WebBrowser;
         allAsset() {
             return __awaiter(this, void 0, void 0, function* () {
                 var assets = yield WebBrowser.WWW.api_getAllAssets();
-                assets.map((asset) => {
-                    if (asset.id == WebBrowser.AssetEnum.NEO) {
-                        asset.name = [{ lang: 'en', name: 'NEO' }];
-                    }
-                    if (asset.id == WebBrowser.AssetEnum.GAS) {
-                        asset.name = [{ lang: 'en', name: "GAS" }];
-                    }
-                    let name = asset.name.map((name) => { return name.name; });
-                    asset.names = name.join("|");
-                });
                 let nep5Info = new WebBrowser.GetNep5Info();
                 let storutil = new WebBrowser.StorageUtil();
                 let nep5asids = storutil.getStorage("assetIds_nep5", "|");
@@ -288,10 +302,10 @@ var WebBrowser;
             $("#assets").empty();
             $("#nep5ass").empty();
             assets.forEach((asset) => {
-                let href = './#' + WebBrowser.locationtool.getNetWork() + '/asset/' + asset.id;
+                let href = WebBrowser.Url.href_asset(asset.id);
                 let html = `
                 <tr>
-                <td> <a href="` + href + `">` + asset.names + `</a></td>
+                <td> <a href="` + href + `">` + WebBrowser.CoinTool.assetID2name[asset.id] + `</a></td>
                 <td>` + asset.type + `</td>
                 <td>` + (asset.amount <= 0 ? asset.available : asset.amount) + `</td>
                 <td>` + asset.precision + `</td>
@@ -724,6 +738,9 @@ var WebBrowser;
         static href_address(addr) {
             return WebBrowser.locationtool.getUrl() + "/address/" + addr;
         }
+        static href_asset(asset) {
+            return WebBrowser.locationtool.getUrl() + '/asset/' + asset;
+        }
     }
     WebBrowser.Url = Url;
     class Nep5as {
@@ -976,6 +993,7 @@ var WebBrowser;
             this.pagelist = new Array();
         }
         start(app) {
+            WebBrowser.CoinTool.initAllAsset();
             var hash = location.hash;
             if (hash == "") {
                 window.location.hash = "#mainnet";
@@ -1010,9 +1028,15 @@ var WebBrowser;
                 case "addresses":
                     this.app.navbar.addrsBtn.classList.add("active");
                     return this.app.addresses;
+                case "address":
+                    this.app.navbar.addrsBtn.classList.add("active");
+                    return this.app.address;
                 case "assets":
                     this.app.navbar.assetBtn.classList.add("active");
                     return this.app.assets;
+                case "asset":
+                    this.app.navbar.assetBtn.classList.add("active");
+                    return this.app.assetinfo;
             }
         }
         closePages() {
@@ -2065,6 +2089,15 @@ var WebBrowser;
         static api_getUTXO(address) {
             return __awaiter(this, void 0, void 0, function* () {
                 var str = WWW.makeRpcUrl("getutxo", address);
+                var result = yield fetch(str, { "method": "get" });
+                var json = yield result.json();
+                var r = json["result"];
+                return r;
+            });
+        }
+        static api_getbalances(address) {
+            return __awaiter(this, void 0, void 0, function* () {
+                var str = WWW.makeRpcUrl("getbalance", address);
                 var result = yield fetch(str, { "method": "get" });
                 var json = yield result.json();
                 var r = json["result"];
