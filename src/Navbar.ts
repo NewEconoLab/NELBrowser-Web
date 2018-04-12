@@ -46,6 +46,13 @@ namespace WebBrowser
             {
                 this.jump();
             }
+            this.walletBtn.onclick = () =>
+            {
+                if ( locationtool.getNetWork() == 'testnet' )
+                    window.open( "https://testwallet.nel.group/" );
+                else
+                    window.open( "https://wallet.nel.group/" );
+            }
         }
 
         skip(page: string)

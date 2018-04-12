@@ -33,8 +33,7 @@ namespace WebBrowser.pages
         <tbody id="txs"></tbody>
     </table>
     `;
-    export var transaction: string =
-        `
+    export var transaction: string = `
     <div class="title"><span>Transaction Information</span></div>
     <div class="list-nel">
       <div class="list-head">
@@ -72,52 +71,50 @@ namespace WebBrowser.pages
         </div>
     </div>
     ` ;
-    export var addres: string =
-        `
-        <div class="container">
-            <div class="title"><span>Address info</span></div>
+    export var addres: string = `
+    <div class="container">
+        <div class="title"><span>Address info</span></div>
 
-            <div class="list-nel">
-                <div class="list-head">
-                    <div class="line"><div class="title-nel"><span id="address"></span></div></div>
-                </div>
-                <div class="list-body" id="balance">
-                    <div class="line"><div class="title-nel"><span>Address</span></div> <div class="content-nel"><span id="hash"></span></div></div>
-                </div>
+        <div class="list-nel">
+            <div class="list-head">
+                <div class="line"><div class="title-nel"><span id="address"></span></div></div>
             </div>
-
-            <div class="title"><span>Nep5</span></div>
-            <div class="input-group " id="nel-search">
-                <input id="nep5-text" type="text" class="form-control nel" placeholder="TxHash/Addr/blockHeight">
-                <span id="nep5-btn" class="input-group-addon nel ">
-                    <img src="fonts/search.svg" width="18" height="18" />
-                </span>
-            </div>
-            <div class="list-nel">
-                <div class="list-head">
-                    <div class="line"><div class="title-nel"><span></span></div></div>
-                </div>
-                <div class="list-body" id="nep5balance">
-                </div>
+            <div class="list-body" id="balance">
+                <div class="line"><div class="title-nel"><span>Address</span></div> <div class="content-nel"><span id="hash"></span></div></div>
             </div>
         </div>
 
-        <div class="title">
-            <span>UTXO</span>
+        <div class="title"><span>Nep5</span></div>
+        <div class="input-group " id="nel-search">
+            <input id="nep5-text" type="text" class="form-control nel" placeholder="TxHash/Addr/blockHeight">
+            <span id="nep5-btn" class="input-group-addon nel ">
+                <img src="fonts/search.svg" width="18" height="18" />
+            </span>
         </div>
-        <table class="table table-nel cool">
-            <thead>
-                <tr>
-                    <th>asset</th>
-                    <th>number</th>
-                    <th>txid</th>
-                </tr>
-            </thead>
-            <tbody id="utxos"></tbody>
-        </table>
+        <div class="list-nel">
+            <div class="list-head">
+                <div class="line"><div class="title-nel"><span></span></div></div>
+            </div>
+            <div class="list-body" id="nep5balance">
+            </div>
+        </div>
+    </div>
+
+    <div class="title">
+        <span>UTXO</span>
+    </div>
+    <table class="table table-nel cool">
+        <thead>
+            <tr>
+                <th>asset</th>
+                <th>number</th>
+                <th>txid</th>
+            </tr>
+        </thead>
+        <tbody id="utxos"></tbody>
+    </table>
     `;
-    export var asset: string =
-        `
+    export var asset: string = `
     <div class="title"><span>Asset Information</span></div>
     <div class="list-nel">
       <div class="list-head">
