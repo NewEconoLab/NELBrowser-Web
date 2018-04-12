@@ -30,6 +30,7 @@ namespace WebBrowser
          */
         public get currentPage()
         {
+            this._totalPage = this.totalCount % this.pageSize == 0 ? this.totalCount / this.pageSize : Math.ceil((this.totalCount / this.pageSize));
             return this._currentPage;
         }
         /**

@@ -59,8 +59,28 @@ var WebBrowser;
         }
         start() {
             return __awaiter(this, void 0, void 0, function* () {
-                yield this.updateBlocks(new WebBrowser.PageUtil(1, 15));
+                var count = yield WebBrowser.WWW.api_getHeight();
+                this.pageUtil = new WebBrowser.PageUtil(count, 15);
+                yield this.updateBlocks(this.pageUtil);
                 this.div.hidden = false;
+                $("#blocks-page").find("#next").click(() => {
+                    if (this.pageUtil.currentPage <= this.pageUtil.totalPage) {
+                        this.pageUtil.currentPage += 1;
+                        this.updateBlocks(this.pageUtil);
+                    }
+                    else {
+                        this.pageUtil.currentPage = this.pageUtil.totalPage;
+                    }
+                });
+                $("#blocks-page").find("#previous").click(() => {
+                    if (this.pageUtil.currentPage > 1) {
+                        this.pageUtil.currentPage -= 1;
+                        this.updateBlocks(this.pageUtil);
+                    }
+                    else {
+                        this.pageUtil.currentPage = 1;
+                    }
+                });
             });
         }
         close() {
@@ -82,6 +102,8 @@ var WebBrowser;
                 else {
                     $("#blocks-page").find("#previous").addClass('disabled');
                 }
+                let pageMsg = "blocks " + (pageUtil.currentPage * pageUtil.pageSize - pageUtil.pageSize + 1) + " to " + pageUtil.currentPage * pageUtil.pageSize + " of " + pageUtil.totalCount;
+                $("#blocks-page").find("#page-msg").html(pageMsg);
                 let newDate = new Date();
                 blocks.forEach((item, index, input) => {
                     newDate.setTime(item.time * 1000);
@@ -669,6 +691,7 @@ var WebBrowser;
          * currentPage 返回当前页码
          */
         get currentPage() {
+            this._totalPage = this.totalCount % this.pageSize == 0 ? this.totalCount / this.pageSize : Math.ceil((this.totalCount / this.pageSize));
             return this._currentPage;
         }
         /**
@@ -2066,7 +2089,11 @@ var WebBrowser;
                 return r[0]['addrcount'];
             });
         }
-        //查询区块列表
+        /**
+         * 获取区块列表
+         * @param size 记录条数
+         * @param page 页码
+         */
         static getblocks(size, page) {
             return __awaiter(this, void 0, void 0, function* () {
                 var str = WWW.makeRpcUrl("getblocks", size, page);

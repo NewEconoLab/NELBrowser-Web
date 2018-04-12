@@ -63,7 +63,11 @@ namespace WebBrowser
             var r = json["result"];
             return r[0]['addrcount'] as number;
         }
-        //查询区块列表
+        /**
+         * 获取区块列表
+         * @param size 记录条数
+         * @param page 页码
+         */
         static async getblocks( size: number, page: number )
         {
             var str = WWW.makeRpcUrl(  "getblocks", size, page );

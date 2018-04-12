@@ -4,11 +4,30 @@ namespace WebBrowser
 {
     export class Blocks implements Page
     {
+        pageUtil: PageUtil;
         div: HTMLDivElement = document.getElementById( 'blocks-page' ) as HTMLDivElement;
         async start()
         {
-            await this.updateBlocks( new PageUtil( 1, 15 ) );
+            var count = await WWW.api_getHeight();
+            this.pageUtil = new PageUtil(count, 15)
+            await this.updateBlocks(this.pageUtil);
             this.div.hidden = false;
+            $("#blocks-page").find("#next").click(() => {
+                if (this.pageUtil.currentPage <= this.pageUtil.totalPage) {
+                    this.pageUtil.currentPage += 1;
+                    this.updateBlocks(this.pageUtil);
+                } else {
+                    this.pageUtil.currentPage = this.pageUtil.totalPage;
+                }
+            });
+            $("#blocks-page").find("#previous").click(() => {
+                if (this.pageUtil.currentPage > 1) {
+                    this.pageUtil.currentPage -= 1;
+                    this.updateBlocks(this.pageUtil);
+                } else {
+                    this.pageUtil.currentPage = 1;
+                }
+            })
         }
         close(): void
         {
@@ -27,6 +46,10 @@ namespace WebBrowser
             } else {
                 $("#blocks-page").find("#previous").addClass('disabled');
             }
+      
+            let pageMsg = "blocks " + ( pageUtil.currentPage * pageUtil.pageSize - pageUtil.pageSize + 1) + " to " + pageUtil.currentPage * pageUtil.pageSize + " of " + pageUtil.totalCount;
+            $("#blocks-page").find("#page-msg").html(pageMsg)
+            
             let newDate = new Date();
             blocks.forEach((item, index, input) => {
                 newDate.setTime(item.time * 1000);
