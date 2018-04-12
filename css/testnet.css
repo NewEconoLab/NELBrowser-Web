@@ -416,3 +416,13 @@ table>tbody>tr {
     border-collapse: separate;
     border-radius: 5px 5px 5px 5px;
 }
+.notfound {
+    background: url(../img/404-test.png) no-repeat center;
+    background-size: contain;
+    height: 600px;
+    margin-top:135px;
+}
+.notfound button {
+    color: #fff;
+    background-color: #198CEE;
+}

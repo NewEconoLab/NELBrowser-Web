@@ -7,7 +7,7 @@ namespace WebBrowser.pages
     <div class="title"><span>Block Information</span></div>
     <div class="list-nel">
       <div class="list-head">
-          <div class="line"><div class="title-nel"><span>Block 1723980</span></div></div>
+          <div class="line"><div class="title-nel"><span>Block </span></div></div>
       </div>
       <div class="list-body">
           <div class="line"><div class="title-nel"><span>Hash</span></div> <div class="content-nel"><span id="hash"></span></div></div>
@@ -37,7 +37,7 @@ namespace WebBrowser.pages
     <div class="title"><span>Transaction Information</span></div>
     <div class="list-nel">
       <div class="list-head">
-          <div class="line"><div class="title-nel"><span>Block 1723980</span></div></div>
+          <div class="line"><div class="title-nel"><span>Transaction </span></div></div>
       </div>
       <div class="list-body">
           <div class="line"><div class="title-nel"><span>TXID</span></div> <div class="content-nel"><span id="txid"></span></div></div>

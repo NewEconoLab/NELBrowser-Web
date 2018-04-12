@@ -329,6 +329,20 @@ body:after {
     }
 }
 
+.notfound > div {
+    padding-top: 350px;
+    text-align: center;
+}
+.notfound span {
+    font-family: NotoSansHans-Regular;
+    font-size: 18px;
+    color: #FFFFFF;
+    letter-spacing: 0;
+    text-align: center;
+}
+.notfound > div > button {
+    margin-top: 30px;
+}
 /* .table>thead>tr>th {
     vertical-align: bottom;
     border-bottom: 0;

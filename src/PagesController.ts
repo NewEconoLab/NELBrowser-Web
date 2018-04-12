@@ -61,7 +61,6 @@ namespace WebBrowser
                     for (let index = 0; index < asids.length; index++)
                     {
                         let res = await this.queryNep5AssetById(asids[index]);
-                        console.log(res.result["balance"]);
                         if (res.result["balance"]) ress.push(res);
                     }
                     if (ress.length) this.addInfo.initNep5(ress);

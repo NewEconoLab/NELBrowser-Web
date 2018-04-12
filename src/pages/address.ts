@@ -19,17 +19,15 @@ namespace WebBrowser
 
         loadView( address: string, balances: Balance[], utxos: Utxo[] )
         {
-            //$("#balance").empty();
             $( "#utxos" ).empty();
             $( "#address" ).text( address );
-            // console.log(this.balances);
             balances.forEach( ( balance: Balance ) =>
             {
-                let html = '';
                 var name = CoinTool.assetID2name[balance.asset];
 
-                html += '<div class="line" > <div class="title-nel" > <span>' + name + ' </span></div >';
-                html += '<div class="content-nel" > <span> ' + balance.balance + ' </span></div > </div>';
+                let html = `
+                <div class="line" > <div class="title-nel" > <span>` + name + ` </span></div >
+                <div class="content-nel" > <span> ` + balance.balance + ` </span></div > </div>`;
                 $( "#balance" ).append( html );
             } );
             utxos.forEach( ( utxo: Utxo ) =>

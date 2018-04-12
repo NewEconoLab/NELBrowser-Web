@@ -131,14 +131,12 @@
                 ThinNeo.Helper.GetPrivateKeyFromNep2( nep2, password, n, r, p, ( info, result ) =>
                 {
                     //spanNep2.textContent = "info=" + info + " result=" + result;
-                    console.log( "result=" + "info=" + info + " result=" + result );
                     prikey = result as Uint8Array;
                     if ( prikey != null )
                     {
                         var pubkey = ThinNeo.Helper.GetPublicKeyFromPrivateKey( prikey );
                         var address = ThinNeo.Helper.GetAddressFromPublicKey( pubkey );
                         var wif = ThinNeo.Helper.GetWifFromPrivateKey( prikey );
-                        console.log( '1:' + address );
                         resolve( { err: false, result: { pubkey, address, prikey } } );
                     }
                     else
@@ -202,7 +200,6 @@
                             var address = ThinNeo.Helper.GetAddressFromPublicKey( pubkey );
                             var wif = ThinNeo.Helper.GetWifFromPrivateKey( result as Uint8Array );
                             var hexkey = ( result as Uint8Array ).toHexString();
-                            console.log( info + "|" + address + " wif=" + wif );
                             resolve( { err: false, result: { pubkey: pubkey, address: address, prikey: result as Uint8Array } } );
                         }
                         else

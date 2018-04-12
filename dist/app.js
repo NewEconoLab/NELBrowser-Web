@@ -13,11 +13,38 @@ var WebBrowser;
             this.div = document.getElementById("block-info");
         }
         close() {
-            this.div.hidden = false;
+            this.div.hidden = true;
         }
         start() {
-            this.div.hidden = true;
             this.div.innerHTML = WebBrowser.pages.block;
+            this.queryBlock(WebBrowser.locationtool.getParam());
+            this.div.hidden = false;
+        }
+        queryBlock(index) {
+            return __awaiter(this, void 0, void 0, function* () {
+                let ajax = new WebBrowser.Ajax();
+                let newDate = new Date();
+                let blocks = yield ajax.post('getblock', [index]);
+                let block = blocks[0];
+                newDate.setTime(block.time * 1000);
+                $("#hash").text(block.hash);
+                $("#size").text(block.size + ' byte');
+                $("#time").text(newDate.toLocaleString());
+                $("#version").text(block.version);
+                $("#index").text(block.index);
+                let txs = block.tx;
+                txs.forEach(tx => {
+                    var id = tx.txid.replace('0x', '');
+                    id = id.substring(0, 6) + '...' + id.substring(id.length - 6);
+                    $("#txs").append(`
+                    <tr>
+                        <td><a href="` + WebBrowser.Url.href_transaction(tx.txid) + `">` + id + `</a></td>
+                        <td>` + tx.type + `</td>
+                        <td>` + tx.size + ` bytes</td>
+                        <td>` + tx.version + `</td>
+                    </tr>`);
+                });
+            });
         }
     }
     WebBrowser.Block = Block;
@@ -31,8 +58,10 @@ var WebBrowser;
             this.div = document.getElementById('blocks-page');
         }
         start() {
-            this.updateBlocks(new WebBrowser.PageUtil(1, 15));
-            this.div.hidden = false;
+            return __awaiter(this, void 0, void 0, function* () {
+                yield this.updateBlocks(new WebBrowser.PageUtil(1, 15));
+                this.div.hidden = false;
+            });
         }
         close() {
             this.div.hidden = true;
@@ -40,7 +69,6 @@ var WebBrowser;
         updateBlocks(pageUtil) {
             return __awaiter(this, void 0, void 0, function* () {
                 let blocks = yield WebBrowser.WWW.getblocks(pageUtil.pageSize, pageUtil.currentPage);
-                console.log("blocks-page");
                 $("#blocks-page").children("table").children("tbody").empty();
                 if (pageUtil.totalPage - pageUtil.currentPage) {
                     $("#blocks-page").find("#next").removeClass('disabled');
@@ -63,31 +91,6 @@ var WebBrowser;
                 <td>` + item.size + ` bytes</td><td>` + newDate.toLocaleString() + `</td>
                 </tr>`;
                     $("#blocks-page").find("tbody").append(html);
-                });
-            });
-        }
-        queryBlock(index) {
-            return __awaiter(this, void 0, void 0, function* () {
-                let ajax = new WebBrowser.Ajax();
-                let newDate = new Date();
-                let blocks = yield ajax.post('getblock', [index]);
-                let block = blocks[0];
-                console.log(block);
-                newDate.setTime(block.time * 1000);
-                $("#hash").text(block.hash);
-                $("#size").text(block.size + ' byte');
-                $("#time").text(newDate.toLocaleString());
-                $("#version").text(block.version);
-                $("#index").text(block.index);
-                let txs = block.tx;
-                txs.forEach(tx => {
-                    $("#txs").append(`
-                    <tr>
-                        <td><a href="` + WebBrowser.Url.href_transaction(tx.txid) + `> + tx.txid + '</a></td>
-                        <td>` + tx.type + `</td>
-                        <td>` + tx.size + ` bytes</td>
-                        <td>` + tx.version + `</td>
-                    </tr>`);
                 });
             });
         }
@@ -114,15 +117,13 @@ var WebBrowser;
             });
         }
         loadView(address, balances, utxos) {
-            //$("#balance").empty();
             $("#utxos").empty();
             $("#address").text(address);
-            // console.log(this.balances);
             balances.forEach((balance) => {
-                let html = '';
                 var name = WebBrowser.CoinTool.assetID2name[balance.asset];
-                html += '<div class="line" > <div class="title-nel" > <span>' + name + ' </span></div >';
-                html += '<div class="content-nel" > <span> ' + balance.balance + ' </span></div > </div>';
+                let html = `
+                <div class="line" > <div class="title-nel" > <span>` + name + ` </span></div >
+                <div class="content-nel" > <span> ` + balance.balance + ` </span></div > </div>`;
                 $("#balance").append(html);
             });
             utxos.forEach((utxo) => {
@@ -338,24 +339,21 @@ var WebBrowser;
         close() {
             this.div.hidden = true;
         }
+        start() {
+            this.div.innerHTML = WebBrowser.pages.transaction;
+            this.updateTxInfo(WebBrowser.locationtool.getParam());
+            this.div.hidden = false;
+        }
         updateTxInfo(txid) {
             return __awaiter(this, void 0, void 0, function* () {
                 let txInfo = yield WebBrowser.WWW.getrawtransaction(txid);
                 $("#type").text(txInfo.type.replace("Transaction", ""));
                 $("#txid").text(txInfo.txid);
-                $("#blockindex").append("<a href='" + WebBrowser.Url.href_block(txInfo.blockindex) + "</a>");
+                $("#blockindex").append("<a href='" + WebBrowser.Url.href_block(txInfo.blockindex) + "' " + txInfo.blockindex + "</a>");
                 $("#txsize").append(txInfo.size + " bytes");
                 $("#sysfee").text(txInfo["sys_fee"] + " gas");
                 $("#netfee").text(txInfo["net_fee"] + " gas");
                 let allAsset = yield WebBrowser.WWW.api_getAllAssets();
-                allAsset.map((asset) => {
-                    if (asset.id == WebBrowser.AssetEnum.NEO) {
-                        asset.name = [{ lang: 'en', name: 'NEO' }];
-                    }
-                    if (asset.id == WebBrowser.AssetEnum.GAS) {
-                        asset.name = [{ lang: 'en', name: "GAS" }];
-                    }
-                });
                 let arr = new Array();
                 for (let index = 0; index < txInfo.vin.length; index++) {
                     const vin = txInfo.vin[index];
@@ -364,7 +362,7 @@ var WebBrowser;
                         let vout = txInfo.vout[vin.vout];
                         let address = vout.address;
                         let value = vout.value;
-                        let name = allAsset.find(val => val.id == vout.asset).name.map(name => { return name.name; }).join("|");
+                        let name = WebBrowser.CoinTool.assetID2name[vout.asset];
                         arr.push({ vin: vin.txid, vout: vin.vout, addr: address, name: name, amount: value });
                     }
                     catch (error) {
@@ -384,7 +382,7 @@ var WebBrowser;
                     $("#from").append(html);
                 }
                 txInfo.vout.forEach(vout => {
-                    let name = allAsset.find(val => val.id == vout.asset).name.map(name => name.name).join("|");
+                    let name = WebBrowser.CoinTool.assetID2name[vout.asset];
                     let sign = "";
                     if (array.find(item => item.addr == vout.address)) {
                         sign = "(change)";
@@ -421,10 +419,6 @@ var WebBrowser;
             }
             return dest;
         }
-        start() {
-            this.div.innerHTML = WebBrowser.pages.transaction;
-            this.div.hidden = false;
-        }
     }
     WebBrowser.Transaction = Transaction;
 })(WebBrowser || (WebBrowser = {}));
@@ -442,7 +436,7 @@ var WebBrowser;
     <div class="title"><span>Block Information</span></div>
     <div class="list-nel">
       <div class="list-head">
-          <div class="line"><div class="title-nel"><span>Block 1723980</span></div></div>
+          <div class="line"><div class="title-nel"><span>Block </span></div></div>
       </div>
       <div class="list-body">
           <div class="line"><div class="title-nel"><span>Hash</span></div> <div class="content-nel"><span id="hash"></span></div></div>
@@ -472,7 +466,7 @@ var WebBrowser;
     <div class="title"><span>Transaction Information</span></div>
     <div class="list-nel">
       <div class="list-head">
-          <div class="line"><div class="title-nel"><span>Block 1723980</span></div></div>
+          <div class="line"><div class="title-nel"><span>Transaction </span></div></div>
       </div>
       <div class="list-body">
           <div class="line"><div class="title-nel"><span>TXID</span></div> <div class="content-nel"><span id="txid"></span></div></div>
@@ -819,7 +813,6 @@ var WebBrowser;
                 this.txlist.find("#transactions").empty();
                 //分页查询交易记录
                 let txs = yield WebBrowser.WWW.getrawtransactions(pageUtil.pageSize, pageUtil.currentPage, txType);
-                console.log(txs);
                 this.txlist.find("table").children("tbody").empty();
                 for (var n = 0; n < pageUtil.pageSize; n++) {
                     let txid = txs[n].txid;
@@ -844,7 +837,7 @@ var WebBrowser;
         getTxLine(txid, type, size, index, vins, vouts) {
             return __awaiter(this, void 0, void 0, function* () {
                 var id = txid.replace('0x', '');
-                id = txid.substring(0, 6) + '...' + id.substring(txid.length - 6);
+                id = id.substring(0, 6) + '...' + id.substring(id.length - 6);
                 return `
             <div class="line">
                 <div class="line-general">
@@ -933,6 +926,24 @@ var WebBrowser;
     }
     WebBrowser.Transactions = Transactions;
 })(WebBrowser || (WebBrowser = {}));
+/// <reference path="../app.ts"/>
+var WebBrowser;
+/// <reference path="../app.ts"/>
+(function (WebBrowser) {
+    class Notfound {
+        start() {
+            this.btn = document.getElementById("notfound");
+            this.btn.onclick = () => {
+                window.location.href = WebBrowser.locationtool.getUrl();
+            };
+            $(".notfound").show();
+        }
+        close() {
+            $('.notfound').hide();
+        }
+    }
+    WebBrowser.Notfound = Notfound;
+})(WebBrowser || (WebBrowser = {}));
 var WebBrowser;
 (function (WebBrowser) {
     class locationtool {
@@ -946,7 +957,8 @@ var WebBrowser;
             let arr = href.split("#");
             var hash = window.location.hash;
             let hasharr = hash.split("/");
-            return arr[0] + hasharr[0];
+            let net = (hasharr[0] != "#mainnet" && hasharr[0] != "#testnet") ? "#mainnet" : hasharr[0];
+            return arr[0] + net;
         }
         static getPage() {
             var page = location.hash;
@@ -1007,9 +1019,13 @@ var WebBrowser;
             this.app = app;
             this.pagelist.push(app.indexpage);
             this.pagelist.push(app.blocks);
+            this.pagelist.push(app.block);
             this.pagelist.push(app.transactions);
+            this.pagelist.push(app.transaction);
             this.pagelist.push(app.addresses);
+            this.pagelist.push(app.address);
             this.pagelist.push(app.assets);
+            this.pagelist.push(app.assetinfo);
             this.closePages();
             var page = this.render();
             page.start();
@@ -1022,9 +1038,15 @@ var WebBrowser;
                 case "blocks":
                     this.app.navbar.blockBtn.classList.add("active");
                     return this.app.blocks;
+                case "block":
+                    this.app.navbar.blockBtn.classList.add("active");
+                    return this.app.block;
                 case "transactions":
                     this.app.navbar.txlistBtn.classList.add("active");
                     return this.app.transactions;
+                case "transaction":
+                    this.app.navbar.txlistBtn.classList.add("active");
+                    return this.app.transaction;
                 case "addresses":
                     this.app.navbar.addrsBtn.classList.add("active");
                     return this.app.addresses;
@@ -1037,6 +1059,8 @@ var WebBrowser;
                 case "asset":
                     this.app.navbar.assetBtn.classList.add("active");
                     return this.app.assetinfo;
+                default:
+                    return this.app.notfound;
             }
         }
         closePages() {
@@ -1705,13 +1729,11 @@ var WebBrowser;
                     var p = 8;
                     ThinNeo.Helper.GetPrivateKeyFromNep2(nep2, password, n, r, p, (info, result) => {
                         //spanNep2.textContent = "info=" + info + " result=" + result;
-                        console.log("result=" + "info=" + info + " result=" + result);
                         prikey = result;
                         if (prikey != null) {
                             var pubkey = ThinNeo.Helper.GetPublicKeyFromPrivateKey(prikey);
                             var address = ThinNeo.Helper.GetAddressFromPublicKey(pubkey);
                             var wif = ThinNeo.Helper.GetWifFromPrivateKey(prikey);
-                            console.log('1:' + address);
                             resolve({ err: false, result: { pubkey, address, prikey } });
                         }
                         else {
@@ -1766,7 +1788,6 @@ var WebBrowser;
                             var address = ThinNeo.Helper.GetAddressFromPublicKey(pubkey);
                             var wif = ThinNeo.Helper.GetWifFromPrivateKey(result);
                             var hexkey = result.toHexString();
-                            console.log(info + "|" + address + " wif=" + wif);
                             resolve({ err: false, result: { pubkey: pubkey, address: address, prikey: result } });
                         }
                         else {
@@ -2169,7 +2190,6 @@ var WebBrowser;
                         let ress = new Array();
                         for (let index = 0; index < asids.length; index++) {
                             let res = yield this.queryNep5AssetById(asids[index]);
-                            console.log(res.result["balance"]);
                             if (res.result["balance"])
                                 ress.push(res);
                         }
@@ -2454,6 +2474,7 @@ var WebBrowser;
 /// <reference path="./pages/index.ts"/>
 /// <reference path="./pages/transactions.ts"/>
 /// <reference path="./pages/transaction.ts"/>
+/// <reference path="./pages/404.ts"/>
 /// <reference path="./tools/locationtool.ts" />
 /// <reference path="./tools/numbertool.ts" />
 /// <reference path="./tools/routetool.ts" />
@@ -2475,6 +2496,7 @@ var WebBrowser;
 /// <reference path="./pages/index.ts"/>
 /// <reference path="./pages/transactions.ts"/>
 /// <reference path="./pages/transaction.ts"/>
+/// <reference path="./pages/404.ts"/>
 /// <reference path="./tools/locationtool.ts" />
 /// <reference path="./tools/numbertool.ts" />
 /// <reference path="./tools/routetool.ts" />
@@ -2497,6 +2519,7 @@ var WebBrowser;
             this.assets = new WebBrowser.Assets();
             this.indexpage = new WebBrowser.Index();
             this.assetinfo = new WebBrowser.AssetInfo();
+            this.notfound = new WebBrowser.Notfound();
             this.routet = new WebBrowser.Route();
         }
         strat() {
@@ -2576,10 +2599,8 @@ var WebBrowser;
          * loadView
          */
         loadView() {
-            //$("#balance").empty();
             $("#utxos").empty();
             $("#address").text(this.address);
-            // console.log(this.balances);
             this.balances.forEach((balance) => {
                 let html = '';
                 let name = balance.name.map((name) => { return name.name; }).join('|');
@@ -2649,7 +2670,6 @@ var WebBrowser;
     class AssetsView {
         constructor(allAsset, nep5s) {
             this.assets = allAsset;
-            console.log(nep5s);
             this.nep5s = nep5s;
         }
         /**

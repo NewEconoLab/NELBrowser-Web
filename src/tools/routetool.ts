@@ -24,9 +24,14 @@ namespace WebBrowser
             this.app = app;
             this.pagelist.push( app.indexpage );
             this.pagelist.push( app.blocks );
+            this.pagelist.push( app.block );
             this.pagelist.push( app.transactions );
+            this.pagelist.push( app.transaction );
             this.pagelist.push( app.addresses );
+            this.pagelist.push( app.address );
             this.pagelist.push( app.assets );
+            this.pagelist.push( app.assetinfo );
+
 
             this.closePages();
             var page = this.render();
@@ -43,9 +48,15 @@ namespace WebBrowser
                 case "blocks":
                     this.app.navbar.blockBtn.classList.add( "active" );
                     return this.app.blocks;
+                case "block":
+                    this.app.navbar.blockBtn.classList.add( "active" );
+                    return this.app.block;
                 case "transactions":
                     this.app.navbar.txlistBtn.classList.add( "active" );
                     return this.app.transactions;
+                case "transaction":
+                    this.app.navbar.txlistBtn.classList.add( "active" );
+                    return this.app.transaction;
                 case "addresses":
                     this.app.navbar.addrsBtn.classList.add( "active" );
                     return this.app.addresses;
@@ -58,6 +69,8 @@ namespace WebBrowser
                 case "asset":
                     this.app.navbar.assetBtn.classList.add( "active" );
                     return this.app.assetinfo;
+                default:
+                    return this.app.notfound;
             }
             
         }

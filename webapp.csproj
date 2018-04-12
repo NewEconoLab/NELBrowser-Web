@@ -79,6 +79,8 @@
     <Content Include="css\testnet.css" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="fonts\search.svg" />
+    <Content Include="img\404-main.png" />
+    <Content Include="img\404-test.png" />
     <Content Include="img\bs-docs-masthead-pattern.png" />
     <Content Include="img\close.svg" />
     <Content Include="img\icon.png" />
@@ -103,6 +105,7 @@
     <Content Include="index.html" />
     <TypeScriptCompile Include="lib\code.d.ts" />
     <TypeScriptCompile Include="lib\neo-ts.d.ts" />
+    <TypeScriptCompile Include="src\pages\404.ts" />
     <TypeScriptCompile Include="src\pages\address.ts" />
     <TypeScriptCompile Include="src\pages\addresses.ts" />
     <TypeScriptCompile Include="src\pages\asset.ts" />

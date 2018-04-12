@@ -16,10 +16,8 @@ namespace WebBrowser
          */
         public loadView()
         {
-            //$("#balance").empty();
             $("#utxos").empty();
             $("#address").text( this.address);
-            // console.log(this.balances);
             this.balances.forEach((balance: Balance) =>
             {
                 let html = '';
@@ -104,7 +102,6 @@ namespace WebBrowser
         constructor(allAsset: Asset[], nep5s: Asset[])
         {
             this.assets = allAsset;
-            console.log(nep5s);
             this.nep5s = nep5s;
         }
 

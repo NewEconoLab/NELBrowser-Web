@@ -57,7 +57,6 @@ namespace WebBrowser
             this.txlist.find( "#transactions" ).empty();
             //分页查询交易记录
             let txs: Tx[] = await WWW.getrawtransactions( pageUtil.pageSize, pageUtil.currentPage, txType );
-            console.log( txs );
             this.txlist.find( "table" ).children( "tbody" ).empty();
             for ( var n = 0; n < pageUtil.pageSize; n++ )
             {
@@ -84,7 +83,7 @@ namespace WebBrowser
         async getTxLine( txid: string, type: string, size: string, index: string, vins, vouts )
         {
             var id = txid.replace( '0x', '' );
-            id = txid.substring( 0, 6 ) + '...' + id.substring( txid.length - 6 );
+            id = id.substring( 0, 6 ) + '...' + id.substring( id.length - 6 );
             return `
             <div class="line">
                 <div class="line-general">

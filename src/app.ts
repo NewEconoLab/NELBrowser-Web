@@ -11,6 +11,7 @@
 /// <reference path="./pages/index.ts"/>
 /// <reference path="./pages/transactions.ts"/>
 /// <reference path="./pages/transaction.ts"/>
+/// <reference path="./pages/404.ts"/>
 /// <reference path="./tools/locationtool.ts" />
 /// <reference path="./tools/numbertool.ts" />
 /// <reference path="./tools/routetool.ts" />
@@ -36,6 +37,7 @@ namespace WebBrowser
         assets: Assets = new Assets();
         indexpage: Index = new Index();
         assetinfo: AssetInfo = new AssetInfo();
+        notfound: Notfound = new Notfound();
         routet: Route = new Route();
         strat()
         {

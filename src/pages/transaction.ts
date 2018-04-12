@@ -12,29 +12,23 @@ namespace WebBrowser
         }
         div: HTMLDivElement = document.getElementById( "transaction-info" ) as HTMLDivElement;
 
+        start()
+        {
+            this.div.innerHTML = pages.transaction;
+            this.updateTxInfo( locationtool.getParam() );
+            this.div.hidden = false;
+        }
         public async updateTxInfo(txid: string)
         {
             let txInfo: Tx = await WWW.getrawtransaction( txid );
             $("#type").text(txInfo.type.replace("Transaction", ""));
             $( "#txid" ).text( txInfo.txid );
-            $( "#blockindex" ).append( "<a href='"+ Url.href_block( txInfo.blockindex) + "</a>" );
+            $( "#blockindex" ).append( "<a href='" + Url.href_block( txInfo.blockindex ) + "' " + txInfo.blockindex + "</a>" );
             $("#txsize").append(txInfo.size + " bytes");
             $("#sysfee").text(txInfo["sys_fee"] + " gas");
             $("#netfee").text(txInfo["net_fee"] + " gas");
 
             let allAsset: Asset[] = await WWW.api_getAllAssets();
-            allAsset.map((asset) =>
-            {
-                if (asset.id == AssetEnum.NEO)
-                {
-                    asset.name = [{ lang: 'en', name: 'NEO' }];
-                }
-                if (asset.id == AssetEnum.GAS)
-                {
-                    asset.name = [{ lang: 'en', name: "GAS" }];
-                }
-            });
-
 
             let arr = new Array<any>();
             for (let index = 0; index < txInfo.vin.length; index++)
@@ -46,7 +40,7 @@ namespace WebBrowser
                     let vout = txInfo.vout[vin.vout]
                     let address: string = vout.address;
                     let value: string = vout.value;
-                    let name = allAsset.find(val => val.id == vout.asset).name.map(name => { return name.name }).join("|");
+                    let name = CoinTool.assetID2name[vout.asset];
                     arr.push({ vin: vin.txid, vout: vin.vout, addr: address, name: name, amount: value });
                 } catch (error)
                 {
@@ -72,7 +66,7 @@ namespace WebBrowser
             
             txInfo.vout.forEach(vout =>
             {
-                let name = allAsset.find(val => val.id == vout.asset).name.map(name => name.name).join("|");
+                let name = CoinTool.assetID2name[vout.asset];
                 let sign: string = "";
                 if (array.find(item => item.addr == vout.address))
                 {
@@ -84,7 +78,7 @@ namespace WebBrowser
                 html += '<div class="line" > <div class="title-nel" > <span>' + name+' </span></div >';
                 html += '<div class="content-nel" > <span id="size" >' + vout.value + sign + ' </span></div > </div>';
                 $("#to").append(html);
-            });
+            } );
         }
 
         public static groupByaddr(arr: any[])
@@ -117,11 +111,6 @@ namespace WebBrowser
             return dest;
         }
 
-        start()
-        {
-            this.div.innerHTML = pages.transaction;
-            this.div.hidden = false;
-        }
     }
 
 }

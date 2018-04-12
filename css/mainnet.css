@@ -392,3 +392,13 @@ a:hover, a:focus {
 .table-nel > div:nth-of-type(odd) {
     background-color: #F5F5F5;
 }
+.notfound {
+    background: url(../img/404-main.png) no-repeat center;
+    background-size: contain;
+    height: 600px;
+    margin-top: 135px;
+}
+.notfound button {
+    color: #198CEE;
+    background-color: #fff;
+}
