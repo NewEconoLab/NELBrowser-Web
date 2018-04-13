@@ -64,21 +64,23 @@ var WebBrowser;
                 yield this.updateBlocks(this.pageUtil);
                 this.div.hidden = false;
                 $("#blocks-page").find("#next").click(() => {
-                    if (this.pageUtil.currentPage <= this.pageUtil.totalPage) {
+                    if (this.pageUtil.currentPage == this.pageUtil.totalPage) {
+                        alert('��ǰҳ�Ѿ������һҳ��');
+                        return;
+                    }
+                    else {
                         this.pageUtil.currentPage += 1;
                         this.updateBlocks(this.pageUtil);
                     }
-                    else {
-                        this.pageUtil.currentPage = this.pageUtil.totalPage;
-                    }
                 });
                 $("#blocks-page").find("#previous").click(() => {
-                    if (this.pageUtil.currentPage > 1) {
-                        this.pageUtil.currentPage -= 1;
-                        this.updateBlocks(this.pageUtil);
+                    if (this.pageUtil.currentPage <= 1) {
+                        alert('��ǰ�Ѿ��ǵ�һҳ��');
+                        return;
                     }
                     else {
-                        this.pageUtil.currentPage = 1;
+                        this.pageUtil.currentPage -= 1;
+                        this.updateBlocks(this.pageUtil);
                     }
                 });
             });
@@ -102,7 +104,13 @@ var WebBrowser;
                 else {
                     $("#blocks-page").find("#previous").addClass('disabled');
                 }
-                let pageMsg = "blocks " + (pageUtil.currentPage * pageUtil.pageSize - pageUtil.pageSize + 1) + " to " + pageUtil.currentPage * pageUtil.pageSize + " of " + pageUtil.totalCount;
+                let minNum = pageUtil.currentPage * pageUtil.pageSize - pageUtil.pageSize;
+                let maxNum = pageUtil.totalCount;
+                let diffNum = maxNum - minNum;
+                if (diffNum > 15) {
+                    maxNum = pageUtil.currentPage * pageUtil.pageSize;
+                }
+                let pageMsg = "blocks " + (minNum + 1) + " to " + maxNum + " of " + pageUtil.totalCount;
                 $("#blocks-page").find("#page-msg").html(pageMsg);
                 let newDate = new Date();
                 blocks.forEach((item, index, input) => {
@@ -200,14 +208,9 @@ var WebBrowser;
          */
         addrlistInit() {
             return __awaiter(this, void 0, void 0, function* () {
-                let addrcount = yield this.ajax.post('getaddrcount', []).catch((e) => {
-                    alert(e);
-                });
-                if (addrcount.length == 0) {
-                    alert('此地址余额为空，utxo为空');
-                }
-                this.pageUtil.totalCount = addrcount[0]['addrcount'];
-                let addrlist = yield this.ajax.post('getaddrs', [this.pageUtil.pageSize, this.pageUtil.currentPage]);
+                let prom = yield WebBrowser.WWW.getaddrcount();
+                this.pageUtil = new WebBrowser.PageUtil(prom[0]['addrcount'], 15);
+                let addrlist = yield WebBrowser.WWW.getaddrs(this.pageUtil.pageSize, this.pageUtil.currentPage);
                 let newDate = new Date();
                 addrlist.map((item) => {
                     newDate.setTime(item.firstuse.blocktime.$date);
@@ -217,6 +220,14 @@ var WebBrowser;
                 });
                 this.loadView(addrlist);
                 WebBrowser.pageCut(this.pageUtil);
+                let minNum = this.pageUtil.currentPage * this.pageUtil.pageSize - this.pageUtil.pageSize;
+                let maxNum = this.pageUtil.totalCount;
+                let diffNum = maxNum - minNum;
+                if (diffNum > 15) {
+                    maxNum = this.pageUtil.currentPage * this.pageUtil.pageSize;
+                }
+                let pageMsg = "Addresses " + (minNum + 1) + " to " + maxNum + " of " + this.pageUtil.totalCount;
+                $("#addrs-page").find("#addrs-page-msg").html(pageMsg);
             });
         }
         /**
@@ -224,11 +235,9 @@ var WebBrowser;
          */
         start() {
             return __awaiter(this, void 0, void 0, function* () {
-                let prom = yield this.ajax.post('getaddrcount', []);
-                this.pageUtil = new WebBrowser.PageUtil(prom[0]['addrcount'], 15);
-                this.addrlistInit();
-                this.addrlistInit();
                 this.div.hidden = false;
+                yield this.addrlistInit();
+                //this.addrlistInit();
             });
         }
         /**
@@ -287,63 +296,165 @@ var WebBrowser;
     class Assets {
         constructor() {
             this.div = document.getElementById("asset-page");
+            this.assetlist = $("#asset-page");
+            //监听交易列表选择框
+            $("#asset-TxType").change(() => {
+                this.pageUtil.currentPage = 1;
+                this.assetType = $("#asset-TxType").val();
+                if (this.assetType == "Assets") {
+                    this.pageUtil = new WebBrowser.PageUtil(this.assets.length, 15);
+                    this.pageUtil.currentPage = 1;
+                    if (this.assets.length > 15) {
+                        this.updateAssets(this.pageUtil);
+                        this.assetlist.find(".page").show();
+                    }
+                    else {
+                        this.loadAssetView(this.assets);
+                        let pageMsg = "Assets 1 to " + this.pageUtil.totalCount + " of " + this.pageUtil.totalCount;
+                        $("#asset-page").find("#asset-page-msg").html(pageMsg);
+                        this.assetlist.find(".page").hide();
+                    }
+                }
+                else if (this.assetType == "Nep5") {
+                    this.pageUtil = new WebBrowser.PageUtil(this.nep5s.length, 15);
+                    this.pageUtil.currentPage = 1;
+                    if (this.nep5s.length > 15) {
+                        this.updateNep5s(this.pageUtil);
+                        this.assetlist.find(".page").show();
+                    }
+                    else {
+                        this.loadNep5View(this.nep5s);
+                        let pageMsg = "Assets 1 to " + this.pageUtil.totalCount + " of " + this.pageUtil.totalCount;
+                        $("#asset-page").find("#asset-page-msg").html(pageMsg);
+                        this.assetlist.find(".page").hide();
+                    }
+                }
+            });
+            this.assetlist.find("#next").click(() => {
+                if (this.pageUtil.currentPage == this.pageUtil.totalPage) {
+                    alert('当前页已经是最后一页了');
+                    return;
+                }
+                else {
+                    this.pageUtil.currentPage += 1;
+                    if (this.assetType == "Assets") {
+                        this.updateAssets(this.pageUtil);
+                    }
+                    else if (this.assetType == "Nep5") {
+                        this.updateNep5s(this.pageUtil);
+                    }
+                }
+            });
+            this.assetlist.find("#previous").click(() => {
+                if (this.pageUtil.currentPage <= 1) {
+                    alert('当前已经是第一页了');
+                    return;
+                }
+                else {
+                    this.pageUtil.currentPage -= 1;
+                    if (this.assetType == "Assets") {
+                        this.updateAssets(this.pageUtil);
+                    }
+                    else if (this.assetType == "Nep5") {
+                        this.updateNep5s(this.pageUtil);
+                    }
+                }
+            });
         }
         close() {
             this.div.hidden = true;
         }
-        start() {
+        //更新asset表格
+        updateAssets(pageUtil) {
             return __awaiter(this, void 0, void 0, function* () {
-                this.allAsset();
-                this.div.hidden = false;
+                $("#asset-page").find("#asset-page-msg").html("");
+                let minNum = pageUtil.currentPage * pageUtil.pageSize - pageUtil.pageSize;
+                let maxNum = pageUtil.totalCount;
+                let diffNum = maxNum - minNum;
+                if (diffNum > 15) {
+                    maxNum = pageUtil.currentPage * pageUtil.pageSize;
+                }
+                let arrAsset = new Array();
+                for (let i = minNum; i < maxNum; i++) {
+                    arrAsset.push(this.assets[i]);
+                }
+                this.loadAssetView(arrAsset);
+                let pageMsg = "Assets " + (minNum + 1) + " to " + maxNum + " of " + pageUtil.totalCount;
+                $("#asset-page").find("#asset-page-msg").html(pageMsg);
             });
         }
-        allAsset() {
+        //更新asset表格
+        updateNep5s(pageUtil) {
             return __awaiter(this, void 0, void 0, function* () {
-                var assets = yield WebBrowser.WWW.api_getAllAssets();
-                let nep5Info = new WebBrowser.GetNep5Info();
-                let storutil = new WebBrowser.StorageUtil();
-                let nep5asids = storutil.getStorage("assetIds_nep5", "|");
-                let nep5s = new Array();
-                for (let n = 0; n < nep5asids.length; n++) {
-                    let res = yield nep5Info.getInfo(nep5asids[n]);
-                    let assetnep5 = new WebBrowser.Nep5as();
-                    if (!res.err) {
-                        assetnep5.names = res.result["name"];
-                        assetnep5.type = res.result["symbol"];
-                        assetnep5.amount = res.result["totalsupply"];
-                        assetnep5.id = nep5asids[n];
-                    }
-                    nep5s.push(assetnep5);
+                $("#asset-page").find("#asset-page-msg").html("");
+                let minNum = pageUtil.currentPage * pageUtil.pageSize - pageUtil.pageSize;
+                let maxNum = pageUtil.totalCount;
+                let diffNum = maxNum - minNum;
+                if (diffNum > 15) {
+                    maxNum = pageUtil.currentPage * pageUtil.pageSize;
                 }
-                this.loadView(assets, nep5s); //调用loadView方法渲染页面
+                else {
+                    maxNum = pageUtil.totalCount;
+                }
+                let arrNep5s = new Array();
+                for (let i = minNum; i < maxNum; i++) {
+                    arrNep5s.push(this.nep5s[i]);
+                    console.log(this.nep5s[i]);
+                }
+                this.loadNep5View(arrNep5s);
+                let pageMsg = "Assets " + (minNum + 1) + " to " + maxNum + " of " + pageUtil.totalCount;
+                $("#asset-page").find("#asset-page-msg").html(pageMsg);
+            });
+        }
+        start() {
+            return __awaiter(this, void 0, void 0, function* () {
+                $("#asset-TxType").val("Assets");
+                this.assetType = $("#asset-TxType").val();
+                this.assets = yield WebBrowser.WWW.api_getAllAssets();
+                this.pageUtil = new WebBrowser.PageUtil(this.assets.length, 15);
+                if (this.assets.length > 15) {
+                    this.updateAssets(this.pageUtil);
+                    this.assetlist.find(".page").show();
+                }
+                else {
+                    this.loadAssetView(this.assets);
+                    let pageMsg = "Assets 1 to " + this.pageUtil.totalCount + " of " + this.pageUtil.totalCount;
+                    $("#asset-page").find("#asset-page-msg").html(pageMsg);
+                    this.assetlist.find(".page").hide();
+                }
+                this.nep5s = yield WebBrowser.WWW.getallnep5asset();
+                this.div.hidden = false;
             });
         }
         /**
          * loadView 页面展现
          */
-        loadView(assets, nep5ass) {
+        loadAssetView(assets) {
             $("#assets").empty();
-            $("#nep5ass").empty();
             assets.forEach((asset) => {
                 let href = WebBrowser.Url.href_asset(asset.id);
                 let html = `
-                <tr>
-                <td> <a href="` + href + `">` + WebBrowser.CoinTool.assetID2name[asset.id] + `</a></td>
-                <td>` + asset.type + `</td>
-                <td>` + (asset.amount <= 0 ? asset.available : asset.amount) + `</td>
-                <td>` + asset.precision + `</td>
-                </tr>`;
+                    <tr>
+                    <td> <a href="` + href + `">` + WebBrowser.CoinTool.assetID2name[asset.id] + `</a></td>
+                    <td>` + asset.type + `</td>
+                    <td>` + (asset.amount <= 0 ? asset.available : asset.amount) + `</td>
+                    <td>` + asset.precision + `</td>
+                    </tr>`;
                 $("#assets").append(html);
             });
-            nep5ass.forEach((asset) => {
+        }
+        loadNep5View(nep5s) {
+            $("#assets").empty();
+            nep5s.forEach((nep5s) => {
+                let href = WebBrowser.Url.href_asset(nep5s.assetid);
                 let html = `
-                <tr>
-                <td>` + asset.names + `</td>
-                <td>` + asset.type + `</td><td>` + asset.names + `</td>
-                <td>` + (asset.amount <= 0 ? asset.available : asset.amount);
-                +`</td>
-                <td>` + asset.names + `</td></tr>`;
-                $("#nep5ass").append(html);
+                    <tr>
+                    <td> <a href="` + href + `">` + nep5s.name + `</a></td>
+                    <td> Nep5 </td>
+                    <td>` + nep5s.totalsupply + `</td>
+                    <td>` + nep5s.decimals + `</td>
+                    </tr>`;
+                $("#assets").append(html);
             });
         }
     }
@@ -609,7 +720,7 @@ var WebBrowser;
                 //查询区块高度(区块数量-1)
                 let blockHeight = yield WebBrowser.WWW.api_getHeight();
                 //查询交易数量
-                let txCount = yield WebBrowser.WWW.gettxcount();
+                let txCount = yield WebBrowser.WWW.gettxcount("");
                 //查询地址总数
                 let addrCount = yield WebBrowser.WWW.getaddrcount();
                 //分页查询区块数据
@@ -763,9 +874,6 @@ var WebBrowser;
     class Nep5as {
     }
     WebBrowser.Nep5as = Nep5as;
-    class nep5Asset {
-    }
-    WebBrowser.nep5Asset = nep5Asset;
     let AssetEnum;
     (function (AssetEnum) {
         AssetEnum["NEO"] = "0xc56f33fc6ecfcd0c225c4ab356fee59390af8560be0e930faebe74a6daff7c9b";
@@ -804,6 +912,7 @@ var WebBrowser;
             this.txlist = $("#txlist-page");
             //监听交易列表选择框
             $("#TxType").change(() => {
+                this.pageUtil.currentPage = 1;
                 this.updateTrasctions(this.pageUtil, $("#TxType").val());
             });
             this.txlist.find("#next").click(() => {
@@ -836,13 +945,32 @@ var WebBrowser;
                 this.txlist.find("#transactions").empty();
                 //分页查询交易记录
                 let txs = yield WebBrowser.WWW.getrawtransactions(pageUtil.pageSize, pageUtil.currentPage, txType);
+                let txCount = yield WebBrowser.WWW.gettxcount(txType);
+                this.pageUtil.totalCount = txCount;
                 this.txlist.find("table").children("tbody").empty();
-                for (var n = 0; n < pageUtil.pageSize; n++) {
+                let listLength = 0;
+                if (txs.length < 15) {
+                    this.txlist.find(".page").hide();
+                    listLength = txs.length;
+                }
+                else {
+                    this.txlist.find(".page").show();
+                    listLength = pageUtil.pageSize;
+                }
+                for (var n = 0; n < listLength; n++) {
                     let txid = txs[n].txid;
                     let html = yield this.getTxLine(txid, txs[n].type, txs[n].size.toString(), txs[n].blockindex.toString(), txs[n].vin, txs[n].vout);
                     this.txlist.find("#transactions").append(html);
                 }
                 WebBrowser.pageCut(this.pageUtil);
+                let minNum = pageUtil.currentPage * pageUtil.pageSize - pageUtil.pageSize;
+                let maxNum = pageUtil.totalCount;
+                let diffNum = maxNum - minNum;
+                if (diffNum > 15) {
+                    maxNum = pageUtil.currentPage * pageUtil.pageSize;
+                }
+                let pageMsg = "Trasctions " + (minNum + 1) + " to " + maxNum + " of " + pageUtil.totalCount;
+                $("#txlist-page").find("#txlist-page-msg").html(pageMsg);
             });
         }
         /**
@@ -850,10 +978,11 @@ var WebBrowser;
          */
         start() {
             return __awaiter(this, void 0, void 0, function* () {
-                let txCount = yield WebBrowser.WWW.gettxcount();
+                let type = $("#TxType").val();
+                let txCount = yield WebBrowser.WWW.gettxcount(type);
                 //初始化交易列表
                 this.pageUtil = new WebBrowser.PageUtil(txCount, 15);
-                this.updateTrasctions(this.pageUtil, $("#TxType").val());
+                this.updateTrasctions(this.pageUtil, type);
                 this.div.hidden = false;
             });
         }
@@ -1054,7 +1183,8 @@ var WebBrowser;
             page.start();
         }
         render() {
-            switch (WebBrowser.locationtool.getPage()) {
+            var page = WebBrowser.locationtool.getPage();
+            switch (page) {
                 case "explorer":
                     this.app.navbar.indexBtn.classList.add("active");
                     return this.app.indexpage;
@@ -1866,6 +1996,11 @@ var WebBrowser;
             this.searchBtn.onclick = () => {
                 this.jump();
             };
+            this.searchText.onkeydown = (e) => {
+                if (e.keyCode == 13) {
+                    this.jump();
+                }
+            };
             this.walletBtn.onclick = () => {
                 if (WebBrowser.locationtool.getNetWork() == 'testnet')
                     window.open("https://testwallet.nel.group/");
@@ -2070,9 +2205,9 @@ var WebBrowser;
             });
         }
         //获得交易总数
-        static gettxcount() {
+        static gettxcount(type) {
             return __awaiter(this, void 0, void 0, function* () {
-                var str = WWW.makeRpcUrl("gettxcount");
+                var str = WWW.makeRpcUrl("gettxcount", type);
                 var result = yield fetch(str, { "method": "get" });
                 var json = yield result.json();
                 var r = json["result"];
@@ -2113,6 +2248,15 @@ var WebBrowser;
                 return r;
             });
         }
+        static getaddrs(size, page) {
+            return __awaiter(this, void 0, void 0, function* () {
+                var str = WWW.makeRpcUrl("getaddrs", size, page);
+                var result = yield fetch(str, { "method": "get" });
+                var json = yield result.json();
+                var r = json["result"];
+                return r;
+            });
+        }
         static getrawtransaction(txid) {
             return __awaiter(this, void 0, void 0, function* () {
                 var str = WWW.makeRpcUrl("getrawtransaction", txid);
@@ -2124,7 +2268,7 @@ var WebBrowser;
         }
         static getallnep5asset() {
             return __awaiter(this, void 0, void 0, function* () {
-                var str = WWW.makeRpcUrl("getallnep5asset", [20, 1]);
+                var str = WWW.makeRpcUrl("getallnep5asset");
                 var result = yield fetch(str, { "method": "get" });
                 var json = yield result.json();
                 var r = json["result"];

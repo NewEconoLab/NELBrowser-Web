@@ -40,7 +40,8 @@ namespace WebBrowser
 
         render(): Page
         {
-            switch ( locationtool.getPage() )
+            var page: string = locationtool.getPage() as string;
+            switch (page)
             {
                 case "explorer":
                     this.app.navbar.indexBtn.classList.add( "active" );

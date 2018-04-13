@@ -205,14 +205,15 @@ namespace WebBrowser
             lang: string;
             name: string;
         }[];
-        names: string;
+        names: string;      //name
         amount: number;
-        precision: number;
-        available: number;
+        precision: number;  //decimals
+        available: number;  //totalsupply
         owner: string;
         admin: string;
-        id: string;
+        id: string;     //assetid
     }
+
 
     export class Nep5as implements Asset
     {
@@ -227,7 +228,7 @@ namespace WebBrowser
         id: string;
     }
 
-    export class nep5Asset
+    export interface nep5Asset
     {
         assetid: string;
         totalsupply: string;

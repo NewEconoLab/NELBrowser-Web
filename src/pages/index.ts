@@ -23,7 +23,7 @@ namespace WebBrowser
             //查询区块高度(区块数量-1)
             let blockHeight = await WWW.api_getHeight();
             //查询交易数量
-            let txCount: number = await WWW.gettxcount();
+            let txCount: number = await WWW.gettxcount("");
             //查询地址总数
             let addrCount: number = await WWW.getaddrcount();
             //分页查询区块数据

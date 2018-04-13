@@ -46,9 +46,9 @@ namespace WebBrowser
             return height;
         }
         //获得交易总数
-        static async gettxcount()
+        static async gettxcount(type: string)
         {
-            var str = WWW.makeRpcUrl(  "gettxcount" );
+            var str = WWW.makeRpcUrl("gettxcount", type);
             var result = await fetch(str, { "method": "get" });
             var json = await result.json();
             var r = json["result"];
@@ -86,6 +86,14 @@ namespace WebBrowser
             return r as Tx[];
         }
 
+        static async getaddrs(size: number, page: number) {
+            var str = WWW.makeRpcUrl("getaddrs", size, page);
+            var result = await fetch(str, { "method": "get" });
+            var json = await result.json();
+            var r = json["result"];
+            return r as Addr[];
+        }
+
         static async getrawtransaction( txid: string )
         {
             var str = WWW.makeRpcUrl( "getrawtransaction", txid );
@@ -96,7 +104,7 @@ namespace WebBrowser
         }
 
         static async getallnep5asset() {
-            var str = WWW.makeRpcUrl( "getallnep5asset", [20, 1]);
+            var str = WWW.makeRpcUrl( "getallnep5asset");
             var result = await fetch(str, { "method": "get" });
             var json = await result.json();
             var r: nep5Asset[] = json["result"];

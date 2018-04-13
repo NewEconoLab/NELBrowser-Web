@@ -43,16 +43,9 @@
          */
         public async addrlistInit()
         {
-            let addrcount = await this.ajax.post( 'getaddrcount', [] ).catch( ( e ) =>
-            {
-                alert( e );
-            } );
-            if ( addrcount.length == 0 )
-            {
-                alert( '此地址余额为空，utxo为空' );
-            }
-            this.pageUtil.totalCount = addrcount[0]['addrcount'];
-            let addrlist: Addr[] = await this.ajax.post( 'getaddrs', [this.pageUtil.pageSize, this.pageUtil.currentPage] );
+            let prom = await WWW.getaddrcount();
+            this.pageUtil = new PageUtil(prom[0]['addrcount'], 15);
+            let addrlist: Addr[] = await WWW.getaddrs(this.pageUtil.pageSize, this.pageUtil.currentPage);
             let newDate: Date = new Date();
             addrlist.map( ( item ) =>
             {
@@ -62,18 +55,25 @@
                 item.lastDate = newDate.toLocaleString();
             } );
             this.loadView( addrlist );
-            pageCut( this.pageUtil );
+            pageCut(this.pageUtil);
+
+            let minNum = this.pageUtil.currentPage * this.pageUtil.pageSize - this.pageUtil.pageSize;
+            let maxNum = this.pageUtil.totalCount;
+            let diffNum = maxNum - minNum;
+            if (diffNum > 15) {
+                maxNum = this.pageUtil.currentPage * this.pageUtil.pageSize;
+            }
+            let pageMsg = "Addresses " + (minNum + 1) + " to " + maxNum + " of " + this.pageUtil.totalCount;
+            $("#addrs-page").find("#addrs-page-msg").html(pageMsg);
         }
         /**
          * start
          */
         public async start()
         {
-            let prom = await this.ajax.post( 'getaddrcount', [] );
-            this.pageUtil = new PageUtil( prom[0]['addrcount'], 15 );
-            this.addrlistInit();
-            this.addrlistInit();
             this.div.hidden = false;
+            await this.addrlistInit();
+            //this.addrlistInit();
         }
         /**
          * loadView

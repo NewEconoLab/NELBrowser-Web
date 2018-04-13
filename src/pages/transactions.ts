@@ -21,10 +21,11 @@ namespace WebBrowser
             //监听交易列表选择框
             $( "#TxType" ).change( () =>
             {
+                this.pageUtil.currentPage = 1;
                 this.updateTrasctions( this.pageUtil, <string>$( "#TxType" ).val() );
             } );
 
-            this.txlist.find( "#next" ).click( () =>
+            this.txlist.find("#next").click( () =>
             {
                 if ( this.pageUtil.currentPage == this.pageUtil.totalPage )
                 {
@@ -56,26 +57,47 @@ namespace WebBrowser
         {
             this.txlist.find( "#transactions" ).empty();
             //分页查询交易记录
-            let txs: Tx[] = await WWW.getrawtransactions( pageUtil.pageSize, pageUtil.currentPage, txType );
-            this.txlist.find( "table" ).children( "tbody" ).empty();
-            for ( var n = 0; n < pageUtil.pageSize; n++ )
+            let txs: Tx[] = await WWW.getrawtransactions(pageUtil.pageSize, pageUtil.currentPage, txType);
+            let txCount = await WWW.gettxcount(txType);
+            this.pageUtil.totalCount = txCount;
+
+            this.txlist.find("table").children("tbody").empty();
+            let listLength = 0;
+            if (txs.length < 15) {
+                this.txlist.find(".page").hide();
+                listLength = txs.length;
+            } else {
+                this.txlist.find(".page").show();
+                listLength = pageUtil.pageSize;
+            }
+            for (var n = 0; n < listLength; n++ )
             {
                 let txid = txs[n].txid;
                 let html: string = await this.getTxLine( txid, txs[n].type, txs[n].size.toString(), txs[n].blockindex.toString(), txs[n].vin, txs[n].vout );
                 this.txlist.find( "#transactions" ).append( html );
             }
-            pageCut( this.pageUtil );
+            
+            pageCut(this.pageUtil);
 
+            let minNum = pageUtil.currentPage * pageUtil.pageSize - pageUtil.pageSize;
+            let maxNum = pageUtil.totalCount;
+            let diffNum = maxNum - minNum;
+            if (diffNum > 15) {
+                maxNum = pageUtil.currentPage * pageUtil.pageSize;
+            }
+            let pageMsg = "Trasctions " + (minNum + 1) + " to " + maxNum + " of " + pageUtil.totalCount;
+            $("#txlist-page").find("#txlist-page-msg").html(pageMsg);
         }
         /**
          * async start
          */
         public async start()
         {
-            let txCount = await WWW.gettxcount();
+            let type = <string>$("#TxType").val();
+            let txCount = await WWW.gettxcount(type);
             //初始化交易列表
             this.pageUtil = new PageUtil( txCount, 15 );
-            this.updateTrasctions( this.pageUtil, <string>$( "#TxType" ).val() );
+            this.updateTrasctions( this.pageUtil, type);
             this.div.hidden = false;
         }
 

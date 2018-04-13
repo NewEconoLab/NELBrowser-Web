@@ -46,6 +46,11 @@ namespace WebBrowser
             {
                 this.jump();
             }
+            this.searchText.onkeydown = (e) => {
+                if (e.keyCode == 13) {
+                    this.jump();
+                }
+            }
             this.walletBtn.onclick = () =>
             {
                 if ( locationtool.getNetWork() == 'testnet' )

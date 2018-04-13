@@ -90,7 +90,7 @@
                     </ul>
                     <div class="navbar-form navbar-right input-append">
                         <div class="input-group " id="nel-search">
-                            <input id="searchText" type="text" class="form-control nel" placeholder="Block Height , Hash , Adress , or Transaction">
+                            <input id="searchText" type="text" class="form-control nel" placeholder="Block Height , Hash , Address , or Transaction">
                             <span id="searchBtn" class="input-group-addon nel ">
                                 <img src="fonts/search.svg" width="18" height="18" />
                             </span>
@@ -116,7 +116,7 @@
                                 <div class="title-summary">Last block</div>
                                 <div class="number" id="blockHeight">0</div>
                                 <div>
-                                    <a id="allblock" class="btn btn-nel">View all blocks</a>
+                                    <a id="allblock" class="btn btn-nel" target="_self">View all blocks</a>
                                 </div>
                             </div>
                         </div>
@@ -127,7 +127,7 @@
                                 <div class="title-summary">Total transactions</div>
                                 <div class="number" id="txcount">0</div>
                                 <div>
-                                    <a id="alltxlist" class="btn btn-nel">View all transactions</a>
+                                    <a id="alltxlist" class="btn btn-nel" target="_self">View all transactions</a>
                                 </div>
                             </div>
                         </div>
@@ -138,7 +138,7 @@
                                 <div class="title-summary">Wallet address created</div>
                                 <div class="number" id="addrCount">0</div>
                                 <div>
-                                    <a id="alladdress" class="btn btn-nel">View all addresses</a>
+                                    <a id="alladdress" class="btn btn-nel" target="_self">View all addresses</a>
                                 </div>
                             </div>
                         </div>
@@ -255,7 +255,7 @@
                 </div>
             </div>
             <div class="page-number">
-                <span>blocks 1 to 15 of 36</span>
+                <span id="txlist-page-msg"></span>
             </div>
             <div class="page">
                 <div id="previous" class="page-previous">
@@ -269,8 +269,18 @@
         </div>
         <!-- 资产页面 -->
         <div id="asset-page" class="container-nel" hidden>
-            <div class="title">
-                <span>Assets</span>
+            <div class="row">
+                <div class="col-md-2">
+                    <div class="title">
+                        <span id="asset-title">Assets</span>
+                    </div>
+                </div>
+                <div class="col-md-2" style="padding-top:80px">
+                    <select id="asset-TxType" class="form-control">
+                        <option value="Assets">Assets</option>
+                        <option value="Nep5">Nep5</option>
+                    </select>
+                </div>
             </div>
             <table class="table cool table-nel">
                 <thead>
@@ -283,37 +293,8 @@
                 </thead>
                 <tbody id="assets"></tbody>
             </table>
-            <h3>NEP5</h3>
-            <table class="table cool table-nel">
-                <thead>
-                    <tr>
-                        <th>Asset</th>
-                        <th>Type</th>
-                        <th>Available</th>
-                        <th>Registered</th>
-                    </tr>
-                </thead>
-                <tbody id="nep5ass"></tbody>
-            </table>
-        </div>
-        <!-- 地址页面 -->
-        <div id="addrs-page" class="container-nel" hidden>
-            <div class="title">
-                <span>Address list</span>
-            </div>
-            <table class="table table-nel cool">
-                <thead>
-                    <tr>
-                        <th>address</th>
-                        <th>First trading time</th>
-                        <th>Last trading time</th>
-                        <th>Quantity</th>
-                    </tr>
-                </thead>
-                <tbody id="addrlist"></tbody>
-            </table>
             <div class="page-number">
-                <span>blocks 1 to 15 of 36</span>
+                <span id="asset-page-msg"></span>
             </div>
             <div class="page">
                 <div id="previous" class="page-previous">
@@ -325,22 +306,64 @@
                 </div>
             </div>
         </div>
-        <div id="block-info"></div>
-        <div id="address-info"></div>
-        <div id="asset-info"></div>
-        <div id="transaction-info"></div>
-        <!-- wallet -->
-        <div id="wallet-page" hidden>
-        </div>
-        <div id="notfound" class="notfound" hidden>
-            <div>
-                <span>Oops! It looks like you are lost.</span>
-                <br>
-                <button class="btn">Go to Homepage</button>
+            <!--<h3>nep5</h3>
+        <table class="table cool table-nel">
+            <thead>
+                <tr>
+                    <th>asset</th>
+                    <th>type</th>
+                    <th>available</th>
+                    <th>registered</th>
+                </tr>
+            </thead>
+            <tbody id="nep5ass"></tbody>
+        </table>
+    </div>-->
+    <!-- 地址页面 -->
+            <div id="addrs-page" class="container-nel" hidden>
+                <div class="title">
+                    <span>Address list</span>
+                </div>
+                <table class="table table-nel cool">
+                    <thead>
+                        <tr>
+                            <th>address</th>
+                            <th>First trading time</th>
+                            <th>Last trading time</th>
+                            <th>Quantity</th>
+                        </tr>
+                    </thead>
+                    <tbody id="addrlist"></tbody>
+                </table>
+                <div class="page-number">
+                    <span id="addrs-page-msg"></span>
+                </div>
+                <div class="page">
+                    <div id="previous" class="page-previous">
+                        <img src="./img/lefttrangle.svg" alt="">
+                    </div>
+                    <div style="width:1px;"></div>
+                    <div id="next" class="page-next">
+                        <img src="./img/righttrangle.svg" alt="">
+                    </div>
+                </div>
             </div>
+            <div id="block-info"></div>
+            <div id="address-info"></div>
+            <div id="asset-info"></div>
+            <div id="transaction-info"></div>
+            <!-- wallet -->
+            <div id="wallet-page" hidden>
+            </div>
+            <div id="notfound" class="notfound" hidden>
+                <div>
+                    <span>Oops! It looks like you are lost.</span>
+                    <br>
+                    <button class="btn">Go to Homepage</button>
+                </div>
+            </div>
+            <div style="height:100px;"></div>
         </div>
-        <div style="height:100px;"></div>
-    </div>
     <div id="footer" class="container">
     </div>
     <!-- /container -->

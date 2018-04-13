@@ -9,25 +9,27 @@ namespace WebBrowser
         async start()
         {
             var count = await WWW.api_getHeight();
-            this.pageUtil = new PageUtil(count, 15)
+            this.pageUtil = new PageUtil(count, 15);
             await this.updateBlocks(this.pageUtil);
             this.div.hidden = false;
             $("#blocks-page").find("#next").click(() => {
-                if (this.pageUtil.currentPage <= this.pageUtil.totalPage) {
+                if (this.pageUtil.currentPage == this.pageUtil.totalPage) {
+                    alert('当前页已经是最后一页了');
+                    return;
+                } else {
                     this.pageUtil.currentPage += 1;
                     this.updateBlocks(this.pageUtil);
-                } else {
-                    this.pageUtil.currentPage = this.pageUtil.totalPage;
                 }
             });
             $("#blocks-page").find("#previous").click(() => {
-                if (this.pageUtil.currentPage > 1) {
+                if (this.pageUtil.currentPage <= 1) {
+                    alert('当前已经是第一页了');
+                    return;
+                } else {
                     this.pageUtil.currentPage -= 1;
                     this.updateBlocks(this.pageUtil);
-                } else {
-                    this.pageUtil.currentPage = 1;
                 }
-            })
+            });
         }
         close(): void
         {
@@ -46,9 +48,15 @@ namespace WebBrowser
             } else {
                 $("#blocks-page").find("#previous").addClass('disabled');
             }
-      
-            let pageMsg = "blocks " + ( pageUtil.currentPage * pageUtil.pageSize - pageUtil.pageSize + 1) + " to " + pageUtil.currentPage * pageUtil.pageSize + " of " + pageUtil.totalCount;
-            $("#blocks-page").find("#page-msg").html(pageMsg)
+
+            let minNum = pageUtil.currentPage * pageUtil.pageSize - pageUtil.pageSize;
+            let maxNum = pageUtil.totalCount;
+            let diffNum = maxNum - minNum;
+            if (diffNum > 15) {
+                maxNum = pageUtil.currentPage * pageUtil.pageSize;
+            }
+            let pageMsg = "blocks " + (minNum + 1) + " to " + maxNum + " of " + pageUtil.totalCount;
+            $("#blocks-page").find("#page-msg").html(pageMsg);
             
             let newDate = new Date();
             blocks.forEach((item, index, input) => {
