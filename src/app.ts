@@ -11,6 +11,7 @@
 /// <reference path="./pages/index.ts"/>
 /// <reference path="./pages/transactions.ts"/>
 /// <reference path="./pages/transaction.ts"/>
+/// <reference path="./pages/nep5.ts"/>
 /// <reference path="./pages/404.ts"/>
 /// <reference path="./tools/locationtool.ts" />
 /// <reference path="./tools/numbertool.ts" />
@@ -38,9 +39,11 @@ namespace WebBrowser
         indexpage: Index = new Index();
         assetinfo: AssetInfo = new AssetInfo();
         notfound: Notfound = new Notfound();
+        nep5: Nep5page = new Nep5page();
         routet: Route = new Route();
         strat()
         {
+            CoinTool.initAllAsset();
             this.netWork.start();
             this.navbar.start();
             this.routet.start( this );

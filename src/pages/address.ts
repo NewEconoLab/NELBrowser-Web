@@ -12,12 +12,13 @@ namespace WebBrowser
             this.div.innerHTML = pages.addres;
             var address = locationtool.getParam();
             var utxos = await WWW.api_getUTXO( address );
-            var balances = await WWW.api_getbalances( address );
-            this.loadView( address, balances, utxos );
+            var balances = await WWW.api_getbalances(address);
+            var nep5ofAddress = await WWW.api_getallnep5assetofaddress(address);
+            this.loadView(address, balances, nep5ofAddress, utxos );
             this.div.hidden = false;
         }
 
-        loadView( address: string, balances: Balance[], utxos: Utxo[] )
+        loadView(address: string, balances: Balance[], nep5ofAddress: Nep5OfAddress[], utxos: Utxo[] )
         {
             $( "#utxos" ).empty();
             $( "#address" ).text( address );
@@ -29,7 +30,17 @@ namespace WebBrowser
                 <div class="line" > <div class="title-nel" > <span>` + name + ` </span></div >
                 <div class="content-nel" > <span> ` + balance.balance + ` </span></div > </div>`;
                 $( "#balance" ).append( html );
-            } );
+            });
+            if (nep5ofAddress)
+            {
+                nep5ofAddress.forEach((nep5ofAddress: Nep5OfAddress) => {
+                    let html = `
+                <div class="line" > <div class="title-nel" > <span>` + nep5ofAddress.symbol + ` </span></div >
+                <div class="content-nel" > <span> ` + nep5ofAddress.balance + ` </span></div > </div>`;
+                    $("#balance").append(html);
+                })
+            }
+            
             utxos.forEach( ( utxo: Utxo ) =>
             {
                 let html = `

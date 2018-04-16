@@ -70,6 +70,8 @@ namespace WebBrowser
                 case "asset":
                     this.app.navbar.assetBtn.classList.add( "active" );
                     return this.app.assetinfo;
+                case "nep5":
+                    return this.app.nep5;
                 default:
                     return this.app.notfound;
             }

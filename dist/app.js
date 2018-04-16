@@ -142,11 +142,12 @@ var WebBrowser;
                 var address = WebBrowser.locationtool.getParam();
                 var utxos = yield WebBrowser.WWW.api_getUTXO(address);
                 var balances = yield WebBrowser.WWW.api_getbalances(address);
-                this.loadView(address, balances, utxos);
+                var nep5ofAddress = yield WebBrowser.WWW.api_getallnep5assetofaddress(address);
+                this.loadView(address, balances, nep5ofAddress, utxos);
                 this.div.hidden = false;
             });
         }
-        loadView(address, balances, utxos) {
+        loadView(address, balances, nep5ofAddress, utxos) {
             $("#utxos").empty();
             $("#address").text(address);
             balances.forEach((balance) => {
@@ -156,6 +157,14 @@ var WebBrowser;
                 <div class="content-nel" > <span> ` + balance.balance + ` </span></div > </div>`;
                 $("#balance").append(html);
             });
+            if (nep5ofAddress) {
+                nep5ofAddress.forEach((nep5ofAddress) => {
+                    let html = `
+                <div class="line" > <div class="title-nel" > <span>` + nep5ofAddress.symbol + ` </span></div >
+                <div class="content-nel" > <span> ` + nep5ofAddress.balance + ` </span></div > </div>`;
+                    $("#balance").append(html);
+                });
+            }
             utxos.forEach((utxo) => {
                 let html = `
                 <tr>
@@ -178,27 +187,6 @@ var WebBrowser;
     class Addresses {
         constructor() {
             this.div = document.getElementById('addrs-page');
-            this.ajax = new WebBrowser.Ajax();
-            $("#addrs-page").find("#next").click(() => {
-                if (this.pageUtil.currentPage == this.pageUtil.totalPage) {
-                    alert('当前页已经是最后一页了');
-                    return;
-                }
-                else {
-                    this.pageUtil.currentPage += 1;
-                    this.addrlistInit();
-                }
-            });
-            $("#addrs-page").find("#previous").click(() => {
-                if (this.pageUtil.currentPage <= 1) {
-                    alert('当前已经是第一页了');
-                    return;
-                }
-                else {
-                    this.pageUtil.currentPage -= 1;
-                    this.addrlistInit();
-                }
-            });
         }
         close() {
             this.div.hidden = true;
@@ -209,7 +197,7 @@ var WebBrowser;
         addrlistInit() {
             return __awaiter(this, void 0, void 0, function* () {
                 let prom = yield WebBrowser.WWW.getaddrcount();
-                this.pageUtil = new WebBrowser.PageUtil(prom[0]['addrcount'], 15);
+                this.pageUtil = new WebBrowser.PageUtil(prom, 15);
                 let addrlist = yield WebBrowser.WWW.getaddrs(this.pageUtil.pageSize, this.pageUtil.currentPage);
                 let newDate = new Date();
                 addrlist.map((item) => {
@@ -228,6 +216,38 @@ var WebBrowser;
                 }
                 let pageMsg = "Addresses " + (minNum + 1) + " to " + maxNum + " of " + this.pageUtil.totalCount;
                 $("#addrs-page").find("#addrs-page-msg").html(pageMsg);
+                if (this.pageUtil.totalPage - this.pageUtil.currentPage) {
+                    $("#addrs-page").find("#next").removeClass('disabled');
+                }
+                else {
+                    $("#addrs-page").find("#next").addClass('disabled');
+                }
+                if (this.pageUtil.currentPage - 1) {
+                    $("#addrs-page").find("#previous").removeClass('disabled');
+                }
+                else {
+                    $("#addrs-page").find("#previous").addClass('disabled');
+                }
+                $("#addrs-page").find("#next").click(() => {
+                    if (this.pageUtil.currentPage == this.pageUtil.totalPage) {
+                        alert('当前页已经是最后一页了');
+                        return;
+                    }
+                    else {
+                        this.pageUtil.currentPage += 1;
+                        this.addrlistInit();
+                    }
+                });
+                $("#addrs-page").find("#previous").click(() => {
+                    if (this.pageUtil.currentPage <= 1) {
+                        alert('当前已经是第一页了');
+                        return;
+                    }
+                    else {
+                        this.pageUtil.currentPage -= 1;
+                        this.addrlistInit();
+                    }
+                });
             });
         }
         /**
@@ -274,10 +294,8 @@ var WebBrowser;
         }
         view(assetid) {
             this.div.innerHTML = WebBrowser.pages.asset;
-            WebBrowser.WWW.api_getAllAssets().then((arr) => {
-                var asset = arr.find((value) => {
-                    return value.id == assetid;
-                });
+            WebBrowser.WWW.api_getasset(assetid).then((data) => {
+                var asset = data[0];
                 asset.names = WebBrowser.CoinTool.assetID2name[asset.id];
                 $("#name").text(asset.names);
                 $("#type").text(asset.type);
@@ -399,11 +417,22 @@ var WebBrowser;
                 let arrNep5s = new Array();
                 for (let i = minNum; i < maxNum; i++) {
                     arrNep5s.push(this.nep5s[i]);
-                    console.log(this.nep5s[i]);
                 }
                 this.loadNep5View(arrNep5s);
                 let pageMsg = "Assets " + (minNum + 1) + " to " + maxNum + " of " + pageUtil.totalCount;
                 $("#asset-page").find("#asset-page-msg").html(pageMsg);
+                if (this.pageUtil.totalPage - this.pageUtil.currentPage) {
+                    $("#asset-page").find("#next").removeClass('disabled');
+                }
+                else {
+                    $("#asset-page").find("#next").addClass('disabled');
+                }
+                if (this.pageUtil.currentPage - 1) {
+                    $("#asset-page").find("#previous").removeClass('disabled');
+                }
+                else {
+                    $("#asset-page").find("#previous").addClass('disabled');
+                }
             });
         }
         start() {
@@ -446,7 +475,7 @@ var WebBrowser;
         loadNep5View(nep5s) {
             $("#assets").empty();
             nep5s.forEach((nep5s) => {
-                let href = WebBrowser.Url.href_asset(nep5s.assetid);
+                let href = WebBrowser.Url.href_nep5(nep5s.assetid);
                 let html = `
                     <tr>
                     <td> <a href="` + href + `">` + nep5s.name + `</a></td>
@@ -636,45 +665,113 @@ var WebBrowser;
         pages.addres = `
     <div class="container">
         <div class="title"><span>Address info</span></div>
-
         <div class="list-nel">
             <div class="list-head">
-                <div class="line"><div class="title-nel"><span id="address"></span></div></div>
+                <div class="line">
+                    
+                </div>
+            </div>
+            <div class="list-body" id="address-info">
+                <div class="line">
+                    <div class="title-nel"><span>Address</span></div> 
+                    <div class="content-nel"><span id="address"></span></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="title"><span>Balance</span></div>
+        <div class="list-nel">
+            <div class="list-head">
+                <div class="line">
+                    
+                </div>
             </div>
             <div class="list-body" id="balance">
-                <div class="line"><div class="title-nel"><span>Address</span></div> <div class="content-nel"><span id="hash"></span></div></div>
+                <div class="line">
+                </div>
             </div>
         </div>
 
-        <div class="title"><span>Nep5</span></div>
-        <div class="input-group " id="nel-search">
-            <input id="nep5-text" type="text" class="form-control nel" placeholder="TxHash/Addr/blockHeight">
-            <span id="nep5-btn" class="input-group-addon nel ">
-                <img src="fonts/search.svg" width="18" height="18" />
-            </span>
-        </div>
+        <div class="title"><span>Transactions</span></div>
         <div class="list-nel">
-            <div class="list-head">
-                <div class="line"><div class="title-nel"><span></span></div></div>
+            <table class="table cool table-nel">
+                <thead>
+                    <tr>
+                        <th>TXID</th>
+                        <th>Type</th>
+                        <th>Size</th>
+                        <th>Time</th>
+                    </tr>
+                </thead>
+                <tbody id="transaction-table"></tbody>
+            </table>
+        </div>
+        <div class="page-number">
+            <span id="trans-page-msg"></span>
+        </div>
+        <div class="page">
+            <div id="trans-previous" class="page-previous">
+                <img src="./img/lefttrangle.svg" alt="">
             </div>
-            <div class="list-body" id="nep5balance">
+            <div style="width:1px;"></div>
+            <div id="trans-next" class="page-next">
+                <img src="./img/righttrangle.svg" alt="">
+            </div>
+        </div>
+
+        <div class="title"><span>Transfers</span></div>
+        <div class="list-nel">
+            <table class="table cool table-nel">
+                <thead>
+                    <tr>
+                        <th>TXID</th>
+                        <th>From</th>
+                        <th>Asset</th>
+                        <th>Time</th>
+                    </tr>
+                </thead>
+                <tbody id="transaction-table"></tbody>
+            </table>
+        </div>
+        <div class="page-number">
+            <span id="transf-page-msg"></span>
+        </div>
+        <div class="page">
+            <div id="transf-previous" class="page-previous">
+                <img src="./img/lefttrangle.svg" alt="">
+            </div>
+            <div style="width:1px;"></div>
+            <div id="transf-next" class="page-next">
+                <img src="./img/righttrangle.svg" alt="">
+            </div>
+        </div>
+
+        <div class="title">
+            <span>UTXO</span>
+        </div>
+        <table class="table table-nel cool">
+            <thead>
+                <tr>
+                    <th>asset</th>
+                    <th>number</th>
+                    <th>txid</th>
+                </tr>
+            </thead>
+            <tbody id="utxos"></tbody>
+        </table>
+        <div class="page-number">
+            <span id="utxo-page-msg"></span>
+        </div>
+        <div class="page">
+            <div id="utxo-previous" class="page-previous">
+                <img src="./img/lefttrangle.svg" alt="">
+            </div>
+            <div style="width:1px;"></div>
+            <div id="utxo-next" class="page-next">
+                <img src="./img/righttrangle.svg" alt="">
             </div>
         </div>
     </div>
-
-    <div class="title">
-        <span>UTXO</span>
-    </div>
-    <table class="table table-nel cool">
-        <thead>
-            <tr>
-                <th>asset</th>
-                <th>number</th>
-                <th>txid</th>
-            </tr>
-        </thead>
-        <tbody id="utxos"></tbody>
-    </table>
     `;
         pages.asset = `
     <div class="title"><span>Asset Information</span></div>
@@ -869,6 +966,9 @@ var WebBrowser;
         static href_asset(asset) {
             return WebBrowser.locationtool.getUrl() + '/asset/' + asset;
         }
+        static href_nep5(nep5) {
+            return WebBrowser.locationtool.getUrl() + '/nep5/' + nep5;
+        }
     }
     WebBrowser.Url = Url;
     class Nep5as {
@@ -971,6 +1071,18 @@ var WebBrowser;
                 }
                 let pageMsg = "Trasctions " + (minNum + 1) + " to " + maxNum + " of " + pageUtil.totalCount;
                 $("#txlist-page").find("#txlist-page-msg").html(pageMsg);
+                if (this.pageUtil.totalPage - this.pageUtil.currentPage) {
+                    $("#txlist-page").find("#next").removeClass('disabled');
+                }
+                else {
+                    $("#txlist-page").find("#next").addClass('disabled');
+                }
+                if (this.pageUtil.currentPage - 1) {
+                    $("#txlist-page").find("#previous").removeClass('disabled');
+                }
+                else {
+                    $("#txlist-page").find("#previous").addClass('disabled');
+                }
             });
         }
         /**
@@ -1077,6 +1189,36 @@ var WebBrowser;
         }
     }
     WebBrowser.Transactions = Transactions;
+})(WebBrowser || (WebBrowser = {}));
+/// <reference path="../app.ts"/>
+var WebBrowser;
+/// <reference path="../app.ts"/>
+(function (WebBrowser) {
+    class Nep5page {
+        constructor() {
+            this.div = document.getElementById("asset-info");
+        }
+        start() {
+            this.view(WebBrowser.locationtool.getParam());
+            this.div.hidden = false;
+        }
+        close() {
+            this.div.hidden = true;
+        }
+        view(nep5id) {
+            this.div.innerHTML = WebBrowser.pages.asset;
+            WebBrowser.WWW.api_getnep5(nep5id).then((data) => {
+                var nep5 = data[0];
+                $("#name").text(nep5.name);
+                $("#type").text("Nep5");
+                $("#id").text(nep5.assetid);
+                $("#available").text(nep5.totalsupply);
+                $("#precision").text(nep5.decimals);
+                $("#admin").text("-");
+            });
+        }
+    }
+    WebBrowser.Nep5page = Nep5page;
 })(WebBrowser || (WebBrowser = {}));
 /// <reference path="../app.ts"/>
 var WebBrowser;
@@ -1212,6 +1354,8 @@ var WebBrowser;
                 case "asset":
                     this.app.navbar.assetBtn.classList.add("active");
                     return this.app.assetinfo;
+                case "nep5":
+                    return this.app.nep5;
                 default:
                     return this.app.notfound;
             }
@@ -2302,6 +2446,42 @@ var WebBrowser;
                 return r;
             });
         }
+        static api_getasset(asset) {
+            return __awaiter(this, void 0, void 0, function* () {
+                var str = WWW.makeRpcUrl("getasset", asset);
+                var result = yield fetch(str, { "method": "get" });
+                var json = yield result.json();
+                var r = json["result"];
+                return r;
+            });
+        }
+        static api_getnep5(nep5) {
+            return __awaiter(this, void 0, void 0, function* () {
+                var str = WWW.makeRpcUrl("getnep5asset", nep5);
+                var result = yield fetch(str, { "method": "get" });
+                var json = yield result.json();
+                var r = json["result"];
+                return r;
+            });
+        }
+        static api_getallnep5assetofaddress(nep5) {
+            return __awaiter(this, void 0, void 0, function* () {
+                var str = WWW.makeRpcUrl("getallnep5assetofaddress", nep5, 1);
+                var result = yield fetch(str, { "method": "get" });
+                var json = yield result.json();
+                var r = json["result"];
+                return r;
+            });
+        }
+        static getaddrsesstxs(addr, size, page) {
+            return __awaiter(this, void 0, void 0, function* () {
+                var str = WWW.makeRpcUrl("getaddresstxs", addr, size, page);
+                var result = yield fetch(str, { "method": "post" });
+                var json = yield result.json();
+                var r = json["result"];
+                return r;
+            });
+        }
     }
     WWW.api = "https://api.nel.group/api/";
     WebBrowser.WWW = WWW;
@@ -2645,6 +2825,7 @@ var WebBrowser;
 /// <reference path="./pages/index.ts"/>
 /// <reference path="./pages/transactions.ts"/>
 /// <reference path="./pages/transaction.ts"/>
+/// <reference path="./pages/nep5.ts"/>
 /// <reference path="./pages/404.ts"/>
 /// <reference path="./tools/locationtool.ts" />
 /// <reference path="./tools/numbertool.ts" />
@@ -2667,6 +2848,7 @@ var WebBrowser;
 /// <reference path="./pages/index.ts"/>
 /// <reference path="./pages/transactions.ts"/>
 /// <reference path="./pages/transaction.ts"/>
+/// <reference path="./pages/nep5.ts"/>
 /// <reference path="./pages/404.ts"/>
 /// <reference path="./tools/locationtool.ts" />
 /// <reference path="./tools/numbertool.ts" />
@@ -2691,9 +2873,11 @@ var WebBrowser;
             this.indexpage = new WebBrowser.Index();
             this.assetinfo = new WebBrowser.AssetInfo();
             this.notfound = new WebBrowser.Notfound();
+            this.nep5 = new WebBrowser.Nep5page();
             this.routet = new WebBrowser.Route();
         }
         strat() {
+            WebBrowser.CoinTool.initAllAsset();
             this.netWork.start();
             this.navbar.start();
             this.routet.start(this);

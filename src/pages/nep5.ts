@@ -1,6 +1,7 @@
-﻿namespace WebBrowser
+﻿/// <reference path="../app.ts"/>
+namespace WebBrowser
 {
-    export class AssetInfo implements Page
+    export class Nep5page implements Page
     {
         div: HTMLDivElement = document.getElementById( "asset-info" ) as HTMLDivElement;
         name: HTMLSpanElement;
@@ -18,20 +19,18 @@
         {
             this.div.hidden = true;
         }
-        view(assetid: string)
+        view(nep5id: string)
         {            
             this.div.innerHTML = pages.asset;
-            WWW.api_getasset(assetid).then((data) =>
+            WWW.api_getnep5(nep5id).then((data) =>
             {
-                var asset = data[0];
-                
-                asset.names = CoinTool.assetID2name[asset.id];
-                $("#name").text(asset.names);
-                $("#type").text(asset.type);
-                $("#id").text(asset.id);
-                $("#available").text(asset.available);
-                $("#precision").text(asset.precision);
-                $("#admin").text(asset.admin);                
+                var nep5 = data[0];
+                $("#name").text(nep5.name);
+                $("#type").text("Nep5");
+                $("#id").text(nep5.assetid);
+                $("#available").text(nep5.totalsupply);
+                $("#precision").text(nep5.decimals);
+                $("#admin").text("-");                
             })
 
         }

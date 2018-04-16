@@ -74,45 +74,113 @@ namespace WebBrowser.pages
     export var addres: string = `
     <div class="container">
         <div class="title"><span>Address info</span></div>
-
         <div class="list-nel">
             <div class="list-head">
-                <div class="line"><div class="title-nel"><span id="address"></span></div></div>
+                <div class="line">
+                    
+                </div>
+            </div>
+            <div class="list-body" id="address-info">
+                <div class="line">
+                    <div class="title-nel"><span>Address</span></div> 
+                    <div class="content-nel"><span id="address"></span></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="title"><span>Balance</span></div>
+        <div class="list-nel">
+            <div class="list-head">
+                <div class="line">
+                    
+                </div>
             </div>
             <div class="list-body" id="balance">
-                <div class="line"><div class="title-nel"><span>Address</span></div> <div class="content-nel"><span id="hash"></span></div></div>
+                <div class="line">
+                </div>
             </div>
         </div>
 
-        <div class="title"><span>Nep5</span></div>
-        <div class="input-group " id="nel-search">
-            <input id="nep5-text" type="text" class="form-control nel" placeholder="TxHash/Addr/blockHeight">
-            <span id="nep5-btn" class="input-group-addon nel ">
-                <img src="fonts/search.svg" width="18" height="18" />
-            </span>
-        </div>
+        <div class="title"><span>Transactions</span></div>
         <div class="list-nel">
-            <div class="list-head">
-                <div class="line"><div class="title-nel"><span></span></div></div>
+            <table class="table cool table-nel">
+                <thead>
+                    <tr>
+                        <th>TXID</th>
+                        <th>Type</th>
+                        <th>Size</th>
+                        <th>Time</th>
+                    </tr>
+                </thead>
+                <tbody id="transaction-table"></tbody>
+            </table>
+        </div>
+        <div class="page-number">
+            <span id="trans-page-msg"></span>
+        </div>
+        <div class="page">
+            <div id="trans-previous" class="page-previous">
+                <img src="./img/lefttrangle.svg" alt="">
             </div>
-            <div class="list-body" id="nep5balance">
+            <div style="width:1px;"></div>
+            <div id="trans-next" class="page-next">
+                <img src="./img/righttrangle.svg" alt="">
+            </div>
+        </div>
+
+        <div class="title"><span>Transfers</span></div>
+        <div class="list-nel">
+            <table class="table cool table-nel">
+                <thead>
+                    <tr>
+                        <th>TXID</th>
+                        <th>From</th>
+                        <th>Asset</th>
+                        <th>Time</th>
+                    </tr>
+                </thead>
+                <tbody id="transaction-table"></tbody>
+            </table>
+        </div>
+        <div class="page-number">
+            <span id="transf-page-msg"></span>
+        </div>
+        <div class="page">
+            <div id="transf-previous" class="page-previous">
+                <img src="./img/lefttrangle.svg" alt="">
+            </div>
+            <div style="width:1px;"></div>
+            <div id="transf-next" class="page-next">
+                <img src="./img/righttrangle.svg" alt="">
+            </div>
+        </div>
+
+        <div class="title">
+            <span>UTXO</span>
+        </div>
+        <table class="table table-nel cool">
+            <thead>
+                <tr>
+                    <th>asset</th>
+                    <th>number</th>
+                    <th>txid</th>
+                </tr>
+            </thead>
+            <tbody id="utxos"></tbody>
+        </table>
+        <div class="page-number">
+            <span id="utxo-page-msg"></span>
+        </div>
+        <div class="page">
+            <div id="utxo-previous" class="page-previous">
+                <img src="./img/lefttrangle.svg" alt="">
+            </div>
+            <div style="width:1px;"></div>
+            <div id="utxo-next" class="page-next">
+                <img src="./img/righttrangle.svg" alt="">
             </div>
         </div>
     </div>
-
-    <div class="title">
-        <span>UTXO</span>
-    </div>
-    <table class="table table-nel cool">
-        <thead>
-            <tr>
-                <th>asset</th>
-                <th>number</th>
-                <th>txid</th>
-            </tr>
-        </thead>
-        <tbody id="utxos"></tbody>
-    </table>
     `;
     export var asset: string = `
     <div class="title"><span>Asset Information</span></div>

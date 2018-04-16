@@ -108,12 +108,21 @@
             let arrNep5s = new Array();
             for (let i = minNum; i < maxNum; i++) {
                 arrNep5s.push(this.nep5s[i]);
-                console.log(this.nep5s[i]);
             }
             this.loadNep5View(arrNep5s);
 
             let pageMsg = "Assets " + (minNum + 1) + " to " + maxNum + " of " + pageUtil.totalCount;
             $("#asset-page").find("#asset-page-msg").html(pageMsg);
+            if (this.pageUtil.totalPage - this.pageUtil.currentPage) {
+                $("#asset-page").find("#next").removeClass('disabled');
+            } else {
+                $("#asset-page").find("#next").addClass('disabled');
+            }
+            if (this.pageUtil.currentPage - 1) {
+                $("#asset-page").find("#previous").removeClass('disabled');
+            } else {
+                $("#asset-page").find("#previous").addClass('disabled');
+            }
         }
 
         async start()
@@ -159,7 +168,7 @@
         public loadNep5View(nep5s: nep5Asset[]) {
             $("#assets").empty();
             nep5s.forEach((nep5s: nep5Asset) => {
-                let href = Url.href_asset(nep5s.assetid);
+                let href = Url.href_nep5(nep5s.assetid);
                 let html = `
                     <tr>
                     <td> <a href="`+ href + `">` + nep5s.name + `</a></td>

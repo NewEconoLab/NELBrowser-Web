@@ -132,6 +132,9 @@ namespace WebBrowser
         {
             return locationtool.getUrl() + '/asset/'+asset
         }
+        static href_nep5(nep5) {
+            return locationtool.getUrl() + '/nep5/' + nep5
+        }
     }
 
     export interface Page
@@ -178,6 +181,11 @@ namespace WebBrowser
             lang: string;
             name: string;
         }[];
+    }
+    export interface Nep5OfAddress {
+        assetid: string;
+        balance: number;
+        symbol: string;
     }
 
     export interface Addr

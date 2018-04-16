@@ -135,6 +135,35 @@ namespace WebBrowser
             var r = json["result"];
             return r;
         }
+        static async api_getasset(asset: string) {
+            var str = WWW.makeRpcUrl("getasset", asset);
+            var result = await fetch(str, { "method": "get" });
+            var json = await result.json();
+            var r = json["result"];
+            return r;
+        }
+        static async api_getnep5(nep5: string) {
+            var str = WWW.makeRpcUrl("getnep5asset", nep5);
+            var result = await fetch(str, { "method": "get" });
+            var json = await result.json();
+            var r = json["result"];
+            return r;
+        }
 
+        static async api_getallnep5assetofaddress(nep5: string) {
+            var str = WWW.makeRpcUrl("getallnep5assetofaddress", nep5, 1);
+            var result = await fetch(str, { "method": "get" });
+            var json = await result.json();
+            var r = json["result"];
+            return r;
+        }
+
+        static async getaddrsesstxs(addr: string, size: number, page: number) {
+            var str = WWW.makeRpcUrl("getaddresstxs", addr, size, page);
+            var result = await fetch(str, { "method": "post" });
+            var json = await result.json();
+            var r = json["result"];
+            return r as Addr[];
+        }
     }
 }

@@ -87,6 +87,16 @@ namespace WebBrowser
             }
             let pageMsg = "Trasctions " + (minNum + 1) + " to " + maxNum + " of " + pageUtil.totalCount;
             $("#txlist-page").find("#txlist-page-msg").html(pageMsg);
+            if (this.pageUtil.totalPage - this.pageUtil.currentPage) {
+                $("#txlist-page").find("#next").removeClass('disabled');
+            } else {
+                $("#txlist-page").find("#next").addClass('disabled');
+            }
+            if (this.pageUtil.currentPage - 1) {
+                $("#txlist-page").find("#previous").removeClass('disabled');
+            } else {
+                $("#txlist-page").find("#previous").addClass('disabled');
+            }
         }
         /**
          * async start
