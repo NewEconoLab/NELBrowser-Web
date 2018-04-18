@@ -91,8 +91,6 @@
     <Content Include="lib\asset\flash.swf" />
     <Content Include="lib\base64js.min.js" />
     <Content Include="lib\bootstrap.min.js" />
-    <Content Include="lib\code.js" />
-    <Content Include="lib\code.js.map" />
     <Content Include="lib\component\aes.js" />
     <Content Include="lib\component\mode-ecb.js" />
     <Content Include="lib\component\pad-nopadding.js" />
@@ -103,7 +101,6 @@
     <Content Include="lib\rollup\aes.js" />
     <Content Include="lib\scrypt.js" />
     <Content Include="index.html" />
-    <TypeScriptCompile Include="lib\code.d.ts" />
     <TypeScriptCompile Include="lib\neo-ts.d.ts" />
     <TypeScriptCompile Include="src\pages\404.ts" />
     <TypeScriptCompile Include="src\pages\address.ts" />
@@ -120,13 +117,12 @@
     <TypeScriptCompile Include="src\Entitys.ts" />
     <TypeScriptCompile Include="src\Navbar.ts" />
     <TypeScriptCompile Include="src\Network.ts" />
-    <TypeScriptCompile Include="src\PagesController.ts" />
-    <TypeScriptCompile Include="src\PageViews.ts" />
     <TypeScriptCompile Include="src\tools\cointool.ts" />
     <TypeScriptCompile Include="src\tools\locationtool.ts" />
     <TypeScriptCompile Include="src\tools\neotool.ts" />
     <TypeScriptCompile Include="src\tools\numbertool.ts" />
     <TypeScriptCompile Include="src\tools\routetool.ts" />
+    <TypeScriptCompile Include="src\tools\timetool.ts" />
     <TypeScriptCompile Include="src\tools\wwwtool.ts" />
     <TypeScriptCompile Include="src\pages\transaction.ts" />
     <TypeScriptCompile Include="src\Util.ts" />

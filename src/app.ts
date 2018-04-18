@@ -16,10 +16,10 @@
 /// <reference path="./tools/locationtool.ts" />
 /// <reference path="./tools/numbertool.ts" />
 /// <reference path="./tools/routetool.ts" />
+/// <reference path="./tools/cointool.ts" />
 /// <reference path="./Util.ts" />
 /// <reference path="./Navbar.ts" />
 /// <reference path="./Network.ts" />
-/// <reference path="./PagesController.ts" />
 
 namespace WebBrowser
 {
@@ -121,6 +121,23 @@ function txgeneral( obj: HTMLAnchorElement )
         var vins = tran.getAttribute( 'vins' );
         var vouts = tran.getAttribute( 'vouts' )
         WebBrowser.Transactions.getTxgeneral( vins, vouts, tran )
+    }
+
+
+}
+function txgMsg(obj: HTMLAnchorElement) {
+    var div: HTMLDivElement = obj.parentNode as HTMLDivElement;
+    var tran: HTMLDivElement = div.getElementsByClassName("transaction")[0] as HTMLDivElement;
+    if (tran.style.display == "") {
+        tran.style.display = "none";
+        obj.classList.remove("active");
+
+    } else {
+        tran.style.display = "";
+        obj.classList.add("active");
+        var vins = tran.getAttribute('vins');
+        var vouts = tran.getAttribute('vouts')
+        WebBrowser.Address.getTxMsg(vins, vouts, tran);
     }
 
 

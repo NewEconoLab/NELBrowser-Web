@@ -129,27 +129,350 @@ var WebBrowser;
 })(WebBrowser || (WebBrowser = {}));
 var WebBrowser;
 (function (WebBrowser) {
+    class WWW {
+        static makeRpcUrl(method, ..._params) {
+            var url = WWW.api + WebBrowser.locationtool.getNetWork();
+            var urlout = WWW.makeUrl(method, url, ..._params);
+            return urlout;
+        }
+        static makeUrl(method, url, ..._params) {
+            var urlout = url + "?jsonrpc=2.0&id=1&method=" + method + "&params=[";
+            for (var i = 0; i < _params.length; i++) {
+                urlout += JSON.stringify(_params[i]);
+                if (i != _params.length - 1)
+                    urlout += ",";
+            }
+            urlout += "]";
+            return urlout;
+        }
+        static makeRpcPostBody(method, ..._params) {
+            var body = {};
+            body["jsonrpc"] = "2.0";
+            body["id"] = 1;
+            body["method"] = method;
+            var params = [];
+            for (var i = 0; i < _params.length; i++) {
+                params.push(_params[i]);
+            }
+            body["params"] = params;
+            return body;
+        }
+        //获得高度
+        static api_getHeight() {
+            return __awaiter(this, void 0, void 0, function* () {
+                var str = WWW.makeRpcUrl("getblockcount");
+                var result = yield fetch(str, { "method": "get" });
+                var json = yield result.json();
+                var r = json["result"];
+                var height = parseInt(r[0]["blockcount"]) - 1;
+                return height;
+            });
+        }
+        //获得交易总数
+        static gettxcount(type) {
+            return __awaiter(this, void 0, void 0, function* () {
+                var str = WWW.makeRpcUrl("gettxcount", type);
+                var result = yield fetch(str, { "method": "get" });
+                var json = yield result.json();
+                var r = json["result"];
+                return r[0]['txcount'];
+            });
+        }
+        //地址总数
+        static getaddrcount() {
+            return __awaiter(this, void 0, void 0, function* () {
+                var str = WWW.makeRpcUrl("getaddrcount");
+                var result = yield fetch(str, { "method": "get" });
+                var json = yield result.json();
+                var r = json["result"];
+                return r[0]['addrcount'];
+            });
+        }
+        /**
+         * 获取区块列表
+         * @param size 记录条数
+         * @param page 页码
+         */
+        static getblocks(size, page) {
+            return __awaiter(this, void 0, void 0, function* () {
+                var str = WWW.makeRpcUrl("getblocks", size, page);
+                var result = yield fetch(str, { "method": "get" });
+                var json = yield result.json();
+                var r = json["result"];
+                return r;
+            });
+        }
+        //查询交易列表
+        static getrawtransactions(size, page, txtype) {
+            return __awaiter(this, void 0, void 0, function* () {
+                var str = WWW.makeRpcUrl("getrawtransactions", size, page, txtype);
+                var result = yield fetch(str, { "method": "get" });
+                var json = yield result.json();
+                var r = json["result"];
+                return r;
+            });
+        }
+        static getaddrs(size, page) {
+            return __awaiter(this, void 0, void 0, function* () {
+                var str = WWW.makeRpcUrl("getaddrs", size, page);
+                var result = yield fetch(str, { "method": "get" });
+                var json = yield result.json();
+                var r = json["result"];
+                return r;
+            });
+        }
+        static getrawtransaction(txid) {
+            return __awaiter(this, void 0, void 0, function* () {
+                var str = WWW.makeRpcUrl("getrawtransaction", txid);
+                var result = yield fetch(str, { "method": "get" });
+                var json = yield result.json();
+                var r = json["result"];
+                return r[0];
+            });
+        }
+        static getallnep5asset() {
+            return __awaiter(this, void 0, void 0, function* () {
+                var str = WWW.makeRpcUrl("getallnep5asset");
+                var result = yield fetch(str, { "method": "get" });
+                var json = yield result.json();
+                var r = json["result"];
+                return r;
+            });
+        }
+        static api_getAllAssets() {
+            return __awaiter(this, void 0, void 0, function* () {
+                var str = WWW.makeRpcUrl("getallasset");
+                var result = yield fetch(str, { "method": "get" });
+                var json = yield result.json();
+                var r = json["result"];
+                return r;
+            });
+        }
+        static api_getUTXO(address) {
+            return __awaiter(this, void 0, void 0, function* () {
+                var str = WWW.makeRpcUrl("getutxo", address);
+                var result = yield fetch(str, { "method": "get" });
+                var json = yield result.json();
+                var r = json["result"];
+                return r;
+            });
+        }
+        static api_getbalances(address) {
+            return __awaiter(this, void 0, void 0, function* () {
+                var str = WWW.makeRpcUrl("getbalance", address);
+                var result = yield fetch(str, { "method": "get" });
+                var json = yield result.json();
+                var r = json["result"];
+                return r;
+            });
+        }
+        static api_getasset(asset) {
+            return __awaiter(this, void 0, void 0, function* () {
+                var str = WWW.makeRpcUrl("getasset", asset);
+                var result = yield fetch(str, { "method": "get" });
+                var json = yield result.json();
+                var r = json["result"];
+                return r;
+            });
+        }
+        static api_getnep5(nep5) {
+            return __awaiter(this, void 0, void 0, function* () {
+                var str = WWW.makeRpcUrl("getnep5asset", nep5);
+                var result = yield fetch(str, { "method": "get" });
+                var json = yield result.json();
+                var r = json["result"];
+                return r;
+            });
+        }
+        static api_getallnep5assetofaddress(nep5) {
+            return __awaiter(this, void 0, void 0, function* () {
+                var str = WWW.makeRpcUrl("getallnep5assetofaddress", nep5, 1);
+                var result = yield fetch(str, { "method": "get" });
+                var json = yield result.json();
+                var r = json["result"];
+                return r;
+            });
+        }
+        static getaddrsesstxs(addr, size, page) {
+            return __awaiter(this, void 0, void 0, function* () {
+                var str = WWW.makeUrl("getaddresstxs", WWW.apiaggr, addr, size, page);
+                var result = yield fetch(str, { "method": "get" });
+                var json = yield result.json();
+                var r = json["result"];
+                return r;
+            });
+        }
+        static api_getaddrMsg(addr) {
+            return __awaiter(this, void 0, void 0, function* () {
+                var str = WWW.makeRpcUrl("getaddr", addr);
+                var result = yield fetch(str, { "method": "get" });
+                var json = yield result.json();
+                var r = json["result"];
+                return r;
+            });
+        }
+    }
+    WWW.api = "https://api.nel.group/api/";
+    WWW.apiaggr = "https://apiaggr.nel.group/api/testnet";
+    WebBrowser.WWW = WWW;
+})(WebBrowser || (WebBrowser = {}));
+var WebBrowser;
+(function (WebBrowser) {
+    class UTXO {
+    }
+    WebBrowser.UTXO = UTXO;
+    class CoinTool {
+        static initAllAsset() {
+            return __awaiter(this, void 0, void 0, function* () {
+                var allassets = yield WebBrowser.WWW.api_getAllAssets();
+                for (var a in allassets) {
+                    var asset = allassets[a];
+                    var names = asset.name;
+                    var id = asset.id;
+                    var name = "";
+                    if (id == CoinTool.id_GAS) {
+                        name = "GAS";
+                    }
+                    else if (id == CoinTool.id_NEO) {
+                        name = "NEO";
+                    }
+                    else {
+                        for (var i in names) {
+                            name = names[i].name;
+                            if (names[i].lang == "en")
+                                break;
+                        }
+                    }
+                    CoinTool.assetID2name[id] = name;
+                    CoinTool.name2assetID[name] = id;
+                }
+            });
+        }
+        static makeTran(utxos, targetaddr, assetid, sendcount) {
+            if (sendcount.compareTo(Neo.Fixed8.Zero) <= 0)
+                throw new Error("can not send zero.");
+            var tran = new ThinNeo.Transaction();
+            tran.type = ThinNeo.TransactionType.ContractTransaction;
+            tran.version = 0; //0 or 1
+            tran.extdata = null;
+            tran.attributes = [];
+            tran.inputs = [];
+            var scraddr = "";
+            utxos[assetid].sort((a, b) => {
+                return a.count.compareTo(b.count);
+            });
+            var us = utxos[assetid];
+            var count = Neo.Fixed8.Zero;
+            for (var i = 0; i < us.length; i++) {
+                var input = new ThinNeo.TransactionInput();
+                input.hash = us[i].txid.hexToBytes().reverse();
+                input.index = us[i].n;
+                input["_addr"] = us[i].addr; //利用js的隨意性，臨時傳個值
+                tran.inputs.push(input);
+                count = count.add(us[i].count);
+                scraddr = us[i].addr;
+                if (count.compareTo(sendcount) > 0) {
+                    break;
+                }
+            }
+            if (count.compareTo(sendcount) >= 0) {
+                tran.outputs = [];
+                //输出
+                var output = new ThinNeo.TransactionOutput();
+                output.assetId = assetid.hexToBytes().reverse();
+                output.value = sendcount;
+                output.toAddress = ThinNeo.Helper.GetPublicKeyScriptHash_FromAddress(targetaddr);
+                tran.outputs.push(output);
+                //找零
+                var change = count.subtract(sendcount);
+                if (change.compareTo(Neo.Fixed8.Zero) > 0) {
+                    var outputchange = new ThinNeo.TransactionOutput();
+                    outputchange.toAddress = ThinNeo.Helper.GetPublicKeyScriptHash_FromAddress(scraddr);
+                    outputchange.value = change;
+                    outputchange.assetId = assetid.hexToBytes().reverse();
+                    tran.outputs.push(outputchange);
+                }
+            }
+            else {
+                throw new Error("no enough money.");
+            }
+            return tran;
+        }
+    }
+    CoinTool.id_GAS = "0x602c79718b16e442de58778e148d0b1084e3b2dffd5de6b7b16cee7969282de7";
+    CoinTool.id_NEO = "0xc56f33fc6ecfcd0c225c4ab356fee59390af8560be0e930faebe74a6daff7c9b";
+    CoinTool.assetID2name = {};
+    CoinTool.name2assetID = {};
+    WebBrowser.CoinTool = CoinTool;
+})(WebBrowser || (WebBrowser = {}));
+var WebBrowser;
+(function (WebBrowser) {
+    class DateTool {
+        /**************************************时间格式化处理************************************/
+        static dateFtt(fmt, date) {
+            var o = {
+                "M+": date.getMonth() + 1,
+                "d+": date.getDate(),
+                "h+": date.getHours(),
+                "m+": date.getMinutes(),
+                "s+": date.getSeconds(),
+                "q+": Math.floor((date.getMonth() + 3) / 3),
+                "S": date.getMilliseconds() //毫秒   
+            };
+            if (/(y+)/.test(fmt))
+                fmt = fmt.replace(RegExp.$1, (date.getFullYear() + "").substr(4 - RegExp.$1.length));
+            for (var k in o)
+                if (new RegExp("(" + k + ")").test(fmt))
+                    fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+            return fmt;
+        }
+    }
+    WebBrowser.DateTool = DateTool;
+})(WebBrowser || (WebBrowser = {}));
+/// <reference path="../tools/wwwtool.ts" />
+/// <reference path="../tools/cointool.ts" />
+/// <reference path="../tools/timetool.ts" />
+var WebBrowser;
+/// <reference path="../tools/wwwtool.ts" />
+/// <reference path="../tools/cointool.ts" />
+/// <reference path="../tools/timetool.ts" />
+(function (WebBrowser) {
     class Address {
         constructor() {
             this.div = document.getElementById("address-info");
         }
         close() {
-            this.div.hidden = false;
+            this.div.hidden = true;
         }
         start() {
             return __awaiter(this, void 0, void 0, function* () {
                 this.div.innerHTML = WebBrowser.pages.addres;
                 var address = WebBrowser.locationtool.getParam();
+                var addrMsg = yield WebBrowser.WWW.api_getaddrMsg(address);
                 var utxos = yield WebBrowser.WWW.api_getUTXO(address);
                 var balances = yield WebBrowser.WWW.api_getbalances(address);
                 var nep5ofAddress = yield WebBrowser.WWW.api_getallnep5assetofaddress(address);
-                this.loadView(address, balances, nep5ofAddress, utxos);
+                this.loadAddressInfo(address, addrMsg);
+                this.loadView(balances, nep5ofAddress, utxos);
+                this.pageUtil = new WebBrowser.PageUtil(addrMsg[0].txcount, 10);
+                this.initPage(addrMsg[0].txcount, address);
+                this.updateAddrTrasctions(address, this.pageUtil);
                 this.div.hidden = false;
             });
         }
-        loadView(address, balances, nep5ofAddress, utxos) {
-            $("#utxos").empty();
+        //AddressInfo��ͼ
+        loadAddressInfo(address, addrMsg) {
+            let createdTime = WebBrowser.DateTool.dateFtt("yyyy-MM-dd hh:mm:ss", new Date(addrMsg[0].firstuse.blocktime.$date));
+            let totalTran = addrMsg[0].txcount;
             $("#address").text(address);
+            $("#created").text(createdTime);
+            $("#totalTran").text(totalTran);
+            let href = WebBrowser.locationtool.getUrl() + "/addresses";
+            let html = '<a href="' + href + '" target="_self">&lt&lt&ltBack to all addresses</a>';
+            $("#goalladress").append(html);
+        }
+        loadView(balances, nep5ofAddress, utxos) {
+            $("#utxos").empty();
             balances.forEach((balance) => {
                 var name = WebBrowser.CoinTool.assetID2name[balance.asset];
                 let html = `
@@ -176,6 +499,145 @@ var WebBrowser;
                 </a>[` + utxo.n + `]</td>
                 </tr>`;
                 $("#utxos").append(html);
+            });
+        }
+        initPage(transtotal, address) {
+            if (transtotal > 10) {
+                $("#trans-page-msg").show();
+                $("#addr-trans-page").show();
+            }
+            else {
+                $("#trans-page-msg").hide();
+                $("#addr-trans-page").hide();
+            }
+            $("#trans-next").click(() => {
+                if (this.pageUtil.currentPage == this.pageUtil.totalPage) {
+                    alert('��ǰҳ�Ѿ������һҳ��');
+                }
+                else {
+                    this.pageUtil.currentPage += 1;
+                    this.updateAddrTrasctions(address, this.pageUtil);
+                }
+            });
+            $("#trans-previous").click(() => {
+                if (this.pageUtil.currentPage <= 1) {
+                    alert('��ǰ�Ѿ��ǵ�һҳ��');
+                }
+                else {
+                    this.pageUtil.currentPage -= 1;
+                    this.updateAddrTrasctions(address, this.pageUtil);
+                }
+            });
+        }
+        //���½��׼�¼
+        updateAddrTrasctions(address, pageUtil) {
+            return __awaiter(this, void 0, void 0, function* () {
+                $("#addr-trans").empty();
+                //��ҳ��ѯ���׼�¼
+                let txlist = yield WebBrowser.WWW.getaddrsesstxs(address, pageUtil.pageSize, pageUtil.currentPage);
+                let listLength = 0;
+                if (txlist.length < 10) {
+                    listLength = txlist.length;
+                }
+                else {
+                    listLength = pageUtil.pageSize;
+                }
+                for (var n = 0; n < listLength; n++) {
+                    let txid = txlist[n].txid;
+                    let time = WebBrowser.DateTool.dateFtt("yyyy-MM-dd hh:mm:ss", new Date(txlist[n].blocktime.$date));
+                    let html = yield this.getAddrTransLine(txid, txlist[n].type, "xxxxxxx", time, txlist[n].vin, txlist[n].vout);
+                    $("#addr-trans").append(html);
+                }
+                WebBrowser.pageCut(this.pageUtil);
+                let minNum = pageUtil.currentPage * pageUtil.pageSize - pageUtil.pageSize;
+                let maxNum = pageUtil.totalCount;
+                let diffNum = maxNum - minNum;
+                if (diffNum > 10) {
+                    maxNum = pageUtil.currentPage * pageUtil.pageSize;
+                }
+                let pageMsg = "Trasctions " + (minNum + 1) + " to " + maxNum + " of " + pageUtil.totalCount;
+                $("#trans-page-msg").html(pageMsg);
+                if (this.pageUtil.totalPage - this.pageUtil.currentPage) {
+                    $("#trans-next").removeClass('disabled');
+                }
+                else {
+                    $("#trans-next").addClass('disabled');
+                }
+                if (this.pageUtil.currentPage - 1) {
+                    $("#trans-previous").removeClass('disabled');
+                }
+                else {
+                    $("#trans-previous").addClass('disabled');
+                }
+            });
+        }
+        getAddrTransLine(txid, type, from, time, vins, vouts) {
+            return __awaiter(this, void 0, void 0, function* () {
+                var id = txid.replace('0x', '');
+                id = id.substring(0, 6) + '...' + id.substring(id.length - 6);
+                return `
+            <div class="line">
+                <div class="line-general">
+                    <div class="content-nel"><span><a href="` + WebBrowser.Url.href_transaction(txid) + `" >` + id + `</a></span></div>
+                    <div class="content-nel"><span>` + type.replace("Transaction", "") + `</span></div>
+                    <div class="content-nel"><span>` + time + `</a></span></div>
+                </div>
+                <a onclick="txgMsg(this)" class="end" id="genbtn"><img src="../img/open.svg" /></a>
+                <div class="transaction" style="width:100%;display: none;" vins='` + JSON.stringify(vins) + `' vouts='` + JSON.stringify(vouts) + `'>
+                </div>
+            </div>
+            `;
+            });
+        }
+        static getTxMsg(vins, vouts, div) {
+            return __awaiter(this, void 0, void 0, function* () {
+                vins = JSON.parse(vins);
+                vouts = JSON.parse(vouts);
+                let myAddress = $("#address").text();
+                let form = "";
+                vins.forEach(vins => {
+                    let name = WebBrowser.CoinTool.assetID2name[vins.asset];
+                    let addrStr = '';
+                    if (vins.address == myAddress) {
+                        addrStr = `<div class="address"><a class="color-FDBA27">` + vins.address + `</a></div>`;
+                    }
+                    else {
+                        addrStr = `<div class="address"><a>` + vins.address + `</a></div>`;
+                    }
+                    form +=
+                        `
+                <div class="item">` + addrStr + `
+                    <ul class="amount"><li>` + vins.value + ` ` + name + `</li></ul>
+                </div>
+                `;
+                });
+                let tostr = "";
+                vouts.forEach(vout => {
+                    let name = WebBrowser.CoinTool.assetID2name[vout.asset];
+                    let addrStr = '';
+                    if (vout.address == myAddress) {
+                        addrStr = `<div class="address"><a class="color-FDBA27">` + vout.address + `</a></div>`;
+                    }
+                    else {
+                        addrStr = `<div class="address"><a>` + vout.address + `</a></div>`;
+                    }
+                    tostr +=
+                        `
+                <div class="item">` + addrStr + `
+                    <ul class="amount"><li>` + vout.value + ` ` + name + `</li></ul>
+                </div>
+                `;
+                });
+                var res = `
+            <div class="formaddr">
+                ` + form + `
+            </div>
+            <div class="turnto"><img src="../img/turnto.svg" /></div>
+            <div class="toaddr">
+                ` + tostr + `
+            </div>
+            `;
+                div.innerHTML = res;
             });
         }
     }
@@ -269,7 +731,7 @@ var WebBrowser;
                 let href = WebBrowser.Url.href_address(item.addr);
                 let html = `
                 <tr>
-                <td><a class="code" target="_blank" href="` + href + `">` + item.addr + `</a></td>
+                <td><a class="code" target="_self" href="` + href + `">` + item.addr + `</a></td>
                 <td>` + item.firstDate + `</td>
                 <td>` + item.lastDate + `</td>
                 <td>` + item.txcount + `</td></tr>`;
@@ -664,7 +1126,11 @@ var WebBrowser;
     `;
         pages.addres = `
     <div class="container">
-        <div class="title"><span>Address info</span></div>
+        <div class="title">
+            <span>Address info</span>
+            <div class="go-back" id="goalladress"></div>
+        </div>
+        
         <div class="list-nel">
             <div class="list-head">
                 <div class="line">
@@ -675,6 +1141,14 @@ var WebBrowser;
                 <div class="line">
                     <div class="title-nel"><span>Address</span></div> 
                     <div class="content-nel"><span id="address"></span></div>
+                </div>
+                <div class="line">
+                    <div class="title-nel"><span>Created</span></div> 
+                    <div class="content-nel"><span id="created"></span></div>
+                </div>
+                <div class="line">
+                    <div class="title-nel"><span>Transactions</span></div> 
+                    <div class="content-nel"><span id="totalTran"></span></div>
                 </div>
             </div>
         </div>
@@ -694,54 +1168,26 @@ var WebBrowser;
 
         <div class="title"><span>Transactions</span></div>
         <div class="list-nel">
-            <table class="table cool table-nel">
-                <thead>
-                    <tr>
-                        <th>TXID</th>
-                        <th>Type</th>
-                        <th>Size</th>
-                        <th>Time</th>
-                    </tr>
-                </thead>
-                <tbody id="transaction-table"></tbody>
-            </table>
+	        <div class="list-head">
+		        <div class="line">
+			        <div class="title-content"><span>TXID</span></div>
+			        <div class="title-content"><span>Type</span></div>
+			        <div class="title-content"><span>Time</span></div>
+			        <div class="title-nel" style="width:60px;"></div>
+		        </div>
+	        </div>
+	        <div class="list-body" id="addr-trans">
+	        </div>
         </div>
         <div class="page-number">
             <span id="trans-page-msg"></span>
         </div>
-        <div class="page">
+        <div class="page" id="addr-trans-page">
             <div id="trans-previous" class="page-previous">
                 <img src="./img/lefttrangle.svg" alt="">
             </div>
             <div style="width:1px;"></div>
             <div id="trans-next" class="page-next">
-                <img src="./img/righttrangle.svg" alt="">
-            </div>
-        </div>
-
-        <div class="title"><span>Transfers</span></div>
-        <div class="list-nel">
-            <table class="table cool table-nel">
-                <thead>
-                    <tr>
-                        <th>TXID</th>
-                        <th>From</th>
-                        <th>Asset</th>
-                        <th>Time</th>
-                    </tr>
-                </thead>
-                <tbody id="transaction-table"></tbody>
-            </table>
-        </div>
-        <div class="page-number">
-            <span id="transf-page-msg"></span>
-        </div>
-        <div class="page">
-            <div id="transf-previous" class="page-previous">
-                <img src="./img/lefttrangle.svg" alt="">
-            </div>
-            <div style="width:1px;"></div>
-            <div id="transf-next" class="page-next">
                 <img src="./img/righttrangle.svg" alt="">
             </div>
         </div>
@@ -759,18 +1205,6 @@ var WebBrowser;
             </thead>
             <tbody id="utxos"></tbody>
         </table>
-        <div class="page-number">
-            <span id="utxo-page-msg"></span>
-        </div>
-        <div class="page">
-            <div id="utxo-previous" class="page-previous">
-                <img src="./img/lefttrangle.svg" alt="">
-            </div>
-            <div style="width:1px;"></div>
-            <div id="utxo-next" class="page-next">
-                <img src="./img/righttrangle.svg" alt="">
-            </div>
-        </div>
     </div>
     `;
         pages.asset = `
@@ -979,14 +1413,6 @@ var WebBrowser;
         AssetEnum["NEO"] = "0xc56f33fc6ecfcd0c225c4ab356fee59390af8560be0e930faebe74a6daff7c9b";
         AssetEnum["GAS"] = "0x602c79718b16e442de58778e148d0b1084e3b2dffd5de6b7b16cee7969282de7";
     })(AssetEnum = WebBrowser.AssetEnum || (WebBrowser.AssetEnum = {}));
-    class TableMode {
-        constructor(ths, tds, tableId) {
-            this.ths = ths;
-            this.tds = tds;
-            this.tablId = tableId;
-        }
-    }
-    WebBrowser.TableMode = TableMode;
     class Detail {
         constructor(address, height, balances) {
             this.address = address;
@@ -1688,38 +2114,6 @@ var WebBrowser;
         }
     }
     WebBrowser.pageCut = pageCut;
-    class TableView {
-        constructor(divId, tableMode) {
-            this._tableMode = tableMode;
-            this.divId = divId;
-            let html = "<table id='" + tableMode.tablId + "'>"
-                + "<thead><head></head></thead><tbody></tbody></table>";
-            $("#" + this.divId).append(html);
-        }
-        update() {
-            this._tableMode.ths.forEach((th) => {
-                $("#blocklist").children('thead').append('<th>' + th + '</th>');
-            });
-            let tbody = $("#blocklist").children('tbody');
-            let tr = '';
-            this._tableMode.tds.forEach((tdMap) => {
-                let td = "";
-                this._tableMode.ths.forEach((val, key) => {
-                    td += "<td>" + tdMap.get(key) + "</td>";
-                });
-                tr += "<tr>" + td + "</tr>";
-            });
-            tbody.empty();
-            tbody.append(tr);
-        }
-        set className(className) {
-            $("#" + this._tableMode.tablId).addClass(className);
-        }
-        set tableMode(tableMode) {
-            this._tableMode = tableMode;
-        }
-    }
-    WebBrowser.TableView = TableView;
     class walletStorage {
         constructor() {
             this.wallets = localStorage.getItem("Nel_wallets");
@@ -2220,598 +2614,6 @@ var WebBrowser;
     }
     WebBrowser.NetWork = NetWork;
 })(WebBrowser || (WebBrowser = {}));
-var WebBrowser;
-(function (WebBrowser) {
-    class UTXO {
-    }
-    WebBrowser.UTXO = UTXO;
-    class CoinTool {
-        static initAllAsset() {
-            return __awaiter(this, void 0, void 0, function* () {
-                var allassets = yield WebBrowser.WWW.api_getAllAssets();
-                for (var a in allassets) {
-                    var asset = allassets[a];
-                    var names = asset.name;
-                    var id = asset.id;
-                    var name = "";
-                    if (id == CoinTool.id_GAS) {
-                        name = "GAS";
-                    }
-                    else if (id == CoinTool.id_NEO) {
-                        name = "NEO";
-                    }
-                    else {
-                        for (var i in names) {
-                            name = names[i].name;
-                            if (names[i].lang == "en")
-                                break;
-                        }
-                    }
-                    CoinTool.assetID2name[id] = name;
-                    CoinTool.name2assetID[name] = id;
-                }
-            });
-        }
-        static makeTran(utxos, targetaddr, assetid, sendcount) {
-            if (sendcount.compareTo(Neo.Fixed8.Zero) <= 0)
-                throw new Error("can not send zero.");
-            var tran = new ThinNeo.Transaction();
-            tran.type = ThinNeo.TransactionType.ContractTransaction;
-            tran.version = 0; //0 or 1
-            tran.extdata = null;
-            tran.attributes = [];
-            tran.inputs = [];
-            var scraddr = "";
-            utxos[assetid].sort((a, b) => {
-                return a.count.compareTo(b.count);
-            });
-            var us = utxos[assetid];
-            var count = Neo.Fixed8.Zero;
-            for (var i = 0; i < us.length; i++) {
-                var input = new ThinNeo.TransactionInput();
-                input.hash = us[i].txid.hexToBytes().reverse();
-                input.index = us[i].n;
-                input["_addr"] = us[i].addr; //利用js的隨意性，臨時傳個值
-                tran.inputs.push(input);
-                count = count.add(us[i].count);
-                scraddr = us[i].addr;
-                if (count.compareTo(sendcount) > 0) {
-                    break;
-                }
-            }
-            if (count.compareTo(sendcount) >= 0) {
-                tran.outputs = [];
-                //输出
-                var output = new ThinNeo.TransactionOutput();
-                output.assetId = assetid.hexToBytes().reverse();
-                output.value = sendcount;
-                output.toAddress = ThinNeo.Helper.GetPublicKeyScriptHash_FromAddress(targetaddr);
-                tran.outputs.push(output);
-                //找零
-                var change = count.subtract(sendcount);
-                if (change.compareTo(Neo.Fixed8.Zero) > 0) {
-                    var outputchange = new ThinNeo.TransactionOutput();
-                    outputchange.toAddress = ThinNeo.Helper.GetPublicKeyScriptHash_FromAddress(scraddr);
-                    outputchange.value = change;
-                    outputchange.assetId = assetid.hexToBytes().reverse();
-                    tran.outputs.push(outputchange);
-                }
-            }
-            else {
-                throw new Error("no enough money.");
-            }
-            return tran;
-        }
-    }
-    CoinTool.id_GAS = "0x602c79718b16e442de58778e148d0b1084e3b2dffd5de6b7b16cee7969282de7";
-    CoinTool.id_NEO = "0xc56f33fc6ecfcd0c225c4ab356fee59390af8560be0e930faebe74a6daff7c9b";
-    CoinTool.assetID2name = {};
-    CoinTool.name2assetID = {};
-    WebBrowser.CoinTool = CoinTool;
-})(WebBrowser || (WebBrowser = {}));
-var WebBrowser;
-(function (WebBrowser) {
-    class WWW {
-        static makeRpcUrl(method, ..._params) {
-            var url = WWW.api + WebBrowser.locationtool.getNetWork();
-            if (url[url.length - 1] != '/')
-                url = url + "/";
-            var urlout = url + "?jsonrpc=2.0&id=1&method=" + method + "&params=[";
-            for (var i = 0; i < _params.length; i++) {
-                urlout += JSON.stringify(_params[i]);
-                if (i != _params.length - 1)
-                    urlout += ",";
-            }
-            urlout += "]";
-            return urlout;
-        }
-        static makeRpcPostBody(method, ..._params) {
-            var body = {};
-            body["jsonrpc"] = "2.0";
-            body["id"] = 1;
-            body["method"] = method;
-            var params = [];
-            for (var i = 0; i < _params.length; i++) {
-                params.push(_params[i]);
-            }
-            body["params"] = params;
-            return body;
-        }
-        //获得高度
-        static api_getHeight() {
-            return __awaiter(this, void 0, void 0, function* () {
-                var str = WWW.makeRpcUrl("getblockcount");
-                var result = yield fetch(str, { "method": "get" });
-                var json = yield result.json();
-                var r = json["result"];
-                var height = parseInt(r[0]["blockcount"]) - 1;
-                return height;
-            });
-        }
-        //获得交易总数
-        static gettxcount(type) {
-            return __awaiter(this, void 0, void 0, function* () {
-                var str = WWW.makeRpcUrl("gettxcount", type);
-                var result = yield fetch(str, { "method": "get" });
-                var json = yield result.json();
-                var r = json["result"];
-                return r[0]['txcount'];
-            });
-        }
-        //地址总数
-        static getaddrcount() {
-            return __awaiter(this, void 0, void 0, function* () {
-                var str = WWW.makeRpcUrl("getaddrcount");
-                var result = yield fetch(str, { "method": "get" });
-                var json = yield result.json();
-                var r = json["result"];
-                return r[0]['addrcount'];
-            });
-        }
-        /**
-         * 获取区块列表
-         * @param size 记录条数
-         * @param page 页码
-         */
-        static getblocks(size, page) {
-            return __awaiter(this, void 0, void 0, function* () {
-                var str = WWW.makeRpcUrl("getblocks", size, page);
-                var result = yield fetch(str, { "method": "get" });
-                var json = yield result.json();
-                var r = json["result"];
-                return r;
-            });
-        }
-        //查询交易列表
-        static getrawtransactions(size, page, txtype) {
-            return __awaiter(this, void 0, void 0, function* () {
-                var str = WWW.makeRpcUrl("getrawtransactions", size, page, txtype);
-                var result = yield fetch(str, { "method": "get" });
-                var json = yield result.json();
-                var r = json["result"];
-                return r;
-            });
-        }
-        static getaddrs(size, page) {
-            return __awaiter(this, void 0, void 0, function* () {
-                var str = WWW.makeRpcUrl("getaddrs", size, page);
-                var result = yield fetch(str, { "method": "get" });
-                var json = yield result.json();
-                var r = json["result"];
-                return r;
-            });
-        }
-        static getrawtransaction(txid) {
-            return __awaiter(this, void 0, void 0, function* () {
-                var str = WWW.makeRpcUrl("getrawtransaction", txid);
-                var result = yield fetch(str, { "method": "get" });
-                var json = yield result.json();
-                var r = json["result"];
-                return r[0];
-            });
-        }
-        static getallnep5asset() {
-            return __awaiter(this, void 0, void 0, function* () {
-                var str = WWW.makeRpcUrl("getallnep5asset");
-                var result = yield fetch(str, { "method": "get" });
-                var json = yield result.json();
-                var r = json["result"];
-                return r;
-            });
-        }
-        static api_getAllAssets() {
-            return __awaiter(this, void 0, void 0, function* () {
-                var str = WWW.makeRpcUrl("getallasset");
-                var result = yield fetch(str, { "method": "get" });
-                var json = yield result.json();
-                var r = json["result"];
-                return r;
-            });
-        }
-        static api_getUTXO(address) {
-            return __awaiter(this, void 0, void 0, function* () {
-                var str = WWW.makeRpcUrl("getutxo", address);
-                var result = yield fetch(str, { "method": "get" });
-                var json = yield result.json();
-                var r = json["result"];
-                return r;
-            });
-        }
-        static api_getbalances(address) {
-            return __awaiter(this, void 0, void 0, function* () {
-                var str = WWW.makeRpcUrl("getbalance", address);
-                var result = yield fetch(str, { "method": "get" });
-                var json = yield result.json();
-                var r = json["result"];
-                return r;
-            });
-        }
-        static api_getasset(asset) {
-            return __awaiter(this, void 0, void 0, function* () {
-                var str = WWW.makeRpcUrl("getasset", asset);
-                var result = yield fetch(str, { "method": "get" });
-                var json = yield result.json();
-                var r = json["result"];
-                return r;
-            });
-        }
-        static api_getnep5(nep5) {
-            return __awaiter(this, void 0, void 0, function* () {
-                var str = WWW.makeRpcUrl("getnep5asset", nep5);
-                var result = yield fetch(str, { "method": "get" });
-                var json = yield result.json();
-                var r = json["result"];
-                return r;
-            });
-        }
-        static api_getallnep5assetofaddress(nep5) {
-            return __awaiter(this, void 0, void 0, function* () {
-                var str = WWW.makeRpcUrl("getallnep5assetofaddress", nep5, 1);
-                var result = yield fetch(str, { "method": "get" });
-                var json = yield result.json();
-                var r = json["result"];
-                return r;
-            });
-        }
-        static getaddrsesstxs(addr, size, page) {
-            return __awaiter(this, void 0, void 0, function* () {
-                var str = WWW.makeRpcUrl("getaddresstxs", addr, size, page);
-                var result = yield fetch(str, { "method": "post" });
-                var json = yield result.json();
-                var r = json["result"];
-                return r;
-            });
-        }
-    }
-    WWW.api = "https://api.nel.group/api/";
-    WebBrowser.WWW = WWW;
-})(WebBrowser || (WebBrowser = {}));
-/// <reference types="jquery" />
-/// <reference path="./tools/cointool.ts" />
-/// <reference path="./tools/wwwtool.ts" />
-var WebBrowser;
-/// <reference types="jquery" />
-/// <reference path="./tools/cointool.ts" />
-/// <reference path="./tools/wwwtool.ts" />
-(function (WebBrowser) {
-    class AddressControll {
-        constructor(address) {
-            this.ajax = new WebBrowser.Ajax();
-            this.address = address;
-            $("#nep5-btn").click(() => {
-                this.nep5Info();
-            });
-        }
-        /**
-         * queryNep5AssetById
-         */
-        queryNep5AssetById(id) {
-            return __awaiter(this, void 0, void 0, function* () {
-                let getNep5 = new WebBrowser.GetNep5Info();
-                let res;
-                try {
-                    res = yield getNep5.getInfo(id);
-                    let name = res.result["name"];
-                    let symbol = res.result["symbol"];
-                }
-                catch (error) {
-                    alert("^_^ 请尝试输入正确的资产id");
-                    return;
-                }
-                try {
-                    let balance = yield getNep5.getBalance(id, this.address);
-                    res.result.balance = balance.result;
-                    return res;
-                }
-                catch (error) {
-                    alert("^_^ 请尝试输入正确的地址");
-                    return;
-                }
-            });
-        }
-        initNep5Asset() {
-            return __awaiter(this, void 0, void 0, function* () {
-                let stouitl = new WebBrowser.StorageUtil();
-                let asids = stouitl.getStorage("assetIds_nep5", "|");
-                if (asids.length == 0) {
-                    return;
-                }
-                else {
-                    try {
-                        let ress = new Array();
-                        for (let index = 0; index < asids.length; index++) {
-                            let res = yield this.queryNep5AssetById(asids[index]);
-                            if (res.result["balance"])
-                                ress.push(res);
-                        }
-                        if (ress.length)
-                            this.addInfo.initNep5(ress);
-                    }
-                    catch (error) {
-                        console.error("查询nep5资产出错");
-                    }
-                }
-            });
-        }
-        /**
-         * nep5Info
-         */
-        nep5Info() {
-            return __awaiter(this, void 0, void 0, function* () {
-                let asset = $("#nep5-text").val().toString();
-                let stouitl = new WebBrowser.StorageUtil();
-                if (asset.length < 1)
-                    alert("请输入资产id");
-                try {
-                    let res = yield this.queryNep5AssetById(asset);
-                    this.addInfo.loadNep5(res.result["name"], res.result["symbol"], res.result["balance"]);
-                    let asids = stouitl.getStorage("assetIds_nep5", "|");
-                    if (!asids.find(as => as == asset)) {
-                        asids.push(asset);
-                        stouitl.setStorage("assetIds_nep5", asids.join('|'));
-                    }
-                }
-                catch (err) {
-                    console.error("查询nep5资产出错");
-                }
-            });
-        }
-        /**
-         *
-         */
-        addressInfo() {
-            return __awaiter(this, void 0, void 0, function* () {
-                let balances = yield this.ajax.post('getbalance', [this.address]).catch((e) => {
-                    alert(e);
-                });
-                ;
-                if (balances.length < 1) {
-                    alert("This address has no record of transactions");
-                }
-                balances.map((balance) => {
-                    if (balance.asset == WebBrowser.AssetEnum.NEO) {
-                        balance.name = [{ lang: 'en', name: 'NEO' }];
-                    }
-                    if (balance.asset == WebBrowser.AssetEnum.GAS) {
-                        balance.name = [{ lang: 'en', name: "GAS" }];
-                    }
-                });
-                let utxo = yield this.ajax.post('getutxo', [this.address]).catch((e) => {
-                    alert(e);
-                });
-                let allAsset = yield this.ajax.post('getallasset', []);
-                allAsset.map((asset) => {
-                    if (asset.id == WebBrowser.AssetEnum.NEO) {
-                        asset.name = [{ lang: 'en', name: 'NEO' }];
-                    }
-                    if (asset.id == WebBrowser.AssetEnum.GAS) {
-                        asset.name = [{ lang: 'en', name: "GAS" }];
-                    }
-                });
-                utxo.map((item) => {
-                    item.asset = allAsset.find(val => val.id == item.asset).name.map((name) => { return name.name; }).join("|");
-                });
-                this.addInfo = new WebBrowser.AddressInfoView(balances, utxo, this.address);
-                this.addInfo.loadView(); //加载页面
-                this.initNep5Asset();
-            });
-        }
-    }
-    WebBrowser.AddressControll = AddressControll;
-    //地址列表
-    class addrlistControll {
-        constructor() {
-            this.ajax = new WebBrowser.Ajax();
-            $("#addrs-page").find("#next").click(() => {
-                if (this.pageUtil.currentPage == this.pageUtil.totalPage) {
-                    alert('当前页已经是最后一页了');
-                    return;
-                }
-                else {
-                    this.pageUtil.currentPage += 1;
-                    this.addrlistInit();
-                }
-            });
-            $("#addrs-page").find("#previous").click(() => {
-                if (this.pageUtil.currentPage <= 1) {
-                    alert('当前已经是第一页了');
-                    return;
-                }
-                else {
-                    this.pageUtil.currentPage -= 1;
-                    this.addrlistInit();
-                }
-            });
-        }
-        /**
-         * addrlistInit
-         */
-        addrlistInit() {
-            return __awaiter(this, void 0, void 0, function* () {
-                let addrcount = yield this.ajax.post('getaddrcount', []).catch((e) => {
-                    alert(e);
-                });
-                if (addrcount.length == 0) {
-                    alert('此地址余额为空，utxo为空');
-                }
-                this.pageUtil.totalCount = addrcount[0]['addrcount'];
-                let addrlist = yield this.ajax.post('getaddrs', [this.pageUtil.pageSize, this.pageUtil.currentPage]);
-                let newDate = new Date();
-                addrlist.map((item) => {
-                    newDate.setTime(item.firstuse.blocktime.$date);
-                    item.firstDate = newDate.toLocaleString();
-                    newDate.setTime(item.lastuse.blocktime.$date);
-                    item.lastDate = newDate.toLocaleString();
-                });
-                let view = new WebBrowser.AddrlistView();
-                view.loadView(addrlist);
-                WebBrowser.pageCut(this.pageUtil);
-            });
-        }
-        /**
-         * start
-         */
-        start() {
-            return __awaiter(this, void 0, void 0, function* () {
-                let prom = yield this.ajax.post('getaddrcount', []);
-                this.pageUtil = new WebBrowser.PageUtil(prom[0]['addrcount'], 15);
-                this.addrlistInit();
-            });
-        }
-    }
-    WebBrowser.addrlistControll = addrlistControll;
-    //资产页面管理器
-    class AssetControll {
-        constructor() {
-            this.ajax = new WebBrowser.Ajax();
-        }
-        start() {
-            return __awaiter(this, void 0, void 0, function* () {
-            });
-        }
-        allAsset() {
-            return __awaiter(this, void 0, void 0, function* () {
-                this.assets = yield this.ajax.post('getallasset', []);
-                this.assets.map((asset) => {
-                    if (asset.id == WebBrowser.AssetEnum.NEO) {
-                        asset.name = [{ lang: 'en', name: 'NEO' }];
-                    }
-                    if (asset.id == WebBrowser.AssetEnum.GAS) {
-                        asset.name = [{ lang: 'en', name: "GAS" }];
-                    }
-                    let name = asset.name.map((name) => { return name.name; });
-                    asset.names = name.join("|");
-                });
-                let nep5Info = new WebBrowser.GetNep5Info();
-                let storutil = new WebBrowser.StorageUtil();
-                let nep5asids = storutil.getStorage("assetIds_nep5", "|");
-                let nep5s = new Array();
-                for (let n = 0; n < nep5asids.length; n++) {
-                    let res = yield nep5Info.getInfo(nep5asids[n]);
-                    let assetnep5 = new WebBrowser.Nep5as();
-                    if (!res.err) {
-                        assetnep5.names = res.result["name"];
-                        assetnep5.type = res.result["symbol"];
-                        assetnep5.amount = res.result["totalsupply"];
-                        assetnep5.id = nep5asids[n];
-                    }
-                    nep5s.push(assetnep5);
-                }
-                let assetView = new WebBrowser.AssetsView(this.assets, nep5s);
-                yield assetView.loadView(); //调用loadView方法渲染页面
-            });
-        }
-    }
-    WebBrowser.AssetControll = AssetControll;
-    class BlocksControll {
-        constructor() {
-            this.ajax = new WebBrowser.Ajax();
-            this.previous = document.createElement("li");
-            this.next = document.createElement("li");
-            this.ul = document.createElement("ul");
-            this.ul.className = "pager";
-            this.previous.className = "previous disabled";
-            this.next.className = "next";
-            this.older = document.createElement("a");
-            this.newer = document.createElement("a");
-            this.text = document.createElement("a");
-            this.previous.appendChild(this.older);
-            this.next.appendChild(this.newer);
-            this.older.text = "← Older";
-            this.newer.text = "Newer →";
-            this.ul.appendChild(this.previous);
-            this.ul.appendChild(this.text);
-            this.ul.appendChild(this.next);
-            let div = document.getElementById("blocks-page");
-            div.appendChild(this.ul);
-            this.next.onclick = () => {
-                if (this.pageUtil.currentPage == this.pageUtil.totalPage) {
-                    alert('当前页已经是最后一页了');
-                    return;
-                }
-                else {
-                    this.pageUtil.currentPage += 1;
-                    this.blocksInit();
-                }
-            };
-            this.previous.onclick = () => {
-                if (this.pageUtil.currentPage <= 1) {
-                    alert('当前已经是第一页了');
-                    return;
-                }
-                else {
-                    this.pageUtil.currentPage -= 1;
-                    this.blocksInit();
-                }
-            };
-        }
-        /**
-         * blocksInit
-         */
-        blocksInit() {
-            return __awaiter(this, void 0, void 0, function* () {
-                //分页查询区块数据
-                let blocks = yield this.ajax.post('getblocks', [
-                    this.pageUtil.pageSize,
-                    this.pageUtil.currentPage
-                ]);
-                let ths = new Map();
-                let tds = new Array();
-                ths.set('index', 'index');
-                ths.set('size', 'size');
-                ths.set('time', 'time');
-                ths.set('txnumber', 'txnumber');
-                let newDate = new Date();
-                blocks.forEach((block) => {
-                    let td = new Map();
-                    newDate.setTime(block.time * 1000);
-                    let a = '<a href="./page/blockInfo.html?index=' + block.index + '">';
-                    a += block.index + '</a>';
-                    td.set('index', a);
-                    td.set('size', block.size);
-                    td.set('time', newDate.toLocaleString());
-                    td.set('txnumber', block.tx.length);
-                    tds.push(td);
-                });
-                let tbmode = new WebBrowser.TableMode(ths, tds, "blocklist");
-                let blocksView = new WebBrowser.BlocksView(tbmode, this.next, this.previous, this.text);
-                blocksView.loadView(this.pageUtil);
-            });
-        }
-        /**
-         * start
-         */
-        start() {
-            return __awaiter(this, void 0, void 0, function* () {
-                //查询区块数量
-                let blockCount = yield this.ajax.post('getblockcount', []);
-                this.pageUtil = new WebBrowser.PageUtil(blockCount[0]['blockcount'], 15);
-                this.blocksInit();
-            });
-        }
-    }
-    WebBrowser.BlocksControll = BlocksControll;
-})(WebBrowser || (WebBrowser = {}));
 /// <reference path="../lib/neo-ts.d.ts"/>
 /// <reference types="jquery" />
 /// <reference types="bootstrap" />
@@ -2830,10 +2632,10 @@ var WebBrowser;
 /// <reference path="./tools/locationtool.ts" />
 /// <reference path="./tools/numbertool.ts" />
 /// <reference path="./tools/routetool.ts" />
+/// <reference path="./tools/cointool.ts" />
 /// <reference path="./Util.ts" />
 /// <reference path="./Navbar.ts" />
 /// <reference path="./Network.ts" />
-/// <reference path="./PagesController.ts" />
 var WebBrowser;
 /// <reference path="../lib/neo-ts.d.ts"/>
 /// <reference types="jquery" />
@@ -2853,10 +2655,10 @@ var WebBrowser;
 /// <reference path="./tools/locationtool.ts" />
 /// <reference path="./tools/numbertool.ts" />
 /// <reference path="./tools/routetool.ts" />
+/// <reference path="./tools/cointool.ts" />
 /// <reference path="./Util.ts" />
 /// <reference path="./Navbar.ts" />
 /// <reference path="./Network.ts" />
-/// <reference path="./PagesController.ts" />
 (function (WebBrowser) {
     class App {
         constructor() {
@@ -2942,213 +2744,19 @@ function txgeneral(obj) {
         WebBrowser.Transactions.getTxgeneral(vins, vouts, tran);
     }
 }
-var WebBrowser;
-(function (WebBrowser) {
-    class AddressInfoView {
-        constructor(balances, utxo, address) {
-            this.balances = balances;
-            this.address = address;
-            this.utxo = utxo;
-        }
-        /**
-         * loadView
-         */
-        loadView() {
-            $("#utxos").empty();
-            $("#address").text(this.address);
-            this.balances.forEach((balance) => {
-                let html = '';
-                let name = balance.name.map((name) => { return name.name; }).join('|');
-                html += '<div class="line" > <div class="title-nel" > <span>' + name + ' </span></div >';
-                html += '<div class="content-nel" > <span> ' + balance.balance + ' </span></div > </div>';
-                $("#balance").append(html);
-            });
-            this.utxo.forEach((utxo) => {
-                let html = `
-                <tr>
-                <td class='code'>` + utxo.asset + `
-                </td>
-                <td>` + utxo.value + `
-                </td>
-                <td><a class='code' target='_blank' href='` + WebBrowser.Url.href_transaction(utxo.txid) + `'>` + utxo.txid + `
-                </a>[` + utxo.n + `]</td>
-                </tr>`;
-                $("#utxos").append(html);
-            });
-        }
-        /**
-         * loadNep5
-         */
-        loadNep5(name, symbol, balance) {
-            $("#nep5balance").empty();
-            var html = '<div class="line" > <div class="title-nel" > <span>[' + symbol + '] ' + name + ' </span></div>';
-            html += '<div class="content-nel" > <span>' + balance + ' </span></div> </div>';
-            $("#nep5balance").append(html);
-        }
-        /**
-         * initNep5
-         */
-        initNep5(arr) {
-            $("#nep5AssetList").empty();
-            $("#nep5assets").show();
-            arr.forEach(element => {
-                let symbol = element.result["symbol"];
-                let name = element.result["name"];
-                let balance = element.result["balance"];
-                var html = '<div class="line" > <div class="title-nel" > <span>[' + symbol + '] ' + name + ' </span></div >';
-                html += '<div class="content-nel" > <span>' + balance + ' </span></div > </div>';
-                $("#nep5assets").append(html);
-            });
-        }
+function txgMsg(obj) {
+    var div = obj.parentNode;
+    var tran = div.getElementsByClassName("transaction")[0];
+    if (tran.style.display == "") {
+        tran.style.display = "none";
+        obj.classList.remove("active");
     }
-    WebBrowser.AddressInfoView = AddressInfoView;
-    class AddrlistView {
-        constructor() { }
-        /**
-         * loadView
-         */
-        loadView(addrlist) {
-            $("#addrlist").empty();
-            addrlist.forEach(item => {
-                let href = WebBrowser.locationtool.getUrl() + `/address/` + item.addr;
-                let html = `
-                <tr>
-                <td><a class="code" target="_blank" href="` + href + `">` + item.addr + `</a></td>
-                <td>` + item.firstDate + `</td>
-                <td>` + item.lastDate + `</td>
-                <td>` + item.txcount + `</td></tr>`;
-                $('#addrlist').append(html);
-            });
-        }
+    else {
+        tran.style.display = "";
+        obj.classList.add("active");
+        var vins = tran.getAttribute('vins');
+        var vouts = tran.getAttribute('vouts');
+        WebBrowser.Address.getTxMsg(vins, vouts, tran);
     }
-    WebBrowser.AddrlistView = AddrlistView;
-    class AssetsView {
-        constructor(allAsset, nep5s) {
-            this.assets = allAsset;
-            this.nep5s = nep5s;
-        }
-        /**
-         * loadView 页面展现
-         */
-        loadView() {
-            $("#assets").empty();
-            $("#nep5ass").empty();
-            this.assets.forEach((asset) => {
-                let href = './#' + WebBrowser.locationtool.getNetWork() + '/asset/' + asset.id;
-                let html = `
-                <tr>
-                <td> <a href="` + href + `">` + asset.names + `</a></td>
-                <td>` + asset.type + `</td>
-                <td>` + (asset.amount <= 0 ? asset.available : asset.amount) + `</td>
-                <td>` + asset.precision + `</td>
-                </tr>`;
-                $("#assets").append(html);
-            });
-            this.nep5s.forEach((asset) => {
-                let html = `
-                <tr>
-                <td>` + asset.names + `</td>
-                <td>` + asset.type + `</td><td>` + asset.names + `</td>
-                <td>` + (asset.amount <= 0 ? asset.available : asset.amount);
-                +`</td>
-                <td>` + asset.names + `</td></tr>`;
-                $("#nep5ass").append(html);
-            });
-        }
-    }
-    WebBrowser.AssetsView = AssetsView;
-    class BlocksView {
-        constructor(tbmode, next, previous, text) {
-            this.next = next;
-            this.previous = previous;
-            this.text = text;
-            this.tbview = new WebBrowser.TableView("blocks-page", tbmode);
-            this.tbview.className = "table cool table-hover";
-            this.tbview.update();
-        }
-        /**
-         * loadView()
-         */
-        loadView(pageUtil) {
-            this.text.text = "总记录数:" + pageUtil.totalCount + " 总页数:" + pageUtil.totalPage + " 当前页:" + pageUtil.currentPage;
-            if (pageUtil.totalPage - pageUtil.currentPage) {
-                this.next.classList.remove('disabled');
-            }
-            else {
-                this.next.classList.add('disabled');
-            }
-            if (pageUtil.currentPage - 1) {
-                this.previous.classList.remove('disabled');
-            }
-            else {
-                this.previous.classList.add('disabled');
-            }
-            this.tbview.update();
-        }
-    }
-    WebBrowser.BlocksView = BlocksView;
-    class WalletView {
-        constructor() { }
-        /**
-         * showDetails
-         */
-        showDetails(detail) {
-            $("#wallet-details").empty();
-            let html = "";
-            let lis = '';
-            for (let n = 0; n < detail.balances.length; n++) {
-                const balance = detail.balances[n];
-                let name = balance.name.map((name) => { return name.name; }).join('|');
-                lis += '<li class="list-group-item"> ' + name + ' : ' + balance.balance + '</li>';
-            }
-            html += '<div class="row"><div class=" col-lg-6">';
-            html += '<div class="panel panel-default" style="height:100%">';
-            html += '<div class="panel-heading">';
-            html += '<h3 class="panel-title code" >' + detail.address + '</h3>';
-            html += '</div>';
-            html += '<div class=" panel-body" >api:' + detail.height + ' </div>';
-            html += '</div>';
-            html += '</div>';
-            html += '<div class=" col-lg-6">';
-            html += '<div class="panel panel-default" style="height:100%">';
-            html += '<div class="panel-heading">';
-            html += '<h3 class="panel-title code" >Balance</h3>';
-            html += '</div>';
-            html += '<ul id="balance-wallet" class="list-group" >';
-            html += lis;
-            html += '</ul>';
-            html += '</div></div>';
-            $("#wallet-details").append(html);
-        }
-        /**
-         * showSelectAddrs
-         */
-        showSelectAddrs(addrs) {
-            $("#selectAddress").empty();
-            addrs.forEach((addr) => {
-                $("#selectAddress").append('<label><input type="radio" name="addrRadio" id="addrRadio1" value="' + addr + '" aria-label="...">' + addr + '</label>');
-            });
-            $("#selectAddr").modal("show");
-        }
-        /**
-         * showUtxo
-         */
-        showUtxo(utxos) {
-            $("#wallet-utxos").empty();
-            utxos.forEach((utxo) => {
-                let html = `
-                <tr>
-                <td class='code'>` + utxo.name + `
-                </td>
-                <td>` + utxo.value + `
-                </td>
-                <td><a class='code' target='_blank' rel='external nofollow' href='` + WebBrowser.Url.href_transaction(utxo.txid) + `'>` + utxo.txid + `
-                </a>[" + utxo.n + "]</td>"
-                </tr>`;
-                $("#wallet-utxos").append(html);
-            });
-        }
-    }
-    WebBrowser.WalletView = WalletView;
-})(WebBrowser || (WebBrowser = {}));
+}
 //# sourceMappingURL=app.js.map

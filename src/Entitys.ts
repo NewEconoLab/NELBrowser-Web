@@ -182,6 +182,51 @@ namespace WebBrowser
             name: string;
         }[];
     }
+    export interface AddressMsg {
+        addr: string;
+        firstuse: {
+            txid: string;
+            blockindex: number;
+            blocktime: {
+                $date: number;
+            }
+        };
+        lastuse: {
+            txid: string;
+            blockindex: number;
+            blocktime: {
+                $date: number;
+            }
+        };
+        txcount: number;
+    }
+
+    export interface TransOfAddress {
+        addr: string,
+        txid: string,
+        blockindex: number,
+        blocktime: {
+            $date: number
+        },
+        type: string,
+        vout: [
+            {
+                n: number,
+                asset: string,
+                value: number,
+                address: string
+            }
+        ],
+        vin: [
+            {
+                n: number,
+                asset: string,
+                value: number,
+                address: string
+            }
+        ]
+    }
+
     export interface Nep5OfAddress {
         assetid: string;
         balance: number;
@@ -254,19 +299,6 @@ namespace WebBrowser
     {
         NEO = '0xc56f33fc6ecfcd0c225c4ab356fee59390af8560be0e930faebe74a6daff7c9b',
         GAS = '0x602c79718b16e442de58778e148d0b1084e3b2dffd5de6b7b16cee7969282de7',
-    }
-
-    export class TableMode
-    {
-        public tablId: string;
-        public ths: Map<string, string>;
-        public tds: Map<string, string>[];
-        constructor(ths: Map<string, string>, tds: Map<string, string>[], tableId: string)
-        {
-            this.ths = ths;
-            this.tds = tds;
-            this.tablId = tableId;
-        }
     }
 
     export class Detail

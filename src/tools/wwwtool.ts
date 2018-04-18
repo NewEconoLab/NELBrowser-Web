@@ -4,16 +4,18 @@ namespace WebBrowser
     export class WWW
     {
         static api: string = "https://api.nel.group/api/";
+        static apiaggr: string = "https://apiaggr.nel.group/api/testnet";
 
         static makeRpcUrl(method: string, ..._params: any[])
         {
             var url = WWW.api + locationtool.getNetWork();
-
-            if (url[url.length - 1] != '/')
-                url = url + "/";
+            var urlout = WWW.makeUrl(method, url, ..._params);
+            return urlout;
+        }
+        static makeUrl(method: string, url: string, ..._params: any[]) 
+        {
             var urlout = url + "?jsonrpc=2.0&id=1&method=" + method + "&params=[";
-            for (var i = 0; i < _params.length; i++)
-            {
+            for (var i = 0; i < _params.length; i++) {
                 urlout += JSON.stringify(_params[i]);
                 if (i != _params.length - 1)
                     urlout += ",";
@@ -159,11 +161,19 @@ namespace WebBrowser
         }
 
         static async getaddrsesstxs(addr: string, size: number, page: number) {
-            var str = WWW.makeRpcUrl("getaddresstxs", addr, size, page);
-            var result = await fetch(str, { "method": "post" });
+            var str = WWW.makeUrl("getaddresstxs", WWW.apiaggr, addr, size, page);
+            var result = await fetch(str, { "method": "get"});
             var json = await result.json();
             var r = json["result"];
-            return r as Addr[];
+            return r as TransOfAddress[];
+        }
+
+        static async api_getaddrMsg(addr: string) {
+            var str = WWW.makeRpcUrl("getaddr", addr);
+            var result = await fetch(str, { "method": "get" });
+            var json = await result.json();
+            var r = json["result"];
+            return r as AddressMsg[];
         }
     }
 }

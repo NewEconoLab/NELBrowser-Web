@@ -73,7 +73,11 @@ namespace WebBrowser.pages
     ` ;
     export var addres: string = `
     <div class="container">
-        <div class="title"><span>Address info</span></div>
+        <div class="title">
+            <span>Address info</span>
+            <div class="go-back" id="goalladress"></div>
+        </div>
+        
         <div class="list-nel">
             <div class="list-head">
                 <div class="line">
@@ -84,6 +88,14 @@ namespace WebBrowser.pages
                 <div class="line">
                     <div class="title-nel"><span>Address</span></div> 
                     <div class="content-nel"><span id="address"></span></div>
+                </div>
+                <div class="line">
+                    <div class="title-nel"><span>Created</span></div> 
+                    <div class="content-nel"><span id="created"></span></div>
+                </div>
+                <div class="line">
+                    <div class="title-nel"><span>Transactions</span></div> 
+                    <div class="content-nel"><span id="totalTran"></span></div>
                 </div>
             </div>
         </div>
@@ -103,54 +115,26 @@ namespace WebBrowser.pages
 
         <div class="title"><span>Transactions</span></div>
         <div class="list-nel">
-            <table class="table cool table-nel">
-                <thead>
-                    <tr>
-                        <th>TXID</th>
-                        <th>Type</th>
-                        <th>Size</th>
-                        <th>Time</th>
-                    </tr>
-                </thead>
-                <tbody id="transaction-table"></tbody>
-            </table>
+	        <div class="list-head">
+		        <div class="line">
+			        <div class="title-content"><span>TXID</span></div>
+			        <div class="title-content"><span>Type</span></div>
+			        <div class="title-content"><span>Time</span></div>
+			        <div class="title-nel" style="width:60px;"></div>
+		        </div>
+	        </div>
+	        <div class="list-body" id="addr-trans">
+	        </div>
         </div>
         <div class="page-number">
             <span id="trans-page-msg"></span>
         </div>
-        <div class="page">
+        <div class="page" id="addr-trans-page">
             <div id="trans-previous" class="page-previous">
                 <img src="./img/lefttrangle.svg" alt="">
             </div>
             <div style="width:1px;"></div>
             <div id="trans-next" class="page-next">
-                <img src="./img/righttrangle.svg" alt="">
-            </div>
-        </div>
-
-        <div class="title"><span>Transfers</span></div>
-        <div class="list-nel">
-            <table class="table cool table-nel">
-                <thead>
-                    <tr>
-                        <th>TXID</th>
-                        <th>From</th>
-                        <th>Asset</th>
-                        <th>Time</th>
-                    </tr>
-                </thead>
-                <tbody id="transaction-table"></tbody>
-            </table>
-        </div>
-        <div class="page-number">
-            <span id="transf-page-msg"></span>
-        </div>
-        <div class="page">
-            <div id="transf-previous" class="page-previous">
-                <img src="./img/lefttrangle.svg" alt="">
-            </div>
-            <div style="width:1px;"></div>
-            <div id="transf-next" class="page-next">
                 <img src="./img/righttrangle.svg" alt="">
             </div>
         </div>
@@ -168,18 +152,6 @@ namespace WebBrowser.pages
             </thead>
             <tbody id="utxos"></tbody>
         </table>
-        <div class="page-number">
-            <span id="utxo-page-msg"></span>
-        </div>
-        <div class="page">
-            <div id="utxo-previous" class="page-previous">
-                <img src="./img/lefttrangle.svg" alt="">
-            </div>
-            <div style="width:1px;"></div>
-            <div id="utxo-next" class="page-next">
-                <img src="./img/righttrangle.svg" alt="">
-            </div>
-        </div>
     </div>
     `;
     export var asset: string = `

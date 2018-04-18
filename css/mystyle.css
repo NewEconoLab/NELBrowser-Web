@@ -73,12 +73,22 @@ body:after {
 .title {
     padding-top: 80px;
     padding-bottom: 40px;
+    position:relative;
 }
 .title span {
     font-family: PingFangSC-Medium;
     font-size: 20px;
     line-height: 20px;
     padding-left: 8px;
+}
+.title .go-back {
+    position: absolute;
+    right: 0;
+    top:85px;
+    font-size: 16px;
+    color: #198CEE;
+    line-height: 16px;
+    cursor:pointer;
 }
 .caption {
     margin: 0 auto;
@@ -122,7 +132,7 @@ body:after {
     /* W3C */
     display: box;
     text-align: center;
-    padding-top: 30px;
+    margin-top: 30px;
 }
 
 
@@ -276,12 +286,30 @@ body:after {
 }
 
 .transaction {
-    display: -moz-box;
-    -moz-box-pack: center;
-    -moz-box-align: center;
-    /* Safari, Chrome, and Opera */
-    display: -webkit-box;
+    display:flex;
+    padding:10px 20px;
 }
+.formaddr{
+    flex:1;
+    text-align:center;
+}
+.toaddr {
+    flex: 1;
+    text-align: center;
+}
+
+.turnto {
+    width: 100px;
+    text-align: center;
+    position:relative;
+}
+.turnto img {
+    position: absolute;
+    top: 50%;
+    margin-left: -11px;
+    margin-top:-7px;
+}
+
 
 .item {
     display: -moz-box;
@@ -289,8 +317,7 @@ body:after {
     -moz-box-align: center;
     /* Safari, Chrome, and Opera */
     display: -webkit-box;
-    padding-left:60px;
-    padding-top:25px;
+    padding:5px;
     
 }
 
@@ -305,17 +332,6 @@ body:after {
     line-height: 14px;
 }
 
-.turnto {
-    width: 100px;
-    height: 100%;
-    display: table-cell;
-    vertical-align: middle;
-    text-align: center;
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    -ms-user-select: none;
-    user-select: none;
-}
 
 
 @media (min-width: 768px) {
@@ -348,3 +364,6 @@ body:after {
     border-bottom: 0;
     text-align: center;
 } */
+.color-FDBA27 {
+    color: #FDBA27;
+}

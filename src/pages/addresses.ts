@@ -87,7 +87,7 @@
                 let href = Url.href_address( item.addr );
                 let html = `
                 <tr>
-                <td><a class="code" target="_blank" href="`+ href + `">` + item.addr + `</a></td>
+                <td><a class="code" target="_self" href="`+ href + `">` + item.addr + `</a></td>
                 <td>` + item.firstDate + `</td>
                 <td>`+ item.lastDate + `</td>
                 <td>` + item.txcount + `</td></tr>`;

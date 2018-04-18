@@ -366,49 +366,6 @@ namespace WebBrowser
         }
     }
 
-    export class TableView
-    {
-        private _tableMode: TableMode;
-        private divId: string;
-        constructor(divId: string, tableMode: TableMode)
-        {
-            this._tableMode = tableMode;
-            this.divId = divId;
-            let html = "<table id='" + tableMode.tablId + "'>"
-                + "<thead><head></head></thead><tbody></tbody></table>";
-            $("#" + this.divId).append(html);
-        }
-        update()
-        {
-            this._tableMode.ths.forEach((th) =>
-            {
-                $("#blocklist").children('thead').append('<th>' + th + '</th>');
-            });
-            let tbody = $("#blocklist").children('tbody');
-            let tr: string = '';
-            this._tableMode.tds.forEach((tdMap) =>
-            {
-                let td = "";
-                this._tableMode.ths.forEach((val, key) =>
-                {
-                    td += "<td>" + tdMap.get(key) + "</td>";
-                });
-                tr += "<tr>" + td + "</tr>";
-            });
-            tbody.empty();
-            tbody.append(tr);
-        }
-        set className(className: string)
-        {
-            $("#" + this._tableMode.tablId).addClass(className);
-
-        }
-        set tableMode(tableMode: TableMode)
-        {
-            this._tableMode = tableMode;
-        }
-    }
-
     export class walletStorage
     {
         public wallets = localStorage.getItem("Nel_wallets");

@@ -426,3 +426,7 @@ table>tbody>tr {
     color: #fff;
     background-color: #198CEE;
 }
+
+.title .go-back {
+    color: #2DDE4F;
+}

@@ -79,7 +79,7 @@ declare namespace Neo {
         static parse(str: string): BigInteger;
         static pow(value: number | BigInteger, exponent: number): BigInteger;
         pow(exponent: number): BigInteger;
-        static random(bitLength: number, rng?: RandomSource): BigInteger;
+        static random(bitLength: number, rng?: Crypto): BigInteger;
         static remainder(x: number | BigInteger, y: number | BigInteger): BigInteger;
         remainder(other: number | BigInteger): BigInteger;
         rightShift(shift: number): BigInteger;
@@ -187,9 +187,18 @@ declare namespace Neo {
     }
 }
 declare namespace ThinNeo {
+    class contract {
+        script: string;
+        parameters: {
+            "name": string;
+            "type": string;
+        }[];
+        deployed: boolean;
+    }
     class nep6account {
         address: string;
         nep2key: string;
+        contract: contract;
         getPrivateKey(scrypt: nep6ScryptParameters, password: string, callback: (info: string, result: string | Uint8Array) => void): void;
     }
     class nep6ScryptParameters {
@@ -450,6 +459,16 @@ declare namespace ThinNeo {
         Serialize(trans: Transaction, writer: Neo.IO.BinaryWriter): void;
         Deserialize(trans: Transaction, reader: Neo.IO.BinaryReader): void;
     }
+    class ClaimTransData implements IExtData {
+        claims: TransactionInput[];
+        Serialize(trans: Transaction, writer: Neo.IO.BinaryWriter): void;
+        Deserialize(trans: Transaction, reader: Neo.IO.BinaryReader): void;
+    }
+    class MinerTransData implements IExtData {
+        nonce: number;
+        Serialize(trans: Transaction, writer: Neo.IO.BinaryWriter): void;
+        Deserialize(trans: Transaction, reader: Neo.IO.BinaryReader): void;
+    }
     class Transaction {
         type: TransactionType;
         version: number;
@@ -460,6 +479,7 @@ declare namespace ThinNeo {
         SerializeUnsigned(writer: Neo.IO.BinaryWriter): void;
         Serialize(writer: Neo.IO.BinaryWriter): void;
         extdata: IExtData;
+        DeserializeUnsigned(ms: Neo.IO.BinaryReader): void;
         Deserialize(ms: Neo.IO.BinaryReader): void;
         GetMessage(): Uint8Array;
         GetRawData(): Uint8Array;
@@ -671,6 +691,7 @@ declare namespace Neo.IO {
         private array_float32;
         private array_float64;
         constructor(input: Stream);
+        canRead(): number;
         close(): void;
         private fillBuffer(buffer, count);
         read(buffer: ArrayBuffer, index: number, count: number): number;
