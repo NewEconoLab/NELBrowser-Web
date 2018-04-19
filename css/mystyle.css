@@ -334,7 +334,7 @@ body:after {
 
 
 
-@media (min-width: 768px) {
+@media (min-width: 1200px) {
     .navbar-right .dropdown-nel {
         right: 0;
         left: auto;
@@ -366,4 +366,6 @@ body:after {
 } */
 .color-FDBA27 {
     color: #FDBA27;
+}
+  
 }

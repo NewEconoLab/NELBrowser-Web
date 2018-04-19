@@ -65,8 +65,8 @@ var WebBrowser;
                 this.div.hidden = false;
                 $("#blocks-page").find("#next").click(() => {
                     if (this.pageUtil.currentPage == this.pageUtil.totalPage) {
-                        alert('��ǰҳ�Ѿ������һҳ��');
-                        return;
+                        $("#errContent").text(`当前页已经是最后一页了`);
+                        $('#errMsg').modal('show');
                     }
                     else {
                         this.pageUtil.currentPage += 1;
@@ -75,8 +75,8 @@ var WebBrowser;
                 });
                 $("#blocks-page").find("#previous").click(() => {
                     if (this.pageUtil.currentPage <= 1) {
-                        alert('��ǰ�Ѿ��ǵ�һҳ��');
-                        return;
+                        $("#errContent").text(`当前页已经是第一页`);
+                        $('#errMsg').modal('show');
                     }
                     else {
                         this.pageUtil.currentPage -= 1;
@@ -248,9 +248,18 @@ var WebBrowser;
                 return r;
             });
         }
-        static api_getUTXO(address) {
+        static api_getUTXOCount(address) {
             return __awaiter(this, void 0, void 0, function* () {
                 var str = WWW.makeRpcUrl("getutxo", address);
+                var result = yield fetch(str, { "method": "get" });
+                var json = yield result.json();
+                var r = json["result"];
+                return r;
+            });
+        }
+        static api_getUTXO(address, size, page) {
+            return __awaiter(this, void 0, void 0, function* () {
+                var str = WWW.makeRpcUrl("getutxo", address, 1, size, page);
                 var result = yield fetch(str, { "method": "get" });
                 var json = yield result.json();
                 var r = json["result"];
@@ -448,15 +457,28 @@ var WebBrowser;
             return __awaiter(this, void 0, void 0, function* () {
                 this.div.innerHTML = WebBrowser.pages.addres;
                 var address = WebBrowser.locationtool.getParam();
+                let href = WebBrowser.locationtool.getUrl() + "/addresses";
+                let html = '<a href="' + href + '" target="_self">&lt&lt&ltBack to all addresses</a>';
+                $("#goalladress").append(html);
                 var addrMsg = yield WebBrowser.WWW.api_getaddrMsg(address);
-                var utxos = yield WebBrowser.WWW.api_getUTXO(address);
+                var utxos = yield WebBrowser.WWW.api_getUTXOCount(address);
                 var balances = yield WebBrowser.WWW.api_getbalances(address);
                 var nep5ofAddress = yield WebBrowser.WWW.api_getallnep5assetofaddress(address);
-                this.loadAddressInfo(address, addrMsg);
-                this.loadView(balances, nep5ofAddress, utxos);
-                this.pageUtil = new WebBrowser.PageUtil(addrMsg[0].txcount, 10);
-                this.initPage(addrMsg[0].txcount, address);
-                this.updateAddrTrasctions(address, this.pageUtil);
+                if (addrMsg) {
+                    this.loadAddressInfo(address, addrMsg);
+                    this.loadView(balances, nep5ofAddress);
+                    this.pageUtil = new WebBrowser.PageUtil(addrMsg[0].txcount, 10);
+                    this.initTranPage(addrMsg[0].txcount, address);
+                    this.updateAddrTrasctions(address, this.pageUtil);
+                    this.pageUtilUtxo = new WebBrowser.PageUtil(utxos.length, 10);
+                    this.initUTXOPage(utxos.length, address);
+                    this.updateAddrUTXO(address, this.pageUtilUtxo);
+                    //this.loadUTXOView(utxos);
+                }
+                else {
+                    $("#errContent").text("�õ�ַû������");
+                    $('#errMsg').modal('show');
+                }
                 this.div.hidden = false;
             });
         }
@@ -467,19 +489,18 @@ var WebBrowser;
             $("#address").text(address);
             $("#created").text(createdTime);
             $("#totalTran").text(totalTran);
-            let href = WebBrowser.locationtool.getUrl() + "/addresses";
-            let html = '<a href="' + href + '" target="_self">&lt&lt&ltBack to all addresses</a>';
-            $("#goalladress").append(html);
         }
-        loadView(balances, nep5ofAddress, utxos) {
+        loadView(balances, nep5ofAddress) {
             $("#utxos").empty();
-            balances.forEach((balance) => {
-                var name = WebBrowser.CoinTool.assetID2name[balance.asset];
-                let html = `
+            if (balances) {
+                balances.forEach((balance) => {
+                    var name = WebBrowser.CoinTool.assetID2name[balance.asset];
+                    let html = `
                 <div class="line" > <div class="title-nel" > <span>` + name + ` </span></div >
                 <div class="content-nel" > <span> ` + balance.balance + ` </span></div > </div>`;
-                $("#balance").append(html);
-            });
+                    $("#balance").append(html);
+                });
+            }
             if (nep5ofAddress) {
                 nep5ofAddress.forEach((nep5ofAddress) => {
                     let html = `
@@ -488,8 +509,11 @@ var WebBrowser;
                     $("#balance").append(html);
                 });
             }
-            utxos.forEach((utxo) => {
-                let html = `
+        }
+        loadUTXOView(utxos) {
+            if (utxos) {
+                utxos.forEach((utxo) => {
+                    let html = `
                 <tr>
                 <td class='code'>` + WebBrowser.CoinTool.assetID2name[utxo.asset] + `
                 </td>
@@ -498,10 +522,11 @@ var WebBrowser;
                 <td><a class='code' target='_blank' href='` + WebBrowser.Url.href_transaction(utxo.txid) + `'>` + utxo.txid + `
                 </a>[` + utxo.n + `]</td>
                 </tr>`;
-                $("#utxos").append(html);
-            });
+                    $("#add-utxos").append(html);
+                });
+            }
         }
-        initPage(transtotal, address) {
+        initTranPage(transtotal, address) {
             if (transtotal > 10) {
                 $("#trans-page-msg").show();
                 $("#addr-trans-page").show();
@@ -512,7 +537,8 @@ var WebBrowser;
             }
             $("#trans-next").click(() => {
                 if (this.pageUtil.currentPage == this.pageUtil.totalPage) {
-                    alert('��ǰҳ�Ѿ������һҳ��');
+                    $("#errContent").text('��ǰҳ�Ѿ������һҳ��');
+                    $('#errMsg').modal('show');
                 }
                 else {
                     this.pageUtil.currentPage += 1;
@@ -521,11 +547,42 @@ var WebBrowser;
             });
             $("#trans-previous").click(() => {
                 if (this.pageUtil.currentPage <= 1) {
-                    alert('��ǰ�Ѿ��ǵ�һҳ��');
+                    $("#errContent").text('��ǰ�Ѿ��ǵ�һҳ��');
+                    $('#errMsg').modal('show');
                 }
                 else {
                     this.pageUtil.currentPage -= 1;
                     this.updateAddrTrasctions(address, this.pageUtil);
+                }
+            });
+        }
+        initUTXOPage(utxototal, address) {
+            if (utxototal > 10) {
+                $("#utxo-page-msg").show();
+                $("#addr-utxo-page").show();
+            }
+            else {
+                $("#utxo-page-msg").hide();
+                $("#addr-utxo-page").hide();
+            }
+            $("#utxo-next").click(() => {
+                if (this.pageUtilUtxo.currentPage == this.pageUtilUtxo.totalPage) {
+                    $("#errContent").text('��ǰҳ�Ѿ������һҳ��');
+                    $('#errMsg').modal('show');
+                }
+                else {
+                    this.pageUtilUtxo.currentPage += 1;
+                    this.updateAddrUTXO(address, this.pageUtilUtxo);
+                }
+            });
+            $("#utxo-previous").click(() => {
+                if (this.pageUtilUtxo.currentPage <= 1) {
+                    $("#errContent").text('��ǰ�Ѿ��ǵ�һҳ��');
+                    $('#errMsg').modal('show');
+                }
+                else {
+                    this.pageUtilUtxo.currentPage -= 1;
+                    this.updateAddrUTXO(address, this.pageUtilUtxo);
                 }
             });
         }
@@ -536,17 +593,19 @@ var WebBrowser;
                 //��ҳ��ѯ���׼�¼
                 let txlist = yield WebBrowser.WWW.getaddrsesstxs(address, pageUtil.pageSize, pageUtil.currentPage);
                 let listLength = 0;
-                if (txlist.length < 10) {
-                    listLength = txlist.length;
-                }
-                else {
-                    listLength = pageUtil.pageSize;
-                }
-                for (var n = 0; n < listLength; n++) {
-                    let txid = txlist[n].txid;
-                    let time = WebBrowser.DateTool.dateFtt("yyyy-MM-dd hh:mm:ss", new Date(txlist[n].blocktime.$date));
-                    let html = yield this.getAddrTransLine(txid, txlist[n].type, "xxxxxxx", time, txlist[n].vin, txlist[n].vout);
-                    $("#addr-trans").append(html);
+                if (txlist) {
+                    if (txlist.length < 10) {
+                        listLength = txlist.length;
+                    }
+                    else {
+                        listLength = pageUtil.pageSize;
+                    }
+                    for (var n = 0; n < listLength; n++) {
+                        let txid = txlist[n].txid;
+                        let time = WebBrowser.DateTool.dateFtt("yyyy-MM-dd hh:mm:ss", new Date(txlist[n].blocktime.$date));
+                        let html = yield this.getAddrTransLine(txid, txlist[n].type, "xxxxxxx", time, txlist[n].vin, txlist[n].vout);
+                        $("#addr-trans").append(html);
+                    }
                 }
                 WebBrowser.pageCut(this.pageUtil);
                 let minNum = pageUtil.currentPage * pageUtil.pageSize - pageUtil.pageSize;
@@ -568,6 +627,45 @@ var WebBrowser;
                 }
                 else {
                     $("#trans-previous").addClass('disabled');
+                }
+            });
+        }
+        //����UTXO��¼
+        updateAddrUTXO(address, pageUtil) {
+            return __awaiter(this, void 0, void 0, function* () {
+                $("#add-utxos").empty();
+                //��ҳ��ѯ���׼�¼
+                let utxolist = yield WebBrowser.WWW.api_getUTXO(address, pageUtil.pageSize, pageUtil.currentPage);
+                let listLength = 0;
+                if (utxolist) {
+                    if (utxolist.length < 10) {
+                        listLength = utxolist.length;
+                    }
+                    else {
+                        listLength = pageUtil.pageSize;
+                    }
+                    this.loadUTXOView(utxolist);
+                }
+                WebBrowser.pageCut(this.pageUtil);
+                let minNum = pageUtil.currentPage * pageUtil.pageSize - pageUtil.pageSize;
+                let maxNum = pageUtil.totalCount;
+                let diffNum = maxNum - minNum;
+                if (diffNum > 10) {
+                    maxNum = pageUtil.currentPage * pageUtil.pageSize;
+                }
+                let pageMsg = "UTXO " + (minNum + 1) + " to " + maxNum + " of " + pageUtil.totalCount;
+                $("#utxo-page-msg").html(pageMsg);
+                if (this.pageUtil.totalPage - this.pageUtil.currentPage) {
+                    $("#utxo-next").removeClass('disabled');
+                }
+                else {
+                    $("#utxo-next").addClass('disabled');
+                }
+                if (this.pageUtil.currentPage - 1) {
+                    $("#utxo-previous").removeClass('disabled');
+                }
+                else {
+                    $("#utxo-previous").addClass('disabled');
                 }
             });
         }
@@ -692,8 +790,8 @@ var WebBrowser;
                 }
                 $("#addrs-page").find("#next").click(() => {
                     if (this.pageUtil.currentPage == this.pageUtil.totalPage) {
-                        alert('当前页已经是最后一页了');
-                        return;
+                        $("#errContent").text('当前页已经是最后一页了');
+                        $('#errMsg').modal('show');
                     }
                     else {
                         this.pageUtil.currentPage += 1;
@@ -702,8 +800,8 @@ var WebBrowser;
                 });
                 $("#addrs-page").find("#previous").click(() => {
                     if (this.pageUtil.currentPage <= 1) {
-                        alert('当前已经是第一页了');
-                        return;
+                        $("#errContent").text('当前已经是第一页了');
+                        $('#errMsg').modal('show');
                     }
                     else {
                         this.pageUtil.currentPage -= 1;
@@ -812,8 +910,8 @@ var WebBrowser;
             });
             this.assetlist.find("#next").click(() => {
                 if (this.pageUtil.currentPage == this.pageUtil.totalPage) {
-                    alert('当前页已经是最后一页了');
-                    return;
+                    $("#errContent").text('当前页已经是最后一页了');
+                    $('#errMsg').modal('show');
                 }
                 else {
                     this.pageUtil.currentPage += 1;
@@ -827,8 +925,8 @@ var WebBrowser;
             });
             this.assetlist.find("#previous").click(() => {
                 if (this.pageUtil.currentPage <= 1) {
-                    alert('当前已经是第一页了');
-                    return;
+                    $("#errContent").text('当前已经是第一页了');
+                    $('#errMsg').modal('show');
                 }
                 else {
                     this.pageUtil.currentPage -= 1;
@@ -1126,85 +1224,99 @@ var WebBrowser;
     `;
         pages.addres = `
     <div class="container">
-        <div class="title">
-            <span>Address info</span>
-            <div class="go-back" id="goalladress"></div>
-        </div>
+        <div class="container-box">
+            <div class="title">
+                <span>Address info</span>
+                <div class="go-back" id="goalladress"></div>
+            </div>
         
-        <div class="list-nel">
-            <div class="list-head">
-                <div class="line">
+            <div class="list-nel">
+                <div class="list-head">
+                    <div class="line">
                     
+                    </div>
+                </div>
+                <div class="list-body" id="address-info">
+                    <div class="line">
+                        <div class="title-nel"><span>Address</span></div> 
+                        <div class="content-nel"><span id="address"></span></div>
+                    </div>
+                    <div class="line">
+                        <div class="title-nel"><span>Created</span></div> 
+                        <div class="content-nel"><span id="created"></span></div>
+                    </div>
+                    <div class="line">
+                        <div class="title-nel"><span>Transactions</span></div> 
+                        <div class="content-nel"><span id="totalTran"></span></div>
+                    </div>
                 </div>
             </div>
-            <div class="list-body" id="address-info">
-                <div class="line">
-                    <div class="title-nel"><span>Address</span></div> 
-                    <div class="content-nel"><span id="address"></span></div>
-                </div>
-                <div class="line">
-                    <div class="title-nel"><span>Created</span></div> 
-                    <div class="content-nel"><span id="created"></span></div>
-                </div>
-                <div class="line">
-                    <div class="title-nel"><span>Transactions</span></div> 
-                    <div class="content-nel"><span id="totalTran"></span></div>
-                </div>
-            </div>
-        </div>
 
-        <div class="title"><span>Balance</span></div>
-        <div class="list-nel">
-            <div class="list-head">
-                <div class="line">
+            <div class="title"><span>Balance</span></div>
+            <div class="list-nel">
+                <div class="list-head">
+                    <div class="line">
                     
+                    </div>
+                </div>
+                <div class="list-body" id="balance">
+                    <div class="line">
+                    </div>
                 </div>
             </div>
-            <div class="list-body" id="balance">
-                <div class="line">
+
+            <div class="title"><span>Transactions</span></div>
+            <div class="list-nel">
+	            <div class="list-head">
+		            <div class="line">
+			            <div class="title-content"><span>TXID</span></div>
+			            <div class="title-content"><span>Type</span></div>
+			            <div class="title-content"><span>Time</span></div>
+			            <div class="title-nel" style="width:60px;"></div>
+		            </div>
+	            </div>
+	            <div class="list-body" id="addr-trans">
+	            </div>
+            </div>
+            <div class="page-number">
+                <span id="trans-page-msg"></span>
+            </div>
+            <div class="page" id="addr-trans-page">
+                <div id="trans-previous" class="page-previous">
+                    <img src="./img/lefttrangle.svg" alt="">
+                </div>
+                <div style="width:1px;"></div>
+                <div id="trans-next" class="page-next">
+                    <img src="./img/righttrangle.svg" alt="">
                 </div>
             </div>
-        </div>
 
-        <div class="title"><span>Transactions</span></div>
-        <div class="list-nel">
-	        <div class="list-head">
-		        <div class="line">
-			        <div class="title-content"><span>TXID</span></div>
-			        <div class="title-content"><span>Type</span></div>
-			        <div class="title-content"><span>Time</span></div>
-			        <div class="title-nel" style="width:60px;"></div>
-		        </div>
-	        </div>
-	        <div class="list-body" id="addr-trans">
-	        </div>
-        </div>
-        <div class="page-number">
-            <span id="trans-page-msg"></span>
-        </div>
-        <div class="page" id="addr-trans-page">
-            <div id="trans-previous" class="page-previous">
-                <img src="./img/lefttrangle.svg" alt="">
+            <div class="title">
+                <span>UTXO</span>
             </div>
-            <div style="width:1px;"></div>
-            <div id="trans-next" class="page-next">
-                <img src="./img/righttrangle.svg" alt="">
+            <table class="table table-nel cool">
+                <thead>
+                    <tr>
+                        <th>asset</th>
+                        <th>number</th>
+                        <th>txid</th>
+                    </tr>
+                </thead>
+                <tbody id="add-utxos"></tbody>
+            </table>
+            <div class="page-number">
+                <span id="utxo-page-msg"></span>
             </div>
-        </div>
-
-        <div class="title">
-            <span>UTXO</span>
-        </div>
-        <table class="table table-nel cool">
-            <thead>
-                <tr>
-                    <th>asset</th>
-                    <th>number</th>
-                    <th>txid</th>
-                </tr>
-            </thead>
-            <tbody id="utxos"></tbody>
-        </table>
+            <div class="page" id="addr-utxo-page">
+                <div id="utxo-previous" class="page-previous">
+                    <img src="./img/lefttrangle.svg" alt="">
+                </div>
+                <div style="width:1px;"></div>
+                <div id="utxo-next" class="page-next">
+                    <img src="./img/righttrangle.svg" alt="">
+                </div>
+            </div>
+        <div>
     </div>
     `;
         pages.asset = `
@@ -1443,8 +1555,8 @@ var WebBrowser;
             });
             this.txlist.find("#next").click(() => {
                 if (this.pageUtil.currentPage == this.pageUtil.totalPage) {
-                    alert('当前页已经是最后一页了');
-                    return;
+                    $("#errContent").text('当前页已经是最后一页了');
+                    $('#errMsg').modal('show');
                 }
                 else {
                     this.pageUtil.currentPage += 1;
@@ -1453,8 +1565,8 @@ var WebBrowser;
             });
             this.txlist.find("#previous").click(() => {
                 if (this.pageUtil.currentPage <= 1) {
-                    alert('当前已经是第一页了');
-                    return;
+                    $("#errContent").text('当前已经是第一页了');
+                    $('#errMsg').modal('show');
                 }
                 else {
                     this.pageUtil.currentPage -= 1;
@@ -2556,15 +2668,20 @@ var WebBrowser;
                     window.open(WebBrowser.locationtool.getUrl() + '/address/' + search);
                 }
                 else {
-                    alert('请输入正确的地址');
+                    $("#errContent").text('请输入正确的地址');
+                    $('#errMsg').modal('show');
                 }
             }
             search = search.replace('0x', '');
             if (search.length == 64) {
                 window.open(WebBrowser.locationtool.getUrl() + '/transaction/' + search);
             }
-            if (!isNaN(Number(search))) {
+            else if (!isNaN(Number(search))) {
                 window.open(WebBrowser.locationtool.getUrl() + '/block/' + search);
+            }
+            else {
+                $("#errContent").text('输入有误，请重新输入');
+                $('#errMsg').modal('show');
             }
         }
     }
@@ -2705,16 +2822,16 @@ var WebBrowser;
                 //监听下一页
                 $("#blocks-page").find("#next").click(() => {
                     if (pageUtil.currentPage == pageUtil.totalPage) {
-                        alert('当前页已经是最后一页了');
-                        return;
+                        $("#errContent").text('当前页已经是最后一页了');
+                        $('#errMsg').modal('show');
                     }
                     pageUtil.currentPage += 1;
                     block.updateBlocks(pageUtil);
                 });
                 $("#blocks-page").find("#previous").click(() => {
                     if (pageUtil.currentPage <= 1) {
-                        alert('当前已经是第一页了');
-                        return;
+                        $("#errContent").text('当前已经是第一页了');
+                        $('#errMsg').modal('show');
                     }
                     pageUtil.currentPage -= 1;
                     block.updateBlocks(pageUtil);

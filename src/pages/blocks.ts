@@ -14,8 +14,8 @@ namespace WebBrowser
             this.div.hidden = false;
             $("#blocks-page").find("#next").click(() => {
                 if (this.pageUtil.currentPage == this.pageUtil.totalPage) {
-                    alert('当前页已经是最后一页了');
-                    return;
+                    $("#errContent").text(`褰撳墠椤靛凡缁忔槸鏈�鍚庝竴椤典簡`);
+                    $('#errMsg').modal('show');
                 } else {
                     this.pageUtil.currentPage += 1;
                     this.updateBlocks(this.pageUtil);
@@ -23,8 +23,8 @@ namespace WebBrowser
             });
             $("#blocks-page").find("#previous").click(() => {
                 if (this.pageUtil.currentPage <= 1) {
-                    alert('当前已经是第一页了');
-                    return;
+                    $("#errContent").text(`褰撳墠椤靛凡缁忔槸绗竴椤礰);
+                    $('#errMsg').modal('show');
                 } else {
                     this.pageUtil.currentPage -= 1;
                     this.updateBlocks(this.pageUtil);

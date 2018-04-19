@@ -49,8 +49,8 @@
 
             this.assetlist.find("#next").click(() => {
                 if (this.pageUtil.currentPage == this.pageUtil.totalPage) {
-                    alert('当前页已经是最后一页了');
-                    return;
+                    $("#errContent").text('当前页已经是最后一页了');
+                    $('#errMsg').modal('show');
                 } else {
                     this.pageUtil.currentPage += 1;
                     if (this.assetType == "Assets") {
@@ -62,8 +62,8 @@
             });
             this.assetlist.find("#previous").click(() => {
                 if (this.pageUtil.currentPage <= 1) {
-                    alert('当前已经是第一页了');
-                    return;
+                    $("#errContent").text('当前已经是第一页了');
+                    $('#errMsg').modal('show');
                 } else {
                     this.pageUtil.currentPage -= 1;
                     if (this.assetType == "Assets") {

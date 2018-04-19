@@ -41,7 +41,7 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    <span class="navbar-brand" >NEL</span>
+                    <span class="navbar-brand">NEL</span>
                 </div>
                 <div id="navbar" class="navbar-collapse collapse">
                     <ul class="nav navbar-nav">
@@ -69,7 +69,7 @@
                             <a id="assetsa">Assets</a>
                         </li>
                         <li id="wallet-btn">
-                            <a id="walleta" >Wallet</a>
+                            <a id="walleta">Wallet</a>
                         </li>
                     </ul>
                     <ul class="nav navbar-nav navbar-right">
@@ -306,68 +306,69 @@
                 </div>
             </div>
         </div>
-            <!--<h3>nep5</h3>
-        <table class="table cool table-nel">
-            <thead>
-                <tr>
-                    <th>asset</th>
-                    <th>type</th>
-                    <th>available</th>
-                    <th>registered</th>
-                </tr>
-            </thead>
-            <tbody id="nep5ass"></tbody>
-        </table>
-    </div>-->
-    <!-- 地址页面 -->
-            <div id="addrs-page" class="container-nel" hidden>
-                <div class="title">
-                    <span>Address list</span>
+        <!-- 地址页面 -->
+        <div id="addrs-page" class="container-nel" hidden>
+            <div class="title">
+                <span>Address list</span>
+            </div>
+            <table class="table table-nel cool">
+                <thead>
+                    <tr>
+                        <th>address</th>
+                        <th>First trading time</th>
+                        <th>Last trading time</th>
+                        <th>Txcount</th>
+                    </tr>
+                </thead>
+                <tbody id="addrlist"></tbody>
+            </table>
+            <div class="page-number">
+                <span id="addrs-page-msg"></span>
+            </div>
+            <div class="page">
+                <div id="previous" class="page-previous">
+                    <img src="./img/lefttrangle.svg" alt="">
                 </div>
-                <table class="table table-nel cool">
-                    <thead>
-                        <tr>
-                            <th>address</th>
-                            <th>First trading time</th>
-                            <th>Last trading time</th>
-                            <th>Txcount</th>
-                        </tr>
-                    </thead>
-                    <tbody id="addrlist"></tbody>
-                </table>
-                <div class="page-number">
-                    <span id="addrs-page-msg"></span>
-                </div>
-                <div class="page">
-                    <div id="previous" class="page-previous">
-                        <img src="./img/lefttrangle.svg" alt="">
-                    </div>
-                    <div style="width:1px;"></div>
-                    <div id="next" class="page-next">
-                        <img src="./img/righttrangle.svg" alt="">
-                    </div>
+                <div style="width:1px;"></div>
+                <div id="next" class="page-next">
+                    <img src="./img/righttrangle.svg" alt="">
                 </div>
             </div>
-            <div id="block-info"></div>
-            <div id="address-info"></div>
-            <div id="asset-info"></div>
-            <div id="transaction-info"></div>
-            <!-- wallet -->
-            <div id="wallet-page" hidden>
-            </div>
-            <div id="notfound" class="notfound" hidden>
-                <div>
-                    <span>Oops! It looks like you are lost.</span>
-                    <br>
-                    <button class="btn">Go to Homepage</button>
-                </div>
-            </div>
-            <div style="height:100px;"></div>
         </div>
+        <div id="block-info"></div>
+        <div id="address-info"></div>
+        <div id="asset-info"></div>
+        <div id="transaction-info"></div>
+        <!-- wallet -->
+        <div id="wallet-page" hidden>
+        </div>
+        <div id="notfound" class="notfound" hidden>
+            <div>
+                <span>Oops! It looks like you are lost.</span>
+                <br>
+                <button class="btn">Go to Homepage</button>
+            </div>
+        </div>
+        <div style="height:100px;"></div>
+    </div>
     <div id="footer" class="container">
     </div>
     <!-- /container -->
     <!-- modal -->
+    <div class="modal fade" id="errMsg" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title" id="myModalLabel">提示</h4>
+                </div>
+                <div class="modal-body" id="errContent"></div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal -->
+    </div>
     <!-- /modal -->
     <!-- Bootstrap core JavaScript
     ================================================== -->

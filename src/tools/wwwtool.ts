@@ -121,9 +121,16 @@ namespace WebBrowser
             var r = json["result"];
             return r;
         }
-        static async api_getUTXO(address: string)
+        static async api_getUTXOCount(address: string)
         {
             var str = WWW.makeRpcUrl( "getutxo", address);
+            var result = await fetch(str, { "method": "get" });
+            var json = await result.json();
+            var r = json["result"];
+            return r;
+        }
+        static async api_getUTXO(address: string, size: number, page: number) {
+            var str = WWW.makeRpcUrl("getutxo", address, 1, size, page);
             var result = await fetch(str, { "method": "get" });
             var json = await result.json();
             var r = json["result"];

@@ -74,17 +74,20 @@ namespace WebBrowser
                     window.open( locationtool.getUrl() + '/address/' + search );
                 } else
                 {
-                    alert( '请输入正确的地址' );
+                    $("#errContent").text('请输入正确的地址');
+                    $('#errMsg').modal('show');
                 }
             }
             search = search.replace( '0x', '' );
-            if ( search.length == 64 )
+            if (search.length == 64) {
+                window.open(locationtool.getUrl() + '/transaction/' + search);
+            } else if (!isNaN(Number(search)))
             {
-                window.open( locationtool.getUrl() + '/transaction/' + search );
-            }
-            if ( !isNaN( Number( search ) ) )
+                window.open(locationtool.getUrl() + '/block/' + search);
+            } else
             {
-                window.open( locationtool.getUrl() + '/block/' + search );
+                $("#errContent").text('输入有误，请重新输入');
+                $('#errMsg').modal('show');
             }
         }
 

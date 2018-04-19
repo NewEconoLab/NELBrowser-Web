@@ -16,18 +16,31 @@ namespace WebBrowser
         {
             this.div.innerHTML = pages.addres;
             var address = locationtool.getParam();
+            let href = locationtool.getUrl() + "/addresses";
+            let html = '<a href="' + href + '" target="_self">&lt&lt&ltBack to all addresses</a>';
+            $("#goalladress").append(html);
             var addrMsg = await WWW.api_getaddrMsg(address);
-            var utxos = await WWW.api_getUTXO(address );
+            var utxos = await WWW.api_getUTXOCount(address );
             var balances = await WWW.api_getbalances(address);
             var nep5ofAddress = await WWW.api_getallnep5assetofaddress(address);
+
+            if (addrMsg) {
+                this.loadAddressInfo(address, addrMsg);
+                this.loadView(balances, nep5ofAddress);
+
+                this.pageUtil = new PageUtil(addrMsg[0].txcount, 10);
+                this.initTranPage(addrMsg[0].txcount, address);
+                this.updateAddrTrasctions(address, this.pageUtil);
+
+                this.pageUtilUtxo = new PageUtil(utxos.length, 10);
+                this.initUTXOPage(utxos.length, address);
+                this.updateAddrUTXO(address, this.pageUtilUtxo)
+                //this.loadUTXOView(utxos);
+            } else {
+                $("#errContent").text("该地址没有数据");
+                $('#errMsg').modal('show');
+            }
             
-            this.loadAddressInfo(address, addrMsg);
-            this.loadView(balances, nep5ofAddress, utxos);
-
-
-            this.pageUtil = new PageUtil(addrMsg[0].txcount, 10);
-            this.initPage(addrMsg[0].txcount, address);
-            this.updateAddrTrasctions(address, this.pageUtil);
 
 
             this.div.hidden = false;
@@ -41,24 +54,24 @@ namespace WebBrowser
             $("#address").text(address);
             $("#created").text(createdTime);
             $("#totalTran").text(totalTran);
-            let href = locationtool.getUrl() + "/addresses";
-            let html = '<a href="' + href + '" target="_self">&lt&lt&ltBack to all addresses</a>';
-            $("#goalladress").append(html);
+            
         }
 
-        loadView( balances: Balance[], nep5ofAddress: Nep5OfAddress[], utxos: Utxo[] )
+        loadView( balances: Balance[], nep5ofAddress: Nep5OfAddress[] )
         {
-            $( "#utxos" ).empty();
-            
-            balances.forEach( ( balance: Balance ) =>
+            $("#utxos").empty();
+            if (balances)
             {
-                var name = CoinTool.assetID2name[balance.asset];
+                balances.forEach((balance: Balance) => {
+                    var name = CoinTool.assetID2name[balance.asset];
 
-                let html = `
+                    let html = `
                 <div class="line" > <div class="title-nel" > <span>` + name + ` </span></div >
                 <div class="content-nel" > <span> ` + balance.balance + ` </span></div > </div>`;
-                $( "#balance" ).append( html );
-            });
+                    $("#balance").append(html);
+                });
+            }
+
             if (nep5ofAddress)
             {
                 nep5ofAddress.forEach((nep5ofAddress: Nep5OfAddress) => {
@@ -68,23 +81,26 @@ namespace WebBrowser
                     $("#balance").append(html);
                 })
             }
-            
-            utxos.forEach( ( utxo: Utxo ) =>
-            {
-                let html = `
+        }
+        loadUTXOView(utxos: Utxo[])
+        {
+            if (utxos) {
+                utxos.forEach((utxo: Utxo) => {
+                    let html = `
                 <tr>
                 <td class='code'>` + CoinTool.assetID2name[utxo.asset] + `
                 </td>
                 <td>` + utxo.value + `
                 </td>
-                <td><a class='code' target='_blank' href='`+ Url.href_transaction( utxo.txid ) + `'>` + utxo.txid + `
+                <td><a class='code' target='_blank' href='`+ Url.href_transaction(utxo.txid) + `'>` + utxo.txid + `
                 </a>[` + utxo.n + `]</td>
                 </tr>`
-                $( "#utxos" ).append( html );
-            } );
+                    $("#add-utxos").append(html);
+                });
+            }
         }
 
-        initPage(transtotal: number,address: string) {
+        initTranPage(transtotal: number,address: string) {
             if (transtotal > 10) {
                 $("#trans-page-msg").show();
                 $("#addr-trans-page").show();
@@ -95,7 +111,8 @@ namespace WebBrowser
 
             $("#trans-next").click(() => {
                 if (this.pageUtil.currentPage == this.pageUtil.totalPage) {
-                    alert('当前页已经是最后一页了');
+                    $("#errContent").text('当前页已经是最后一页了');
+                    $('#errMsg').modal('show');
                 } else {
                     this.pageUtil.currentPage += 1;
                     this.updateAddrTrasctions(address, this.pageUtil);
@@ -103,10 +120,39 @@ namespace WebBrowser
             });
             $("#trans-previous").click(() => {
                 if (this.pageUtil.currentPage <= 1) {
-                    alert('当前已经是第一页了');
+                    $("#errContent").text('当前已经是第一页了');
+                    $('#errMsg').modal('show');
                 } else {
                     this.pageUtil.currentPage -= 1;
                     this.updateAddrTrasctions(address, this.pageUtil);
+                }
+            });
+        }
+        initUTXOPage(utxototal: number, address: string) {
+            if (utxototal > 10) {
+                $("#utxo-page-msg").show();
+                $("#addr-utxo-page").show();
+            } else {
+                $("#utxo-page-msg").hide();
+                $("#addr-utxo-page").hide();
+            }
+
+            $("#utxo-next").click(() => {
+                if (this.pageUtilUtxo.currentPage == this.pageUtilUtxo.totalPage) {
+                    $("#errContent").text('当前页已经是最后一页了');
+                    $('#errMsg').modal('show');
+                } else {
+                    this.pageUtilUtxo.currentPage += 1;
+                    this.updateAddrUTXO(address, this.pageUtilUtxo)
+                }
+            });
+            $("#utxo-previous").click(() => {
+                if (this.pageUtilUtxo.currentPage <= 1) {
+                    $("#errContent").text('当前已经是第一页了');
+                    $('#errMsg').modal('show');
+                } else {
+                    this.pageUtilUtxo.currentPage -= 1;
+                    this.updateAddrUTXO(address, this.pageUtilUtxo)
                 }
             });
         }
@@ -117,18 +163,18 @@ namespace WebBrowser
             //分页查询交易记录
             let txlist: TransOfAddress[] = await WWW.getaddrsesstxs(address, pageUtil.pageSize, pageUtil.currentPage);
             let listLength = 0;
-            if (txlist.length < 10)
-            {
-                listLength = txlist.length;
-            } else {
-                listLength = pageUtil.pageSize;
-            }
-            for (var n = 0; n < listLength; n++)
-            {
-                let txid = txlist[n].txid;
-                let time = DateTool.dateFtt("yyyy-MM-dd hh:mm:ss", new Date(txlist[n].blocktime.$date));
-                let html: string = await this.getAddrTransLine(txid, txlist[n].type, "xxxxxxx",time, txlist[n].vin, txlist[n].vout);
-                $("#addr-trans").append(html);
+            if (txlist) {
+                if (txlist.length < 10) {
+                    listLength = txlist.length;
+                } else {
+                    listLength = pageUtil.pageSize;
+                }
+                for (var n = 0; n < listLength; n++) {
+                    let txid = txlist[n].txid;
+                    let time = DateTool.dateFtt("yyyy-MM-dd hh:mm:ss", new Date(txlist[n].blocktime.$date));
+                    let html: string = await this.getAddrTransLine(txid, txlist[n].type, "xxxxxxx", time, txlist[n].vin, txlist[n].vout);
+                    $("#addr-trans").append(html);
+                }
             }
             
             pageCut(this.pageUtil);
@@ -150,6 +196,42 @@ namespace WebBrowser
                 $("#trans-previous").removeClass('disabled');
             } else {
                 $("#trans-previous").addClass('disabled');
+            }
+        }
+
+        //更新UTXO记录
+        public async updateAddrUTXO(address: string, pageUtil: PageUtil) {
+            $("#add-utxos").empty();
+            //分页查询交易记录
+            let utxolist: Utxo[] = await WWW.api_getUTXO(address, pageUtil.pageSize, pageUtil.currentPage);
+            let listLength = 0;
+            if (utxolist) {
+                if (utxolist.length < 10) {
+                    listLength = utxolist.length;
+                } else {
+                    listLength = pageUtil.pageSize;
+                }
+                this.loadUTXOView(utxolist);
+            }
+            pageCut(this.pageUtil);
+
+            let minNum = pageUtil.currentPage * pageUtil.pageSize - pageUtil.pageSize;
+            let maxNum = pageUtil.totalCount;
+            let diffNum = maxNum - minNum;
+            if (diffNum > 10) {
+                maxNum = pageUtil.currentPage * pageUtil.pageSize;
+            }
+            let pageMsg = "UTXO " + (minNum + 1) + " to " + maxNum + " of " + pageUtil.totalCount;
+            $("#utxo-page-msg").html(pageMsg);
+            if (this.pageUtil.totalPage - this.pageUtil.currentPage) {
+                $("#utxo-next").removeClass('disabled');
+            } else {
+                $("#utxo-next").addClass('disabled');
+            }
+            if (this.pageUtil.currentPage - 1) {
+                $("#utxo-previous").removeClass('disabled');
+            } else {
+                $("#utxo-previous").addClass('disabled');
             }
         }
 
