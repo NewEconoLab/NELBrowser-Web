@@ -14,8 +14,7 @@ namespace WebBrowser
             this.div.hidden = false;
             $("#blocks-page").find("#next").click(() => {
                 if (this.pageUtil.currentPage == this.pageUtil.totalPage) {
-                    $("#errContent").text(`当前页已经是最后一页了`);
-                    $('#errMsg').modal('show');
+                    this.pageUtil.currentPage = this.pageUtil.totalPage;
                 } else {
                     this.pageUtil.currentPage += 1;
                     this.updateBlocks(this.pageUtil);
@@ -23,8 +22,7 @@ namespace WebBrowser
             });
             $("#blocks-page").find("#previous").click(() => {
                 if (this.pageUtil.currentPage <= 1) {
-                    $("#errContent").text(`当前页已经是第一页`);
-                    $('#errMsg').modal('show');
+                    this.pageUtil.currentPage = 1;
                 } else {
                     this.pageUtil.currentPage -= 1;
                     this.updateBlocks(this.pageUtil);
@@ -55,7 +53,7 @@ namespace WebBrowser
             if (diffNum > 15) {
                 maxNum = pageUtil.currentPage * pageUtil.pageSize;
             }
-            let pageMsg = "blocks " + (minNum + 1) + " to " + maxNum + " of " + pageUtil.totalCount;
+            let pageMsg = "Blocks " + (minNum + 1) + " to " + maxNum + " of " + pageUtil.totalCount;
             $("#blocks-page").find("#page-msg").html(pageMsg);
             
             let newDate = new Date();

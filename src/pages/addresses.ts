@@ -15,8 +15,6 @@
          */
         public async addrlistInit()
         {
-            let prom = await WWW.getaddrcount();
-            this.pageUtil = new PageUtil(prom, 15);
             let addrlist: Addr[] = await WWW.getaddrs(this.pageUtil.pageSize, this.pageUtil.currentPage);
             let newDate: Date = new Date();
             addrlist.map( ( item ) =>
@@ -48,24 +46,6 @@
                 $("#addrs-page").find("#previous").addClass('disabled');
             }
 
-            $("#addrs-page").find("#next").click(() => {
-                if (this.pageUtil.currentPage == this.pageUtil.totalPage) {
-                    $("#errContent").text('当前页已经是最后一页了');
-                    $('#errMsg').modal('show');
-                } else {
-                    this.pageUtil.currentPage += 1;
-                    this.addrlistInit();
-                }
-            });
-            $("#addrs-page").find("#previous").click(() => {
-                if (this.pageUtil.currentPage <= 1) {
-                    $("#errContent").text('当前已经是第一页了');
-                    $('#errMsg').modal('show');
-                } else {
-                    this.pageUtil.currentPage -= 1;
-                    this.addrlistInit();
-                }
-            });
         }
         /**
          * start
@@ -73,8 +53,26 @@
         public async start()
         {
             this.div.hidden = false;
+            let prom = await WWW.getaddrcount();
+            this.pageUtil = new PageUtil(prom, 15);
             await this.addrlistInit();
             //this.addrlistInit();
+            $("#addrs-page").find("#next").click(() => {
+                if (this.pageUtil.currentPage == this.pageUtil.totalPage) {
+                    this.pageUtil.currentPage = this.pageUtil.totalPage;
+                } else {
+                    this.pageUtil.currentPage += 1;
+                    this.addrlistInit();
+                }
+            });
+            $("#addrs-page").find("#previous").click(() => {
+                if (this.pageUtil.currentPage <= 1) {
+                    this.pageUtil.currentPage = 1;
+                } else {
+                    this.pageUtil.currentPage -= 1;
+                    this.addrlistInit();
+                }
+            });
         }
         /**
          * loadView

@@ -21,7 +21,7 @@ namespace WebBrowser
         }
         view(nep5id: string)
         {            
-            this.div.innerHTML = pages.asset;
+            //this.div.innerHTML = pages.asset;
             WWW.api_getnep5(nep5id).then((data) =>
             {
                 var nep5 = data[0];

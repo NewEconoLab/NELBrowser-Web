@@ -22,38 +22,36 @@ namespace WebBrowser
             $( "#TxType" ).change( () =>
             {
                 this.pageUtil.currentPage = 1;
-                this.updateTrasctions( this.pageUtil, <string>$( "#TxType" ).val() );
+                this.updateTransactions( this.pageUtil, <string>$( "#TxType" ).val() );
             } );
 
             this.txlist.find("#next").click( () =>
             {
                 if ( this.pageUtil.currentPage == this.pageUtil.totalPage )
                 {
-                    $("#errContent").text('当前页已经是最后一页了');
-                    $('#errMsg').modal('show');
+                    this.pageUtil.currentPage = this.pageUtil.totalPage;
                 } else
                 {
                     this.pageUtil.currentPage += 1;
-                    this.updateTrasctions( this.pageUtil, <string>$( "#TxType" ).val() );
+                    this.updateTransactions( this.pageUtil, <string>$( "#TxType" ).val() );
                 }
             } );
             this.txlist.find( "#previous" ).click( () =>
             {
                 if ( this.pageUtil.currentPage <= 1 )
                 {
-                    $("#errContent").text('当前已经是第一页了');
-                    $('#errMsg').modal('show');
+                    this.pageUtil.currentPage = 1;
                 } else
                 {
                     this.pageUtil.currentPage -= 1;
-                    this.updateTrasctions( this.pageUtil, <string>$( "#TxType" ).val() );
+                    this.updateTransactions( this.pageUtil, <string>$( "#TxType" ).val() );
                 }
             } );
 
         }
 
         //更新交易记录
-        public async updateTrasctions( pageUtil: PageUtil, txType: string )
+        public async updateTransactions( pageUtil: PageUtil, txType: string )
         {
             this.txlist.find( "#transactions" ).empty();
             //分页查询交易记录
@@ -85,7 +83,7 @@ namespace WebBrowser
             if (diffNum > 15) {
                 maxNum = pageUtil.currentPage * pageUtil.pageSize;
             }
-            let pageMsg = "Trasctions " + (minNum + 1) + " to " + maxNum + " of " + pageUtil.totalCount;
+            let pageMsg = "Transactions " + (minNum + 1) + " to " + maxNum + " of " + pageUtil.totalCount;
             $("#txlist-page").find("#txlist-page-msg").html(pageMsg);
             if (this.pageUtil.totalPage - this.pageUtil.currentPage) {
                 $("#txlist-page").find("#next").removeClass('disabled');
@@ -107,7 +105,7 @@ namespace WebBrowser
             let txCount = await WWW.gettxcount(type);
             //初始化交易列表
             this.pageUtil = new PageUtil( txCount, 15 );
-            this.updateTrasctions( this.pageUtil, type);
+            this.updateTransactions( this.pageUtil, type);
             this.div.hidden = false;
         }
 

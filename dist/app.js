@@ -16,7 +16,7 @@ var WebBrowser;
             this.div.hidden = true;
         }
         start() {
-            this.div.innerHTML = WebBrowser.pages.block;
+            //this.div.innerHTML = pages.block;
             this.queryBlock(WebBrowser.locationtool.getParam());
             this.div.hidden = false;
         }
@@ -65,8 +65,7 @@ var WebBrowser;
                 this.div.hidden = false;
                 $("#blocks-page").find("#next").click(() => {
                     if (this.pageUtil.currentPage == this.pageUtil.totalPage) {
-                        $("#errContent").text(`当前页已经是最后一页了`);
-                        $('#errMsg').modal('show');
+                        this.pageUtil.currentPage = this.pageUtil.totalPage;
                     }
                     else {
                         this.pageUtil.currentPage += 1;
@@ -75,8 +74,7 @@ var WebBrowser;
                 });
                 $("#blocks-page").find("#previous").click(() => {
                     if (this.pageUtil.currentPage <= 1) {
-                        $("#errContent").text(`当前页已经是第一页`);
-                        $('#errMsg').modal('show');
+                        this.pageUtil.currentPage = 1;
                     }
                     else {
                         this.pageUtil.currentPage -= 1;
@@ -110,7 +108,7 @@ var WebBrowser;
                 if (diffNum > 15) {
                     maxNum = pageUtil.currentPage * pageUtil.pageSize;
                 }
-                let pageMsg = "blocks " + (minNum + 1) + " to " + maxNum + " of " + pageUtil.totalCount;
+                let pageMsg = "Blocks " + (minNum + 1) + " to " + maxNum + " of " + pageUtil.totalCount;
                 $("#blocks-page").find("#page-msg").html(pageMsg);
                 let newDate = new Date();
                 blocks.forEach((item, index, input) => {
@@ -455,7 +453,7 @@ var WebBrowser;
         }
         start() {
             return __awaiter(this, void 0, void 0, function* () {
-                this.div.innerHTML = WebBrowser.pages.addres;
+                //this.div.innerHTML = pages.addres;
                 var address = WebBrowser.locationtool.getParam();
                 let href = WebBrowser.locationtool.getUrl() + "/addresses";
                 let html = '<a href="' + href + '" target="_self">&lt&lt&ltBack to all addresses</a>';
@@ -539,7 +537,7 @@ var WebBrowser;
             }
             $("#trans-next").click(() => {
                 if (this.pageUtil.currentPage == this.pageUtil.totalPage) {
-                    $("#errContent").text('当前页已经是最后一页了');
+                    this.pageUtil.currentPage = this.pageUtil.totalPage;
                     $('#errMsg').modal('show');
                 }
                 else {
@@ -549,8 +547,7 @@ var WebBrowser;
             });
             $("#trans-previous").click(() => {
                 if (this.pageUtil.currentPage <= 1) {
-                    $("#errContent").text('当前已经是第一页了');
-                    $('#errMsg').modal('show');
+                    this.pageUtil.currentPage = 1;
                 }
                 else {
                     this.pageUtil.currentPage -= 1;
@@ -569,8 +566,7 @@ var WebBrowser;
             }
             $("#utxo-next").click(() => {
                 if (this.pageUtilUtxo.currentPage == this.pageUtilUtxo.totalPage) {
-                    $("#errContent").text('当前页已经是最后一页了');
-                    $('#errMsg').modal('show');
+                    this.pageUtil.currentPage = this.pageUtil.totalPage;
                 }
                 else {
                     this.pageUtilUtxo.currentPage += 1;
@@ -579,8 +575,7 @@ var WebBrowser;
             });
             $("#utxo-previous").click(() => {
                 if (this.pageUtilUtxo.currentPage <= 1) {
-                    $("#errContent").text('当前已经是第一页了');
-                    $('#errMsg').modal('show');
+                    this.pageUtil.currentPage = 1;
                 }
                 else {
                     this.pageUtilUtxo.currentPage -= 1;
@@ -760,8 +755,6 @@ var WebBrowser;
          */
         addrlistInit() {
             return __awaiter(this, void 0, void 0, function* () {
-                let prom = yield WebBrowser.WWW.getaddrcount();
-                this.pageUtil = new WebBrowser.PageUtil(prom, 15);
                 let addrlist = yield WebBrowser.WWW.getaddrs(this.pageUtil.pageSize, this.pageUtil.currentPage);
                 let newDate = new Date();
                 addrlist.map((item) => {
@@ -792,26 +785,6 @@ var WebBrowser;
                 else {
                     $("#addrs-page").find("#previous").addClass('disabled');
                 }
-                $("#addrs-page").find("#next").click(() => {
-                    if (this.pageUtil.currentPage == this.pageUtil.totalPage) {
-                        $("#errContent").text('当前页已经是最后一页了');
-                        $('#errMsg').modal('show');
-                    }
-                    else {
-                        this.pageUtil.currentPage += 1;
-                        this.addrlistInit();
-                    }
-                });
-                $("#addrs-page").find("#previous").click(() => {
-                    if (this.pageUtil.currentPage <= 1) {
-                        $("#errContent").text('当前已经是第一页了');
-                        $('#errMsg').modal('show');
-                    }
-                    else {
-                        this.pageUtil.currentPage -= 1;
-                        this.addrlistInit();
-                    }
-                });
             });
         }
         /**
@@ -820,8 +793,28 @@ var WebBrowser;
         start() {
             return __awaiter(this, void 0, void 0, function* () {
                 this.div.hidden = false;
+                let prom = yield WebBrowser.WWW.getaddrcount();
+                this.pageUtil = new WebBrowser.PageUtil(prom, 15);
                 yield this.addrlistInit();
                 //this.addrlistInit();
+                $("#addrs-page").find("#next").click(() => {
+                    if (this.pageUtil.currentPage == this.pageUtil.totalPage) {
+                        this.pageUtil.currentPage = this.pageUtil.totalPage;
+                    }
+                    else {
+                        this.pageUtil.currentPage += 1;
+                        this.addrlistInit();
+                    }
+                });
+                $("#addrs-page").find("#previous").click(() => {
+                    if (this.pageUtil.currentPage <= 1) {
+                        this.pageUtil.currentPage = 1;
+                    }
+                    else {
+                        this.pageUtil.currentPage -= 1;
+                        this.addrlistInit();
+                    }
+                });
             });
         }
         /**
@@ -857,7 +850,7 @@ var WebBrowser;
             this.div.hidden = true;
         }
         view(assetid) {
-            this.div.innerHTML = WebBrowser.pages.asset;
+            //this.div.innerHTML = pages.asset;
             WebBrowser.WWW.api_getasset(assetid).then((data) => {
                 var asset = data[0];
                 asset.names = WebBrowser.CoinTool.assetID2name[asset.id];
@@ -914,8 +907,7 @@ var WebBrowser;
             });
             this.assetlist.find("#next").click(() => {
                 if (this.pageUtil.currentPage == this.pageUtil.totalPage) {
-                    $("#errContent").text('当前页已经是最后一页了');
-                    $('#errMsg').modal('show');
+                    this.pageUtil.currentPage = this.pageUtil.totalPage;
                 }
                 else {
                     this.pageUtil.currentPage += 1;
@@ -929,8 +921,7 @@ var WebBrowser;
             });
             this.assetlist.find("#previous").click(() => {
                 if (this.pageUtil.currentPage <= 1) {
-                    $("#errContent").text('当前已经是第一页了');
-                    $('#errMsg').modal('show');
+                    this.pageUtil.currentPage = 1;
                 }
                 else {
                     this.pageUtil.currentPage -= 1;
@@ -1066,7 +1057,7 @@ var WebBrowser;
             this.div.hidden = true;
         }
         start() {
-            this.div.innerHTML = WebBrowser.pages.transaction;
+            //this.div.innerHTML = pages.transaction;
             this.updateTxInfo(WebBrowser.locationtool.getParam());
             this.div.hidden = false;
         }
@@ -1182,7 +1173,7 @@ var WebBrowser;
                 <th>TXID</th>
                 <th>Type</th>
                 <th>Size</th>
-                <th>Vesion</th>
+                <th>Version</th>
             </tr>
         </thead>
         <tbody id="txs"></tbody>
@@ -1555,26 +1546,24 @@ var WebBrowser;
             //监听交易列表选择框
             $("#TxType").change(() => {
                 this.pageUtil.currentPage = 1;
-                this.updateTrasctions(this.pageUtil, $("#TxType").val());
+                this.updateTransactions(this.pageUtil, $("#TxType").val());
             });
             this.txlist.find("#next").click(() => {
                 if (this.pageUtil.currentPage == this.pageUtil.totalPage) {
-                    $("#errContent").text('当前页已经是最后一页了');
-                    $('#errMsg').modal('show');
+                    this.pageUtil.currentPage = this.pageUtil.totalPage;
                 }
                 else {
                     this.pageUtil.currentPage += 1;
-                    this.updateTrasctions(this.pageUtil, $("#TxType").val());
+                    this.updateTransactions(this.pageUtil, $("#TxType").val());
                 }
             });
             this.txlist.find("#previous").click(() => {
                 if (this.pageUtil.currentPage <= 1) {
-                    $("#errContent").text('当前已经是第一页了');
-                    $('#errMsg').modal('show');
+                    this.pageUtil.currentPage = 1;
                 }
                 else {
                     this.pageUtil.currentPage -= 1;
-                    this.updateTrasctions(this.pageUtil, $("#TxType").val());
+                    this.updateTransactions(this.pageUtil, $("#TxType").val());
                 }
             });
         }
@@ -1582,7 +1571,7 @@ var WebBrowser;
             this.div.hidden = true;
         }
         //更新交易记录
-        updateTrasctions(pageUtil, txType) {
+        updateTransactions(pageUtil, txType) {
             return __awaiter(this, void 0, void 0, function* () {
                 this.txlist.find("#transactions").empty();
                 //分页查询交易记录
@@ -1611,7 +1600,7 @@ var WebBrowser;
                 if (diffNum > 15) {
                     maxNum = pageUtil.currentPage * pageUtil.pageSize;
                 }
-                let pageMsg = "Trasctions " + (minNum + 1) + " to " + maxNum + " of " + pageUtil.totalCount;
+                let pageMsg = "Transactions " + (minNum + 1) + " to " + maxNum + " of " + pageUtil.totalCount;
                 $("#txlist-page").find("#txlist-page-msg").html(pageMsg);
                 if (this.pageUtil.totalPage - this.pageUtil.currentPage) {
                     $("#txlist-page").find("#next").removeClass('disabled');
@@ -1636,7 +1625,7 @@ var WebBrowser;
                 let txCount = yield WebBrowser.WWW.gettxcount(type);
                 //初始化交易列表
                 this.pageUtil = new WebBrowser.PageUtil(txCount, 15);
-                this.updateTrasctions(this.pageUtil, type);
+                this.updateTransactions(this.pageUtil, type);
                 this.div.hidden = false;
             });
         }
@@ -1748,7 +1737,7 @@ var WebBrowser;
             this.div.hidden = true;
         }
         view(nep5id) {
-            this.div.innerHTML = WebBrowser.pages.asset;
+            //this.div.innerHTML = pages.asset;
             WebBrowser.WWW.api_getnep5(nep5id).then((data) => {
                 var nep5 = data[0];
                 $("#name").text(nep5.name);
@@ -2826,16 +2815,14 @@ var WebBrowser;
                 //监听下一页
                 $("#blocks-page").find("#next").click(() => {
                     if (pageUtil.currentPage == pageUtil.totalPage) {
-                        $("#errContent").text('当前页已经是最后一页了');
-                        $('#errMsg').modal('show');
+                        pageUtil.currentPage = pageUtil.totalPage;
                     }
                     pageUtil.currentPage += 1;
                     block.updateBlocks(pageUtil);
                 });
                 $("#blocks-page").find("#previous").click(() => {
                     if (pageUtil.currentPage <= 1) {
-                        $("#errContent").text('当前已经是第一页了');
-                        $('#errMsg').modal('show');
+                        pageUtil.currentPage = 1;
                     }
                     pageUtil.currentPage -= 1;
                     block.updateBlocks(pageUtil);

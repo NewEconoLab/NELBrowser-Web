@@ -78,8 +78,7 @@ namespace WebBrowser
             {
                 if (pageUtil.currentPage == pageUtil.totalPage)
                 {
-                    $("#errContent").text('当前页已经是最后一页了');
-                    $('#errMsg').modal('show');
+                    pageUtil.currentPage = pageUtil.totalPage;
                 }
                 pageUtil.currentPage += 1;
                 block.updateBlocks(pageUtil);
@@ -88,8 +87,7 @@ namespace WebBrowser
             {
                 if (pageUtil.currentPage <= 1)
                 {
-                    $("#errContent").text('当前已经是第一页了');
-                    $('#errMsg').modal('show');
+                    pageUtil.currentPage = 1;
                 }
                 pageUtil.currentPage -= 1;
                 block.updateBlocks(pageUtil);

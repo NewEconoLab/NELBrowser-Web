@@ -10,7 +10,7 @@ namespace WebBrowser
 
         start()
         {
-            this.div.innerHTML = pages.block;
+            //this.div.innerHTML = pages.block;
             this.queryBlock( locationtool.getParam() as number );
             this.div.hidden = false;
         }

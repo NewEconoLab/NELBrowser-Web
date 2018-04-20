@@ -14,7 +14,7 @@ namespace WebBrowser
         private pageUtilUtxo: PageUtil;
         async start()
         {
-            this.div.innerHTML = pages.addres;
+            //this.div.innerHTML = pages.addres;
             var address = locationtool.getParam();
             let href = locationtool.getUrl() + "/addresses";
             let html = '<a href="' + href + '" target="_self">&lt&lt&ltBack to all addresses</a>';
@@ -112,7 +112,7 @@ namespace WebBrowser
 
             $("#trans-next").click(() => {
                 if (this.pageUtil.currentPage == this.pageUtil.totalPage) {
-                    $("#errContent").text('当前页已经是最后一页了');
+                    this.pageUtil.currentPage = this.pageUtil.totalPage;
                     $('#errMsg').modal('show');
                 } else {
                     this.pageUtil.currentPage += 1;
@@ -121,8 +121,7 @@ namespace WebBrowser
             });
             $("#trans-previous").click(() => {
                 if (this.pageUtil.currentPage <= 1) {
-                    $("#errContent").text('当前已经是第一页了');
-                    $('#errMsg').modal('show');
+                    this.pageUtil.currentPage = 1;
                 } else {
                     this.pageUtil.currentPage -= 1;
                     this.updateAddrTrasctions(address, this.pageUtil);
@@ -140,8 +139,7 @@ namespace WebBrowser
 
             $("#utxo-next").click(() => {
                 if (this.pageUtilUtxo.currentPage == this.pageUtilUtxo.totalPage) {
-                    $("#errContent").text('当前页已经是最后一页了');
-                    $('#errMsg').modal('show');
+                    this.pageUtil.currentPage = this.pageUtil.totalPage;
                 } else {
                     this.pageUtilUtxo.currentPage += 1;
                     this.updateAddrUTXO(address, this.pageUtilUtxo)
@@ -149,8 +147,7 @@ namespace WebBrowser
             });
             $("#utxo-previous").click(() => {
                 if (this.pageUtilUtxo.currentPage <= 1) {
-                    $("#errContent").text('当前已经是第一页了');
-                    $('#errMsg').modal('show');
+                    this.pageUtil.currentPage = 1;
                 } else {
                     this.pageUtilUtxo.currentPage -= 1;
                     this.updateAddrUTXO(address, this.pageUtilUtxo)

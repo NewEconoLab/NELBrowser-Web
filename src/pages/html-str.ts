@@ -27,7 +27,7 @@ namespace WebBrowser.pages
                 <th>TXID</th>
                 <th>Type</th>
                 <th>Size</th>
-                <th>Vesion</th>
+                <th>Version</th>
             </tr>
         </thead>
         <tbody id="txs"></tbody>

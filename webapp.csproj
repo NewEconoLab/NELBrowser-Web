@@ -87,6 +87,7 @@
     <Content Include="img\log.png" />
     <Content Include="img\open.svg" />
     <Content Include="img\turnto.svg" />
+    <Content Include="index-zh.html" />
     <Content Include="lib\asset\asmjs.js" />
     <Content Include="lib\asset\flash.swf" />
     <Content Include="lib\base64js.min.js" />

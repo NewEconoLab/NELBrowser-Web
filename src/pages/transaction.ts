@@ -14,7 +14,7 @@ namespace WebBrowser
 
         start()
         {
-            this.div.innerHTML = pages.transaction;
+            //this.div.innerHTML = pages.transaction;
             this.updateTxInfo( locationtool.getParam() );
             this.div.hidden = false;
         }

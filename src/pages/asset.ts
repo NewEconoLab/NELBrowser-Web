@@ -20,7 +20,7 @@
         }
         view(assetid: string)
         {            
-            this.div.innerHTML = pages.asset;
+            //this.div.innerHTML = pages.asset;
             WWW.api_getasset(assetid).then((data) =>
             {
                 var asset = data[0];
