@@ -31,13 +31,14 @@ namespace WebBrowser
                 this.pageUtil = new PageUtil(addrMsg[0].txcount, 10);
                 this.initTranPage(addrMsg[0].txcount, address);
                 this.updateAddrTrasctions(address, this.pageUtil);
-
-                this.pageUtilUtxo = new PageUtil(utxos.length, 10);
-                this.initUTXOPage(utxos.length, address);
-                this.updateAddrUTXO(address, this.pageUtilUtxo)
+                if (utxos) {
+                    this.pageUtilUtxo = new PageUtil(utxos.length, 10);
+                    this.initUTXOPage(utxos.length, address);
+                    this.updateAddrUTXO(address, this.pageUtilUtxo)
+                }
                 //this.loadUTXOView(utxos);
             } else {
-                $("#errContent").text("�õ�ַû������");
+                $("#errContent").text("该地址没有数据");
                 $('#errMsg').modal('show');
             }
             
@@ -46,7 +47,7 @@ namespace WebBrowser
             this.div.hidden = false;
         }
         
-        //AddressInfo��ͼ
+        //AddressInfo视图
         loadAddressInfo(address: string, addrMsg: AddressMsg[])
         {
             let createdTime = DateTool.dateFtt("yyyy-MM-dd hh:mm:ss", new Date(addrMsg[0].firstuse.blocktime.$date));
@@ -111,7 +112,7 @@ namespace WebBrowser
 
             $("#trans-next").click(() => {
                 if (this.pageUtil.currentPage == this.pageUtil.totalPage) {
-                    $("#errContent").text('��ǰҳ�Ѿ������һҳ��');
+                    $("#errContent").text('当前页已经是最后一页了');
                     $('#errMsg').modal('show');
                 } else {
                     this.pageUtil.currentPage += 1;
@@ -120,7 +121,7 @@ namespace WebBrowser
             });
             $("#trans-previous").click(() => {
                 if (this.pageUtil.currentPage <= 1) {
-                    $("#errContent").text('��ǰ�Ѿ��ǵ�һҳ��');
+                    $("#errContent").text('当前已经是第一页了');
                     $('#errMsg').modal('show');
                 } else {
                     this.pageUtil.currentPage -= 1;
@@ -139,7 +140,7 @@ namespace WebBrowser
 
             $("#utxo-next").click(() => {
                 if (this.pageUtilUtxo.currentPage == this.pageUtilUtxo.totalPage) {
-                    $("#errContent").text('��ǰҳ�Ѿ������һҳ��');
+                    $("#errContent").text('当前页已经是最后一页了');
                     $('#errMsg').modal('show');
                 } else {
                     this.pageUtilUtxo.currentPage += 1;
@@ -148,7 +149,7 @@ namespace WebBrowser
             });
             $("#utxo-previous").click(() => {
                 if (this.pageUtilUtxo.currentPage <= 1) {
-                    $("#errContent").text('��ǰ�Ѿ��ǵ�һҳ��');
+                    $("#errContent").text('当前已经是第一页了');
                     $('#errMsg').modal('show');
                 } else {
                     this.pageUtilUtxo.currentPage -= 1;
@@ -157,10 +158,10 @@ namespace WebBrowser
             });
         }
 
-        //���½��׼�¼
+        //更新交易记录
         public async updateAddrTrasctions(address:string, pageUtil: PageUtil) {
             $("#addr-trans").empty();
-            //��ҳ��ѯ���׼�¼
+            //分页查询交易记录
             let txlist: TransOfAddress[] = await WWW.getaddrsesstxs(address, pageUtil.pageSize, pageUtil.currentPage);
             let listLength = 0;
             if (txlist) {
@@ -199,10 +200,10 @@ namespace WebBrowser
             }
         }
 
-        //����UTXO��¼
+        //更新UTXO记录
         public async updateAddrUTXO(address: string, pageUtil: PageUtil) {
             $("#add-utxos").empty();
-            //��ҳ��ѯ���׼�¼
+            //分页查询交易记录
             let utxolist: Utxo[] = await WWW.api_getUTXO(address, pageUtil.pageSize, pageUtil.currentPage);
             let listLength = 0;
             if (utxolist) {
@@ -260,11 +261,12 @@ namespace WebBrowser
             let form = "";
             vins.forEach(vins => {
                 let name = CoinTool.assetID2name[vins.asset];
+                let href = Url.href_address(vins.address);
                 let addrStr = '';
                 if (vins.address == myAddress) {
                     addrStr = `<div class="address"><a class="color-FDBA27">` + vins.address + `</a></div>`
                 } else {
-                    addrStr = `<div class="address"><a>` + vins.address + `</a></div>`
+                    addrStr = `<div class="address"><a href="` + href +`">` + vins.address + `</a></div>`
                 }
                 form +=
                     `
@@ -277,11 +279,12 @@ namespace WebBrowser
             let tostr = "";
             vouts.forEach(vout => {
                 let name = CoinTool.assetID2name[vout.asset];
+                let href = Url.href_address(vout.address);
                 let addrStr = '';
                 if (vout.address == myAddress) {
                     addrStr = `<div class="address"><a class="color-FDBA27">` + vout.address + `</a></div>`
                 } else {
-                    addrStr = `<div class="address"><a>` + vout.address + `</a></div>`
+                    addrStr = `<div class="address"><a href="` + href +`">` + vout.address + `</a></div>`
                 }
                 tostr +=
                     `
