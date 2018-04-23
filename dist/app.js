@@ -38,7 +38,7 @@ var WebBrowser;
                     id = id.substring(0, 6) + '...' + id.substring(id.length - 6);
                     $("#txs").append(`
                     <tr>
-                        <td><a href="` + WebBrowser.Url.href_transaction(tx.txid) + `">` + id + `</a></td>
+                        <td><a href="` + WebBrowser.Url.href_transaction(tx.txid) + `" target="_self">` + id + `</a></td>
                         <td>` + tx.type + `</td>
                         <td>` + tx.size + ` bytes</td>
                         <td>` + tx.version + `</td>
@@ -115,7 +115,7 @@ var WebBrowser;
                     newDate.setTime(item.time * 1000);
                     let html = `
                 <tr>
-                <td><a href="` + WebBrowser.Url.href_block(item.index) + `">` + item.index + `</a></td>
+                <td><a href="` + WebBrowser.Url.href_block(item.index) + `" target="_self">` + item.index + `</a></td>
                 <td>` + item.size + ` bytes</td><td>` + newDate.toLocaleString() + `</td>
                 </tr>`;
                     $("#blocks-page").find("tbody").append(html);
@@ -457,6 +457,7 @@ var WebBrowser;
                 var address = WebBrowser.locationtool.getParam();
                 let href = WebBrowser.locationtool.getUrl() + "/addresses";
                 let html = '<a href="' + href + '" target="_self">&lt&lt&ltBack to all addresses</a>';
+                $("#goalladress").empty();
                 $("#goalladress").append(html);
                 var addrMsg = yield WebBrowser.WWW.api_getaddrMsg(address);
                 var utxos = yield WebBrowser.WWW.api_getUTXOCount(address);
@@ -519,7 +520,7 @@ var WebBrowser;
                 </td>
                 <td>` + utxo.value + `
                 </td>
-                <td><a class='code' target='_blank' href='` + WebBrowser.Url.href_transaction(utxo.txid) + `'>` + utxo.txid + `
+                <td><a class='code' target='_self' href='` + WebBrowser.Url.href_transaction(utxo.txid) + `'>` + utxo.txid + `
                 </a>[` + utxo.n + `]</td>
                 </tr>`;
                     $("#add-utxos").append(html);
@@ -673,7 +674,7 @@ var WebBrowser;
                 return `
             <div class="line">
                 <div class="line-general">
-                    <div class="content-nel"><span><a href="` + WebBrowser.Url.href_transaction(txid) + `" >` + id + `</a></span></div>
+                    <div class="content-nel"><span><a href="` + WebBrowser.Url.href_transaction(txid) + `" target="_self">` + id + `</a></span></div>
                     <div class="content-nel"><span>` + type.replace("Transaction", "") + `</span></div>
                     <div class="content-nel"><span>` + time + `</a></span></div>
                 </div>
@@ -698,7 +699,7 @@ var WebBrowser;
                         addrStr = `<div class="address"><a class="color-FDBA27">` + vins.address + `</a></div>`;
                     }
                     else {
-                        addrStr = `<div class="address"><a href="` + href + `">` + vins.address + `</a></div>`;
+                        addrStr = `<div class="address"><a href="` + href + `" target="_self">` + vins.address + `</a></div>`;
                     }
                     form +=
                         `
@@ -716,7 +717,7 @@ var WebBrowser;
                         addrStr = `<div class="address"><a class="color-FDBA27">` + vout.address + `</a></div>`;
                     }
                     else {
-                        addrStr = `<div class="address"><a href="` + href + `">` + vout.address + `</a></div>`;
+                        addrStr = `<div class="address"><a href="` + href + `" target="_self">` + vout.address + `</a></div>`;
                     }
                     tostr +=
                         `
@@ -1019,7 +1020,7 @@ var WebBrowser;
                 let href = WebBrowser.Url.href_asset(asset.id);
                 let html = `
                     <tr>
-                    <td> <a href="` + href + `">` + WebBrowser.CoinTool.assetID2name[asset.id] + `</a></td>
+                    <td> <a href="` + href + `" target="_self">` + WebBrowser.CoinTool.assetID2name[asset.id] + `</a></td>
                     <td>` + asset.type + `</td>
                     <td>` + (asset.amount <= 0 ? asset.available : asset.amount) + `</td>
                     <td>` + asset.precision + `</td>
@@ -1031,9 +1032,12 @@ var WebBrowser;
             $("#assets").empty();
             nep5s.forEach((nep5s) => {
                 let href = WebBrowser.Url.href_nep5(nep5s.assetid);
+                console.log(nep5s.assetid);
+                let assetname = '(' + nep5s.assetid.substring(2, 5) + '...' + nep5s.assetid.substring(nep5s.assetid.length - 3) + ')';
+                console.log(assetname);
                 let html = `
                     <tr>
-                    <td> <a href="` + href + `">` + nep5s.name + `</a></td>
+                    <td> <a href="` + href + `" target="_self">` + nep5s.name + assetname + `</a></td>
                     <td> Nep5 </td>
                     <td>` + nep5s.totalsupply + `</td>
                     <td>` + nep5s.decimals + `</td>
@@ -1377,7 +1381,7 @@ var WebBrowser;
                     newDate.setTime(item.time * 1000);
                     html_blocks += `
                 <tr><td>
-                <a class="code" target="_blank" href ='` + WebBrowser.Url.href_block(item.index) + `' > 
+                <a class="code" target="_self" href ='` + WebBrowser.Url.href_block(item.index) + `' > 
                 ` + item.index + `</a></td>
                 <td>` + item.size + ` bytes</td>
                 <td>` + newDate.toLocaleString() + `</td>
@@ -1390,7 +1394,7 @@ var WebBrowser;
                     txid = txid.substring(0, 4) + '...' + txid.substring(txid.length - 4);
                     html_txs += `
                 <tr>
-                <td><a class='code' class='code' target='_blank'
+                <td><a class='code' class='code' target='_self'
                  href ='` + WebBrowser.Url.href_transaction(tx.txid) + `' > ` + txid + ` </a>
                 </td>
                 <td>` + txtype + `
@@ -1636,10 +1640,10 @@ var WebBrowser;
                 return `
             <div class="line">
                 <div class="line-general">
-                    <div class="content-nel"><span><a href="` + WebBrowser.Url.href_transaction(txid) + `" >` + id + `</a></span></div>
+                    <div class="content-nel"><span><a href="` + WebBrowser.Url.href_transaction(txid) + `" target="_self">` + id + `</a></span></div>
                     <div class="content-nel"><span>` + type.replace("Transaction", "") + `</span></div>
                     <div class="content-nel"><span>` + size + ` bytes</span></div>
-                    <div class="content-nel"><span><a href="` + WebBrowser.Url.href_block(parseInt(index)) + `" >` + index + `</a></span></div>
+                    <div class="content-nel"><span><a href="` + WebBrowser.Url.href_block(parseInt(index)) + `" target="_self">` + index + `</a></span></div>
                 </div>
                 <a onclick="txgeneral(this)" class="end" id="genbtn"><img src="../img/open.svg" /></a>
                 <div class="transaction" style="width:100%;display: none;" vins='` + JSON.stringify(vins) + `' vouts='` + JSON.stringify(vouts) + `'>
@@ -2709,16 +2713,28 @@ var WebBrowser;
         }
         changeNetWork(net) {
             if (net == "testnet") {
-                this.title.innerText = "TestNet";
                 this.testbtn.classList.add("active");
                 this.mainbtn.classList.remove("active");
-                this.css.href = "./css/testnet.css";
+                if (location.pathname == '/zh/') {
+                    this.title.innerText = "测试网";
+                    this.css.href = "../css/testnet.css";
+                }
+                else {
+                    this.title.innerText = "TestNet";
+                    this.css.href = "./css/testnet.css";
+                }
             }
             if (net == "mainnet") {
-                this.title.innerText = "MainNet";
                 this.mainbtn.classList.add("active");
                 this.testbtn.classList.remove("active");
-                this.css.href = "./css/mainnet.css";
+                if (location.pathname == '/zh/') {
+                    this.title.innerText = "主网";
+                    this.css.href = "../css/mainnet.css";
+                }
+                else {
+                    this.title.innerText = "MainNet";
+                    this.css.href = "./css/mainnet.css";
+                }
             }
         }
     }

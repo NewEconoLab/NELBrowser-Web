@@ -8,21 +8,21 @@
     <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
     <meta name="description" content="">
     <meta name="author" content="">
-    <link class="icon" rel="icon" href="./img/icon.png">
+    <link class="icon" rel="icon" href="../img/icon.png">
 
     <title>NEL NewEconnolab</title>
 
     <!-- Bootstrap core CSS -->
-    <link href="./css/bootstrap.css" rel="stylesheet">
-    <link href="./css/mystyle.css" rel="stylesheet">
-    <link id="netCss" href="./css/mainnet.css" rel="stylesheet" />
-    <!-- <link href="./css/bootstrap-table.css" rel="stylesheet"> -->
+    <link href="../css/bootstrap.css" rel="stylesheet">
+    <link href="../css/mystyle.css" rel="stylesheet">
+    <link id="netCss" href="../css/mainnet.css" rel="stylesheet" />
+    <!-- <link href="../css/bootstrap-table.css" rel="stylesheet"> -->
     <!-- Custom styles for this template -->
     <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
     <![endif]-->
-    <base target="_blank" />
+    <base target="_self" />
 </head>
 
 <body onhashchange="onhash()">
@@ -69,13 +69,13 @@
                             <a id="assetsa">资产</a>
                         </li>
                         <li id="wallet-btn">
-                            <a id="walleta">钱包</a>
+                            <a id="walleta" target="_blank">钱包</a>
                         </li>
                     </ul>
                     <ul class="nav navbar-nav navbar-right">
                         <li>
                             <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
-                                <span class="text" id="network">Testnet</span>
+                                <span class="text" id="network">测试网</span>
                                 <span class=" caret"></span>
                             </a>
                             <ul class="dropdown-nel">
@@ -92,7 +92,7 @@
                         <div class="input-group " id="nel-search">
                             <input id="searchText" type="text" class="form-control nel" placeholder="Block Height , Hash , Address , or Transaction">
                             <span id="searchBtn" class="input-group-addon nel ">
-                                <img src="fonts/search.svg" width="18" height="18" />
+                                <img src="../fonts/search.svg" width="18" height="18" />
                             </span>
                         </div>
                     </div>
@@ -163,7 +163,7 @@
                             <tbody></tbody>
                         </table>
                         <div class="tfood">
-                            <a id="viewblocks" href="#blocks-page">查看所有 &nbsp; >>>></a>
+                            <a id="viewblocks" href="#blocks-page" target="_self">查看所有 &nbsp; >>>></a>
                         </div>
                     </div>
                 </div>
@@ -184,7 +184,7 @@
                             <tbody></tbody>
                         </table>
                         <div class="tfood">
-                            <a class="" id="viewtxlist">查看所有 &nbsp; >>>></a>
+                            <a class="" id="viewtxlist" target="_self">查看所有 &nbsp; >>>></a>
                         </div>
                     </div>
                 </div>
@@ -210,11 +210,11 @@
             </div>
             <div class="page">
                 <div id="previous" class="page-previous">
-                    <img src="./img/lefttrangle.svg" alt="">
+                    <img src="../img/lefttrangle.svg" alt="">
                 </div>
                 <div style="width:1px;"></div>
                 <div id="next" class="page-next">
-                    <img src="./img/righttrangle.svg" alt="">
+                    <img src="../img/righttrangle.svg" alt="">
                 </div>
             </div>
         </div>
@@ -259,11 +259,11 @@
             </div>
             <div class="page">
                 <div id="previous" class="page-previous">
-                    <img src="./img/lefttrangle.svg" alt="">
+                    <img src="../img/lefttrangle.svg" alt="">
                 </div>
                 <div style="width:1px;"></div>
                 <div id="next" class="page-next">
-                    <img src="./img/righttrangle.svg" alt="">
+                    <img src="../img/righttrangle.svg" alt="">
                 </div>
             </div>
         </div>
@@ -298,11 +298,11 @@
             </div>
             <div class="page">
                 <div id="previous" class="page-previous">
-                    <img src="./img/lefttrangle.svg" alt="">
+                    <img src="../img/lefttrangle.svg" alt="">
                 </div>
                 <div style="width:1px;"></div>
                 <div id="next" class="page-next">
-                    <img src="./img/righttrangle.svg" alt="">
+                    <img src="../img/righttrangle.svg" alt="">
                 </div>
             </div>
         </div>
@@ -327,11 +327,11 @@
             </div>
             <div class="page">
                 <div id="previous" class="page-previous">
-                    <img src="./img/lefttrangle.svg" alt="">
+                    <img src="../img/lefttrangle.svg" alt="">
                 </div>
                 <div style="width:1px;"></div>
                 <div id="next" class="page-next">
-                    <img src="./img/righttrangle.svg" alt="">
+                    <img src="../img/righttrangle.svg" alt="">
                 </div>
             </div>
         </div>
@@ -427,11 +427,11 @@
                 </div>
                 <div class="page" id="addr-trans-page">
                     <div id="trans-previous" class="page-previous">
-                        <img src="./img/lefttrangle.svg" alt="">
+                        <img src="../img/lefttrangle.svg" alt="">
                     </div>
                     <div style="width:1px;"></div>
                     <div id="trans-next" class="page-next">
-                        <img src="./img/righttrangle.svg" alt="">
+                        <img src="../img/righttrangle.svg" alt="">
                     </div>
                 </div>
 
@@ -453,11 +453,11 @@
                 </div>
                 <div class="page" id="addr-utxo-page">
                     <div id="utxo-previous" class="page-previous">
-                        <img src="./img/lefttrangle.svg" alt="">
+                        <img src="../img/lefttrangle.svg" alt="">
                     </div>
                     <div style="width:1px;"></div>
                     <div id="utxo-next" class="page-next">
-                        <img src="./img/righttrangle.svg" alt="">
+                        <img src="../img/righttrangle.svg" alt="">
                     </div>
                 </div>
             </div>
@@ -531,8 +531,63 @@
         </div>
         <div style="height:100px;"></div>
     </div>
-    <div id="footer" class="container">
-    </div>
+    <footer>
+        <div class="footer-warp">
+            <div class="footer-continar">
+                <div class="logo">
+                    <img src="../img/logo.png" alt="logo.png">
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <div class="continar-box">
+                    <ul>
+                        <li>
+                            <a href="https://twitter.com/NewEconoLab">
+                                <img src="../img/github.png" alt="github.png">
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://jq.qq.com/?_wv=1027&k=5SahDHr">
+                                <img src="../img/qq_img.png" alt="qq_img.png">
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://twitter.com/NeoNameService">
+                                <img src="../img/twitter-circle.png" alt="twitter-circle.png">
+                            </a>
+                        </li>
+                        <li class="webchat-box">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                                <img src="../img/webchat.png" alt="webchat.png">
+                            </a>
+                            <ul class="dropdown-nel">
+                                <li>
+                                    <img src="../img/NEL_economic.png" alt="NEL_economic.png">
+                                </li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+                <div class="footer-version">cli version: v2.7.3</div>
+            </div>
+            <div class="footer-language">
+                <div id="lanuage-btn">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                        语言
+                        <span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-nel">
+                        <li>
+                            <a href="/" target="_self">English</a>
+                        </li>
+                        <li>
+                            <a href="/zh/" target="_self">中文</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </footer>
     <!-- /container -->
     <!-- modal -->
     <div class="modal fade" id="errMsg" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -554,17 +609,17 @@
 ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
     <input id="page" value="index" hidden>
-    <!-- <script src="./dist/jquery.js"></script> -->
-    <!-- <script src="./dist/bootstrap-table.js"></script> -->
-    <script src="./lib/jquery.min.js"></script>
-    <script src="./lib/bootstrap.min.js"></script>
-    <script src="lib/rollup/aes.js"></script>
-    <script src="lib/component/aes.js"></script>
-    <script src="lib/component/mode-ecb.js"></script>
-    <script src="lib/component/pad-nopadding.js"></script>
-    <script src="lib/scrypt.js"></script>
-    <script src="lib/neo-ts.js"></script>
-    <script src="./dist/app.js"></script>
+    <!-- <script src="../dist/jquery.js"></script> -->
+    <!-- <script src="../dist/bootstrap-table.js"></script> -->
+    <script src="../lib/jquery.min.js"></script>
+    <script src="../lib/bootstrap.min.js"></script>
+    <script src="../lib/rollup/aes.js"></script>
+    <script src="../lib/component/aes.js"></script>
+    <script src="../lib/component/mode-ecb.js"></script>
+    <script src="../lib/component/pad-nopadding.js"></script>
+    <script src="../lib/scrypt.js"></script>
+    <script src="../lib/neo-ts.js"></script>
+    <script src="../dist/app.js"></script>
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
 </body>
 

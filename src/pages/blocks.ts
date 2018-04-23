@@ -61,7 +61,7 @@ namespace WebBrowser
                 newDate.setTime(item.time * 1000);
                 let html = `
                 <tr>
-                <td><a href="`+ Url.href_block( item.index) + `">` + item.index + `</a></td>
+                <td><a href="`+ Url.href_block(item.index) + `" target="_self">` + item.index + `</a></td>
                 <td>` + item.size + ` bytes</td><td>` + newDate.toLocaleString() + `</td>
                 </tr>`;
                 $("#blocks-page").find("tbody").append(html);

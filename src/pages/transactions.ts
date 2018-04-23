@@ -117,10 +117,10 @@ namespace WebBrowser
             return `
             <div class="line">
                 <div class="line-general">
-                    <div class="content-nel"><span><a href="`+ Url.href_transaction(txid) + `" >` + id + `</a></span></div>
+                    <div class="content-nel"><span><a href="`+ Url.href_transaction(txid) + `" target="_self">` + id + `</a></span></div>
                     <div class="content-nel"><span>`+ type.replace( "Transaction", "" ) + `</span></div>
                     <div class="content-nel"><span>`+ size + ` bytes</span></div>
-                    <div class="content-nel"><span><a href="`+ Url.href_block( parseInt( index) ) + `" >` + index + `</a></span></div>
+                    <div class="content-nel"><span><a href="`+ Url.href_block(parseInt(index)) + `" target="_self">` + index + `</a></span></div>
                 </div>
                 <a onclick="txgeneral(this)" class="end" id="genbtn"><img src="../img/open.svg" /></a>
                 <div class="transaction" style="width:100%;display: none;" vins='`+ JSON.stringify( vins ) + `' vouts='` + JSON.stringify( vouts ) + `'>

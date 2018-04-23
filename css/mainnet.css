@@ -402,3 +402,9 @@ a:hover, a:focus {
     color: #198CEE;
     background-color: #fff;
 }
+
+/*footer start*/
+footer {
+    background: #198CEE;
+}
+/*footer end*/

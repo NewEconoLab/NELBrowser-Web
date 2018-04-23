@@ -18,6 +18,7 @@ namespace WebBrowser
             var address = locationtool.getParam();
             let href = locationtool.getUrl() + "/addresses";
             let html = '<a href="' + href + '" target="_self">&lt&lt&ltBack to all addresses</a>';
+            $("#goalladress").empty();
             $("#goalladress").append(html);
             var addrMsg = await WWW.api_getaddrMsg(address);
             var utxos = await WWW.api_getUTXOCount(address );
@@ -93,7 +94,7 @@ namespace WebBrowser
                 </td>
                 <td>` + utxo.value + `
                 </td>
-                <td><a class='code' target='_blank' href='`+ Url.href_transaction(utxo.txid) + `'>` + utxo.txid + `
+                <td><a class='code' target='_self' href='`+ Url.href_transaction(utxo.txid) + `'>` + utxo.txid + `
                 </a>[` + utxo.n + `]</td>
                 </tr>`
                     $("#add-utxos").append(html);
@@ -239,7 +240,7 @@ namespace WebBrowser
             return `
             <div class="line">
                 <div class="line-general">
-                    <div class="content-nel"><span><a href="`+ Url.href_transaction(txid) + `" >` + id + `</a></span></div>
+                    <div class="content-nel"><span><a href="`+ Url.href_transaction(txid) + `" target="_self">` + id + `</a></span></div>
                     <div class="content-nel"><span>`+ type.replace("Transaction", "") + `</span></div>
                     <div class="content-nel"><span>`+ time + `</a></span></div>
                 </div>
@@ -263,7 +264,7 @@ namespace WebBrowser
                 if (vins.address == myAddress) {
                     addrStr = `<div class="address"><a class="color-FDBA27">` + vins.address + `</a></div>`
                 } else {
-                    addrStr = `<div class="address"><a href="` + href +`">` + vins.address + `</a></div>`
+                    addrStr = `<div class="address"><a href="` + href +`" target="_self">` + vins.address + `</a></div>`
                 }
                 form +=
                     `
@@ -281,7 +282,7 @@ namespace WebBrowser
                 if (vout.address == myAddress) {
                     addrStr = `<div class="address"><a class="color-FDBA27">` + vout.address + `</a></div>`
                 } else {
-                    addrStr = `<div class="address"><a href="` + href +`">` + vout.address + `</a></div>`
+                    addrStr = `<div class="address"><a href="` + href +`" target="_self">` + vout.address + `</a></div>`
                 }
                 tostr +=
                     `

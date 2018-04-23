@@ -49,7 +49,7 @@ namespace WebBrowser
                 newDate.setTime( item.time * 1000 );
                 html_blocks += `
                 <tr><td>
-                <a class="code" target="_blank" href ='`+ Url.href_block( item.index ) + `' > 
+                <a class="code" target="_self" href ='`+ Url.href_block( item.index ) + `' > 
                 `+ item.index + `</a></td>
                 <td>` + item.size + ` bytes</td>
                 <td>` + newDate.toLocaleString() + `</td>
@@ -64,7 +64,7 @@ namespace WebBrowser
                 txid = txid.substring( 0, 4 ) + '...' + txid.substring( txid.length - 4 );
                 html_txs += `
                 <tr>
-                <td><a class='code' class='code' target='_blank'
+                <td><a class='code' class='code' target='_self'
                  href ='`+ Url.href_transaction( tx.txid ) + `' > ` + txid + ` </a>
                 </td>
                 <td>` + txtype + `

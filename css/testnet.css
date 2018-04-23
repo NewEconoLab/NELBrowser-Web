@@ -430,3 +430,9 @@ table>tbody>tr {
 .title .go-back {
     color: #2DDE4F;
 }
+
+/*footer start*/
+footer {
+    background: #505F79;
+}
+/*footer end*/

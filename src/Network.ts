@@ -30,16 +30,26 @@
 
         changeNetWork(net: string) {
             if (net == "testnet") {
-                this.title.innerText = "TestNet";
                 this.testbtn.classList.add("active");
                 this.mainbtn.classList.remove("active");
-                this.css.href = "./css/testnet.css";
+                if (location.pathname == '/zh/') {
+                    this.title.innerText = "测试网";
+                    this.css.href = "../css/testnet.css";
+                } else {
+                    this.title.innerText = "TestNet";
+                    this.css.href = "./css/testnet.css";
+                }
             }
             if (net == "mainnet") {
-                this.title.innerText = "MainNet";
                 this.mainbtn.classList.add("active");
                 this.testbtn.classList.remove("active");
-                this.css.href = "./css/mainnet.css";
+                if (location.pathname == '/zh/') {
+                    this.title.innerText = "主网";
+                    this.css.href = "../css/mainnet.css";
+                } else {
+                    this.title.innerText = "MainNet";
+                    this.css.href = "./css/mainnet.css";
+                }
             }
         }
     }

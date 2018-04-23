@@ -34,7 +34,7 @@ namespace WebBrowser
                 id = id.substring( 0, 6 ) + '...' + id.substring( id.length - 6 );
                 $( "#txs" ).append( `
                     <tr>
-                        <td><a href="` + Url.href_transaction( tx.txid ) + `">` + id + `</a></td>
+                        <td><a href="` + Url.href_transaction(tx.txid) + `" target="_self">` + id + `</a></td>
                         <td>` + tx.type + `</td>
                         <td>` + tx.size + ` bytes</td>
                         <td>` + tx.version + `</td>
