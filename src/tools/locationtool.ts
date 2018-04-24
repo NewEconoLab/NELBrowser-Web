@@ -36,6 +36,10 @@ namespace WebBrowser
             var arr = page.split( '/' );
             return arr[2];
         }
-
+        static getType(): any {
+            var page = location.hash;
+            var arr = page.split('/');
+            return arr[1];
+        }
     }
 }

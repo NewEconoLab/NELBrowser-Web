@@ -11,8 +11,10 @@ namespace WebBrowser
         close(): void
         {
             this.div.hidden = true;
+            this.footer.hidden = true;
         }
-        div: HTMLDivElement = document.getElementById( "txlist-page" ) as HTMLDivElement;
+        div: HTMLDivElement = document.getElementById("txlist-page") as HTMLDivElement;
+        footer: HTMLDivElement = document.getElementById('footer-box') as HTMLDivElement;
         private pageUtil: PageUtil;
         private txlist: JQuery<HTMLElement>;
         constructor()
@@ -25,7 +27,7 @@ namespace WebBrowser
                 this.updateTransactions( this.pageUtil, <string>$( "#TxType" ).val() );
             } );
 
-            this.txlist.find("#next").click( () =>
+            $("#txlist-page-next").click( () =>
             {
                 if ( this.pageUtil.currentPage == this.pageUtil.totalPage )
                 {
@@ -36,7 +38,7 @@ namespace WebBrowser
                     this.updateTransactions( this.pageUtil, <string>$( "#TxType" ).val() );
                 }
             } );
-            this.txlist.find( "#previous" ).click( () =>
+            $( "#txlist-page-previous" ).click( () =>
             {
                 if ( this.pageUtil.currentPage <= 1 )
                 {
@@ -53,13 +55,12 @@ namespace WebBrowser
         //更新交易记录
         public async updateTransactions( pageUtil: PageUtil, txType: string )
         {
-            this.txlist.find( "#transactions" ).empty();
+            this.txlist.find("#txlist-page-transactions").empty();
             //分页查询交易记录
             let txs: Tx[] = await WWW.getrawtransactions(pageUtil.pageSize, pageUtil.currentPage, txType);
             let txCount = await WWW.gettxcount(txType);
             this.pageUtil.totalCount = txCount;
 
-            this.txlist.find("table").children("tbody").empty();
             let listLength = 0;
             if (txs.length < 15) {
                 this.txlist.find(".page").hide();
@@ -72,7 +73,7 @@ namespace WebBrowser
             {
                 let txid = txs[n].txid;
                 let html: string = await this.getTxLine( txid, txs[n].type, txs[n].size.toString(), txs[n].blockindex.toString(), txs[n].vin, txs[n].vout );
-                this.txlist.find( "#transactions" ).append( html );
+                this.txlist.find( "#txlist-page-transactions" ).append( html );
             }
             
             pageCut(this.pageUtil);
@@ -86,14 +87,14 @@ namespace WebBrowser
             let pageMsg = "Transactions " + (minNum + 1) + " to " + maxNum + " of " + pageUtil.totalCount;
             $("#txlist-page").find("#txlist-page-msg").html(pageMsg);
             if (this.pageUtil.totalPage - this.pageUtil.currentPage) {
-                $("#txlist-page").find("#next").removeClass('disabled');
+                $("#txlist-page-next").removeClass('disabled');
             } else {
-                $("#txlist-page").find("#next").addClass('disabled');
+                $("#txlist-page-next").addClass('disabled');
             }
             if (this.pageUtil.currentPage - 1) {
-                $("#txlist-page").find("#previous").removeClass('disabled');
+                $("#txlist-page-previous").removeClass('disabled');
             } else {
-                $("#txlist-page").find("#previous").addClass('disabled');
+                $("#txlist-page-previous").addClass('disabled');
             }
         }
         /**
@@ -107,6 +108,7 @@ namespace WebBrowser
             this.pageUtil = new PageUtil( txCount, 15 );
             this.updateTransactions( this.pageUtil, type);
             this.div.hidden = false;
+            this.footer.hidden = false;
         }
 
 

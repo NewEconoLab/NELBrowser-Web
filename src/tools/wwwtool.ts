@@ -182,5 +182,21 @@ namespace WebBrowser
             var r = json["result"];
             return r as AddressMsg[];
         }
+
+        static async getrankbyasset(nep5id:string) {
+            var str = WWW.makeUrl("getrankbyasset", WWW.apiaggr, nep5id);
+            var result = await fetch(str, { "method": "get" });
+            var json = await result.json();
+            var r = json["result"];
+            return r;
+        }
+
+        static async api_getnep5transfersbyasset(nep5id: string) {
+            var str = WWW.makeRpcUrl("getnep5transfersbyasset", nep5id);
+            var result = await fetch(str, { "method": "get" });
+            var json = await result.json();
+            var r = json["result"];
+            return r as TransOfAsset[];
+        }
     }
 }

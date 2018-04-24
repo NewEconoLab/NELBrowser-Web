@@ -11,28 +11,33 @@ var WebBrowser;
     class Block {
         constructor() {
             this.div = document.getElementById("block-info");
+            this.footer = document.getElementById('footer-box');
         }
         close() {
             this.div.hidden = true;
+            this.footer.hidden = true;
         }
         start() {
             //this.div.innerHTML = pages.block;
             this.queryBlock(WebBrowser.locationtool.getParam());
             this.div.hidden = false;
+            this.footer.hidden = false;
         }
         queryBlock(index) {
             return __awaiter(this, void 0, void 0, function* () {
                 let ajax = new WebBrowser.Ajax();
-                let newDate = new Date();
+                //let newDate = new Date();
                 let blocks = yield ajax.post('getblock', [index]);
                 let block = blocks[0];
-                newDate.setTime(block.time * 1000);
+                //newDate.setTime(block.time * 1000);
+                let time = WebBrowser.DateTool.dateFtt("dd-MM-yyyy hh:mm:ss", new Date(block.time * 1000));
                 $("#hash").text(block.hash);
                 $("#size").text(block.size + ' byte');
-                $("#time").text(newDate.toLocaleString());
+                $("#time").text(time);
                 $("#version").text(block.version);
                 $("#index").text(block.index);
                 let txs = block.tx;
+                $("#txs").empty();
                 txs.forEach(tx => {
                     var id = tx.txid.replace('0x', '');
                     id = id.substring(0, 6) + '...' + id.substring(id.length - 6);
@@ -56,6 +61,7 @@ var WebBrowser;
     class Blocks {
         constructor() {
             this.div = document.getElementById('blocks-page');
+            this.footer = document.getElementById('footer-box');
         }
         start() {
             return __awaiter(this, void 0, void 0, function* () {
@@ -63,7 +69,8 @@ var WebBrowser;
                 this.pageUtil = new WebBrowser.PageUtil(count, 15);
                 yield this.updateBlocks(this.pageUtil);
                 this.div.hidden = false;
-                $("#blocks-page").find("#next").click(() => {
+                this.footer.hidden = false;
+                $("#blocks-page-next").click(() => {
                     if (this.pageUtil.currentPage == this.pageUtil.totalPage) {
                         this.pageUtil.currentPage = this.pageUtil.totalPage;
                     }
@@ -72,7 +79,7 @@ var WebBrowser;
                         this.updateBlocks(this.pageUtil);
                     }
                 });
-                $("#blocks-page").find("#previous").click(() => {
+                $("#blocks-page-previous").click(() => {
                     if (this.pageUtil.currentPage <= 1) {
                         this.pageUtil.currentPage = 1;
                     }
@@ -85,22 +92,23 @@ var WebBrowser;
         }
         close() {
             this.div.hidden = true;
+            this.footer.hidden = true;
         }
         updateBlocks(pageUtil) {
             return __awaiter(this, void 0, void 0, function* () {
                 let blocks = yield WebBrowser.WWW.getblocks(pageUtil.pageSize, pageUtil.currentPage);
                 $("#blocks-page").children("table").children("tbody").empty();
                 if (pageUtil.totalPage - pageUtil.currentPage) {
-                    $("#blocks-page").find("#next").removeClass('disabled');
+                    $("#blocks-page-next").removeClass('disabled');
                 }
                 else {
-                    $("#blocks-page").find("#next").addClass('disabled');
+                    $("#blocks-page-next").addClass('disabled');
                 }
                 if (pageUtil.currentPage - 1) {
-                    $("#blocks-page").find("#previous").removeClass('disabled');
+                    $("#blocks-page-previous").removeClass('disabled');
                 }
                 else {
-                    $("#blocks-page").find("#previous").addClass('disabled');
+                    $("#blocks-page-previous").addClass('disabled');
                 }
                 let minNum = pageUtil.currentPage * pageUtil.pageSize - pageUtil.pageSize;
                 let maxNum = pageUtil.totalCount;
@@ -109,14 +117,15 @@ var WebBrowser;
                     maxNum = pageUtil.currentPage * pageUtil.pageSize;
                 }
                 let pageMsg = "Blocks " + (minNum + 1) + " to " + maxNum + " of " + pageUtil.totalCount;
-                $("#blocks-page").find("#page-msg").html(pageMsg);
-                let newDate = new Date();
+                $("#blocks-page-msg").html(pageMsg);
+                //let newDate = new Date();
                 blocks.forEach((item, index, input) => {
-                    newDate.setTime(item.time * 1000);
+                    //newDate.setTime(item.time * 1000);
+                    let time = WebBrowser.DateTool.dateFtt("dd-MM-yyyy hh:mm:ss", new Date(item.time * 1000));
                     let html = `
                 <tr>
                 <td><a href="` + WebBrowser.Url.href_block(item.index) + `" target="_self">` + item.index + `</a></td>
-                <td>` + item.size + ` bytes</td><td>` + newDate.toLocaleString() + `</td>
+                <td>` + item.size + ` bytes</td><td>` + time + `</td>
                 </tr>`;
                     $("#blocks-page").find("tbody").append(html);
                 });
@@ -318,6 +327,24 @@ var WebBrowser;
                 return r;
             });
         }
+        static getrankbyasset(nep5id) {
+            return __awaiter(this, void 0, void 0, function* () {
+                var str = WWW.makeUrl("getrankbyasset", WWW.apiaggr, nep5id);
+                var result = yield fetch(str, { "method": "get" });
+                var json = yield result.json();
+                var r = json["result"];
+                return r;
+            });
+        }
+        static api_getnep5transfersbyasset(nep5id) {
+            return __awaiter(this, void 0, void 0, function* () {
+                var str = WWW.makeRpcUrl("getnep5transfersbyasset", nep5id);
+                var result = yield fetch(str, { "method": "get" });
+                var json = yield result.json();
+                var r = json["result"];
+                return r;
+            });
+        }
     }
     WWW.api = "https://api.nel.group/api/";
     WWW.apiaggr = "https://apiaggr.nel.group/api/testnet";
@@ -447,9 +474,11 @@ var WebBrowser;
     class Address {
         constructor() {
             this.div = document.getElementById("address-info");
+            this.footer = document.getElementById('footer-box');
         }
         close() {
             this.div.hidden = true;
+            this.footer.hidden = true;
         }
         start() {
             return __awaiter(this, void 0, void 0, function* () {
@@ -481,18 +510,19 @@ var WebBrowser;
                     $('#errMsg').modal('show');
                 }
                 this.div.hidden = false;
+                this.footer.hidden = false;
             });
         }
         //AddressInfo视图
         loadAddressInfo(address, addrMsg) {
-            let createdTime = WebBrowser.DateTool.dateFtt("yyyy-MM-dd hh:mm:ss", new Date(addrMsg[0].firstuse.blocktime.$date));
+            let createdTime = WebBrowser.DateTool.dateFtt("dd-MM-yyyy hh:mm:ss", new Date(addrMsg[0].firstuse.blocktime.$date));
             let totalTran = addrMsg[0].txcount;
             $("#address").text(address);
             $("#created").text(createdTime);
             $("#totalTran").text(totalTran);
         }
         loadView(balances, nep5ofAddress) {
-            $("#utxos").empty();
+            $("#balance").empty();
             if (balances) {
                 balances.forEach((balance) => {
                     var name = WebBrowser.CoinTool.assetID2name[balance.asset];
@@ -512,6 +542,7 @@ var WebBrowser;
             }
         }
         loadUTXOView(utxos) {
+            $("#add-utxos").empty();
             if (utxos) {
                 utxos.forEach((utxo) => {
                     let html = `
@@ -600,7 +631,7 @@ var WebBrowser;
                     }
                     for (var n = 0; n < listLength; n++) {
                         let txid = txlist[n].txid;
-                        let time = WebBrowser.DateTool.dateFtt("yyyy-MM-dd hh:mm:ss", new Date(txlist[n].blocktime.$date));
+                        let time = WebBrowser.DateTool.dateFtt("dd-MM-yyyy hh:mm:ss", new Date(txlist[n].blocktime.$date));
                         let html = yield this.getAddrTransLine(txid, txlist[n].type, "xxxxxxx", time, txlist[n].vin, txlist[n].vout);
                         $("#addr-trans").append(html);
                     }
@@ -747,9 +778,11 @@ var WebBrowser;
     class Addresses {
         constructor() {
             this.div = document.getElementById('addrs-page');
+            this.footer = document.getElementById('footer-box');
         }
         close() {
             this.div.hidden = true;
+            this.footer.hidden = true;
         }
         /**
          * addrlistInit
@@ -757,12 +790,14 @@ var WebBrowser;
         addrlistInit() {
             return __awaiter(this, void 0, void 0, function* () {
                 let addrlist = yield WebBrowser.WWW.getaddrs(this.pageUtil.pageSize, this.pageUtil.currentPage);
-                let newDate = new Date();
+                //let newDate: Date = new Date();
                 addrlist.map((item) => {
-                    newDate.setTime(item.firstuse.blocktime.$date);
-                    item.firstDate = newDate.toLocaleString();
-                    newDate.setTime(item.lastuse.blocktime.$date);
-                    item.lastDate = newDate.toLocaleString();
+                    //newDate.setTime(item.firstuse.blocktime.$date);
+                    let firstTime = WebBrowser.DateTool.dateFtt("dd-MM-yyyy hh:mm:ss", new Date(item.firstuse.blocktime.$date));
+                    item.firstDate = firstTime;
+                    //newDate.setTime(item.lastuse.blocktime.$date);
+                    let lastTime = WebBrowser.DateTool.dateFtt("dd-MM-yyyy hh:mm:ss", new Date(item.lastuse.blocktime.$date));
+                    item.lastDate = lastTime;
                 });
                 this.loadView(addrlist);
                 WebBrowser.pageCut(this.pageUtil);
@@ -775,16 +810,16 @@ var WebBrowser;
                 let pageMsg = "Addresses " + (minNum + 1) + " to " + maxNum + " of " + this.pageUtil.totalCount;
                 $("#addrs-page").find("#addrs-page-msg").html(pageMsg);
                 if (this.pageUtil.totalPage - this.pageUtil.currentPage) {
-                    $("#addrs-page").find("#next").removeClass('disabled');
+                    $("#addrs-page-next").removeClass('disabled');
                 }
                 else {
-                    $("#addrs-page").find("#next").addClass('disabled');
+                    $("#addrs-page-next").addClass('disabled');
                 }
                 if (this.pageUtil.currentPage - 1) {
-                    $("#addrs-page").find("#previous").removeClass('disabled');
+                    $("#addrs-page-previous").removeClass('disabled');
                 }
                 else {
-                    $("#addrs-page").find("#previous").addClass('disabled');
+                    $("#addrs-page-previous").addClass('disabled');
                 }
             });
         }
@@ -798,7 +833,7 @@ var WebBrowser;
                 this.pageUtil = new WebBrowser.PageUtil(prom, 15);
                 yield this.addrlistInit();
                 //this.addrlistInit();
-                $("#addrs-page").find("#next").click(() => {
+                $("#addrs-page-next").click(() => {
                     if (this.pageUtil.currentPage == this.pageUtil.totalPage) {
                         this.pageUtil.currentPage = this.pageUtil.totalPage;
                     }
@@ -807,7 +842,7 @@ var WebBrowser;
                         this.addrlistInit();
                     }
                 });
-                $("#addrs-page").find("#previous").click(() => {
+                $("#addrs-page-previous").click(() => {
                     if (this.pageUtil.currentPage <= 1) {
                         this.pageUtil.currentPage = 1;
                     }
@@ -816,6 +851,7 @@ var WebBrowser;
                         this.addrlistInit();
                     }
                 });
+                this.footer.hidden = false;
             });
         }
         /**
@@ -842,21 +878,36 @@ var WebBrowser;
     class AssetInfo {
         constructor() {
             this.div = document.getElementById("asset-info");
+            this.footer = document.getElementById('footer-box');
         }
         start() {
-            this.view(WebBrowser.locationtool.getParam());
+            var assetid = WebBrowser.locationtool.getParam();
+            let href = WebBrowser.locationtool.getUrl() + "/assets";
+            let html = '<a href="' + href + '" target="_self">&lt&lt&ltBack to all assets</a>';
+            $("#goallasset").empty();
+            $("#goallasset").append(html);
+            this.loadAssetInfoView(assetid);
+            var assetType = WebBrowser.locationtool.getType();
+            if (assetType == 'nep5') {
+                $(".asset-nep5-warp").show();
+            }
+            else {
+                $(".asset-nep5-warp").hide();
+            }
             this.div.hidden = false;
+            this.footer.hidden = false;
         }
         close() {
             this.div.hidden = true;
+            this.footer.hidden = true;
         }
-        view(assetid) {
+        loadAssetInfoView(assetid) {
             //this.div.innerHTML = pages.asset;
             WebBrowser.WWW.api_getasset(assetid).then((data) => {
                 var asset = data[0];
                 asset.names = WebBrowser.CoinTool.assetID2name[asset.id];
                 $("#name").text(asset.names);
-                $("#type").text(asset.type);
+                $("#asset-info-type").text(asset.type);
                 $("#id").text(asset.id);
                 $("#available").text(asset.available);
                 $("#precision").text(asset.precision);
@@ -872,6 +923,7 @@ var WebBrowser;
     class Assets {
         constructor() {
             this.div = document.getElementById("asset-page");
+            this.footer = document.getElementById('footer-box');
             this.assetlist = $("#asset-page");
             //监听交易列表选择框
             $("#asset-TxType").change(() => {
@@ -906,7 +958,7 @@ var WebBrowser;
                     }
                 }
             });
-            this.assetlist.find("#next").click(() => {
+            $("#asset-page-next").click(() => {
                 if (this.pageUtil.currentPage == this.pageUtil.totalPage) {
                     this.pageUtil.currentPage = this.pageUtil.totalPage;
                 }
@@ -920,7 +972,7 @@ var WebBrowser;
                     }
                 }
             });
-            this.assetlist.find("#previous").click(() => {
+            $("#asset-page-previous").click(() => {
                 if (this.pageUtil.currentPage <= 1) {
                     this.pageUtil.currentPage = 1;
                 }
@@ -937,6 +989,7 @@ var WebBrowser;
         }
         close() {
             this.div.hidden = true;
+            this.footer.hidden = true;
         }
         //更新asset表格
         updateAssets(pageUtil) {
@@ -978,16 +1031,16 @@ var WebBrowser;
                 let pageMsg = "Assets " + (minNum + 1) + " to " + maxNum + " of " + pageUtil.totalCount;
                 $("#asset-page").find("#asset-page-msg").html(pageMsg);
                 if (this.pageUtil.totalPage - this.pageUtil.currentPage) {
-                    $("#asset-page").find("#next").removeClass('disabled');
+                    $("#asset-page-next").removeClass('disabled');
                 }
                 else {
-                    $("#asset-page").find("#next").addClass('disabled');
+                    $("#asset-page-next").addClass('disabled');
                 }
                 if (this.pageUtil.currentPage - 1) {
-                    $("#asset-page").find("#previous").removeClass('disabled');
+                    $("#asset-page-previous").removeClass('disabled');
                 }
                 else {
-                    $("#asset-page").find("#previous").addClass('disabled');
+                    $("#asset-page-previous").addClass('disabled');
                 }
             });
         }
@@ -1009,6 +1062,7 @@ var WebBrowser;
                 }
                 this.nep5s = yield WebBrowser.WWW.getallnep5asset();
                 this.div.hidden = false;
+                this.footer.hidden = false;
             });
         }
         /**
@@ -1032,9 +1086,7 @@ var WebBrowser;
             $("#assets").empty();
             nep5s.forEach((nep5s) => {
                 let href = WebBrowser.Url.href_nep5(nep5s.assetid);
-                console.log(nep5s.assetid);
                 let assetname = '(' + nep5s.assetid.substring(2, 5) + '...' + nep5s.assetid.substring(nep5s.assetid.length - 3) + ')';
-                console.log(assetname);
                 let html = `
                     <tr>
                     <td> <a href="` + href + `" target="_self">` + nep5s.name + assetname + `</a></td>
@@ -1056,25 +1108,30 @@ var WebBrowser;
     class Transaction {
         constructor() {
             this.div = document.getElementById("transaction-info");
+            this.footer = document.getElementById('footer-box');
         }
         close() {
             this.div.hidden = true;
+            this.footer.hidden = true;
         }
         start() {
             //this.div.innerHTML = pages.transaction;
             this.updateTxInfo(WebBrowser.locationtool.getParam());
             this.div.hidden = false;
+            this.footer.hidden = false;
         }
         updateTxInfo(txid) {
             return __awaiter(this, void 0, void 0, function* () {
                 let txInfo = yield WebBrowser.WWW.getrawtransaction(txid);
                 $("#type").text(txInfo.type.replace("Transaction", ""));
                 $("#txid").text(txInfo.txid);
-                $("#blockindex").append("<a href='" + WebBrowser.Url.href_block(txInfo.blockindex) + "' " + txInfo.blockindex + "</a>");
-                $("#txsize").append(txInfo.size + " bytes");
+                $("#blockindex").empty();
+                $("#blockindex").append("<a href='" + WebBrowser.Url.href_block(txInfo.blockindex) + "'>" + txInfo.blockindex + "</a>");
+                $("#txsize").text(txInfo.size + " bytes");
                 $("#sysfee").text(txInfo["sys_fee"] + " gas");
                 $("#netfee").text(txInfo["net_fee"] + " gas");
-                let allAsset = yield WebBrowser.WWW.api_getAllAssets();
+                $("#transaction-time").text("-");
+                //let allAsset: Asset[] = await WWW.api_getAllAssets();
                 let arr = new Array();
                 for (let index = 0; index < txInfo.vin.length; index++) {
                     const vin = txInfo.vin[index];
@@ -1089,6 +1146,7 @@ var WebBrowser;
                     catch (error) {
                     }
                 }
+                $("#from").empty();
                 let array = Transaction.groupByaddr(arr);
                 for (let index = 0; index < array.length; index++) {
                     const item = array[index];
@@ -1102,6 +1160,7 @@ var WebBrowser;
                     }
                     $("#from").append(html);
                 }
+                $("#to").empty();
                 txInfo.vout.forEach(vout => {
                     let name = WebBrowser.CoinTool.assetID2name[vout.asset];
                     let sign = "";
@@ -1343,6 +1402,7 @@ var WebBrowser;
     class Index {
         constructor() {
             this.div = document.getElementById('index-page');
+            this.footer = document.getElementById('footer-box');
             this.viewtxlist = document.getElementById("viewtxlist");
             this.viewblocks = document.getElementById("viewblocks");
             this.alladdress = document.getElementById("alladdress");
@@ -1359,6 +1419,7 @@ var WebBrowser;
                 this.alladdress.href = WebBrowser.Url.href_addresses();
                 this.allblock.href = WebBrowser.Url.href_blocks();
                 this.alltxlist.href = WebBrowser.Url.href_transactions();
+                this.div.hidden = false;
                 //查询区块高度(区块数量-1)
                 let blockHeight = yield WebBrowser.WWW.api_getHeight();
                 //查询交易数量
@@ -1377,14 +1438,15 @@ var WebBrowser;
                 let html_blocks = ``;
                 let html_txs = ``;
                 blocks.forEach((item, index, input) => {
-                    var newDate = new Date();
-                    newDate.setTime(item.time * 1000);
+                    //var newDate = new Date();
+                    //newDate.setTime(item.time * 1000);
+                    let time = WebBrowser.DateTool.dateFtt("dd-MM-yyyy hh:mm:ss", new Date(item.time * 1000));
                     html_blocks += `
                 <tr><td>
                 <a class="code" target="_self" href ='` + WebBrowser.Url.href_block(item.index) + `' > 
                 ` + item.index + `</a></td>
                 <td>` + item.size + ` bytes</td>
-                <td>` + newDate.toLocaleString() + `</td>
+                <td>` + time + `</td>
                 <td>` + item.tx.length + `</td></tr>`;
                 });
                 txs.forEach((tx) => {
@@ -1394,7 +1456,7 @@ var WebBrowser;
                     txid = txid.substring(0, 4) + '...' + txid.substring(txid.length - 4);
                     html_txs += `
                 <tr>
-                <td><a class='code' class='code' target='_self'
+                <td><a class='code' target='_self'
                  href ='` + WebBrowser.Url.href_transaction(tx.txid) + `' > ` + txid + ` </a>
                 </td>
                 <td>` + txtype + `
@@ -1407,7 +1469,7 @@ var WebBrowser;
                 });
                 $("#index-page").find("#blocks").children("tbody").append(html_blocks);
                 $("#index-page").find("#transactions").children("tbody").append(html_txs);
-                this.div.hidden = false;
+                this.footer.hidden = false;
             });
         }
     }
@@ -1546,13 +1608,14 @@ var WebBrowser;
     class Transactions {
         constructor() {
             this.div = document.getElementById("txlist-page");
+            this.footer = document.getElementById('footer-box');
             this.txlist = $("#txlist-page");
             //监听交易列表选择框
             $("#TxType").change(() => {
                 this.pageUtil.currentPage = 1;
                 this.updateTransactions(this.pageUtil, $("#TxType").val());
             });
-            this.txlist.find("#next").click(() => {
+            $("#txlist-page-next").click(() => {
                 if (this.pageUtil.currentPage == this.pageUtil.totalPage) {
                     this.pageUtil.currentPage = this.pageUtil.totalPage;
                 }
@@ -1561,7 +1624,7 @@ var WebBrowser;
                     this.updateTransactions(this.pageUtil, $("#TxType").val());
                 }
             });
-            this.txlist.find("#previous").click(() => {
+            $("#txlist-page-previous").click(() => {
                 if (this.pageUtil.currentPage <= 1) {
                     this.pageUtil.currentPage = 1;
                 }
@@ -1573,16 +1636,16 @@ var WebBrowser;
         }
         close() {
             this.div.hidden = true;
+            this.footer.hidden = true;
         }
         //更新交易记录
         updateTransactions(pageUtil, txType) {
             return __awaiter(this, void 0, void 0, function* () {
-                this.txlist.find("#transactions").empty();
+                this.txlist.find("#txlist-page-transactions").empty();
                 //分页查询交易记录
                 let txs = yield WebBrowser.WWW.getrawtransactions(pageUtil.pageSize, pageUtil.currentPage, txType);
                 let txCount = yield WebBrowser.WWW.gettxcount(txType);
                 this.pageUtil.totalCount = txCount;
-                this.txlist.find("table").children("tbody").empty();
                 let listLength = 0;
                 if (txs.length < 15) {
                     this.txlist.find(".page").hide();
@@ -1595,7 +1658,7 @@ var WebBrowser;
                 for (var n = 0; n < listLength; n++) {
                     let txid = txs[n].txid;
                     let html = yield this.getTxLine(txid, txs[n].type, txs[n].size.toString(), txs[n].blockindex.toString(), txs[n].vin, txs[n].vout);
-                    this.txlist.find("#transactions").append(html);
+                    this.txlist.find("#txlist-page-transactions").append(html);
                 }
                 WebBrowser.pageCut(this.pageUtil);
                 let minNum = pageUtil.currentPage * pageUtil.pageSize - pageUtil.pageSize;
@@ -1607,16 +1670,16 @@ var WebBrowser;
                 let pageMsg = "Transactions " + (minNum + 1) + " to " + maxNum + " of " + pageUtil.totalCount;
                 $("#txlist-page").find("#txlist-page-msg").html(pageMsg);
                 if (this.pageUtil.totalPage - this.pageUtil.currentPage) {
-                    $("#txlist-page").find("#next").removeClass('disabled');
+                    $("#txlist-page-next").removeClass('disabled');
                 }
                 else {
-                    $("#txlist-page").find("#next").addClass('disabled');
+                    $("#txlist-page-next").addClass('disabled');
                 }
                 if (this.pageUtil.currentPage - 1) {
-                    $("#txlist-page").find("#previous").removeClass('disabled');
+                    $("#txlist-page-previous").removeClass('disabled');
                 }
                 else {
-                    $("#txlist-page").find("#previous").addClass('disabled');
+                    $("#txlist-page-previous").addClass('disabled');
                 }
             });
         }
@@ -1631,6 +1694,7 @@ var WebBrowser;
                 this.pageUtil = new WebBrowser.PageUtil(txCount, 15);
                 this.updateTransactions(this.pageUtil, type);
                 this.div.hidden = false;
+                this.footer.hidden = false;
             });
         }
         getTxLine(txid, type, size, index, vins, vouts) {
@@ -1732,15 +1796,32 @@ var WebBrowser;
     class Nep5page {
         constructor() {
             this.div = document.getElementById("asset-info");
+            this.footer = document.getElementById('footer-box');
         }
         start() {
-            this.view(WebBrowser.locationtool.getParam());
+            var nep5id = WebBrowser.locationtool.getParam();
+            let href = WebBrowser.locationtool.getUrl() + "/assets";
+            let html = '<a href="' + href + '" target="_self">&lt&lt&ltBack to all assets</a>';
+            $("#goallasset").empty();
+            $("#goallasset").append(html);
+            this.loadNep5InfoView(nep5id);
+            var assetType = WebBrowser.locationtool.getType();
+            if (assetType == 'nep5') {
+                $(".asset-nep5-warp").show();
+                this.loadAssetBalanceView(nep5id);
+                this.loadAssetTranView(nep5id);
+            }
+            else {
+                $(".asset-nep5-warp").hide();
+            }
             this.div.hidden = false;
+            this.footer.hidden = false;
         }
         close() {
             this.div.hidden = true;
+            this.footer.hidden = true;
         }
-        view(nep5id) {
+        loadNep5InfoView(nep5id) {
             //this.div.innerHTML = pages.asset;
             WebBrowser.WWW.api_getnep5(nep5id).then((data) => {
                 var nep5 = data[0];
@@ -1750,6 +1831,68 @@ var WebBrowser;
                 $("#available").text(nep5.totalsupply);
                 $("#precision").text(nep5.decimals);
                 $("#admin").text("-");
+            });
+        }
+        loadAssetTranView(nep5id) {
+            return __awaiter(this, void 0, void 0, function* () {
+                let tranList = yield WebBrowser.WWW.api_getnep5transfersbyasset(nep5id);
+                console.log(tranList);
+                $("#assets-tran-list").empty();
+                if (tranList) {
+                    tranList.forEach((item) => {
+                        console.log(item);
+                        if (!item.from) {
+                            item.from = '-';
+                        }
+                        if (!item.to) {
+                            item.to = '-';
+                        }
+                        let html = `
+                    <tr>
+                    <td><a class="code omit" href="` + WebBrowser.Url.href_transaction(item.txid) + `" target="_self">` + item.txid + `
+                    </a></td>
+                    <td>` + item.from + `
+                    </td>
+                    <td>` + item.to + `
+                    </td>
+                    <td>` + item.blockindex + `</td>
+                    </tr>`;
+                        $("#assets-tran-list").append(html);
+                    });
+                }
+                else {
+                    let html = `<tr><td colspan="3" >There is no data</td></tr>`;
+                    $("#assets-tran-list").append(html);
+                }
+            });
+        }
+        loadAssetBalanceView(nep5id) {
+            return __awaiter(this, void 0, void 0, function* () {
+                let balanceList = yield WebBrowser.WWW.getrankbyasset(nep5id);
+                $("#assets-balance-list").empty();
+                if (balanceList) {
+                    let rank = 1;
+                    balanceList.forEach((item) => {
+                        console.log(item);
+                        for (var key in item) {
+                            let href = WebBrowser.Url.href_address(item[key]);
+                            let html = `
+                    <tr>
+                    <td>` + rank + `
+                    </td>
+                    <td><a target="_self" href="` + href + `">` + key + `
+                    </a></td>
+                    <td>` + item[key] + `</td>
+                    </tr>`;
+                            $("#assets-balance-list").append(html);
+                        }
+                        rank++;
+                    });
+                }
+                else {
+                    let html = `<tr><td colspan="3" >There is no data</td></tr>`;
+                    $("#assets-balance-list").append(html);
+                }
             });
         }
     }
@@ -1802,6 +1945,11 @@ var WebBrowser;
             var page = location.hash;
             var arr = page.split('/');
             return arr[2];
+        }
+        static getType() {
+            var page = location.hash;
+            var arr = page.split('/');
+            return arr[1];
         }
     }
     WebBrowser.locationtool = locationtool;
@@ -2829,14 +2977,14 @@ var WebBrowser;
                 let block = new WebBrowser.Blocks();
                 block.updateBlocks(pageUtil);
                 //监听下一页
-                $("#blocks-page").find("#next").click(() => {
+                $("#blocks-page-next").click(() => {
                     if (pageUtil.currentPage == pageUtil.totalPage) {
                         pageUtil.currentPage = pageUtil.totalPage;
                     }
                     pageUtil.currentPage += 1;
                     block.updateBlocks(pageUtil);
                 });
-                $("#blocks-page").find("#previous").click(() => {
+                $("#blocks-page-previous").click(() => {
                     if (pageUtil.currentPage <= 1) {
                         pageUtil.currentPage = 1;
                     }

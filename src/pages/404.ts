@@ -4,6 +4,7 @@ namespace WebBrowser
     export class Notfound implements Page
     {
         div: HTMLDivElement;
+        footer: HTMLDivElement;
         btn: HTMLButtonElement;
         start(): void
         {

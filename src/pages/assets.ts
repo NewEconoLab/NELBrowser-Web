@@ -3,10 +3,12 @@
     //资产页面管理器
     export class Assets implements Page
     {
-        div: HTMLDivElement = document.getElementById( "asset-page" ) as HTMLDivElement;
+        div: HTMLDivElement = document.getElementById("asset-page") as HTMLDivElement;
+        footer: HTMLDivElement = document.getElementById('footer-box') as HTMLDivElement;
         close(): void
         {
             this.div.hidden = true;
+            this.footer.hidden = true;
         }
         private pageUtil: PageUtil;
         private assetlist: JQuery<HTMLElement>;
@@ -47,7 +49,7 @@
                 }
             });
 
-            this.assetlist.find("#next").click(() => {
+            $("#asset-page-next").click(() => {
                 if (this.pageUtil.currentPage == this.pageUtil.totalPage) {
                     this.pageUtil.currentPage = this.pageUtil.totalPage;
                 } else {
@@ -59,7 +61,7 @@
                     }
                 }
             });
-            this.assetlist.find("#previous").click(() => {
+            $("#asset-page-previous").click(() => {
                 if (this.pageUtil.currentPage <= 1) {
                     this.pageUtil.currentPage = 1;
                 } else {
@@ -112,14 +114,14 @@
             let pageMsg = "Assets " + (minNum + 1) + " to " + maxNum + " of " + pageUtil.totalCount;
             $("#asset-page").find("#asset-page-msg").html(pageMsg);
             if (this.pageUtil.totalPage - this.pageUtil.currentPage) {
-                $("#asset-page").find("#next").removeClass('disabled');
+                $("#asset-page-next").removeClass('disabled');
             } else {
-                $("#asset-page").find("#next").addClass('disabled');
+                $("#asset-page-next").addClass('disabled');
             }
             if (this.pageUtil.currentPage - 1) {
-                $("#asset-page").find("#previous").removeClass('disabled');
+                $("#asset-page-previous").removeClass('disabled');
             } else {
-                $("#asset-page").find("#previous").addClass('disabled');
+                $("#asset-page-previous").addClass('disabled');
             }
         }
 
@@ -142,6 +144,7 @@
             this.nep5s = await WWW.getallnep5asset();
 
             this.div.hidden = false;
+            this.footer.hidden = false;
         }
         
         /**
@@ -167,9 +170,7 @@
             $("#assets").empty();
             nep5s.forEach((nep5s: nep5Asset) => {
                 let href = Url.href_nep5(nep5s.assetid);
-                console.log(nep5s.assetid);
                 let assetname = '(' + nep5s.assetid.substring(2, 5) + '...' + nep5s.assetid.substring(nep5s.assetid.length-3) + ')';
-                console.log(assetname);
                 let html = `
                     <tr>
                     <td> <a href="`+ href + `" target="_self">` + nep5s.name + assetname + `</a></td>

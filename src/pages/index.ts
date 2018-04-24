@@ -8,6 +8,7 @@ namespace WebBrowser
             this.div.hidden = true;
         }
         div: HTMLDivElement = document.getElementById('index-page') as HTMLDivElement;
+        footer: HTMLDivElement = document.getElementById('footer-box') as HTMLDivElement;
         viewtxlist: HTMLAnchorElement = document.getElementById( "viewtxlist" ) as HTMLAnchorElement;
         viewblocks: HTMLAnchorElement = document.getElementById( "viewblocks" ) as HTMLAnchorElement;
         alladdress: HTMLAnchorElement = document.getElementById( "alladdress" ) as HTMLAnchorElement;
@@ -20,6 +21,7 @@ namespace WebBrowser
             this.alladdress.href = Url.href_addresses();
             this.allblock.href = Url.href_blocks();
             this.alltxlist.href = Url.href_transactions();
+            this.div.hidden = false;
             //查询区块高度(区块数量-1)
             let blockHeight = await WWW.api_getHeight();
             //查询交易数量
@@ -45,14 +47,15 @@ namespace WebBrowser
 
             blocks.forEach( ( item, index, input ) =>
             {
-                var newDate = new Date();
-                newDate.setTime( item.time * 1000 );
+                //var newDate = new Date();
+                //newDate.setTime(item.time * 1000);
+                let time = DateTool.dateFtt("dd-MM-yyyy hh:mm:ss", new Date(item.time * 1000));
                 html_blocks += `
                 <tr><td>
                 <a class="code" target="_self" href ='`+ Url.href_block( item.index ) + `' > 
                 `+ item.index + `</a></td>
                 <td>` + item.size + ` bytes</td>
-                <td>` + newDate.toLocaleString() + `</td>
+                <td>` + time + `</td>
                 <td>` + item.tx.length + `</td></tr>`;
             } );
 
@@ -64,7 +67,7 @@ namespace WebBrowser
                 txid = txid.substring( 0, 4 ) + '...' + txid.substring( txid.length - 4 );
                 html_txs += `
                 <tr>
-                <td><a class='code' class='code' target='_self'
+                <td><a class='code' target='_self'
                  href ='`+ Url.href_transaction( tx.txid ) + `' > ` + txid + ` </a>
                 </td>
                 <td>` + txtype + `
@@ -77,8 +80,8 @@ namespace WebBrowser
             } );
 
             $( "#index-page" ).find( "#blocks" ).children( "tbody" ).append( html_blocks );
-            $( "#index-page" ).find( "#transactions" ).children( "tbody" ).append( html_txs );
-            this.div.hidden = false;
+            $("#index-page").find("#transactions").children("tbody").append(html_txs);
+            this.footer.hidden = false;
         }
     }
 }

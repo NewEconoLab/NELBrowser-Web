@@ -3,10 +3,12 @@
     //地址列表
     export class Addresses implements Page
     {
-        div: HTMLDivElement = document.getElementById( 'addrs-page' ) as HTMLDivElement;
+        div: HTMLDivElement = document.getElementById('addrs-page') as HTMLDivElement;
+        footer: HTMLDivElement = document.getElementById('footer-box') as HTMLDivElement;
         close(): void
         {
             this.div.hidden = true;
+            this.footer.hidden = true;
         }
         private pageUtil: PageUtil;
 
@@ -16,13 +18,15 @@
         public async addrlistInit()
         {
             let addrlist: Addr[] = await WWW.getaddrs(this.pageUtil.pageSize, this.pageUtil.currentPage);
-            let newDate: Date = new Date();
+            //let newDate: Date = new Date();
             addrlist.map( ( item ) =>
             {
-                newDate.setTime( item.firstuse.blocktime.$date );
-                item.firstDate = newDate.toLocaleString();
-                newDate.setTime( item.lastuse.blocktime.$date );
-                item.lastDate = newDate.toLocaleString();
+                //newDate.setTime(item.firstuse.blocktime.$date);
+                let firstTime = DateTool.dateFtt("dd-MM-yyyy hh:mm:ss", new Date(item.firstuse.blocktime.$date));
+                item.firstDate = firstTime;
+                //newDate.setTime(item.lastuse.blocktime.$date);
+                let lastTime = DateTool.dateFtt("dd-MM-yyyy hh:mm:ss", new Date(item.lastuse.blocktime.$date));
+                item.lastDate = lastTime;
             } );
             this.loadView( addrlist );
             pageCut(this.pageUtil);
@@ -36,14 +40,14 @@
             let pageMsg = "Addresses " + (minNum + 1) + " to " + maxNum + " of " + this.pageUtil.totalCount;
             $("#addrs-page").find("#addrs-page-msg").html(pageMsg);
             if (this.pageUtil.totalPage - this.pageUtil.currentPage) {
-                $("#addrs-page").find("#next").removeClass('disabled');
+                $("#addrs-page-next").removeClass('disabled');
             } else {
-                $("#addrs-page").find("#next").addClass('disabled');
+                $("#addrs-page-next").addClass('disabled');
             }
             if (this.pageUtil.currentPage - 1) {
-                $("#addrs-page").find("#previous").removeClass('disabled');
+                $("#addrs-page-previous").removeClass('disabled');
             } else {
-                $("#addrs-page").find("#previous").addClass('disabled');
+                $("#addrs-page-previous").addClass('disabled');
             }
 
         }
@@ -53,11 +57,12 @@
         public async start()
         {
             this.div.hidden = false;
+            
             let prom = await WWW.getaddrcount();
             this.pageUtil = new PageUtil(prom, 15);
             await this.addrlistInit();
             //this.addrlistInit();
-            $("#addrs-page").find("#next").click(() => {
+            $("#addrs-page-next").click(() => {
                 if (this.pageUtil.currentPage == this.pageUtil.totalPage) {
                     this.pageUtil.currentPage = this.pageUtil.totalPage;
                 } else {
@@ -65,7 +70,7 @@
                     this.addrlistInit();
                 }
             });
-            $("#addrs-page").find("#previous").click(() => {
+            $("#addrs-page-previous").click(() => {
                 if (this.pageUtil.currentPage <= 1) {
                     this.pageUtil.currentPage = 1;
                 } else {
@@ -73,6 +78,7 @@
                     this.addrlistInit();
                 }
             });
+            this.footer.hidden = false;
         }
         /**
          * loadView

@@ -9,26 +9,31 @@ namespace WebBrowser
         close(): void
         {
             this.div.hidden = true;
+            this.footer.hidden = true;
         }
-        div: HTMLDivElement = document.getElementById( "transaction-info" ) as HTMLDivElement;
+        div: HTMLDivElement = document.getElementById("transaction-info") as HTMLDivElement;
+        footer: HTMLDivElement = document.getElementById('footer-box') as HTMLDivElement;
 
         start()
         {
             //this.div.innerHTML = pages.transaction;
             this.updateTxInfo( locationtool.getParam() );
             this.div.hidden = false;
+            this.footer.hidden = false;
         }
         public async updateTxInfo(txid: string)
         {
             let txInfo: Tx = await WWW.getrawtransaction( txid );
             $("#type").text(txInfo.type.replace("Transaction", ""));
-            $( "#txid" ).text( txInfo.txid );
-            $( "#blockindex" ).append( "<a href='" + Url.href_block( txInfo.blockindex ) + "' " + txInfo.blockindex + "</a>" );
-            $("#txsize").append(txInfo.size + " bytes");
+            $("#txid").text(txInfo.txid);
+            $("#blockindex").empty();
+            $("#blockindex").append("<a href='" + Url.href_block(txInfo.blockindex) + "'>" + txInfo.blockindex + "</a>");
+            $("#txsize").text(txInfo.size + " bytes");
             $("#sysfee").text(txInfo["sys_fee"] + " gas");
             $("#netfee").text(txInfo["net_fee"] + " gas");
+            $("#transaction-time").text("-");
 
-            let allAsset: Asset[] = await WWW.api_getAllAssets();
+            //let allAsset: Asset[] = await WWW.api_getAllAssets();
 
             let arr = new Array<any>();
             for (let index = 0; index < txInfo.vin.length; index++)
@@ -47,6 +52,7 @@ namespace WebBrowser
 
                 }
             }
+            $("#from").empty();
             let array = Transaction.groupByaddr(arr);
             for (let index = 0; index < array.length; index++)
             {
@@ -63,7 +69,7 @@ namespace WebBrowser
                 }
                 $("#from").append(html);
             }
-            
+            $("#to").empty();
             txInfo.vout.forEach(vout =>
             {
                 let name = CoinTool.assetID2name[vout.asset];

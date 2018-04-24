@@ -140,6 +140,7 @@ namespace WebBrowser
     export interface Page
     {
         div: HTMLDivElement;
+        footer: HTMLDivElement;
         start(): void;
         close(): void;
     }
@@ -288,6 +289,17 @@ namespace WebBrowser
         name: string;
         symbol: string;
         decimals: string;
+    }
+
+    export interface TransOfAsset
+    {
+        asset: string;
+        blockindex: number;
+        from: string;
+        n: number;
+        to: string;
+        txid: string;
+        value: number;
     }
 
     export interface result

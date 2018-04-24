@@ -92,7 +92,7 @@
                         <div class="input-group " id="nel-search">
                             <input id="searchText" type="text" class="form-control nel" placeholder="Block Height , Hash , Address , or Transaction">
                             <span id="searchBtn" class="input-group-addon nel ">
-                                <img src="fonts/search.svg" width="18" height="18" />
+                                <img src="./fonts/search.svg" width="18" height="18" />
                             </span>
                         </div>
                     </div>
@@ -206,14 +206,14 @@
                 <tbody id="blocks"></tbody>
             </table>
             <div class="page-number">
-                <span id="page-msg"></span>
+                <span id="blocks-page-msg"></span>
             </div>
             <div class="page">
-                <div id="previous" class="page-previous">
+                <div id="blocks-page-previous" class="page-previous">
                     <img src="./img/lefttrangle.svg" alt="">
                 </div>
                 <div style="width:1px;"></div>
-                <div id="next" class="page-next">
+                <div id="blocks-page-next" class="page-next">
                     <img src="./img/righttrangle.svg" alt="">
                 </div>
             </div>
@@ -251,18 +251,18 @@
                         <div class="title-nel" style="width:60px;"></div>
                     </div>
                 </div>
-                <div class="list-body" id="transactions">
+                <div class="list-body" id="txlist-page-transactions">
                 </div>
             </div>
             <div class="page-number">
                 <span id="txlist-page-msg"></span>
             </div>
             <div class="page">
-                <div id="previous" class="page-previous">
+                <div id="txlist-page-previous" class="page-previous">
                     <img src="./img/lefttrangle.svg" alt="">
                 </div>
                 <div style="width:1px;"></div>
-                <div id="next" class="page-next">
+                <div id="txlist-page-next" class="page-next">
                     <img src="./img/righttrangle.svg" alt="">
                 </div>
             </div>
@@ -297,11 +297,11 @@
                 <span id="asset-page-msg"></span>
             </div>
             <div class="page">
-                <div id="previous" class="page-previous">
+                <div id="asset-page-previous" class="page-previous">
                     <img src="./img/lefttrangle.svg" alt="">
                 </div>
                 <div style="width:1px;"></div>
-                <div id="next" class="page-next">
+                <div id="asset-page-next" class="page-next">
                     <img src="./img/righttrangle.svg" alt="">
                 </div>
             </div>
@@ -326,11 +326,11 @@
                 <span id="addrs-page-msg"></span>
             </div>
             <div class="page">
-                <div id="previous" class="page-previous">
+                <div id="addrs-page-previous" class="page-previous">
                     <img src="./img/lefttrangle.svg" alt="">
                 </div>
                 <div style="width:1px;"></div>
-                <div id="next" class="page-next">
+                <div id="addrs-page-next" class="page-next">
                     <img src="./img/righttrangle.svg" alt="">
                 </div>
             </div>
@@ -464,60 +464,117 @@
         </div>
         <!--资产详情-->
         <div id="asset-info">
-            <div class="title"><span>Asset Information</span></div>
+            <div class="title">
+                <span>Asset Information</span>
+                <div class="go-back" id="goallasset"></div>
+            </div>
             <div class="list-nel">
                 <div class="list-head">
                     <div class="line"><div class="title-nel"><span>Asset information</span></div></div>
                 </div>
                 <div class="list-body">
                     <div class="line"><div class="title-nel"><span>Asset</span></div> <div class="content-nel"><span id="name"></span></div></div>
-                    <div class="line"><div class="title-nel"><span>Type</span></div> <div class="content-nel"><span id="type"></span></div></div>
+                    <div class="line"><div class="title-nel"><span>Type</span></div> <div class="content-nel"><span id="asset-info-type"></span></div></div>
                     <div class="line"><div class="title-nel"><span>ID</span></div> <div class="content-nel"><span id="id"></span></div></div>
                     <div class="line"><div class="title-nel"><span>Available</span></div><div class="content-nel"><span id="available"></span></div></div>
                     <div class="line"><div class="title-nel"><span>Precision</span></div><div class="content-nel"><span id="precision"></span></div></div>
                     <div class="line"><div class="title-nel"><span>Admin</span></div><div class="content-nel"><span id="admin"></span></div></div>
                 </div>
             </div>
+
+            <div class="asset-nep5-warp">
+                <div class="title"><span>Balance Rank</span></div>
+                <table class="table cool table-nel">
+                    <thead>
+                        <tr>
+                            <th>Rank</th>
+                            <th>Address</th>
+                            <th>Balance</th>
+                        </tr>
+                    </thead>
+                    <tbody id="assets-balance-list"></tbody>
+                </table>
+                <!--<div class="page-number">
+            <span id="assets-balance-msg"></span>
+        </div>
+        <div class="page">
+            <div id="assets-balance-previous" class="page-previous">
+                <img src="./img/lefttrangle.svg" alt="">
+            </div>
+            <div style="width:1px;"></div>
+            <div id="assets-balance-next" class="page-next">
+                <img src="./img/righttrangle.svg" alt="">
+            </div>
+        </div>-->
+            </div>
+
+            <div class="asset-tran-warp">
+                <div class="title"><span>Transactions</span></div>
+                <table class="table cool table-nel">
+                    <thead>
+                        <tr>
+                            <th>TXID</th>
+                            <th>From</th>
+                            <th>To</th>
+                            <th>BlockIndex</th>
+                        </tr>
+                    </thead>
+                    <tbody id="assets-tran-list"></tbody>
+                </table>
+                <!--<div class="page-number">
+            <span id="assets-tran-msg"></span>
+        </div>
+        <div class="page">
+            <div id="assets-tran-previous" class="page-previous">
+                <img src="./img/lefttrangle.svg" alt="">
+            </div>
+            <div style="width:1px;"></div>
+            <div id="assets-tran-next" class="page-next">
+                <img src="./img/righttrangle.svg" alt="">
+            </div>
+        </div>-->
+            </div>
         </div>
         <!--交易详情-->
         <div id="transaction-info">
-                    <div class="title"><span>Transaction Information</span></div>
-                    <div class="list-nel">
-                        <div class="list-head">
-                            <div class="line"><div class="title-nel"><span>Transaction </span></div></div>
-                        </div>
-                        <div class="list-body">
-                            <div class="line"><div class="title-nel"><span>TXID</span></div> <div class="content-nel"><span id="txid"></span></div></div>
-                            <div class="line"><div class="title-nel"><span>Type</span></div> <div class="content-nel"><span id="type"></span></div></div>
-                            <div class="line"><div class="title-nel"><span>Network Fee</span></div><div class="content-nel"><span id="netfee"></span></div></div>
-                            <div class="line"><div class="title-nel"><span>System Fee</span></div><div class="content-nel"><span id="sysfee"></span></div></div>
-                            <div class="line"><div class="title-nel"><span>Size</span></div><div class="content-nel"><span id="txsize"></span></div></div>
-                            <div class="line"><div class="title-nel"><span>Included in Block</span></div><div class="content-nel"><span id="blockindex"></span></div></div>
+            <div class="title"><span>Transaction Information</span></div>
+            <div class="list-nel">
+                <div class="list-head">
+                    <div class="line"><div class="title-nel"><span>Transaction </span></div></div>
+                </div>
+                <div class="list-body">
+                    <div class="line"><div class="title-nel"><span>TXID</span></div> <div class="content-nel"><span id="txid"></span></div></div>
+                    <div class="line"><div class="title-nel"><span>Type</span></div> <div class="content-nel"><span id="type"></span></div></div>
+                    <div class="line"><div class="title-nel"><span>Network Fee</span></div><div class="content-nel"><span id="netfee"></span></div></div>
+                    <div class="line"><div class="title-nel"><span>System Fee</span></div><div class="content-nel"><span id="sysfee"></span></div></div>
+                    <div class="line"><div class="title-nel"><span>Size</span></div><div class="content-nel"><span id="txsize"></span></div></div>
+                    <div class="line"><div class="title-nel"><span>BlockIndex</span></div><div class="content-nel"><span id="blockindex"></span></div></div>
+                    <div class="line"><div class="title-nel"><span>Time</span></div><div class="content-nel"><span id="transaction-time"></span></div></div>
+                </div>
+            </div>
+            <div style="padding-top:25px">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="list-nel">
+                            <div class="list-head">
+                                <div class="line"><div class="title-nel"><span>Input</span></div></div>
+                            </div>
+                            <div class="list-body" id="from">
+                            </div>
                         </div>
                     </div>
-                    <div style="padding-top:25px">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="list-nel">
-                                    <div class="list-head">
-                                        <div class="line"><div class="title-nel"><span>Input</span></div></div>
-                                    </div>
-                                    <div class="list-body" id="from">
-                                    </div>
-                                </div>
+                    <div class="col-md-6">
+                        <div class="list-nel">
+                            <div class="list-head">
+                                <div class="line"><div class="title-nel"><span>Output</span></div></div>
                             </div>
-                            <div class="col-md-6">
-                                <div class="list-nel">
-                                    <div class="list-head">
-                                        <div class="line"><div class="title-nel"><span>Output</span></div></div>
-                                    </div>
-                                    <div class="list-body" id="to">
-                                    </div>
-                                </div>
+                            <div class="list-body" id="to">
                             </div>
                         </div>
                     </div>
                 </div>
+            </div>
+        </div>
         <!-- wallet -->
         <div id="wallet-page" hidden>
         </div>
@@ -530,7 +587,7 @@
         </div>
         <div style="height:100px;"></div>
     </div>
-    <footer>
+    <div id="footer-box" class="footer-box" hidden>
         <div class="footer-warp">
             <div class="footer-continar">
                 <div class="logo">
@@ -586,7 +643,7 @@
                 </div>
             </div>
         </div>
-    </footer>
+    </div>
     <!-- /container -->
     <!-- modal -->
     <div class="modal fade" id="errMsg" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -612,12 +669,12 @@
     <!-- <script src="./dist/bootstrap-table.js"></script> -->
     <script src="./lib/jquery.min.js"></script>
     <script src="./lib/bootstrap.min.js"></script>
-    <script src="lib/rollup/aes.js"></script>
-    <script src="lib/component/aes.js"></script>
-    <script src="lib/component/mode-ecb.js"></script>
-    <script src="lib/component/pad-nopadding.js"></script>
-    <script src="lib/scrypt.js"></script>
-    <script src="lib/neo-ts.js"></script>
+    <script src="./lib/rollup/aes.js"></script>
+    <script src="./lib/component/aes.js"></script>
+    <script src="./lib/component/mode-ecb.js"></script>
+    <script src="./lib/component/pad-nopadding.js"></script>
+    <script src="./lib/scrypt.js"></script>
+    <script src="./lib/neo-ts.js"></script>
     <script src="./dist/app.js"></script>
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
 </body>

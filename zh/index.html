@@ -206,14 +206,14 @@
                 <tbody id="blocks"></tbody>
             </table>
             <div class="page-number">
-                <span id="page-msg"></span>
+                <span id="blocks-page-msg"></span>
             </div>
             <div class="page">
-                <div id="previous" class="page-previous">
+                <div id="blocks-page-previous" class="page-previous">
                     <img src="../img/lefttrangle.svg" alt="">
                 </div>
                 <div style="width:1px;"></div>
-                <div id="next" class="page-next">
+                <div id="blocks-page-next" class="page-next">
                     <img src="../img/righttrangle.svg" alt="">
                 </div>
             </div>
@@ -251,18 +251,18 @@
                         <div class="title-nel" style="width:60px;"></div>
                     </div>
                 </div>
-                <div class="list-body" id="transactions">
+                <div class="list-body" id="txlist-page-transactions">
                 </div>
             </div>
             <div class="page-number">
                 <span id="txlist-page-msg"></span>
             </div>
             <div class="page">
-                <div id="previous" class="page-previous">
+                <div id="txlist-page-previous" class="page-previous">
                     <img src="../img/lefttrangle.svg" alt="">
                 </div>
                 <div style="width:1px;"></div>
-                <div id="next" class="page-next">
+                <div id="txlist-page-next" class="page-next">
                     <img src="../img/righttrangle.svg" alt="">
                 </div>
             </div>
@@ -297,11 +297,11 @@
                 <span id="asset-page-msg"></span>
             </div>
             <div class="page">
-                <div id="previous" class="page-previous">
+                <div id="asset-page-previous" class="page-previous">
                     <img src="../img/lefttrangle.svg" alt="">
                 </div>
                 <div style="width:1px;"></div>
-                <div id="next" class="page-next">
+                <div id="asset-page-next" class="page-next">
                     <img src="../img/righttrangle.svg" alt="">
                 </div>
             </div>
@@ -326,11 +326,11 @@
                 <span id="addrs-page-msg"></span>
             </div>
             <div class="page">
-                <div id="previous" class="page-previous">
+                <div id="addrs-page-previous" class="page-previous">
                     <img src="../img/lefttrangle.svg" alt="">
                 </div>
                 <div style="width:1px;"></div>
-                <div id="next" class="page-next">
+                <div id="addrs-page-next" class="page-next">
                     <img src="../img/righttrangle.svg" alt="">
                 </div>
             </div>
@@ -464,19 +464,75 @@
         </div>
         <!--资产详情-->
         <div id="asset-info">
-            <div class="title"><span>资产信息</span></div>
+            <div class="title">
+                <span>资产信息</span>
+                <div class="go-back" id="goallasset"></div>
+            </div>
             <div class="list-nel">
                 <div class="list-head">
                     <div class="line"><div class="title-nel"><span>资产信息</span></div></div>
                 </div>
                 <div class="list-body">
                     <div class="line"><div class="title-nel"><span>资产</span></div> <div class="content-nel"><span id="name"></span></div></div>
-                    <div class="line"><div class="title-nel"><span>类型</span></div> <div class="content-nel"><span id="type"></span></div></div>
+                    <div class="line"><div class="title-nel"><span>类型</span></div> <div class="content-nel"><span id="asset-info-type"></span></div></div>
                     <div class="line"><div class="title-nel"><span>ID</span></div> <div class="content-nel"><span id="id"></span></div></div>
                     <div class="line"><div class="title-nel"><span>总量</span></div><div class="content-nel"><span id="available"></span></div></div>
                     <div class="line"><div class="title-nel"><span>精确到小数点后位数</span></div><div class="content-nel"><span id="precision"></span></div></div>
                     <div class="line"><div class="title-nel"><span>发行商地址</span></div><div class="content-nel"><span id="admin"></span></div></div>
                 </div>
+            </div>
+
+            <div class="asset-nep5-warp">
+                <div class="title"><span>资产排名</span></div>
+                <table class="table cool table-nel">
+                    <thead>
+                        <tr>
+                            <th>排名</th>
+                            <th>地址</th>
+                            <th>资产</th>
+                        </tr>
+                    </thead>
+                    <tbody id="assets-balance-list"></tbody>
+                </table>
+                <!--<div class="page-number">
+            <span id="assets-balance-msg"></span>
+        </div>
+        <div class="page">
+            <div id="assets-balance-previous" class="page-previous">
+                <img src="./img/lefttrangle.svg" alt="">
+            </div>
+            <div style="width:1px;"></div>
+            <div id="assets-balance-next" class="page-next">
+                <img src="./img/righttrangle.svg" alt="">
+            </div>
+        </div>-->
+            </div>
+
+            <div class="asset-tran-warp">
+                <div class="title"><span>交易</span></div>
+                <table class="table cool table-nel">
+                    <thead>
+                        <tr>
+                            <th>交易ID</th>
+                            <th>转出</th>
+                            <th>转到</th>
+                            <th>区块高度</th>
+                        </tr>
+                    </thead>
+                    <tbody id="assets-tran-list"></tbody>
+                </table>
+                <!--<div class="page-number">
+            <span id="assets-tran-msg"></span>
+        </div>
+        <div class="page">
+            <div id="assets-tran-previous" class="page-previous">
+                <img src="./img/lefttrangle.svg" alt="">
+            </div>
+            <div style="width:1px;"></div>
+            <div id="assets-tran-next" class="page-next">
+                <img src="./img/righttrangle.svg" alt="">
+            </div>
+        </div>-->
             </div>
         </div>
         <!--交易详情-->
@@ -492,7 +548,8 @@
                     <div class="line"><div class="title-nel"><span>网络费用</span></div><div class="content-nel"><span id="netfee"></span></div></div>
                     <div class="line"><div class="title-nel"><span>系统费用</span></div><div class="content-nel"><span id="sysfee"></span></div></div>
                     <div class="line"><div class="title-nel"><span>大小</span></div><div class="content-nel"><span id="txsize"></span></div></div>
-                    <div class="line"><div class="title-nel"><span>打包到区块里了</span></div><div class="content-nel"><span id="blockindex"></span></div></div>
+                    <div class="line"><div class="title-nel"><span>区块高度</span></div><div class="content-nel"><span id="blockindex"></span></div></div>
+                    <div class="line"><div class="title-nel"><span>时间</span></div><div class="content-nel"><span id="transaction-time"></span></div></div>
                 </div>
             </div>
             <div style="padding-top:25px">
@@ -518,7 +575,6 @@
                 </div>
             </div>
         </div>
-
         <!-- wallet -->
         <div id="wallet-page" hidden>
         </div>
@@ -531,7 +587,7 @@
         </div>
         <div style="height:100px;"></div>
     </div>
-    <footer>
+    <div id="footer-box" class="footer-box" hidden>
         <div class="footer-warp">
             <div class="footer-continar">
                 <div class="logo">
@@ -587,7 +643,7 @@
                 </div>
             </div>
         </div>
-    </footer>
+    </div>
     <!-- /container -->
     <!-- modal -->
     <div class="modal fade" id="errMsg" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -606,7 +662,7 @@
     </div>
     <!-- /modal -->
     <!-- Bootstrap core JavaScript
-================================================== -->
+    ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
     <input id="page" value="index" hidden>
     <!-- <script src="../dist/jquery.js"></script> -->

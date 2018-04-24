@@ -8,8 +8,10 @@ namespace WebBrowser
         close(): void
         {
             this.div.hidden = true;
+            this.footer.hidden = true;
         }
         div: HTMLDivElement = document.getElementById("address-info") as HTMLDivElement;
+        footer: HTMLDivElement = document.getElementById('footer-box') as HTMLDivElement;
         private pageUtil: PageUtil;
         private pageUtilUtxo: PageUtil;
         async start()
@@ -42,16 +44,15 @@ namespace WebBrowser
                 $("#errContent").text("该地址没有数据");
                 $('#errMsg').modal('show');
             }
-            
-
 
             this.div.hidden = false;
+            this.footer.hidden = false;
         }
         
         //AddressInfo视图
         loadAddressInfo(address: string, addrMsg: AddressMsg[])
         {
-            let createdTime = DateTool.dateFtt("yyyy-MM-dd hh:mm:ss", new Date(addrMsg[0].firstuse.blocktime.$date));
+            let createdTime = DateTool.dateFtt("dd-MM-yyyy hh:mm:ss", new Date(addrMsg[0].firstuse.blocktime.$date ));
             let totalTran = addrMsg[0].txcount;
             $("#address").text(address);
             $("#created").text(createdTime);
@@ -61,7 +62,7 @@ namespace WebBrowser
 
         loadView( balances: Balance[], nep5ofAddress: Nep5OfAddress[] )
         {
-            $("#utxos").empty();
+            $("#balance").empty();
             if (balances)
             {
                 balances.forEach((balance: Balance) => {
@@ -86,6 +87,7 @@ namespace WebBrowser
         }
         loadUTXOView(utxos: Utxo[])
         {
+            $("#add-utxos").empty();
             if (utxos) {
                 utxos.forEach((utxo: Utxo) => {
                     let html = `
@@ -170,7 +172,7 @@ namespace WebBrowser
                 }
                 for (var n = 0; n < listLength; n++) {
                     let txid = txlist[n].txid;
-                    let time = DateTool.dateFtt("yyyy-MM-dd hh:mm:ss", new Date(txlist[n].blocktime.$date));
+                    let time = DateTool.dateFtt("dd-MM-yyyy hh:mm:ss", new Date(txlist[n].blocktime.$date));
                     let html: string = await this.getAddrTransLine(txid, txlist[n].type, "xxxxxxx", time, txlist[n].vin, txlist[n].vout);
                     $("#addr-trans").append(html);
                 }

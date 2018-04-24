@@ -370,13 +370,20 @@ body:after {
 .color-FDBA27 {
     color: #FDBA27;
 }
+.omit {
+    display:inline-block;
+    width:250px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
 
 /*footer start*/
-footer{
-    height:200px;
-    width:100%;
-    color:#fff;
-    box-sizing:border-box;
+.footer-box {
+    height: 200px;
+    width: 100%;
+    color: #fff;
+    box-sizing: border-box;
 }
 .footer-warp {
     max-width:1170px;

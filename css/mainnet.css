@@ -404,7 +404,7 @@ a:hover, a:focus {
 }
 
 /*footer start*/
-footer {
+.footer-box {
     background: #198CEE;
 }
 /*footer end*/
