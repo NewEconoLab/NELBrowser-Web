@@ -1130,7 +1130,11 @@ var WebBrowser;
                 $("#txsize").text(txInfo.size + " bytes");
                 $("#sysfee").text(txInfo["sys_fee"] + " gas");
                 $("#netfee").text(txInfo["net_fee"] + " gas");
-                $("#transaction-time").text("-");
+                let ajax = new WebBrowser.Ajax();
+                let blocks = yield ajax.post('getblock', [txInfo.blockindex]);
+                let block = blocks[0];
+                let time = WebBrowser.DateTool.dateFtt("dd-MM-yyyy hh:mm:ss", new Date(block.time * 1000));
+                $("#transaction-time").text(time);
                 //let allAsset: Asset[] = await WWW.api_getAllAssets();
                 let arr = new Array();
                 for (let index = 0; index < txInfo.vin.length; index++) {

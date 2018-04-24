@@ -31,8 +31,11 @@ namespace WebBrowser
             $("#txsize").text(txInfo.size + " bytes");
             $("#sysfee").text(txInfo["sys_fee"] + " gas");
             $("#netfee").text(txInfo["net_fee"] + " gas");
-            $("#transaction-time").text("-");
-
+            let ajax: Ajax = new Ajax();
+            let blocks: Block[] = await ajax.post('getblock', [txInfo.blockindex]);
+            let block: Block = blocks[0];
+            let time = DateTool.dateFtt("dd-MM-yyyy hh:mm:ss", new Date(block.time * 1000));
+            $("#transaction-time").text(time);
             //let allAsset: Asset[] = await WWW.api_getAllAssets();
 
             let arr = new Array<any>();
