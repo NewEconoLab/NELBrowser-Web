@@ -13,7 +13,11 @@ namespace WebBrowser
         start()
         {
             //this.div.innerHTML = pages.block;
-            this.queryBlock( locationtool.getParam() as number );
+            this.queryBlock(locationtool.getParam() as number);
+            let href = locationtool.getUrl() + "/blocks";
+            let html = '<a href="' + href + '" target="_self">&lt&lt&ltBack to all blocks</a>';
+            $("#goallblock").empty();
+            $("#goallblock").append(html);
             this.div.hidden = false;
             this.footer.hidden = false;
         }

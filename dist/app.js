@@ -20,6 +20,10 @@ var WebBrowser;
         start() {
             //this.div.innerHTML = pages.block;
             this.queryBlock(WebBrowser.locationtool.getParam());
+            let href = WebBrowser.locationtool.getUrl() + "/blocks";
+            let html = '<a href="' + href + '" target="_self">&lt&lt&ltBack to all blocks</a>';
+            $("#goallblock").empty();
+            $("#goallblock").append(html);
             this.div.hidden = false;
             this.footer.hidden = false;
         }
@@ -1117,6 +1121,10 @@ var WebBrowser;
         start() {
             //this.div.innerHTML = pages.transaction;
             this.updateTxInfo(WebBrowser.locationtool.getParam());
+            let href = WebBrowser.locationtool.getUrl() + "/transactions";
+            let html = '<a href="' + href + '" target="_self">&lt&lt&ltBack to all transactions</a>';
+            $("#goalltrans").empty();
+            $("#goalltrans").append(html);
             this.div.hidden = false;
             this.footer.hidden = false;
         }
