@@ -639,7 +639,7 @@ var WebBrowser;
                     for (var n = 0; n < listLength; n++) {
                         let txid = txlist[n].txid;
                         let time = WebBrowser.DateTool.dateFtt("dd-MM-yyyy hh:mm:ss", new Date(txlist[n].blocktime.$date));
-                        let html = yield this.getAddrTransLine(txid, txlist[n].type, "xxxxxxx", time, txlist[n].vin, txlist[n].vout);
+                        let html = yield this.getAddrTransLine(txid, txlist[n].type, time, txlist[n].vin, txlist[n].vout);
                         $("#addr-trans").append(html);
                     }
                 }
@@ -705,7 +705,7 @@ var WebBrowser;
                 }
             });
         }
-        getAddrTransLine(txid, type, from, time, vins, vouts) {
+        getAddrTransLine(txid, type, time, vins, vouts) {
             return __awaiter(this, void 0, void 0, function* () {
                 var id = txid.replace('0x', '');
                 id = id.substring(0, 6) + '...' + id.substring(id.length - 6);

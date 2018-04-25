@@ -173,7 +173,7 @@ namespace WebBrowser
                 for (var n = 0; n < listLength; n++) {
                     let txid = txlist[n].txid;
                     let time = DateTool.dateFtt("dd-MM-yyyy hh:mm:ss", new Date(txlist[n].blocktime.$date));
-                    let html: string = await this.getAddrTransLine(txid, txlist[n].type, "xxxxxxx", time, txlist[n].vin, txlist[n].vout);
+                    let html: string = await this.getAddrTransLine(txid, txlist[n].type, time, txlist[n].vin, txlist[n].vout);
                     $("#addr-trans").append(html);
                 }
             }
@@ -236,7 +236,7 @@ namespace WebBrowser
             }
         }
 
-        async getAddrTransLine(txid: string, type: string, from:string, time: number, vins, vouts) {
+        async getAddrTransLine(txid: string, type: string, time: number, vins, vouts) {
             var id = txid.replace('0x', '');
             id = id.substring(0, 6) + '...' + id.substring(id.length - 6);
             return `
