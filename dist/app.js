@@ -318,7 +318,7 @@ var WebBrowser;
         }
         static getaddrsesstxs(addr, size, page) {
             return __awaiter(this, void 0, void 0, function* () {
-                var str = WWW.makeUrl("getaddresstxs", WWW.apiaggr, addr, size, page);
+                var str = WWW.makeUrl("getaddresstxs", WWW.apiaggr + WebBrowser.locationtool.getNetWork(), addr, size, page);
                 var result = yield fetch(str, { "method": "get" });
                 var json = yield result.json();
                 var r = json["result"];
@@ -336,7 +336,7 @@ var WebBrowser;
         }
         static getrankbyasset(nep5id) {
             return __awaiter(this, void 0, void 0, function* () {
-                var str = WWW.makeUrl("getrankbyasset", WWW.apiaggr, nep5id);
+                var str = WWW.makeUrl("getrankbyasset", WWW.apiaggr + WebBrowser.locationtool.getNetWork(), nep5id);
                 var result = yield fetch(str, { "method": "get" });
                 var json = yield result.json();
                 var r = json["result"];
@@ -354,7 +354,7 @@ var WebBrowser;
         }
     }
     WWW.api = "https://api.nel.group/api/";
-    WWW.apiaggr = "https://apiaggr.nel.group/api/testnet";
+    WWW.apiaggr = "https://apiaggr.nel.group/api/";
     WebBrowser.WWW = WWW;
 })(WebBrowser || (WebBrowser = {}));
 var WebBrowser;

@@ -4,7 +4,7 @@ namespace WebBrowser
     export class WWW
     {
         static api: string = "https://api.nel.group/api/";
-        static apiaggr: string = "https://apiaggr.nel.group/api/testnet";
+        static apiaggr: string = "https://apiaggr.nel.group/api/";
 
         static makeRpcUrl(method: string, ..._params: any[])
         {
@@ -168,7 +168,7 @@ namespace WebBrowser
         }
 
         static async getaddrsesstxs(addr: string, size: number, page: number) {
-            var str = WWW.makeUrl("getaddresstxs", WWW.apiaggr, addr, size, page);
+            var str = WWW.makeUrl("getaddresstxs", WWW.apiaggr + locationtool.getNetWork(), addr, size, page);
             var result = await fetch(str, { "method": "get"});
             var json = await result.json();
             var r = json["result"];
@@ -184,7 +184,7 @@ namespace WebBrowser
         }
 
         static async getrankbyasset(nep5id:string) {
-            var str = WWW.makeUrl("getrankbyasset", WWW.apiaggr, nep5id);
+            var str = WWW.makeUrl("getrankbyasset", WWW.apiaggr + locationtool.getNetWork(), nep5id);
             var result = await fetch(str, { "method": "get" });
             var json = await result.json();
             var r = json["result"];
