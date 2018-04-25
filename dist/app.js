@@ -77,7 +77,7 @@ var WebBrowser;
                 yield this.updateBlocks(this.pageUtil);
                 this.div.hidden = false;
                 this.footer.hidden = false;
-                $("#blocks-page-next").click(() => {
+                $("#blocks-page-next").off("click").click(() => {
                     if (this.pageUtil.currentPage == this.pageUtil.totalPage) {
                         this.pageUtil.currentPage = this.pageUtil.totalPage;
                     }
@@ -86,7 +86,7 @@ var WebBrowser;
                         this.updateBlocks(this.pageUtil);
                     }
                 });
-                $("#blocks-page-previous").click(() => {
+                $("#blocks-page-previous").off("click").click(() => {
                     if (this.pageUtil.currentPage <= 1) {
                         this.pageUtil.currentPage = 1;
                     }
@@ -574,7 +574,7 @@ var WebBrowser;
                 $("#trans-page-msg").hide();
                 $("#addr-trans-page").hide();
             }
-            $("#trans-next").click(() => {
+            $("#trans-next").off("click").click(() => {
                 if (this.pageUtil.currentPage == this.pageUtil.totalPage) {
                     this.pageUtil.currentPage = this.pageUtil.totalPage;
                     $('#errMsg').modal('show');
@@ -584,7 +584,7 @@ var WebBrowser;
                     this.updateAddrTrasctions(address, this.pageUtil);
                 }
             });
-            $("#trans-previous").click(() => {
+            $("#trans-previous").off("click").click(() => {
                 if (this.pageUtil.currentPage <= 1) {
                     this.pageUtil.currentPage = 1;
                 }
@@ -603,7 +603,7 @@ var WebBrowser;
                 $("#utxo-page-msg").hide();
                 $("#addr-utxo-page").hide();
             }
-            $("#utxo-next").click(() => {
+            $("#utxo-next").off("click").click(() => {
                 if (this.pageUtilUtxo.currentPage == this.pageUtilUtxo.totalPage) {
                     this.pageUtil.currentPage = this.pageUtil.totalPage;
                 }
@@ -612,7 +612,7 @@ var WebBrowser;
                     this.updateAddrUTXO(address, this.pageUtilUtxo);
                 }
             });
-            $("#utxo-previous").click(() => {
+            $("#utxo-previous").off("click").click(() => {
                 if (this.pageUtilUtxo.currentPage <= 1) {
                     this.pageUtil.currentPage = 1;
                 }
@@ -840,7 +840,7 @@ var WebBrowser;
                 this.pageUtil = new WebBrowser.PageUtil(prom, 15);
                 yield this.addrlistInit();
                 //this.addrlistInit();
-                $("#addrs-page-next").click(() => {
+                $("#addrs-page-next").off("click").click(() => {
                     if (this.pageUtil.currentPage == this.pageUtil.totalPage) {
                         this.pageUtil.currentPage = this.pageUtil.totalPage;
                     }
@@ -849,7 +849,7 @@ var WebBrowser;
                         this.addrlistInit();
                     }
                 });
-                $("#addrs-page-previous").click(() => {
+                $("#addrs-page-previous").off("click").click(() => {
                     if (this.pageUtil.currentPage <= 1) {
                         this.pageUtil.currentPage = 1;
                     }
@@ -967,7 +967,7 @@ var WebBrowser;
                     }
                 }
             });
-            $("#asset-page-next").click(() => {
+            $("#asset-page-next").off("click").click(() => {
                 if (this.pageUtil.currentPage == this.pageUtil.totalPage) {
                     this.pageUtil.currentPage = this.pageUtil.totalPage;
                 }
@@ -981,7 +981,7 @@ var WebBrowser;
                     }
                 }
             });
-            $("#asset-page-previous").click(() => {
+            $("#asset-page-previous").off("click").click(() => {
                 if (this.pageUtil.currentPage <= 1) {
                     this.pageUtil.currentPage = 1;
                 }
@@ -1632,7 +1632,7 @@ var WebBrowser;
                 this.pageUtil.currentPage = 1;
                 this.updateTransactions(this.pageUtil, $("#TxType").val());
             });
-            $("#txlist-page-next").click(() => {
+            $("#txlist-page-next").off("click").click(() => {
                 if (this.pageUtil.currentPage == this.pageUtil.totalPage) {
                     this.pageUtil.currentPage = this.pageUtil.totalPage;
                 }
@@ -1641,7 +1641,7 @@ var WebBrowser;
                     this.updateTransactions(this.pageUtil, $("#TxType").val());
                 }
             });
-            $("#txlist-page-previous").click(() => {
+            $("#txlist-page-previous").off("click").click(() => {
                 if (this.pageUtil.currentPage <= 1) {
                     this.pageUtil.currentPage = 1;
                 }
@@ -2993,14 +2993,14 @@ var WebBrowser;
                 let block = new WebBrowser.Blocks();
                 block.updateBlocks(pageUtil);
                 //监听下一页
-                $("#blocks-page-next").click(() => {
+                $("#blocks-page-next").off("click").click(() => {
                     if (pageUtil.currentPage == pageUtil.totalPage) {
                         pageUtil.currentPage = pageUtil.totalPage;
                     }
                     pageUtil.currentPage += 1;
                     block.updateBlocks(pageUtil);
                 });
-                $("#blocks-page-previous").click(() => {
+                $("#blocks-page-previous").off("click").click(() => {
                     if (pageUtil.currentPage <= 1) {
                         pageUtil.currentPage = 1;
                     }

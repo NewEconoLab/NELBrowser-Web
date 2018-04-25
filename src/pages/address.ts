@@ -113,7 +113,7 @@ namespace WebBrowser
                 $("#addr-trans-page").hide();
             }
 
-            $("#trans-next").click(() => {
+            $("#trans-next").off("click").click(() => {
                 if (this.pageUtil.currentPage == this.pageUtil.totalPage) {
                     this.pageUtil.currentPage = this.pageUtil.totalPage;
                     $('#errMsg').modal('show');
@@ -122,7 +122,7 @@ namespace WebBrowser
                     this.updateAddrTrasctions(address, this.pageUtil);
                 }
             });
-            $("#trans-previous").click(() => {
+            $("#trans-previous").off("click").click(() => {
                 if (this.pageUtil.currentPage <= 1) {
                     this.pageUtil.currentPage = 1;
                 } else {
@@ -140,7 +140,7 @@ namespace WebBrowser
                 $("#addr-utxo-page").hide();
             }
 
-            $("#utxo-next").click(() => {
+            $("#utxo-next").off("click").click(() => {
                 if (this.pageUtilUtxo.currentPage == this.pageUtilUtxo.totalPage) {
                     this.pageUtil.currentPage = this.pageUtil.totalPage;
                 } else {
@@ -148,7 +148,7 @@ namespace WebBrowser
                     this.updateAddrUTXO(address, this.pageUtilUtxo)
                 }
             });
-            $("#utxo-previous").click(() => {
+            $("#utxo-previous").off("click").click(() => {
                 if (this.pageUtilUtxo.currentPage <= 1) {
                     this.pageUtil.currentPage = 1;
                 } else {

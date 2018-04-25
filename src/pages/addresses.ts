@@ -62,7 +62,7 @@
             this.pageUtil = new PageUtil(prom, 15);
             await this.addrlistInit();
             //this.addrlistInit();
-            $("#addrs-page-next").click(() => {
+            $("#addrs-page-next").off("click").click(() => {
                 if (this.pageUtil.currentPage == this.pageUtil.totalPage) {
                     this.pageUtil.currentPage = this.pageUtil.totalPage;
                 } else {
@@ -70,7 +70,7 @@
                     this.addrlistInit();
                 }
             });
-            $("#addrs-page-previous").click(() => {
+            $("#addrs-page-previous").off("click").click(() => {
                 if (this.pageUtil.currentPage <= 1) {
                     this.pageUtil.currentPage = 1;
                 } else {

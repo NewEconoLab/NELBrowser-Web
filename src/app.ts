@@ -74,7 +74,7 @@ namespace WebBrowser
             let block: Blocks = new Blocks();
             block.updateBlocks(pageUtil);
             //监听下一页
-            $("#blocks-page-next").click(() =>
+            $("#blocks-page-next").off("click").click(() =>
             {
                 if (pageUtil.currentPage == pageUtil.totalPage)
                 {
@@ -83,7 +83,7 @@ namespace WebBrowser
                 pageUtil.currentPage += 1;
                 block.updateBlocks(pageUtil);
             });
-            $("#blocks-page-previous").click(() =>
+            $("#blocks-page-previous").off("click").click(() =>
             {
                 if (pageUtil.currentPage <= 1)
                 {

@@ -27,7 +27,7 @@ namespace WebBrowser
                 this.updateTransactions( this.pageUtil, <string>$( "#TxType" ).val() );
             } );
 
-            $("#txlist-page-next").click( () =>
+            $("#txlist-page-next").off("click").click( () =>
             {
                 if ( this.pageUtil.currentPage == this.pageUtil.totalPage )
                 {
@@ -38,7 +38,7 @@ namespace WebBrowser
                     this.updateTransactions( this.pageUtil, <string>$( "#TxType" ).val() );
                 }
             } );
-            $( "#txlist-page-previous" ).click( () =>
+            $("#txlist-page-previous").off("click").click( () =>
             {
                 if ( this.pageUtil.currentPage <= 1 )
                 {

@@ -49,7 +49,7 @@
                 }
             });
 
-            $("#asset-page-next").click(() => {
+            $("#asset-page-next").off("click").click(() => {
                 if (this.pageUtil.currentPage == this.pageUtil.totalPage) {
                     this.pageUtil.currentPage = this.pageUtil.totalPage;
                 } else {
@@ -61,7 +61,7 @@
                     }
                 }
             });
-            $("#asset-page-previous").click(() => {
+            $("#asset-page-previous").off("click").click(() => {
                 if (this.pageUtil.currentPage <= 1) {
                     this.pageUtil.currentPage = 1;
                 } else {

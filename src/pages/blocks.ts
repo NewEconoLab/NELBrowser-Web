@@ -14,7 +14,7 @@ namespace WebBrowser
             await this.updateBlocks(this.pageUtil);
             this.div.hidden = false;
             this.footer.hidden = false;
-            $("#blocks-page-next").click(() => {
+            $("#blocks-page-next").off("click").click(() => {
                 if (this.pageUtil.currentPage == this.pageUtil.totalPage) {
                     this.pageUtil.currentPage = this.pageUtil.totalPage;
                 } else {
@@ -22,7 +22,7 @@ namespace WebBrowser
                     this.updateBlocks(this.pageUtil);
                 }
             });
-            $("#blocks-page-previous").click(() => {
+            $("#blocks-page-previous").off("click").click(() => {
                 if (this.pageUtil.currentPage <= 1) {
                     this.pageUtil.currentPage = 1;
                 } else {
