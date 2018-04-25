@@ -24,10 +24,12 @@ namespace WebBrowser
             var assetType = locationtool.getType();
             if (assetType == 'nep5') {
                 $(".asset-nep5-warp").show();
+                $(".asset-tran-warp").show();
                 this.loadAssetBalanceView(nep5id);
                 this.loadAssetTranView(nep5id);
             } else {
                 $(".asset-nep5-warp").hide();
+                $(".asset-tran-warp").hide();
             }
             this.div.hidden = false;
             this.footer.hidden = false;
@@ -54,11 +56,9 @@ namespace WebBrowser
         async loadAssetTranView(nep5id: string)
         {
             let tranList: TransOfAsset[] = await WWW.api_getnep5transfersbyasset(nep5id);
-            console.log(tranList);
             $("#assets-tran-list").empty();
             if (tranList) {
                 tranList.forEach((item) => {
-                    console.log(item);
                     if (!item.from) {
                         item.from = '-'
                     }
@@ -78,7 +78,7 @@ namespace WebBrowser
                     $("#assets-tran-list").append(html);
                 })
             } else {
-                let html = `<tr><td colspan="3" >There is no data</td></tr>`
+                let html = `<tr><td colspan="4" >There is no data</td></tr>`
                 $("#assets-tran-list").append(html);
             }
             
@@ -90,7 +90,6 @@ namespace WebBrowser
             if (balanceList) {
                 let rank = 1;
                 balanceList.forEach((item) => {
-                    console.log(item);
                     for (var key in item) {
                         let href = Url.href_address(item[key]);
                         let html = `

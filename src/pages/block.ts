@@ -30,11 +30,14 @@ namespace WebBrowser
             let block: Block = blocks[0];
             //newDate.setTime(block.time * 1000);
             let time = DateTool.dateFtt("dd-MM-yyyy hh:mm:ss", new Date(block.time * 1000));
-            $( "#hash" ).text( block.hash );
-            $( "#size" ).text( block.size + ' byte' );
+            $("#hash" ).text( block.hash );
+            $("#size" ).text( block.size + ' byte' );
             $("#time").text(time);
-            $( "#version" ).text( block.version );
-            $( "#index" ).text( block.index );
+            $("#version" ).text( block.version );
+            $("#index").text(block.index);
+            //`<a href="`+ Url.href_block(item.index) + `" target="_self">`
+            $("#previos-block").html(`<a href="` + Url.href_block(block.index - 1) + `" target="_self">` + (block.index - 1)+`</a>`);
+            $("#next-block").html(`<a href="` + Url.href_block(block.index + 1) + `" target="_self">` + (block.index + 1) + `</a>`);
             let txs: Tx[] = block.tx;
             $("#txs").empty();
             txs.forEach( tx =>

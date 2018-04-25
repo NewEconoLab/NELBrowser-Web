@@ -112,6 +112,9 @@ body:after {
     vertical-align: middle;
     text-align: center;
 }
+.table-nel > tbody > tr:last-child {
+    border-radius:5px;
+}
 .table>thead>tr>th {
     vertical-align: bottom;
     border-bottom: 0;
@@ -209,7 +212,7 @@ body:after {
 
 .list-nel>.list-head>.list-title{
     border-radius: 5px 5px 0px 0px;
-    height: 55px;
+    
 }
 
 .list-head > .line > .title-nel,
@@ -217,26 +220,29 @@ body:after {
 .list-body > .line > .content-nel {
     display: table-cell;
     vertical-align: middle;
-    height: 56px;
+    height:56px;
     font-family: PingFangSC-Medium;
     font-size: 16px;
     line-height: 16px;
     width: 270px;
 }
 
-.list-head .title-content
-{
+.list-head .title-content {
     display: table-cell;
     vertical-align: middle;
-    height: 56px;
-    font-family: PingFangSC-Medium;
-    font-size: 16px;
-    line-height: 16px;
     width: 270px;
     text-align: center;
+    padding: 0;
+    font-family: PingFangSC-Regular;
+    font-size: 12px;
+    line-height: 12px;
+    font-weight: 600;
+}
+.title-content{
+    height:33px;
 }
 
-.list-body>.line>.title-nel{
+.list-body > .line > .title-nel {
     width: 160px;
 }
 
@@ -256,8 +262,8 @@ body:after {
     border-left:1px solid #fff;
     border-bottom:1px solid #fff;
 }
-.line:last-child{
-    border-radius:0 3px;
+.list-body .line:last-child {
+    border-radius: 0 3px;
 }
 
 .line .end.active>img{
@@ -276,6 +282,16 @@ body:after {
     width: 1100px;
     border-bottom: 1px solid #fff;
 }
+.list-body .line:last-child .line-general,.list-body .line:last-child .end{
+    border-bottom:none;
+}
+.list-body .line:last-child {
+    border-radius: 0 0 5px 5px;
+}
+.list-body .line:last-child .transaction{
+    border-top:1px solid #fff;
+}
+
 .line-general  .title-nel,
 .line-general  .content-nel {
     text-align:center;
@@ -287,10 +303,14 @@ body:after {
     font-size: 16px;
     line-height: 16px;
 }
+.list-head-height {
+    height: 33px;
+    
+}
 
 .transaction {
-    display:flex;
-    padding:10px 20px;
+    display: flex;
+    padding: 10px 20px;
 }
 .formaddr{
     flex:1;

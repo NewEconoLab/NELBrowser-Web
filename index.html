@@ -193,7 +193,7 @@
         <!-- 区块列表页面 -->
         <div id="blocks-page" class="container-nel" hidden>
             <div class="title">
-                <span>Block list</span>
+                <span>Blocks</span>
             </div>
             <table class="table table-nel cool">
                 <thead>
@@ -243,13 +243,11 @@
 
             <div class="list-nel">
                 <div class="list-head">
-                    <div class="line">
-                        <div class="title-content"><span>TXID</span></div>
-                        <div class="title-content"><span>Type</span></div>
-                        <div class="title-content"><span>Size</span></div>
-                        <div class="title-content"><span>Index</span></div>
-                        <div class="title-nel" style="width:60px;"></div>
-                    </div>
+                    <div class="title-content"><span>TXID</span></div>
+                    <div class="title-content"><span>Type</span></div>
+                    <div class="title-content"><span>Size</span></div>
+                    <div class="title-content"><span>Index</span></div>
+                    <div class="title-nel" style="width:60px;"></div>
                 </div>
                 <div class="list-body" id="txlist-page-transactions">
                 </div>
@@ -342,16 +340,13 @@
                 <div class="go-back" id="goallblock"></div>
             </div>
             <div class="list-nel">
-                <div class="list-head">
-                    <div class="line"><div class="title-nel"><span>Block </span></div></div>
-                </div>
                 <div class="list-body">
+                    <div class="line"><div class="title-nel"><span>Block</span></div> <div class="content-nel"><span id="index"></span></div></div>
                     <div class="line"><div class="title-nel"><span>Hash</span></div> <div class="content-nel"><span id="hash"></span></div></div>
-                    <div class="line"><div class="title-nel"><span>Index</span></div> <div class="content-nel"><span id="index"></span></div></div>
                     <div class="line"><div class="title-nel"><span>Time</span></div> <div class="content-nel"><span id="time"></span></div></div>
                     <div class="line"><div class="title-nel"><span>Size</span></div><div class="content-nel"><span id="size"></span></div></div>
-                    <div class="line"><div class="title-nel"><span>Previous Block</span></div><div class="content-nel"></div><span></span></div>
-                    <div class="line"><div class="title-nel"><span>Next Block</span></div><div class="content-nel"></div><span></span></div>
+                    <div class="line"><div class="title-nel"><span>Previous Block</span></div><div class="content-nel"><span id="previos-block"></span></div></div>
+                    <div class="line"><div class="title-nel"><span>Next Block</span></div><div class="content-nel"><span id="next-block"></span></div></div>
                 </div>
             </div>
             <div class="title">
@@ -415,12 +410,10 @@
                 <div class="title"><span>Transactions</span></div>
                 <div class="list-nel">
                     <div class="list-head">
-                        <div class="line">
-                            <div class="title-content"><span>TXID</span></div>
-                            <div class="title-content"><span>Type</span></div>
-                            <div class="title-content"><span>Time</span></div>
-                            <div class="title-nel" style="width:60px;"></div>
-                        </div>
+                        <div class="title-content"><span>TXID</span></div>
+                        <div class="title-content"><span>Type</span></div>
+                        <div class="title-content"><span>Time</span></div>
+                        <div class="title-nel" style="width:60px;"></div>
                     </div>
                     <div class="list-body" id="addr-trans">
                     </div>
@@ -519,7 +512,7 @@
                             <th>TXID</th>
                             <th>From</th>
                             <th>To</th>
-                            <th>BlockIndex</th>
+                            <th>Height</th>
                         </tr>
                     </thead>
                     <tbody id="assets-tran-list"></tbody>
@@ -554,7 +547,7 @@
                     <div class="line"><div class="title-nel"><span>Network Fee</span></div><div class="content-nel"><span id="netfee"></span></div></div>
                     <div class="line"><div class="title-nel"><span>System Fee</span></div><div class="content-nel"><span id="sysfee"></span></div></div>
                     <div class="line"><div class="title-nel"><span>Size</span></div><div class="content-nel"><span id="txsize"></span></div></div>
-                    <div class="line"><div class="title-nel"><span>BlockIndex</span></div><div class="content-nel"><span id="blockindex"></span></div></div>
+                    <div class="line"><div class="title-nel"><span>Height</span></div><div class="content-nel"><span id="blockindex"></span></div></div>
                     <div class="line"><div class="title-nel"><span>Time</span></div><div class="content-nel"><span id="transaction-time"></span></div></div>
                 </div>
             </div>

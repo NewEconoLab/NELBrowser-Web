@@ -40,6 +40,9 @@ var WebBrowser;
                 $("#time").text(time);
                 $("#version").text(block.version);
                 $("#index").text(block.index);
+                //`<a href="`+ Url.href_block(item.index) + `" target="_self">`
+                $("#previos-block").html(`<a href="` + WebBrowser.Url.href_block(block.index - 1) + `" target="_self">` + (block.index - 1) + `</a>`);
+                $("#next-block").html(`<a href="` + WebBrowser.Url.href_block(block.index + 1) + `" target="_self">` + (block.index + 1) + `</a>`);
                 let txs = block.tx;
                 $("#txs").empty();
                 txs.forEach(tx => {
@@ -894,9 +897,11 @@ var WebBrowser;
             var assetType = WebBrowser.locationtool.getType();
             if (assetType == 'nep5') {
                 $(".asset-nep5-warp").show();
+                $(".asset-tran-warp").show();
             }
             else {
                 $(".asset-nep5-warp").hide();
+                $(".asset-tran-warp").hide();
             }
             this.div.hidden = false;
             this.footer.hidden = false;
@@ -1820,11 +1825,13 @@ var WebBrowser;
             var assetType = WebBrowser.locationtool.getType();
             if (assetType == 'nep5') {
                 $(".asset-nep5-warp").show();
+                $(".asset-tran-warp").show();
                 this.loadAssetBalanceView(nep5id);
                 this.loadAssetTranView(nep5id);
             }
             else {
                 $(".asset-nep5-warp").hide();
+                $(".asset-tran-warp").hide();
             }
             this.div.hidden = false;
             this.footer.hidden = false;
@@ -1848,11 +1855,9 @@ var WebBrowser;
         loadAssetTranView(nep5id) {
             return __awaiter(this, void 0, void 0, function* () {
                 let tranList = yield WebBrowser.WWW.api_getnep5transfersbyasset(nep5id);
-                console.log(tranList);
                 $("#assets-tran-list").empty();
                 if (tranList) {
                     tranList.forEach((item) => {
-                        console.log(item);
                         if (!item.from) {
                             item.from = '-';
                         }
@@ -1873,7 +1878,7 @@ var WebBrowser;
                     });
                 }
                 else {
-                    let html = `<tr><td colspan="3" >There is no data</td></tr>`;
+                    let html = `<tr><td colspan="4" >There is no data</td></tr>`;
                     $("#assets-tran-list").append(html);
                 }
             });
@@ -1885,7 +1890,6 @@ var WebBrowser;
                 if (balanceList) {
                     let rank = 1;
                     balanceList.forEach((item) => {
-                        console.log(item);
                         for (var key in item) {
                             let href = WebBrowser.Url.href_address(item[key]);
                             let html = `

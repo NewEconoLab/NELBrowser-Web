@@ -24,8 +24,10 @@
             var assetType = locationtool.getType();
             if (assetType == 'nep5') {
                 $(".asset-nep5-warp").show();
+                $(".asset-tran-warp").show();
             } else {
                 $(".asset-nep5-warp").hide();
+                $(".asset-tran-warp").hide();
             }
 
             this.div.hidden = false;
