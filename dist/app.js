@@ -650,10 +650,6 @@ var WebBrowser;
                     $("#add-utxos").append(html);
                 });
             }
-            else {
-                let html = `<tr><td colspan="3" >There is no data</td></tr>`;
-                $("#add-utxos").append(html);
-            }
         }
         initTranPage(transtotal, address) {
             if (transtotal > 10) {
@@ -775,6 +771,10 @@ var WebBrowser;
                         listLength = pageUtil.pageSize;
                     }
                     this.loadUTXOView(utxolist);
+                }
+                else {
+                    let html = `<tr><td colspan="3" >There is no data</td></tr>`;
+                    $("#add-utxos").append(html);
                 }
                 let minNum = pageUtil.currentPage * pageUtil.pageSize - pageUtil.pageSize;
                 let maxNum = pageUtil.totalCount;
