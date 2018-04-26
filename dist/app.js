@@ -587,6 +587,10 @@ var WebBrowser;
                         this.initUTXOPage(utxos.length, address);
                         this.updateAddrUTXO(address, this.pageUtilUtxo);
                     }
+                    else {
+                        let html = `<tr><td colspan="3" >There is no data</td></tr>`;
+                        $("#add-utxos").append(html);
+                    }
                     //this.loadUTXOView(utxos);
                 }
                 else {
@@ -771,10 +775,6 @@ var WebBrowser;
                         listLength = pageUtil.pageSize;
                     }
                     this.loadUTXOView(utxolist);
-                }
-                else {
-                    let html = `<tr><td colspan="3" >There is no data</td></tr>`;
-                    $("#add-utxos").append(html);
                 }
                 let minNum = pageUtil.currentPage * pageUtil.pageSize - pageUtil.pageSize;
                 let maxNum = pageUtil.totalCount;
