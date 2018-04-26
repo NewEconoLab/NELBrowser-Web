@@ -50,6 +50,11 @@ namespace WebBrowser
                 //var newDate = new Date();
                 //newDate.setTime(item.time * 1000);
                 let time = DateTool.dateFtt("dd-MM-yyyy hh:mm:ss", new Date(item.time * 1000));
+                if (location.pathname == '/zh/') {
+                    let newDate = new Date();
+                    newDate.setTime(item.time * 1000);
+                    time = newDate.toLocaleString();
+                }
                 html_blocks += `
                 <tr><td>
                 <a class="code" target="_self" href ='`+ Url.href_block( item.index ) + `' > 

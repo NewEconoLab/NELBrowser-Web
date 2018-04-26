@@ -4,6 +4,8 @@ namespace WebBrowser
     {
         div: HTMLDivElement = document.getElementById("block-info") as HTMLDivElement;
         footer: HTMLDivElement = document.getElementById('footer-box') as HTMLDivElement;
+        private pageUtil: PageUtil;
+        private txs: Tx[];
         close(): void
         {
             this.div.hidden = true;
@@ -18,6 +20,23 @@ namespace WebBrowser
             let html = '<a href="' + href + '" target="_self">&lt&lt&ltBack to all blocks</a>';
             $("#goallblock").empty();
             $("#goallblock").append(html);
+
+            $("#block-tran-next").off("click").click(() => {
+                if (this.pageUtil.currentPage == this.pageUtil.totalPage) {
+                    this.pageUtil.currentPage = this.pageUtil.totalPage;
+                } else {
+                    this.pageUtil.currentPage += 1;
+                    this.updateBlockTrans(this.pageUtil);                    
+                }
+            });
+            $("#block-tran-previous").off("click").click(() => {
+                if (this.pageUtil.currentPage <= 1) {
+                    this.pageUtil.currentPage = 1;
+                } else {
+                    this.pageUtil.currentPage -= 1;
+                    this.updateBlockTrans(this.pageUtil);  
+                }
+            });
             this.div.hidden = false;
             this.footer.hidden = false;
         }
@@ -25,11 +44,15 @@ namespace WebBrowser
         public async queryBlock( index: number )
         {
             let ajax: Ajax = new Ajax();
-            //let newDate = new Date();
             let blocks: Block[] = await ajax.post( 'getblock', [index] );
             let block: Block = blocks[0];
-            //newDate.setTime(block.time * 1000);
             let time = DateTool.dateFtt("dd-MM-yyyy hh:mm:ss", new Date(block.time * 1000));
+            if (location.pathname == '/zh/') {
+                let newDate = new Date();
+                newDate.setTime(block.time * 1000);
+                time = newDate.toLocaleString();
+            } 
+
             $("#hash" ).text( block.hash );
             $("#size" ).text( block.size + ' byte' );
             $("#time").text(time);
@@ -38,21 +61,58 @@ namespace WebBrowser
             //`<a href="`+ Url.href_block(item.index) + `" target="_self">`
             $("#previos-block").html(`<a href="` + Url.href_block(block.index - 1) + `" target="_self">` + (block.index - 1)+`</a>`);
             $("#next-block").html(`<a href="` + Url.href_block(block.index + 1) + `" target="_self">` + (block.index + 1) + `</a>`);
-            let txs: Tx[] = block.tx;
+            this.txs = block.tx;
+            let txsLength = this.txs.length;
+            this.pageUtil = new PageUtil(this.txs.length, 10);
+            if (txsLength > this.pageUtil.pageSize) {
+                $(".block-tran-page").show();
+            } else {
+                $(".block-tran-page").hide();
+            }
+            this.updateBlockTrans(this.pageUtil);
+        }
+        updateBlockTrans(pageUtil: PageUtil) {
             $("#txs").empty();
-            txs.forEach( tx =>
-            {
-                var id = tx.txid.replace( '0x', '' );
-                id = id.substring( 0, 6 ) + '...' + id.substring( id.length - 6 );
-                $( "#txs" ).append( `
-                    <tr>
-                        <td><a href="` + Url.href_transaction(tx.txid) + `" target="_self">` + id + `</a></td>
-                        <td>` + tx.type + `</td>
-                        <td>` + tx.size + ` bytes</td>
-                        <td>` + tx.version + `</td>
-                    </tr>` );
-            } );
+            let minNum = pageUtil.currentPage * pageUtil.pageSize - pageUtil.pageSize;
+            let maxNum = pageUtil.totalCount;
+            let diffNum = maxNum - minNum;
+            if (diffNum > pageUtil.pageSize) {
+                maxNum = pageUtil.currentPage * pageUtil.pageSize;
+            } else {
+                maxNum = pageUtil.totalCount;
+            }
+            let arrtxs = new Array();
+            for (let i = minNum; i < maxNum; i++) {
+                arrtxs.push(this.txs[i]);
+            }
+            arrtxs.forEach(tx => {
+                var id = tx.txid.replace('0x', '');
+                id = id.substring(0, 6) + '...' + id.substring(id.length - 6);
+                this.loadBlockTransView(tx.txid, id, tx.type, tx.size, tx.version);
+            });
 
+            let pageMsg = "Transactions " + (minNum + 1) + " to " + maxNum + " of " + pageUtil.totalCount;
+            $("#block-tran-msg").html(pageMsg);
+            if (pageUtil.totalPage - this.pageUtil.currentPage) {
+                $("#block-tran-next").removeClass('disabled');
+            } else {
+                $("#block-tran-next").addClass('disabled');
+            }
+            if (pageUtil.currentPage - 1) {
+                $("#block-tran-previous").removeClass('disabled');
+            } else {
+                $("#block-tran-previous").addClass('disabled');
+            }
+        }
+        loadBlockTransView(txid: string, id: string, type: string, size: number, version: number) {
+            let html = `
+                    <tr>
+                        <td><a href="` + Url.href_transaction(txid) + `" target="_self">` + id + `</a></td>
+                        <td>` + type.replace("Transaction", "") + `</td>
+                        <td>` + size + ` bytes</td>
+                        <td>` + version + `</td>
+                    </tr>`;
+            $("#txs").append(html);
         }
     }
 }

@@ -52,7 +52,12 @@ namespace WebBrowser
         //AddressInfo视图
         loadAddressInfo(address: string, addrMsg: AddressMsg[])
         {
-            let createdTime = DateTool.dateFtt("dd-MM-yyyy hh:mm:ss", new Date(addrMsg[0].firstuse.blocktime.$date ));
+            let createdTime = DateTool.dateFtt("dd-MM-yyyy hh:mm:ss", new Date(addrMsg[0].firstuse.blocktime.$date));
+            if (location.pathname == '/zh/') {
+                let newDate = new Date();
+                newDate.setTime(addrMsg[0].firstuse.blocktime.$date);
+                createdTime = newDate.toLocaleString();
+            } 
             let totalTran = addrMsg[0].txcount;
             $("#address").text(address);
             $("#created").text(createdTime);
@@ -63,8 +68,7 @@ namespace WebBrowser
         loadView( balances: Balance[], nep5ofAddress: Nep5OfAddress[] )
         {
             $("#balance").empty();
-            if (balances)
-            {
+            if (balances) {
                 balances.forEach((balance: Balance) => {
                     var name = CoinTool.assetID2name[balance.asset];
 
@@ -84,6 +88,10 @@ namespace WebBrowser
                     $("#balance").append(html);
                 })
             }
+            if (!balances && !nep5ofAddress) {
+                let html = `<div class="line"><div class="title-nel" style="width:100%;text-align:center;display: block;line-height: 56px;"><span>There is no data</span></div> </div>`;
+                $("#balance").append(html);
+            }
         }
         loadUTXOView(utxos: Utxo[])
         {
@@ -101,6 +109,9 @@ namespace WebBrowser
                 </tr>`
                     $("#add-utxos").append(html);
                 });
+            } else {
+                let html = `<tr><td colspan="3" >There is no data</td></tr>`;
+                $("#add-utxos").append(html);
             }
         }
 
@@ -173,12 +184,15 @@ namespace WebBrowser
                 for (var n = 0; n < listLength; n++) {
                     let txid = txlist[n].txid;
                     let time = DateTool.dateFtt("dd-MM-yyyy hh:mm:ss", new Date(txlist[n].blocktime.$date));
+                    if (location.pathname == '/zh/') {
+                        let newDate = new Date();
+                        newDate.setTime(txlist[n].blocktime.$date);
+                        time = newDate.toLocaleString();
+                    } 
                     let html: string = await this.getAddrTransLine(txid, txlist[n].type, time, txlist[n].vin, txlist[n].vout);
                     $("#addr-trans").append(html);
                 }
             }
-            
-            pageCut(this.pageUtil);
 
             let minNum = pageUtil.currentPage * pageUtil.pageSize - pageUtil.pageSize;
             let maxNum = pageUtil.totalCount;
@@ -186,14 +200,14 @@ namespace WebBrowser
             if (diffNum > 10) {
                 maxNum = pageUtil.currentPage * pageUtil.pageSize;
             }
-            let pageMsg = "Trasctions " + (minNum + 1) + " to " + maxNum + " of " + pageUtil.totalCount;
+            let pageMsg = "Transactions " + (minNum + 1) + " to " + maxNum + " of " + pageUtil.totalCount;
             $("#trans-page-msg").html(pageMsg);
-            if (this.pageUtil.totalPage - this.pageUtil.currentPage) {
+            if (pageUtil.totalPage - pageUtil.currentPage) {
                 $("#trans-next").removeClass('disabled');
             } else {
                 $("#trans-next").addClass('disabled');
             }
-            if (this.pageUtil.currentPage - 1) {
+            if (pageUtil.currentPage - 1) {
                 $("#trans-previous").removeClass('disabled');
             } else {
                 $("#trans-previous").addClass('disabled');
@@ -214,7 +228,6 @@ namespace WebBrowser
                 }
                 this.loadUTXOView(utxolist);
             }
-            pageCut(this.pageUtil);
 
             let minNum = pageUtil.currentPage * pageUtil.pageSize - pageUtil.pageSize;
             let maxNum = pageUtil.totalCount;
@@ -224,12 +237,12 @@ namespace WebBrowser
             }
             let pageMsg = "UTXO " + (minNum + 1) + " to " + maxNum + " of " + pageUtil.totalCount;
             $("#utxo-page-msg").html(pageMsg);
-            if (this.pageUtil.totalPage - this.pageUtil.currentPage) {
+            if (pageUtil.totalPage - pageUtil.currentPage) {
                 $("#utxo-next").removeClass('disabled');
             } else {
                 $("#utxo-next").addClass('disabled');
             }
-            if (this.pageUtil.currentPage - 1) {
+            if (pageUtil.currentPage - 1) {
                 $("#utxo-previous").removeClass('disabled');
             } else {
                 $("#utxo-previous").addClass('disabled');

@@ -39,6 +39,11 @@ namespace WebBrowser
             let blocks: Block[] = await ajax.post('getblock', [txInfo.blockindex]);
             let block: Block = blocks[0];
             let time = DateTool.dateFtt("dd-MM-yyyy hh:mm:ss", new Date(block.time * 1000));
+            if (location.pathname == '/zh/') {
+                let newDate = new Date();
+                newDate.setTime(block.time * 1000);
+                time = newDate.toLocaleString();
+            }
             $("#transaction-time").text(time);
             //let allAsset: Asset[] = await WWW.api_getAllAssets();
 

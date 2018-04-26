@@ -24,17 +24,38 @@ var WebBrowser;
             let html = '<a href="' + href + '" target="_self">&lt&lt&ltBack to all blocks</a>';
             $("#goallblock").empty();
             $("#goallblock").append(html);
+            $("#block-tran-next").off("click").click(() => {
+                if (this.pageUtil.currentPage == this.pageUtil.totalPage) {
+                    this.pageUtil.currentPage = this.pageUtil.totalPage;
+                }
+                else {
+                    this.pageUtil.currentPage += 1;
+                    this.updateBlockTrans(this.pageUtil);
+                }
+            });
+            $("#block-tran-previous").off("click").click(() => {
+                if (this.pageUtil.currentPage <= 1) {
+                    this.pageUtil.currentPage = 1;
+                }
+                else {
+                    this.pageUtil.currentPage -= 1;
+                    this.updateBlockTrans(this.pageUtil);
+                }
+            });
             this.div.hidden = false;
             this.footer.hidden = false;
         }
         queryBlock(index) {
             return __awaiter(this, void 0, void 0, function* () {
                 let ajax = new WebBrowser.Ajax();
-                //let newDate = new Date();
                 let blocks = yield ajax.post('getblock', [index]);
                 let block = blocks[0];
-                //newDate.setTime(block.time * 1000);
                 let time = WebBrowser.DateTool.dateFtt("dd-MM-yyyy hh:mm:ss", new Date(block.time * 1000));
+                if (location.pathname == '/zh/') {
+                    let newDate = new Date();
+                    newDate.setTime(block.time * 1000);
+                    time = newDate.toLocaleString();
+                }
                 $("#hash").text(block.hash);
                 $("#size").text(block.size + ' byte');
                 $("#time").text(time);
@@ -43,20 +64,62 @@ var WebBrowser;
                 //`<a href="`+ Url.href_block(item.index) + `" target="_self">`
                 $("#previos-block").html(`<a href="` + WebBrowser.Url.href_block(block.index - 1) + `" target="_self">` + (block.index - 1) + `</a>`);
                 $("#next-block").html(`<a href="` + WebBrowser.Url.href_block(block.index + 1) + `" target="_self">` + (block.index + 1) + `</a>`);
-                let txs = block.tx;
-                $("#txs").empty();
-                txs.forEach(tx => {
-                    var id = tx.txid.replace('0x', '');
-                    id = id.substring(0, 6) + '...' + id.substring(id.length - 6);
-                    $("#txs").append(`
-                    <tr>
-                        <td><a href="` + WebBrowser.Url.href_transaction(tx.txid) + `" target="_self">` + id + `</a></td>
-                        <td>` + tx.type + `</td>
-                        <td>` + tx.size + ` bytes</td>
-                        <td>` + tx.version + `</td>
-                    </tr>`);
-                });
+                this.txs = block.tx;
+                let txsLength = this.txs.length;
+                this.pageUtil = new WebBrowser.PageUtil(this.txs.length, 10);
+                if (txsLength > this.pageUtil.pageSize) {
+                    $(".block-tran-page").show();
+                }
+                else {
+                    $(".block-tran-page").hide();
+                }
+                this.updateBlockTrans(this.pageUtil);
             });
+        }
+        updateBlockTrans(pageUtil) {
+            $("#txs").empty();
+            let minNum = pageUtil.currentPage * pageUtil.pageSize - pageUtil.pageSize;
+            let maxNum = pageUtil.totalCount;
+            let diffNum = maxNum - minNum;
+            if (diffNum > pageUtil.pageSize) {
+                maxNum = pageUtil.currentPage * pageUtil.pageSize;
+            }
+            else {
+                maxNum = pageUtil.totalCount;
+            }
+            let arrtxs = new Array();
+            for (let i = minNum; i < maxNum; i++) {
+                arrtxs.push(this.txs[i]);
+            }
+            arrtxs.forEach(tx => {
+                var id = tx.txid.replace('0x', '');
+                id = id.substring(0, 6) + '...' + id.substring(id.length - 6);
+                this.loadBlockTransView(tx.txid, id, tx.type, tx.size, tx.version);
+            });
+            let pageMsg = "Transactions " + (minNum + 1) + " to " + maxNum + " of " + pageUtil.totalCount;
+            $("#block-tran-msg").html(pageMsg);
+            if (pageUtil.totalPage - this.pageUtil.currentPage) {
+                $("#block-tran-next").removeClass('disabled');
+            }
+            else {
+                $("#block-tran-next").addClass('disabled');
+            }
+            if (pageUtil.currentPage - 1) {
+                $("#block-tran-previous").removeClass('disabled');
+            }
+            else {
+                $("#block-tran-previous").addClass('disabled');
+            }
+        }
+        loadBlockTransView(txid, id, type, size, version) {
+            let html = `
+                    <tr>
+                        <td><a href="` + WebBrowser.Url.href_transaction(txid) + `" target="_self">` + id + `</a></td>
+                        <td>` + type.replace("Transaction", "") + `</td>
+                        <td>` + size + ` bytes</td>
+                        <td>` + version + `</td>
+                    </tr>`;
+            $("#txs").append(html);
         }
     }
     WebBrowser.Block = Block;
@@ -129,6 +192,11 @@ var WebBrowser;
                 blocks.forEach((item, index, input) => {
                     //newDate.setTime(item.time * 1000);
                     let time = WebBrowser.DateTool.dateFtt("dd-MM-yyyy hh:mm:ss", new Date(item.time * 1000));
+                    if (location.pathname == '/zh/') {
+                        let newDate = new Date();
+                        newDate.setTime(item.time * 1000);
+                        time = newDate.toLocaleString();
+                    }
                     let html = `
                 <tr>
                 <td><a href="` + WebBrowser.Url.href_block(item.index) + `" target="_self">` + item.index + `</a></td>
@@ -334,18 +402,27 @@ var WebBrowser;
                 return r;
             });
         }
-        static getrankbyasset(nep5id) {
+        static getrankbyasset(nep5id, size, page) {
             return __awaiter(this, void 0, void 0, function* () {
-                var str = WWW.makeUrl("getrankbyasset", WWW.apiaggr + WebBrowser.locationtool.getNetWork(), nep5id);
+                var str = WWW.makeUrl("getrankbyasset", WWW.apiaggr + WebBrowser.locationtool.getNetWork(), nep5id, size, page);
                 var result = yield fetch(str, { "method": "get" });
                 var json = yield result.json();
                 var r = json["result"];
                 return r;
             });
         }
-        static api_getnep5transfersbyasset(nep5id) {
+        static api_getnep5transfersbyasset(nep5id, size, page) {
             return __awaiter(this, void 0, void 0, function* () {
-                var str = WWW.makeRpcUrl("getnep5transfersbyasset", nep5id);
+                var str = WWW.makeRpcUrl("getnep5transfersbyasset", nep5id, size, page);
+                var result = yield fetch(str, { "method": "get" });
+                var json = yield result.json();
+                var r = json["result"];
+                return r;
+            });
+        }
+        static api_getnep5count(type, nep5id) {
+            return __awaiter(this, void 0, void 0, function* () {
+                var str = WWW.makeRpcUrl("getnep5count", type, nep5id);
                 var result = yield fetch(str, { "method": "get" });
                 var json = yield result.json();
                 var r = json["result"];
@@ -523,6 +600,11 @@ var WebBrowser;
         //AddressInfo视图
         loadAddressInfo(address, addrMsg) {
             let createdTime = WebBrowser.DateTool.dateFtt("dd-MM-yyyy hh:mm:ss", new Date(addrMsg[0].firstuse.blocktime.$date));
+            if (location.pathname == '/zh/') {
+                let newDate = new Date();
+                newDate.setTime(addrMsg[0].firstuse.blocktime.$date);
+                createdTime = newDate.toLocaleString();
+            }
             let totalTran = addrMsg[0].txcount;
             $("#address").text(address);
             $("#created").text(createdTime);
@@ -547,6 +629,10 @@ var WebBrowser;
                     $("#balance").append(html);
                 });
             }
+            if (!balances && !nep5ofAddress) {
+                let html = `<div class="line"><div class="title-nel" style="width:100%;text-align:center;display: block;line-height: 56px;"><span>There is no data</span></div> </div>`;
+                $("#balance").append(html);
+            }
         }
         loadUTXOView(utxos) {
             $("#add-utxos").empty();
@@ -563,6 +649,10 @@ var WebBrowser;
                 </tr>`;
                     $("#add-utxos").append(html);
                 });
+            }
+            else {
+                let html = `<tr><td colspan="3" >There is no data</td></tr>`;
+                $("#add-utxos").append(html);
             }
         }
         initTranPage(transtotal, address) {
@@ -639,26 +729,30 @@ var WebBrowser;
                     for (var n = 0; n < listLength; n++) {
                         let txid = txlist[n].txid;
                         let time = WebBrowser.DateTool.dateFtt("dd-MM-yyyy hh:mm:ss", new Date(txlist[n].blocktime.$date));
+                        if (location.pathname == '/zh/') {
+                            let newDate = new Date();
+                            newDate.setTime(txlist[n].blocktime.$date);
+                            time = newDate.toLocaleString();
+                        }
                         let html = yield this.getAddrTransLine(txid, txlist[n].type, time, txlist[n].vin, txlist[n].vout);
                         $("#addr-trans").append(html);
                     }
                 }
-                WebBrowser.pageCut(this.pageUtil);
                 let minNum = pageUtil.currentPage * pageUtil.pageSize - pageUtil.pageSize;
                 let maxNum = pageUtil.totalCount;
                 let diffNum = maxNum - minNum;
                 if (diffNum > 10) {
                     maxNum = pageUtil.currentPage * pageUtil.pageSize;
                 }
-                let pageMsg = "Trasctions " + (minNum + 1) + " to " + maxNum + " of " + pageUtil.totalCount;
+                let pageMsg = "Transactions " + (minNum + 1) + " to " + maxNum + " of " + pageUtil.totalCount;
                 $("#trans-page-msg").html(pageMsg);
-                if (this.pageUtil.totalPage - this.pageUtil.currentPage) {
+                if (pageUtil.totalPage - pageUtil.currentPage) {
                     $("#trans-next").removeClass('disabled');
                 }
                 else {
                     $("#trans-next").addClass('disabled');
                 }
-                if (this.pageUtil.currentPage - 1) {
+                if (pageUtil.currentPage - 1) {
                     $("#trans-previous").removeClass('disabled');
                 }
                 else {
@@ -682,7 +776,6 @@ var WebBrowser;
                     }
                     this.loadUTXOView(utxolist);
                 }
-                WebBrowser.pageCut(this.pageUtil);
                 let minNum = pageUtil.currentPage * pageUtil.pageSize - pageUtil.pageSize;
                 let maxNum = pageUtil.totalCount;
                 let diffNum = maxNum - minNum;
@@ -691,13 +784,13 @@ var WebBrowser;
                 }
                 let pageMsg = "UTXO " + (minNum + 1) + " to " + maxNum + " of " + pageUtil.totalCount;
                 $("#utxo-page-msg").html(pageMsg);
-                if (this.pageUtil.totalPage - this.pageUtil.currentPage) {
+                if (pageUtil.totalPage - pageUtil.currentPage) {
                     $("#utxo-next").removeClass('disabled');
                 }
                 else {
                     $("#utxo-next").addClass('disabled');
                 }
-                if (this.pageUtil.currentPage - 1) {
+                if (pageUtil.currentPage - 1) {
                     $("#utxo-previous").removeClass('disabled');
                 }
                 else {
@@ -799,15 +892,22 @@ var WebBrowser;
                 let addrlist = yield WebBrowser.WWW.getaddrs(this.pageUtil.pageSize, this.pageUtil.currentPage);
                 //let newDate: Date = new Date();
                 addrlist.map((item) => {
-                    //newDate.setTime(item.firstuse.blocktime.$date);
                     let firstTime = WebBrowser.DateTool.dateFtt("dd-MM-yyyy hh:mm:ss", new Date(item.firstuse.blocktime.$date));
+                    if (location.pathname == '/zh/') {
+                        let newDate = new Date();
+                        newDate.setTime(item.firstuse.blocktime.$date);
+                        firstTime = newDate.toLocaleString();
+                    }
                     item.firstDate = firstTime;
-                    //newDate.setTime(item.lastuse.blocktime.$date);
                     let lastTime = WebBrowser.DateTool.dateFtt("dd-MM-yyyy hh:mm:ss", new Date(item.lastuse.blocktime.$date));
+                    if (location.pathname == '/zh/') {
+                        let newDate = new Date();
+                        newDate.setTime(item.lastuse.blocktime.$date);
+                        lastTime = newDate.toLocaleString();
+                    }
                     item.lastDate = lastTime;
                 });
                 this.loadView(addrlist);
-                WebBrowser.pageCut(this.pageUtil);
                 let minNum = this.pageUtil.currentPage * this.pageUtil.pageSize - this.pageUtil.pageSize;
                 let maxNum = this.pageUtil.totalCount;
                 let diffNum = maxNum - minNum;
@@ -1147,6 +1247,11 @@ var WebBrowser;
                 let blocks = yield ajax.post('getblock', [txInfo.blockindex]);
                 let block = blocks[0];
                 let time = WebBrowser.DateTool.dateFtt("dd-MM-yyyy hh:mm:ss", new Date(block.time * 1000));
+                if (location.pathname == '/zh/') {
+                    let newDate = new Date();
+                    newDate.setTime(block.time * 1000);
+                    time = newDate.toLocaleString();
+                }
                 $("#transaction-time").text(time);
                 //let allAsset: Asset[] = await WWW.api_getAllAssets();
                 let arr = new Array();
@@ -1458,6 +1563,11 @@ var WebBrowser;
                     //var newDate = new Date();
                     //newDate.setTime(item.time * 1000);
                     let time = WebBrowser.DateTool.dateFtt("dd-MM-yyyy hh:mm:ss", new Date(item.time * 1000));
+                    if (location.pathname == '/zh/') {
+                        let newDate = new Date();
+                        newDate.setTime(item.time * 1000);
+                        time = newDate.toLocaleString();
+                    }
                     html_blocks += `
                 <tr><td>
                 <a class="code" target="_self" href ='` + WebBrowser.Url.href_block(item.index) + `' > 
@@ -1662,7 +1772,7 @@ var WebBrowser;
                 //分页查询交易记录
                 let txs = yield WebBrowser.WWW.getrawtransactions(pageUtil.pageSize, pageUtil.currentPage, txType);
                 let txCount = yield WebBrowser.WWW.gettxcount(txType);
-                this.pageUtil.totalCount = txCount;
+                pageUtil.totalCount = txCount;
                 let listLength = 0;
                 if (txs.length < 15) {
                     this.txlist.find(".page").hide();
@@ -1677,7 +1787,6 @@ var WebBrowser;
                     let html = yield this.getTxLine(txid, txs[n].type, txs[n].size.toString(), txs[n].blockindex.toString(), txs[n].vin, txs[n].vout);
                     this.txlist.find("#txlist-page-transactions").append(html);
                 }
-                WebBrowser.pageCut(this.pageUtil);
                 let minNum = pageUtil.currentPage * pageUtil.pageSize - pageUtil.pageSize;
                 let maxNum = pageUtil.totalCount;
                 let diffNum = maxNum - minNum;
@@ -1686,13 +1795,13 @@ var WebBrowser;
                 }
                 let pageMsg = "Transactions " + (minNum + 1) + " to " + maxNum + " of " + pageUtil.totalCount;
                 $("#txlist-page").find("#txlist-page-msg").html(pageMsg);
-                if (this.pageUtil.totalPage - this.pageUtil.currentPage) {
+                if (pageUtil.totalPage - pageUtil.currentPage) {
                     $("#txlist-page-next").removeClass('disabled');
                 }
                 else {
                     $("#txlist-page-next").addClass('disabled');
                 }
-                if (this.pageUtil.currentPage - 1) {
+                if (pageUtil.currentPage - 1) {
                     $("#txlist-page-previous").removeClass('disabled');
                 }
                 else {
@@ -1816,45 +1925,132 @@ var WebBrowser;
             this.footer = document.getElementById('footer-box');
         }
         start() {
-            var nep5id = WebBrowser.locationtool.getParam();
-            let href = WebBrowser.locationtool.getUrl() + "/assets";
-            let html = '<a href="' + href + '" target="_self">&lt&lt&ltBack to all assets</a>';
-            $("#goallasset").empty();
-            $("#goallasset").append(html);
-            this.loadNep5InfoView(nep5id);
-            var assetType = WebBrowser.locationtool.getType();
-            if (assetType == 'nep5') {
-                $(".asset-nep5-warp").show();
-                $(".asset-tran-warp").show();
-                this.loadAssetBalanceView(nep5id);
-                this.loadAssetTranView(nep5id);
-            }
-            else {
-                $(".asset-nep5-warp").hide();
-                $(".asset-tran-warp").hide();
-            }
-            this.div.hidden = false;
-            this.footer.hidden = false;
+            return __awaiter(this, void 0, void 0, function* () {
+                var nep5id = WebBrowser.locationtool.getParam();
+                let href = WebBrowser.locationtool.getUrl() + "/assets";
+                let html = '<a href="' + href + '" target="_self">&lt&lt&ltBack to all assets</a>';
+                $("#goallasset").empty();
+                $("#goallasset").append(html);
+                this.loadNep5InfoView(nep5id);
+                this.balancePage = false;
+                this.currentPage = 1;
+                var assetType = WebBrowser.locationtool.getType();
+                if (assetType == 'nep5') {
+                    $(".asset-nep5-warp").show();
+                    $(".asset-tran-warp").show();
+                    this.updateAssetBalanceView(nep5id, 1);
+                    let count = yield WebBrowser.WWW.api_getnep5count('asset', nep5id);
+                    this.pageUtil = new WebBrowser.PageUtil(count[0].nep5count, 10);
+                    this.updateNep5TransView(nep5id, this.pageUtil);
+                }
+                else {
+                    $(".asset-nep5-warp").hide();
+                    $(".asset-tran-warp").hide();
+                }
+                $("#assets-balance-next").off("click").click(() => {
+                    if (this.balancePage) {
+                        this.currentPage += 1;
+                        this.updateAssetBalanceView(nep5id, this.currentPage);
+                    }
+                });
+                $("#assets-balance-previous").off("click").click(() => {
+                    if (this.currentPage <= 1) {
+                        this.currentPage = 1;
+                    }
+                    else {
+                        this.currentPage -= 1;
+                        this.updateAssetBalanceView(nep5id, this.currentPage);
+                    }
+                });
+                $("#assets-tran-next").off("click").click(() => {
+                    if (this.pageUtil.currentPage == this.pageUtil.totalPage) {
+                        this.pageUtil.currentPage = this.pageUtil.totalPage;
+                    }
+                    else {
+                        this.pageUtil.currentPage += 1;
+                        this.updateNep5TransView(nep5id, this.pageUtil);
+                    }
+                });
+                $("#assets-tran-previous").off("click").click(() => {
+                    if (this.pageUtil.currentPage <= 1) {
+                        this.pageUtil.currentPage = 1;
+                    }
+                    else {
+                        this.pageUtil.currentPage -= 1;
+                        this.updateNep5TransView(nep5id, this.pageUtil);
+                    }
+                });
+                this.div.hidden = false;
+                this.footer.hidden = false;
+            });
         }
         close() {
             this.div.hidden = true;
             this.footer.hidden = true;
         }
         loadNep5InfoView(nep5id) {
-            //this.div.innerHTML = pages.asset;
             WebBrowser.WWW.api_getnep5(nep5id).then((data) => {
                 var nep5 = data[0];
                 $("#name").text(nep5.name);
-                $("#type").text("Nep5");
+                $("#asset-info-type").text("Nep5");
                 $("#id").text(nep5.assetid);
                 $("#available").text(nep5.totalsupply);
                 $("#precision").text(nep5.decimals);
                 $("#admin").text("-");
             });
         }
-        loadAssetTranView(nep5id) {
+        updateAssetBalanceView(nep5id, currentPage) {
             return __awaiter(this, void 0, void 0, function* () {
-                let tranList = yield WebBrowser.WWW.api_getnep5transfersbyasset(nep5id);
+                let balanceList = yield WebBrowser.WWW.getrankbyasset(nep5id, 10, currentPage);
+                $("#assets-balance-list").empty();
+                if (currentPage == 1) {
+                    $("#assets-balance-previous").addClass('disabled');
+                }
+                else {
+                    $("#assets-balance-previous").removeClass('disabled');
+                }
+                if (balanceList) {
+                    let rank = (currentPage - 1) * 10 + 1;
+                    balanceList.forEach((item) => {
+                        for (var key in item) {
+                            let href = WebBrowser.Url.href_address(key);
+                            this.loadAssetBalanceView(rank, href, key, item[key]);
+                        }
+                        rank++;
+                    });
+                    if (balanceList.length == 10) {
+                        this.balancePage = true;
+                        $("#assets-balance-next").removeClass('disabled');
+                        $(".asset-balance-page").show();
+                    }
+                    else {
+                        this.balancePage = false;
+                        if (currentPage == 1) {
+                            $(".asset-balance-page").hide();
+                        }
+                        else {
+                            $("#assets-balance-next").addClass('disabled');
+                            $(".asset-balance-page").show();
+                        }
+                    }
+                }
+                else {
+                    let html = `<tr><td colspan="3" >There is no data</td></tr>`;
+                    $("#assets-balance-list").append(html);
+                    this.balancePage = false;
+                    if (currentPage == 1) {
+                        $(".asset-balance-page").hide();
+                    }
+                    else {
+                        $("#assets-balance-next").addClass('disabled');
+                        $(".asset-balance-page").show();
+                    }
+                }
+            });
+        }
+        updateNep5TransView(nep5id, pageUtil) {
+            return __awaiter(this, void 0, void 0, function* () {
+                let tranList = yield WebBrowser.WWW.api_getnep5transfersbyasset(nep5id, pageUtil.pageSize, pageUtil.currentPage);
                 $("#assets-tran-list").empty();
                 if (tranList) {
                     tranList.forEach((item) => {
@@ -1864,52 +2060,70 @@ var WebBrowser;
                         if (!item.to) {
                             item.to = '-';
                         }
-                        let html = `
-                    <tr>
-                    <td><a class="code omit" href="` + WebBrowser.Url.href_transaction(item.txid) + `" target="_self">` + item.txid + `
-                    </a></td>
-                    <td>` + item.from + `
-                    </td>
-                    <td>` + item.to + `
-                    </td>
-                    <td>` + item.blockindex + `</td>
-                    </tr>`;
-                        $("#assets-tran-list").append(html);
+                        this.loadAssetTranView(item.txid, item.from, item.to, item.blockindex);
                     });
                 }
                 else {
                     let html = `<tr><td colspan="4" >There is no data</td></tr>`;
                     $("#assets-tran-list").append(html);
+                    if (pageUtil.currentPage == 1) {
+                        $(".asset-tran-page").hide();
+                    }
+                    else {
+                        $(".asset-tran-page").show();
+                    }
+                }
+                if (pageUtil.totalCount > 10) {
+                    if (pageUtil.totalPage - pageUtil.currentPage) {
+                        $("#assets-tran-nextt").removeClass('disabled');
+                    }
+                    else {
+                        $("#assets-tran-next").addClass('disabled');
+                    }
+                    if (pageUtil.currentPage - 1) {
+                        $("#assets-tran-previous").removeClass('disabled');
+                    }
+                    else {
+                        $("#assets-tran-previous").addClass('disabled');
+                    }
+                    let minNum = pageUtil.currentPage * pageUtil.pageSize - pageUtil.pageSize;
+                    let maxNum = pageUtil.totalCount;
+                    let diffNum = maxNum - minNum;
+                    if (diffNum > 15) {
+                        maxNum = pageUtil.currentPage * pageUtil.pageSize;
+                    }
+                    let pageMsg = "Transactions " + (minNum + 1) + " to " + maxNum + " of " + pageUtil.totalCount;
+                    $("#assets-tran-msg").html(pageMsg);
+                    $(".asset-tran-page").show();
+                }
+                else {
+                    $(".asset-tran-page").hide();
                 }
             });
         }
-        loadAssetBalanceView(nep5id) {
-            return __awaiter(this, void 0, void 0, function* () {
-                let balanceList = yield WebBrowser.WWW.getrankbyasset(nep5id);
-                $("#assets-balance-list").empty();
-                if (balanceList) {
-                    let rank = 1;
-                    balanceList.forEach((item) => {
-                        for (var key in item) {
-                            let href = WebBrowser.Url.href_address(item[key]);
-                            let html = `
+        loadAssetTranView(txid, from, to, blockindex) {
+            let html = `
+                    <tr>
+                    <td><a class="code omit" href="` + WebBrowser.Url.href_transaction(txid) + `" target="_self">` + txid.replace('0x', '') + `
+                    </a></td>
+                    <td>` + from + `
+                    </td>
+                    <td>` + to + `
+                    </td>
+                    <td>` + blockindex + `</td>
+                    </tr>`;
+            $("#assets-tran-list").append(html);
+        }
+        loadAssetBalanceView(rank, href, address, balance) {
+            let html = `
                     <tr>
                     <td>` + rank + `
                     </td>
-                    <td><a target="_self" href="` + href + `">` + key + `
+                    <td><a target="_self" href="` + href + `">` + address + `
                     </a></td>
-                    <td>` + item[key] + `</td>
+                    <td>` + balance + `</td>
                     </tr>`;
-                            $("#assets-balance-list").append(html);
-                        }
-                        rank++;
-                    });
-                }
-                else {
-                    let html = `<tr><td colspan="3" >There is no data</td></tr>`;
-                    $("#assets-balance-list").append(html);
-                }
-            });
+            $("#assets-balance-list").append(html);
         }
     }
     WebBrowser.Nep5page = Nep5page;

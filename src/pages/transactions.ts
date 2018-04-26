@@ -59,7 +59,7 @@ namespace WebBrowser
             //分页查询交易记录
             let txs: Tx[] = await WWW.getrawtransactions(pageUtil.pageSize, pageUtil.currentPage, txType);
             let txCount = await WWW.gettxcount(txType);
-            this.pageUtil.totalCount = txCount;
+            pageUtil.totalCount = txCount;
 
             let listLength = 0;
             if (txs.length < 15) {
@@ -75,8 +75,6 @@ namespace WebBrowser
                 let html: string = await this.getTxLine( txid, txs[n].type, txs[n].size.toString(), txs[n].blockindex.toString(), txs[n].vin, txs[n].vout );
                 this.txlist.find( "#txlist-page-transactions" ).append( html );
             }
-            
-            pageCut(this.pageUtil);
 
             let minNum = pageUtil.currentPage * pageUtil.pageSize - pageUtil.pageSize;
             let maxNum = pageUtil.totalCount;
@@ -86,12 +84,12 @@ namespace WebBrowser
             }
             let pageMsg = "Transactions " + (minNum + 1) + " to " + maxNum + " of " + pageUtil.totalCount;
             $("#txlist-page").find("#txlist-page-msg").html(pageMsg);
-            if (this.pageUtil.totalPage - this.pageUtil.currentPage) {
+            if (pageUtil.totalPage - pageUtil.currentPage) {
                 $("#txlist-page-next").removeClass('disabled');
             } else {
                 $("#txlist-page-next").addClass('disabled');
             }
-            if (this.pageUtil.currentPage - 1) {
+            if (pageUtil.currentPage - 1) {
                 $("#txlist-page-previous").removeClass('disabled');
             } else {
                 $("#txlist-page-previous").addClass('disabled');

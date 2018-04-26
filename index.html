@@ -198,9 +198,9 @@
             <table class="table table-nel cool">
                 <thead>
                     <tr>
-                        <th>index</th>
-                        <th>size</th>
-                        <th>time</th>
+                        <th>Height</th>
+                        <th>Size</th>
+                        <th>Time</th>
                     </tr>
                 </thead>
                 <tbody id="blocks"></tbody>
@@ -246,7 +246,7 @@
                     <div class="title-content"><span>TXID</span></div>
                     <div class="title-content"><span>Type</span></div>
                     <div class="title-content"><span>Size</span></div>
-                    <div class="title-content"><span>Index</span></div>
+                    <div class="title-content"><span>Height</span></div>
                     <div class="title-nel" style="width:60px;"></div>
                 </div>
                 <div class="list-body" id="txlist-page-transactions">
@@ -312,9 +312,9 @@
             <table class="table table-nel cool">
                 <thead>
                     <tr>
-                        <th>address</th>
-                        <th>First trading time</th>
-                        <th>Last trading time</th>
+                        <th>Address</th>
+                        <th>First transaction time</th>
+                        <th>Last transaction time</th>
                         <th>Txcount</th>
                     </tr>
                 </thead>
@@ -363,6 +363,20 @@
                 </thead>
                 <tbody id="txs"></tbody>
             </table>
+            <div class="block-tran-page">
+                <div class="page-number">
+                    <span id="block-tran-msg"></span>
+                </div>
+                <div class="page">
+                    <div id="block-tran-previous" class="page-previous">
+                        <img src="./img/lefttrangle.svg" alt="">
+                    </div>
+                    <div style="width:1px;"></div>
+                    <div id="block-tran-next" class="page-next">
+                        <img src="./img/righttrangle.svg" alt="">
+                    </div>
+                </div>
+            </div>
         </div>
         <!--地址详情-->
         <div id="address-info">
@@ -488,18 +502,20 @@
                     </thead>
                     <tbody id="assets-balance-list"></tbody>
                 </table>
-                <!--<div class="page-number">
-            <span id="assets-balance-msg"></span>
-        </div>
-        <div class="page">
-            <div id="assets-balance-previous" class="page-previous">
-                <img src="./img/lefttrangle.svg" alt="">
-            </div>
-            <div style="width:1px;"></div>
-            <div id="assets-balance-next" class="page-next">
-                <img src="./img/righttrangle.svg" alt="">
-            </div>
-        </div>-->
+                <div class="asset-balance-page">
+                    <div class="page-number">
+                        <span id="assets-balance-msg"></span>
+                    </div>
+                    <div class="page">
+                        <div id="assets-balance-previous" class="page-previous">
+                            <img src="./img/lefttrangle.svg" alt="">
+                        </div>
+                        <div style="width:1px;"></div>
+                        <div id="assets-balance-next" class="page-next">
+                            <img src="./img/righttrangle.svg" alt="">
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <div class="asset-tran-warp">
@@ -515,18 +531,20 @@
                     </thead>
                     <tbody id="assets-tran-list"></tbody>
                 </table>
-                <!--<div class="page-number">
-            <span id="assets-tran-msg"></span>
-        </div>
-        <div class="page">
-            <div id="assets-tran-previous" class="page-previous">
-                <img src="./img/lefttrangle.svg" alt="">
-            </div>
-            <div style="width:1px;"></div>
-            <div id="assets-tran-next" class="page-next">
-                <img src="./img/righttrangle.svg" alt="">
-            </div>
-        </div>-->
+                <div class="asset-tran-page">
+                    <div class="page-number">
+                        <span id="assets-tran-msg"></span>
+                    </div>
+                    <div class="page">
+                        <div id="assets-tran-previous" class="page-previous">
+                            <img src="./img/lefttrangle.svg" alt="">
+                        </div>
+                        <div style="width:1px;"></div>
+                        <div id="assets-tran-next" class="page-next">
+                            <img src="./img/righttrangle.svg" alt="">
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
         <!--交易详情-->

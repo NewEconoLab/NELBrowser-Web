@@ -21,15 +21,22 @@
             //let newDate: Date = new Date();
             addrlist.map( ( item ) =>
             {
-                //newDate.setTime(item.firstuse.blocktime.$date);
                 let firstTime = DateTool.dateFtt("dd-MM-yyyy hh:mm:ss", new Date(item.firstuse.blocktime.$date));
+                if (location.pathname == '/zh/') {
+                    let newDate = new Date();
+                    newDate.setTime(item.firstuse.blocktime.$date);
+                    firstTime = newDate.toLocaleString();
+                }
                 item.firstDate = firstTime;
-                //newDate.setTime(item.lastuse.blocktime.$date);
                 let lastTime = DateTool.dateFtt("dd-MM-yyyy hh:mm:ss", new Date(item.lastuse.blocktime.$date));
+                if (location.pathname == '/zh/') {
+                    let newDate = new Date();
+                    newDate.setTime(item.lastuse.blocktime.$date);
+                    lastTime = newDate.toLocaleString();
+                }
                 item.lastDate = lastTime;
             } );
             this.loadView( addrlist );
-            pageCut(this.pageUtil);
 
             let minNum = this.pageUtil.currentPage * this.pageUtil.pageSize - this.pageUtil.pageSize;
             let maxNum = this.pageUtil.totalCount;

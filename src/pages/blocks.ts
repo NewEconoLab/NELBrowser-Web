@@ -63,6 +63,11 @@ namespace WebBrowser
             blocks.forEach((item, index, input) => {
                 //newDate.setTime(item.time * 1000);
                 let time = DateTool.dateFtt("dd-MM-yyyy hh:mm:ss", new Date(item.time * 1000));
+                if (location.pathname == '/zh/') {
+                    let newDate = new Date();
+                    newDate.setTime(item.time * 1000);
+                    time = newDate.toLocaleString();
+                } 
                 let html = `
                 <tr>
                 <td><a href="`+ Url.href_block(item.index) + `" target="_self">` + item.index + `</a></td>
