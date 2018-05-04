@@ -13,7 +13,18 @@ namespace WebBrowser
         viewblocks: HTMLAnchorElement = document.getElementById( "viewblocks" ) as HTMLAnchorElement;
         alladdress: HTMLAnchorElement = document.getElementById( "alladdress" ) as HTMLAnchorElement;
         allblock: HTMLAnchorElement = document.getElementById( "allblock" ) as HTMLAnchorElement;
-        alltxlist: HTMLAnchorElement = document.getElementById( "alltxlist" ) as HTMLAnchorElement;
+        alltxlist: HTMLAnchorElement = document.getElementById("alltxlist") as HTMLAnchorElement;
+        cnbtn = document.getElementById("cn-btn");
+        enbtn = document.getElementById("en-btn");
+        constructor() {
+
+            this.cnbtn.onclick = () => {
+                $("#cn-btn").attr('href', '/zh/' + location.hash);
+            }
+            this.enbtn.onclick = () => {
+                $("#en-btn").attr('href', '/' + location.hash);
+            }
+        }
         async start()
         {
             this.viewtxlist.href = Url.href_transactions();
@@ -86,6 +97,9 @@ namespace WebBrowser
 
             $( "#index-page" ).find( "#blocks" ).children( "tbody" ).append( html_blocks );
             $("#index-page").find("#transactions").children("tbody").append(html_txs);
+
+
+
             this.footer.hidden = false;
         }
     }

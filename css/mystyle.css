@@ -52,7 +52,7 @@ body {
     padding-top: 28px;
 }
 
-body:after {
+/*body:after {
     content: '';
     display: block;
     position: absolute;
@@ -61,7 +61,7 @@ body:after {
     bottom: 0;
     left: 0;
     opacity: .4
-}
+}*/
 
 .align-center {
     margin: 0 auto;

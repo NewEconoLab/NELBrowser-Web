@@ -1530,6 +1530,14 @@ var WebBrowser;
             this.alladdress = document.getElementById("alladdress");
             this.allblock = document.getElementById("allblock");
             this.alltxlist = document.getElementById("alltxlist");
+            this.cnbtn = document.getElementById("cn-btn");
+            this.enbtn = document.getElementById("en-btn");
+            this.cnbtn.onclick = () => {
+                $("#cn-btn").attr('href', '/zh/' + location.hash);
+            };
+            this.enbtn.onclick = () => {
+                $("#en-btn").attr('href', '/' + location.hash);
+            };
         }
         close() {
             this.div.hidden = true;
