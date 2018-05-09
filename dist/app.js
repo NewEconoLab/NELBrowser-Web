@@ -429,6 +429,16 @@ var WebBrowser;
                 return r;
             });
         }
+        //根据txid获取nep5
+        static api_getnep5transferbytxid(txid) {
+            return __awaiter(this, void 0, void 0, function* () {
+                var str = WWW.makeRpcUrl("getnep5transferbytxid", txid);
+                var result = yield fetch(str, { "method": "get" });
+                var json = yield result.json();
+                var r = json["result"];
+                return r;
+            });
+        }
     }
     WWW.api = "https://api.nel.group/api/";
     WWW.apiaggr = "https://apiaggr.nel.group/api/";
@@ -1296,6 +1306,32 @@ var WebBrowser;
                     html += '<div class="content-nel" > <span id="size" >' + vout.value + sign + ' </span></div > </div>';
                     $("#to").append(html);
                 });
+                $("#txidnep5").empty();
+                let txidNep = yield WebBrowser.WWW.api_getnep5transferbytxid(txid);
+                console.log(txidNep);
+                if (txidNep) {
+                    $(".txidnep-warp").show();
+                    txidNep.forEach((item) => {
+                        this.loadTxidNep5View(item.asset, item.from, item.to, item.value);
+                    });
+                }
+                else {
+                    $(".txidnep-warp").hide();
+                }
+            });
+        }
+        loadTxidNep5View(asset, from, to, value) {
+            return __awaiter(this, void 0, void 0, function* () {
+                let href = WebBrowser.Url.href_nep5(asset);
+                let nep5Name = yield WebBrowser.WWW.api_getnep5(asset);
+                let html = `
+                    <tr>
+                    <td> <a href="` + href + `" target="_self">` + nep5Name[0].name + `</a></td>
+                    <td>` + from + `</td>
+                    <td>` + to + `</td>
+                    <td>` + value + `</td>
+                    </tr>`;
+                $("#txidnep5").append(html);
             });
         }
         static groupByaddr(arr) {

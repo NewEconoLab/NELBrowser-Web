@@ -96,7 +96,32 @@ namespace WebBrowser
                 html += '<div class="line" > <div class="title-nel" > <span>' + name+' </span></div >';
                 html += '<div class="content-nel" > <span id="size" >' + vout.value + sign + ' </span></div > </div>';
                 $("#to").append(html);
-            } );
+            });
+
+            $("#txidnep5").empty();
+            let txidNep = await WWW.api_getnep5transferbytxid(txid);
+            console.log(txidNep);
+            if (txidNep) {
+                $(".txidnep-warp").show();
+                txidNep.forEach((item) => {
+                    this.loadTxidNep5View(item.asset, item.from, item.to, item.value);
+                })
+            } else {
+                $(".txidnep-warp").hide();
+            }
+        }
+
+        async loadTxidNep5View(asset: string, from: string, to: string, value: number) {
+            let href = Url.href_nep5(asset);
+            let nep5Name = await WWW.api_getnep5(asset);
+            let html = `
+                    <tr>
+                    <td> <a href="`+ href + `" target="_self">` + nep5Name[0].name + `</a></td>
+                    <td>` + from + `</td>
+                    <td>` + to + `</td>
+                    <td>` + value + `</td>
+                    </tr>`
+            $("#txidnep5").append(html);
         }
 
         public static groupByaddr(arr: any[])

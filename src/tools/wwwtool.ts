@@ -206,5 +206,13 @@ namespace WebBrowser
             var r = json["result"];
             return r;
         }
+        //根据txid获取nep5
+        static async api_getnep5transferbytxid(txid: string) {
+            var str = WWW.makeRpcUrl("getnep5transferbytxid", txid);
+            var result = await fetch(str, { "method": "get" });
+            var json = await result.json();
+            var r = json["result"];
+            return r;
+        }
     }
 }
