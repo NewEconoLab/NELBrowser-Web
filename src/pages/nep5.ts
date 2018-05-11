@@ -14,6 +14,7 @@ namespace WebBrowser
         balancePage: boolean;
         currentPage: number;
         pageUtil: PageUtil;
+        rankPageUtil: PageUtil;
         async start()
         {
             var nep5id = locationtool.getParam();
@@ -22,38 +23,41 @@ namespace WebBrowser
             $("#goallasset").empty();
             $("#goallasset").append(html);
             this.loadNep5InfoView(nep5id);
-            this.balancePage = false;
-            this.currentPage = 1;
+            
+            var rankcount = await WWW.api_getrankbyassetcount(nep5id);
+            this.rankPageUtil = new PageUtil(rankcount[0].count, 10);
+            this.updateAssetBalanceView(nep5id, this.rankPageUtil);
 
             var assetType = locationtool.getType();
             if (assetType == 'nep5') {
-                $(".asset-nep5-warp").show();
-                $(".asset-tran-warp").show();
-                this.updateAssetBalanceView(nep5id, 1);
-
-                let count = await WWW.api_getnep5count('asset',nep5id);
+                //$(".asset-nep5-warp").show();
+                let count = await WWW.api_getnep5count('asset', nep5id);
                 this.pageUtil = new PageUtil(count[0].nep5count, 10);
                 this.updateNep5TransView(nep5id, this.pageUtil);
+                $(".asset-tran-warp").show();
             } else {
-                $(".asset-nep5-warp").hide();
+                //$(".asset-nep5-warp").hide();
                 $(".asset-tran-warp").hide();
             }
 
+            //排行翻页
             $("#assets-balance-next").off("click").click(() => {
-                if (this.balancePage) {
-                    this.currentPage += 1;
-                    this.updateAssetBalanceView(nep5id, this.currentPage);
-                } 
-            });
-            $("#assets-balance-previous").off("click").click(() => {
-                if (this.currentPage <= 1) {
-                    this.currentPage = 1;
+                if (this.rankPageUtil.currentPage == this.rankPageUtil.totalPage) {
+                    this.rankPageUtil.currentPage = this.rankPageUtil.totalPage;
                 } else {
-                    this.currentPage -= 1;
-                    this.updateAssetBalanceView(nep5id, this.currentPage);
+                    this.rankPageUtil.currentPage += 1;
+                    this.updateAssetBalanceView(nep5id, this.rankPageUtil);
                 }
             });
-
+            $("#assets-balance-previous").off("click").click(() => {
+                if (this.rankPageUtil.currentPage <= 1) {
+                    this.rankPageUtil.currentPage = 1;
+                } else {
+                    this.rankPageUtil.currentPage -= 1;
+                    this.updateAssetBalanceView(nep5id, this.rankPageUtil);
+                }
+            });
+            //交易翻页
             $("#assets-tran-next").off("click").click(() => {
                 if (this.pageUtil.currentPage == this.pageUtil.totalPage) {
                     this.pageUtil.currentPage = this.pageUtil.totalPage;
@@ -79,7 +83,7 @@ namespace WebBrowser
             this.div.hidden = true;
             this.footer.hidden = true;
         }
-
+        //nep5的详情
         loadNep5InfoView(nep5id: string)
         {           
             WWW.api_getnep5(nep5id).then((data) =>
@@ -94,47 +98,55 @@ namespace WebBrowser
             })
         }
 
-        async updateAssetBalanceView(nep5id:string,currentPage:number) {
-            let balanceList = await WWW.getrankbyasset(nep5id, 10, currentPage);
+        async updateAssetBalanceView(nep5id: string, pageUtil: PageUtil) {
+            let balanceList = await WWW.getrankbyasset(nep5id, pageUtil.pageSize, pageUtil.currentPage);
             $("#assets-balance-list").empty();
-            if (currentPage == 1) {
-                $("#assets-balance-previous").addClass('disabled');
-            } else {
-                $("#assets-balance-previous").removeClass('disabled');
-            }
-            if (balanceList) {
-                let rank = (currentPage-1)*10 +1;
+
+            if (balanceList)
+            {
+                let rank = (pageUtil.currentPage-1)*10 +1;
                 balanceList.forEach((item) => {
-                    for (var key in item) {
-                        let href = Url.href_address(key);
-                        this.loadAssetBalanceView(rank, href, key, item[key]);
-                    }
+                    let href = Url.href_address(item.addr);
+                    this.loadAssetBalanceView(rank, href, item.addr, item.balance);
                     rank++;
                 });
-                if (balanceList.length == 10) {
-                    this.balancePage = true;
-                    $("#assets-balance-next").removeClass('disabled');
-                    $(".asset-balance-page").show();
-                } else {
-                    this.balancePage = false;
-                    if (currentPage == 1) {
-                        $(".asset-balance-page").hide();
-                    } else {
-                        $("#assets-balance-next").addClass('disabled');
-                        $(".asset-balance-page").show();
-                    }
-                    
-                }
-            } else {
+            }
+            else
+            {
                 let html = `<tr><td colspan="3" >There is no data</td></tr>`;
                 $("#assets-balance-list").append(html);
-                this.balancePage = false;
-                if (currentPage == 1) {
+                if (pageUtil.currentPage == 1) {
                     $(".asset-balance-page").hide();
                 } else {
                     $("#assets-balance-next").addClass('disabled');
                     $(".asset-balance-page").show();
                 }
+            }
+            if (pageUtil.totalCount > 10)
+            {
+                if (pageUtil.totalPage - pageUtil.currentPage) {
+                    $("#assets-balance-next").removeClass('disabled');
+                } else {
+                    $("#assets-balance-next").addClass('disabled');
+                }
+                if (pageUtil.currentPage - 1) {
+                    $("#assets-balance-previous").removeClass('disabled');
+                } else {
+                    $("#assets-balance-previous").addClass('disabled');
+                }
+                let minNum = pageUtil.currentPage * pageUtil.pageSize - pageUtil.pageSize;
+                let maxNum = pageUtil.totalCount;
+                let diffNum = maxNum - minNum;
+                if (diffNum > 10) {
+                    maxNum = pageUtil.currentPage * pageUtil.pageSize;
+                }
+                let pageMsg = "Banlance Rank " + (minNum + 1) + " to " + maxNum + " of " + pageUtil.totalCount;
+                $("#assets-balance-msg").html(pageMsg);
+                $(".asset-balance-page").show();
+            }
+            else
+            {
+                $(".asset-balance-page").hide();
             }
         }
 
@@ -163,7 +175,7 @@ namespace WebBrowser
 
             if (pageUtil.totalCount > 10) {
                 if (pageUtil.totalPage - pageUtil.currentPage) {
-                    $("#assets-tran-nextt").removeClass('disabled');
+                    $("#assets-tran-next").removeClass('disabled');
                 } else {
                     $("#assets-tran-next").addClass('disabled');
                 }
@@ -175,7 +187,7 @@ namespace WebBrowser
                 let minNum = pageUtil.currentPage * pageUtil.pageSize - pageUtil.pageSize;
                 let maxNum = pageUtil.totalCount;
                 let diffNum = maxNum - minNum;
-                if (diffNum > 15) {
+                if (diffNum > 10) {
                     maxNum = pageUtil.currentPage * pageUtil.pageSize;
                 }
                 let pageMsg = "Transactions " + (minNum + 1) + " to " + maxNum + " of " + pageUtil.totalCount;

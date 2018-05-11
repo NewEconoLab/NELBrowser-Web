@@ -88,6 +88,7 @@ namespace WebBrowser
             {
                 $("#errContent").text('输入有误，请重新输入');
                 $('#errMsg').modal('show');
+                return false;
             }
         }
 

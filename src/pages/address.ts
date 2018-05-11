@@ -29,24 +29,29 @@ namespace WebBrowser
 
             if (addrMsg) {
                 this.loadAddressInfo(address, addrMsg);
-                this.loadView(balances, nep5ofAddress);
-
                 this.pageUtil = new PageUtil(addrMsg[0].txcount, 10);
                 this.initTranPage(addrMsg[0].txcount, address);
                 this.updateAddrTrasctions(address, this.pageUtil);
-                if (utxos) {
-                    this.pageUtilUtxo = new PageUtil(utxos.length, 10);
-                    this.initUTXOPage(utxos.length, address);
-                    this.updateAddrUTXO(address, this.pageUtilUtxo)
-                } else {
-                    let html = `<tr><td colspan="3" >There is no data</td></tr>`;
-                    $("#add-utxos").append(html);
-                }
-                //this.loadUTXOView(utxos);
             } else {
-                $("#errContent").text("该地址没有数据");
-                $('#errMsg').modal('show');
+                $("#address").text("-");
+                $("#created").text("-");
+                $("#totalTran").text("-");
+                let html = `<div class="line" style="text-align:center;padding:16px;font-size:16px;">There is no data</div>`;
+                $("#addr-trans").append(html);
             }
+
+            this.loadView(balances, nep5ofAddress);
+            
+            if (utxos) {
+                this.pageUtilUtxo = new PageUtil(utxos.length, 10);
+                this.initUTXOPage(utxos.length, address);
+                this.updateAddrUTXO(address, this.pageUtilUtxo)
+            } else {
+                let html = `<tr><td colspan="3" >There is no data</td></tr>`;
+                $("#add-utxos").append(html);
+            }
+            //this.loadUTXOView(utxos);
+             
 
             this.div.hidden = false;
             this.footer.hidden = false;
@@ -188,7 +193,7 @@ namespace WebBrowser
                         let newDate = new Date();
                         newDate.setTime(txlist[n].blocktime.$date);
                         time = newDate.toLocaleString();
-                    } 
+                    }
                     let html: string = await this.getAddrTransLine(txid, txlist[n].type, time, txlist[n].vin, txlist[n].vout);
                     $("#addr-trans").append(html);
                 }
