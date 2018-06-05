@@ -67,28 +67,35 @@ namespace WebBrowser
         jump()
         {
             let search: string = this.searchText.value;
-            if ( search.length == 34 )
-            {
-                if ( Neotool.verifyPublicKey( search ) )
-                {
-                    window.open( locationtool.getUrl() + '/address/' + search );
-                } else
-                {
-                    $("#errContent").text('请输入正确的地址');
+            if (search.length == 34) {
+                if (Neotool.verifyPublicKey(search)) {
+                    window.open(locationtool.getUrl() + '/address/' + search);
+                } else {
+                    
+                    $("#errContent").text('Please enter the correct address');
+                    if (location.pathname == '/zh/') {
+                        $("#errContent").text('请输入正确的地址');
+                    } 
                     $('#errMsg').modal('show');
+                    return false;
                 }
-            }
-            search = search.replace( '0x', '' );
-            if (search.length == 64) {
-                window.open(locationtool.getUrl() + '/transaction/' + search);
-            } else if (!isNaN(Number(search)))
-            {
-                window.open(locationtool.getUrl() + '/block/' + search);
-            } else
-            {
-                $("#errContent").text('输入有误，请重新输入');
-                $('#errMsg').modal('show');
-                return false;
+                return;
+            } else {
+                search = search.replace('0x', '');
+                if (search.length == 64) {
+                    window.open(locationtool.getUrl() + '/transaction/' + search);
+                } else if (!isNaN(Number(search))) {
+                    window.open(locationtool.getUrl() + '/block/' + search);
+                } else {
+                    if (this.searchText.value != '') {
+                        $("#errContent").text('The input is wrong, please reenter it');
+                        if (location.pathname == '/zh/') {
+                            $("#errContent").text('输入有误，请重新输入');
+                        }
+                        $('#errMsg').modal('show');
+                        return false;
+                    }
+                }
             }
         }
 

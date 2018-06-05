@@ -3196,21 +3196,33 @@ var WebBrowser;
                     window.open(WebBrowser.locationtool.getUrl() + '/address/' + search);
                 }
                 else {
-                    $("#errContent").text('请输入正确的地址');
+                    $("#errContent").text('Please enter the correct address');
+                    if (location.pathname == '/zh/') {
+                        $("#errContent").text('请输入正确的地址');
+                    }
                     $('#errMsg').modal('show');
+                    return false;
                 }
-            }
-            search = search.replace('0x', '');
-            if (search.length == 64) {
-                window.open(WebBrowser.locationtool.getUrl() + '/transaction/' + search);
-            }
-            else if (!isNaN(Number(search))) {
-                window.open(WebBrowser.locationtool.getUrl() + '/block/' + search);
+                return;
             }
             else {
-                $("#errContent").text('输入有误，请重新输入');
-                $('#errMsg').modal('show');
-                return false;
+                search = search.replace('0x', '');
+                if (search.length == 64) {
+                    window.open(WebBrowser.locationtool.getUrl() + '/transaction/' + search);
+                }
+                else if (!isNaN(Number(search))) {
+                    window.open(WebBrowser.locationtool.getUrl() + '/block/' + search);
+                }
+                else {
+                    if (this.searchText.value != '') {
+                        $("#errContent").text('The input is wrong, please reenter it');
+                        if (location.pathname == '/zh/') {
+                            $("#errContent").text('输入有误，请重新输入');
+                        }
+                        $('#errMsg').modal('show');
+                        return false;
+                    }
+                }
             }
         }
     }
