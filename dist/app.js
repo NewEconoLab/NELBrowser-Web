@@ -3154,6 +3154,7 @@ var WebBrowser;
             this.walleta = document.getElementById("walleta");
             this.searchBtn = document.getElementById("searchBtn");
             this.searchText = document.getElementById("searchText");
+            this.searchList = document.getElementById("seach_list");
         }
         start() {
             this.indexa.onclick = () => {
@@ -3179,6 +3180,17 @@ var WebBrowser;
                     this.jump();
                 }
             };
+            this.searchList.onclick = (ev) => {
+                let event = ev || window.event;
+                let target = event.target || event.srcElement;
+                console.log(typeof (target));
+                console.log(target);
+                if (target.nodeName.toLowerCase() == 'li') {
+                    alert(target.innerHTML);
+                    this.searchText.value = target.innerHTML;
+                }
+                this.searchList.style.display = "none";
+            };
             this.walletBtn.onclick = () => {
                 if (WebBrowser.locationtool.getNetWork() == 'testnet')
                     window.open("https://testwallet.nel.group/");
@@ -3191,38 +3203,48 @@ var WebBrowser;
         }
         jump() {
             let search = this.searchText.value;
-            if (search.length == 34) {
-                if (WebBrowser.Neotool.verifyPublicKey(search)) {
-                    window.open(WebBrowser.locationtool.getUrl() + '/address/' + search);
-                }
-                else {
-                    $("#errContent").text('Please enter the correct address');
-                    if (location.pathname == '/zh/') {
-                        $("#errContent").text('请输入正确的地址');
+            if (search) {
+                if (search.length == 34) {
+                    if (WebBrowser.Neotool.verifyPublicKey(search)) {
+                        window.open(WebBrowser.locationtool.getUrl() + '/address/' + search);
                     }
-                    $('#errMsg').modal('show');
-                    return false;
-                }
-                return;
-            }
-            else {
-                search = search.replace('0x', '');
-                if (search.length == 64) {
-                    window.open(WebBrowser.locationtool.getUrl() + '/transaction/' + search);
-                }
-                else if (!isNaN(Number(search))) {
-                    window.open(WebBrowser.locationtool.getUrl() + '/block/' + search);
-                }
-                else {
-                    if (this.searchText.value != '') {
-                        $("#errContent").text('The input is wrong, please reenter it');
+                    else {
+                        $("#errContent").text('Please enter the correct address');
                         if (location.pathname == '/zh/') {
-                            $("#errContent").text('输入有误，请重新输入');
+                            $("#errContent").text('请输入正确的地址');
                         }
                         $('#errMsg').modal('show');
                         return false;
                     }
+                    return;
                 }
+                else {
+                    search = search.replace('0x', '');
+                    console.log("0xc56f33fc6ecfcd0c225c4ab356fee59390af8560be0e930faebe74a6daff7c9b".length);
+                    if (search.length == 64) {
+                        window.open(WebBrowser.locationtool.getUrl() + '/transaction/' + search);
+                    }
+                    else if (search.length == 40) {
+                        window.open(WebBrowser.locationtool.getUrl() + '/nep5/' + search);
+                    }
+                    else if (!isNaN(Number(search))) {
+                        window.open(WebBrowser.locationtool.getUrl() + '/block/' + search);
+                    }
+                    else {
+                        //if (this.searchText.value != '') {
+                        //    $("#errContent").text('The input is wrong, please reenter it');
+                        //    if (location.pathname == '/zh/') {
+                        //        $("#errContent").text('输入有误，请重新输入');
+                        //    }
+                        //    $('#errMsg').modal('show');
+                        //    return false;
+                        //}
+                        return false;
+                    }
+                }
+            }
+            else {
+                return false;
             }
         }
     }

@@ -26,6 +26,26 @@ body {
     border-right: 0;
     outline: 0;
 }
+.input-append{
+    position:relative;
+}
+.input-append .seach-list{
+    position:absolute;
+    display:none;
+}
+.seach-list ul{
+    padding-left:0;
+    border-radius:5px;
+}
+.seach-list ul li{
+    list-style:none;
+    display:block;
+    padding:7px;
+    background:#fff;
+}
+.seach-list ul li:hover {
+    background: #E2E2E2;
+}
 
 .form-control:focus {
     border: 0;
