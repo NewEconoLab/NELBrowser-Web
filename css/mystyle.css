@@ -15,35 +15,36 @@ body {
 
 #searchText, #searchText:hover, #searchText:focus {
     border: 0;
+    width: 564px;
 }
 
 #searchBtn {
     border: 0;
 }
 
-#searchText:hover, #searchText:focus {
+.input-append:hover #searchText, .input-append #searchText:hover, .input-append #searchText:focus {
     width: 564px;
     border-right: 0;
     outline: 0;
 }
-.input-append{
-    position:relative;
+.input-append {
+    position: relative;
 }
 .input-append .seach-list{
     position:absolute;
-    display:none;
 }
 .seach-list ul{
     padding-left:0;
     border-radius:5px;
 }
-.seach-list ul li{
-    list-style:none;
-    display:block;
-    padding:7px;
-    background:#fff;
+.seach-list ul li {
+    list-style: none;
+    display: block;
+    padding: 7px;
+    background: #fff;
+    white-space: nowrap;
 }
-.seach-list ul li:hover {
+.seach-list ul li:hover, .seach-list ul li.active {
     background: #E2E2E2;
 }
 

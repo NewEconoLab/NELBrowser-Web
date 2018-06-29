@@ -450,6 +450,17 @@ var WebBrowser;
                 return r;
             });
         }
+        //search asset list
+        static apiaggr_searchAsset(str) {
+            return __awaiter(this, void 0, void 0, function* () {
+                str = WWW.makeUrl("fuzzysearchasset", WWW.apiaggr + WebBrowser.locationtool.getNetWork(), str);
+                var result = yield fetch(str, { "method": "get" });
+                var json = yield result.json();
+                var r = json["result"];
+                return r;
+            });
+            var str;
+        }
     }
     WWW.api = "https://api.nel.group/api/";
     WWW.apiaggr = "https://apiaggr.nel.group/api/";
@@ -3155,6 +3166,8 @@ var WebBrowser;
             this.searchBtn = document.getElementById("searchBtn");
             this.searchText = document.getElementById("searchText");
             this.searchList = document.getElementById("seach_list");
+            this.cpLock = false;
+            this.currentLine = 0;
         }
         start() {
             this.indexa.onclick = () => {
@@ -3175,21 +3188,40 @@ var WebBrowser;
             this.searchBtn.onclick = () => {
                 this.jump();
             };
+            this.searchText.addEventListener('compositionstart', () => {
+                this.cpLock = true;
+            });
+            this.searchText.addEventListener('compositionend', () => {
+                this.cpLock = false;
+                if (!this.cpLock)
+                    this.fuzzyseach();
+            });
+            this.searchText.addEventListener('input', () => {
+                if (!this.cpLock)
+                    this.fuzzyseach();
+            });
             this.searchText.onkeydown = (e) => {
                 if (e.keyCode == 13) {
                     this.jump();
                 }
-            };
-            this.searchList.onclick = (ev) => {
-                let event = ev || window.event;
-                let target = event.target || event.srcElement;
-                console.log(typeof (target));
-                console.log(target);
-                if (target.nodeName.toLowerCase() == 'li') {
-                    alert(target.innerHTML);
-                    this.searchText.value = target.innerHTML;
+                else if (e.keyCode == 38) {
+                    this.changeItem();
+                    this.currentLine--;
                 }
-                this.searchList.style.display = "none";
+                else if (e.keyCode == 40) {
+                    this.changeItem();
+                    this.currentLine++;
+                }
+            };
+            this.searchList.onclick = (e) => {
+                let event = e || window.event;
+                let target = event.target || event.srcElement;
+                if (target.nodeName.toLowerCase() == 'li') {
+                    this.searchText.value = target.innerHTML;
+                    let data = target.getAttribute("data");
+                    window.open(WebBrowser.locationtool.getUrl() + '/asset/' + data);
+                }
+                $("#seach_list").empty();
             };
             this.walletBtn.onclick = () => {
                 if (WebBrowser.locationtool.getNetWork() == 'testnet')
@@ -3197,12 +3229,20 @@ var WebBrowser;
                 else
                     window.open("https://wallet.nel.group/");
             };
+            document.onclick = (ev) => {
+                let event = ev || window.event;
+                let target = event.target || event.srcElement;
+                if (target.nodeName.toLowerCase() != 'li') {
+                    $("#seach_list").empty();
+                }
+            };
         }
         skip(page) {
             window.location.href = WebBrowser.locationtool.getUrl() + page;
         }
         jump() {
             let search = this.searchText.value;
+            search = search.trim();
             if (search) {
                 if (search.length == 34) {
                     if (WebBrowser.Neotool.verifyPublicKey(search)) {
@@ -3220,7 +3260,6 @@ var WebBrowser;
                 }
                 else {
                     search = search.replace('0x', '');
-                    console.log("0xc56f33fc6ecfcd0c225c4ab356fee59390af8560be0e930faebe74a6daff7c9b".length);
                     if (search.length == 64) {
                         window.open(WebBrowser.locationtool.getUrl() + '/transaction/' + search);
                     }
@@ -3230,21 +3269,55 @@ var WebBrowser;
                     else if (!isNaN(Number(search))) {
                         window.open(WebBrowser.locationtool.getUrl() + '/block/' + search);
                     }
+                    else if (search.length > 64) {
+                        let length = this.searchList.children.length;
+                        if (length) {
+                            let data = this.searchList.children[this.currentLine - 1].getAttribute("data");
+                            window.open(WebBrowser.locationtool.getUrl() + '/asset/' + data);
+                            $("#seach_list").empty();
+                        }
+                    }
                     else {
-                        //if (this.searchText.value != '') {
-                        //    $("#errContent").text('The input is wrong, please reenter it');
-                        //    if (location.pathname == '/zh/') {
-                        //        $("#errContent").text('输入有误，请重新输入');
-                        //    }
-                        //    $('#errMsg').modal('show');
-                        //    return false;
-                        //}
                         return false;
                     }
                 }
             }
             else {
                 return false;
+            }
+        }
+        fuzzyseach() {
+            return __awaiter(this, void 0, void 0, function* () {
+                $("#seach_list").empty();
+                this.currentLine = 0;
+                let search = this.searchText.value;
+                if (search) {
+                    let list = yield WebBrowser.WWW.apiaggr_searchAsset(search);
+                    if (list) {
+                        let length = list.length;
+                        for (let i = 0; i < length; i++) {
+                            let oLi = '<li data="' + list[i]["assetid"] + '">' + list[i]["name"] + '(' + list[i]["assetid"] + ')' + '</li>';
+                            $("#seach_list").append(oLi);
+                        }
+                    }
+                }
+            });
+        }
+        changeItem() {
+            let length = this.searchList.children.length;
+            if (length) {
+                for (let i = 0; i < length; i++) {
+                    this.searchList.children[i].className = "";
+                }
+                if (this.currentLine < 0 || this.currentLine == 0) {
+                    this.currentLine = 0;
+                }
+                if (this.currentLine == length || this.currentLine > length) {
+                    this.currentLine = length - 1;
+                }
+                //调试使用
+                this.searchList.children[this.currentLine].className = "active";
+                this.searchText.value = this.searchList.children[this.currentLine].innerHTML;
             }
         }
     }

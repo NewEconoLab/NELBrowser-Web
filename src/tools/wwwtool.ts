@@ -223,5 +223,13 @@ namespace WebBrowser
             var r = json["result"];
             return r;
         }
+        //search asset list
+        static async apiaggr_searchAsset(str: string) {
+            var str = WWW.makeUrl("fuzzysearchasset", WWW.apiaggr + locationtool.getNetWork(), str);
+            var result = await fetch(str, { "method": "get" });
+            var json = await result.json();
+            var r = json["result"];
+            return r;
+        }
     }
 }

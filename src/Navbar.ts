@@ -19,6 +19,8 @@ namespace WebBrowser
         searchBtn: HTMLButtonElement = document.getElementById( "searchBtn" ) as HTMLButtonElement;
         searchText: HTMLInputElement = document.getElementById("searchText") as HTMLInputElement;
         searchList: HTMLUListElement = document.getElementById("seach_list") as HTMLUListElement;
+        cpLock: boolean = false;
+        currentLine: number = 0;
 
         start()
         {
@@ -46,22 +48,38 @@ namespace WebBrowser
             {
                 this.jump();
             }
-            this.searchText.onkeydown = (e) => {
+            this.searchText.addEventListener('compositionstart', ()=> {
+                this.cpLock = true;
+            })
+            this.searchText.addEventListener('compositionend', () =>{
+                this.cpLock = false;
+                if (!this.cpLock) this.fuzzyseach();
+            })
+            this.searchText.addEventListener('input', () => {
+                if (!this.cpLock) this.fuzzyseach();
+            });
+            this.searchText.onkeydown = (e) =>
+            {
                 if (e.keyCode == 13) {
                     this.jump();
-                }
+                } else if (e.keyCode == 38) {
+                    this.changeItem();
+                    this.currentLine--;
+                } else if (e.keyCode == 40) {
+                    this.changeItem();
+                    this.currentLine++;
+                } 
             }
-            this.searchList.onclick = (ev) =>
+            this.searchList.onclick = (e) =>
             {
-                let event: Event = ev || window.event as Event;
+                let event: Event = e || window.event as Event;
                 let target: Element = event.target as Element || event.srcElement as Element;
-                console.log(typeof (target));
-                console.log(target);
                 if (target.nodeName.toLowerCase() == 'li') {
-                    alert(target.innerHTML);
                     this.searchText.value = target.innerHTML;
+                    let data = target.getAttribute("data");
+                    window.open(locationtool.getUrl() + '/asset/' + data);
                 }
-                this.searchList.style.display = "none";
+                $("#seach_list").empty();
             }
             this.walletBtn.onclick = () =>
             {
@@ -70,6 +88,14 @@ namespace WebBrowser
                 else
                     window.open( "https://wallet.nel.group/" );
             }
+            document.onclick = (ev) =>
+            {
+                let event: Event = ev || window.event as Event;
+                let target: Element = event.target as Element || event.srcElement as Element;
+                if (target.nodeName.toLowerCase() != 'li') {
+                    $("#seach_list").empty();
+                }
+            } 
         }
 
         skip(page: string)
@@ -79,6 +105,7 @@ namespace WebBrowser
         jump()
         {
             let search: string = this.searchText.value;
+            search = search.trim();
             if (search) {
                 if (search.length == 34) {
                     if (Neotool.verifyPublicKey(search)) {
@@ -95,7 +122,6 @@ namespace WebBrowser
                     return;
                 } else {
                     search = search.replace('0x', '');
-                    console.log("0xc56f33fc6ecfcd0c225c4ab356fee59390af8560be0e930faebe74a6daff7c9b".length)
                     if (search.length == 64) {
                         window.open(locationtool.getUrl() + '/transaction/' + search);
                     }
@@ -104,16 +130,15 @@ namespace WebBrowser
                     }
                     else if (!isNaN(Number(search))) {
                         window.open(locationtool.getUrl() + '/block/' + search);
-                    } 
-                    else {
-                        //if (this.searchText.value != '') {
-                        //    $("#errContent").text('The input is wrong, please reenter it');
-                        //    if (location.pathname == '/zh/') {
-                        //        $("#errContent").text('输入有误，请重新输入');
-                        //    }
-                        //    $('#errMsg').modal('show');
-                        //    return false;
-                        //}
+                    }
+                    else if (search.length > 64) {
+                        let length = this.searchList.children.length;
+                        if (length) {
+                            let data = this.searchList.children[this.currentLine-1].getAttribute("data");
+                            window.open(locationtool.getUrl() + '/asset/' + data);
+                            $("#seach_list").empty();
+                        }
+                    } else {
                         return false;
                     }
                 }
@@ -122,7 +147,37 @@ namespace WebBrowser
             }
             
         }
-
-        
+        async fuzzyseach() {
+            $("#seach_list").empty();
+            this.currentLine = 0;
+            let search: string = this.searchText.value;
+            if (search) {
+                let list = await WWW.apiaggr_searchAsset(search);
+                if (list) {
+                    let length = list.length;
+                    for (let i = 0; i < length;i++) { 
+                        let oLi = '<li data="' + list[i]["assetid"] + '">' + list[i]["name"] + '(' + list[i]["assetid"]+')' + '</li>';
+                        $("#seach_list").append(oLi);
+                    }
+                }
+            }
+        }
+        changeItem() { 
+            let length = this.searchList.children.length;
+            if (length) {
+                for (let i = 0; i < length; i++) {
+                    this.searchList.children[i].className = "";
+                }
+                if (this.currentLine < 0 || this.currentLine == 0) {
+                    this.currentLine = 0;
+                }
+                if (this.currentLine == length || this.currentLine > length) {
+                    this.currentLine = length-1;
+                }
+                //调试使用
+                this.searchList.children[this.currentLine].className = "active";
+                this.searchText.value = this.searchList.children[this.currentLine].innerHTML;
+            }
+        }
     }
 }
