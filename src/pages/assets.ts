@@ -155,9 +155,11 @@
             $( "#assets" ).empty();
             assets.forEach((asset: Asset) => {
                 let href = Url.href_asset(asset.id);
+                let assetId = asset.id.substring(2, 6) + '...' + asset.id.substring(asset.id.length - 4);
                 let html = `
                     <tr>
                     <td> <a href="`+ href + `" target="_self">` + CoinTool.assetID2name[asset.id] + `</a></td>
+                    <td> <a href="`+ href + `" target="_self">` + assetId + `</a></td>
                     <td>` + asset.type + `</td>
                     <td>` + (asset.amount <= 0 ? asset.available : asset.amount) + `</td>
                     <td>` + asset.precision + `</td>
@@ -170,10 +172,11 @@
             $("#assets").empty();
             nep5s.forEach((nep5s: nep5Asset) => {
                 let href = Url.href_nep5(nep5s.assetid);
-                let assetname = '(' + nep5s.assetid.substring(2, 5) + '...' + nep5s.assetid.substring(nep5s.assetid.length-3) + ')';
+                let assetId =  nep5s.assetid.substring(2, 6) + '...' + nep5s.assetid.substring(nep5s.assetid.length-4) ;
                 let html = `
                     <tr>
-                    <td> <a href="`+ href + `" target="_self">` + nep5s.name + assetname + `</a></td>
+                    <td> <a href="`+ href + `" target="_self">` + nep5s.name + `</a></td>
+                    <td> <a href="`+ href + `" target="_self">` + assetId + `</a></td>
                     <td> Nep5 </td>
                     <td>` + nep5s.totalsupply + `</td>
                     <td>` + nep5s.decimals + `</td>
