@@ -30,7 +30,8 @@ namespace WebBrowser
             this.pagelist.push( app.addresses );
             this.pagelist.push( app.address );
             this.pagelist.push( app.assets );
-            this.pagelist.push( app.assetinfo );
+            this.pagelist.push(app.assetinfo);
+            //this.pagelist.push(app.nnses);
 
 
             this.closePages();
@@ -67,6 +68,9 @@ namespace WebBrowser
                 case "assets":
                     this.app.navbar.assetBtn.classList.add( "active" );
                     return this.app.assets;
+                //case "nnsevent":
+                //    this.app.navbar.nnsBtn.classList.add("active");
+                //    return this.app.nnses;
                 case "asset":
                     this.app.navbar.assetBtn.classList.add( "active" );
                     return this.app.assetinfo;
@@ -89,7 +93,8 @@ namespace WebBrowser
                 this.app.navbar.blockBtn.classList.remove( "active" );
                 this.app.navbar.txlistBtn.classList.remove( "active" );
                 this.app.navbar.addrsBtn.classList.remove( "active" );
-                this.app.navbar.assetBtn.classList.remove( "active" );
+                this.app.navbar.assetBtn.classList.remove("active");
+                //this.app.navbar.nnsBtn.classList.remove("active");
             }
         }
     }

@@ -15,7 +15,7 @@ body {
 
 #searchText, #searchText:hover, #searchText:focus {
     border: 0;
-    width: 564px;
+    width: 470px;
 }
 
 #searchBtn {
@@ -23,7 +23,7 @@ body {
 }
 
 .input-append:hover #searchText, .input-append #searchText:hover, .input-append #searchText:focus {
-    width: 564px;
+    width: 470px;
     border-right: 0;
     outline: 0;
 }

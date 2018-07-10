@@ -2295,6 +2295,27 @@ var WebBrowser;
     }
     WebBrowser.Nep5page = Nep5page;
 })(WebBrowser || (WebBrowser = {}));
+var WebBrowser;
+(function (WebBrowser) {
+    //资产页面管理器
+    class NNSevents {
+        constructor() {
+            this.div = document.getElementById("asset-page");
+            this.footer = document.getElementById('footer-box');
+        }
+        close() {
+            this.div.hidden = true;
+            this.footer.hidden = true;
+        }
+        start() {
+            return __awaiter(this, void 0, void 0, function* () {
+                this.div.hidden = false;
+                this.footer.hidden = false;
+            });
+        }
+    }
+    WebBrowser.NNSevents = NNSevents;
+})(WebBrowser || (WebBrowser = {}));
 /// <reference path="../app.ts"/>
 var WebBrowser;
 /// <reference path="../app.ts"/>
@@ -2400,6 +2421,7 @@ var WebBrowser;
             this.pagelist.push(app.address);
             this.pagelist.push(app.assets);
             this.pagelist.push(app.assetinfo);
+            //this.pagelist.push(app.nnses);
             this.closePages();
             var page = this.render();
             page.start();
@@ -2431,6 +2453,9 @@ var WebBrowser;
                 case "assets":
                     this.app.navbar.assetBtn.classList.add("active");
                     return this.app.assets;
+                //case "nnsevent":
+                //    this.app.navbar.nnsBtn.classList.add("active");
+                //    return this.app.nnses;
                 case "asset":
                     this.app.navbar.assetBtn.classList.add("active");
                     return this.app.assetinfo;
@@ -2450,6 +2475,7 @@ var WebBrowser;
                 this.app.navbar.txlistBtn.classList.remove("active");
                 this.app.navbar.addrsBtn.classList.remove("active");
                 this.app.navbar.assetBtn.classList.remove("active");
+                //this.app.navbar.nnsBtn.classList.remove("active");
             }
         }
     }
@@ -3166,6 +3192,8 @@ var WebBrowser;
             this.asseta = document.getElementById("assetsa");
             this.walletBtn = document.getElementById("wallet-btn");
             this.walleta = document.getElementById("walleta");
+            //nnsBtn: HTMLLIElement = document.getElementById("nns-btn") as HTMLLIElement;
+            //nnsa: HTMLAnchorElement = document.getElementById("nnssa") as HTMLAnchorElement;
             this.searchBtn = document.getElementById("searchBtn");
             this.searchText = document.getElementById("searchText");
             this.searchList = document.getElementById("seach_list");
@@ -3186,8 +3214,13 @@ var WebBrowser;
                 this.skip("/addresses");
             };
             this.asseta.onclick = () => {
+                alert("bbb");
                 this.skip("/assets");
             };
+            //this.nnsa.onclick = () => {
+            //    alert("aaa")
+            //    this.skip("/nnsevent");
+            //}
             this.searchBtn.onclick = () => {
                 this.jump();
             };
@@ -3396,6 +3429,7 @@ var WebBrowser;
 /// <reference path="./pages/transactions.ts"/>
 /// <reference path="./pages/transaction.ts"/>
 /// <reference path="./pages/nep5.ts"/>
+/// <reference path="./pages/nnses.ts" />
 /// <reference path="./pages/404.ts"/>
 /// <reference path="./tools/locationtool.ts" />
 /// <reference path="./tools/numbertool.ts" />
@@ -3419,6 +3453,7 @@ var WebBrowser;
 /// <reference path="./pages/transactions.ts"/>
 /// <reference path="./pages/transaction.ts"/>
 /// <reference path="./pages/nep5.ts"/>
+/// <reference path="./pages/nnses.ts" />
 /// <reference path="./pages/404.ts"/>
 /// <reference path="./tools/locationtool.ts" />
 /// <reference path="./tools/numbertool.ts" />
@@ -3442,6 +3477,7 @@ var WebBrowser;
             this.assets = new WebBrowser.Assets();
             this.indexpage = new WebBrowser.Index();
             this.assetinfo = new WebBrowser.AssetInfo();
+            //nnses: NNSevents = new NNSevents();
             this.notfound = new WebBrowser.Notfound();
             this.nep5 = new WebBrowser.Nep5page();
             this.routet = new WebBrowser.Route();

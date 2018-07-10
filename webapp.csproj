@@ -112,6 +112,7 @@
     <TypeScriptCompile Include="src\pages\404.ts" />
     <TypeScriptCompile Include="src\pages\address.ts" />
     <TypeScriptCompile Include="src\pages\addresses.ts" />
+    <TypeScriptCompile Include="src\pages\nnses.ts" />
     <TypeScriptCompile Include="src\pages\nep5.ts" />
     <TypeScriptCompile Include="src\pages\asset.ts" />
     <TypeScriptCompile Include="src\pages\assets.ts" />

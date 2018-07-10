@@ -15,7 +15,9 @@ namespace WebBrowser
         assetBtn: HTMLLIElement = document.getElementById("asset-btn") as HTMLLIElement;
         asseta: HTMLAnchorElement = document.getElementById("assetsa") as HTMLAnchorElement;
         walletBtn: HTMLLIElement = document.getElementById("wallet-btn") as HTMLLIElement;
-        walleta: HTMLAnchorElement = document.getElementById( "walleta" ) as HTMLAnchorElement;
+        walleta: HTMLAnchorElement = document.getElementById("walleta") as HTMLAnchorElement;
+        //nnsBtn: HTMLLIElement = document.getElementById("nns-btn") as HTMLLIElement;
+        //nnsa: HTMLAnchorElement = document.getElementById("nnssa") as HTMLAnchorElement;
         searchBtn: HTMLButtonElement = document.getElementById( "searchBtn" ) as HTMLButtonElement;
         searchText: HTMLInputElement = document.getElementById("searchText") as HTMLInputElement;
         searchList: HTMLUListElement = document.getElementById("seach_list") as HTMLUListElement;
@@ -42,8 +44,13 @@ namespace WebBrowser
             }
             this.asseta.onclick = () =>
             {
+                alert("bbb")
                 this.skip("/assets");  
             }
+            //this.nnsa.onclick = () => {
+            //    alert("aaa")
+            //    this.skip("/nnsevent");
+            //}
             this.searchBtn.onclick = () =>
             {
                 this.jump();
