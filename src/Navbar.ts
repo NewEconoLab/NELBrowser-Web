@@ -44,11 +44,9 @@ namespace WebBrowser
             }
             this.asseta.onclick = () =>
             {
-                alert("bbb")
                 this.skip("/assets");  
             }
             //this.nnsa.onclick = () => {
-            //    alert("aaa")
             //    this.skip("/nnsevent");
             //}
             this.searchBtn.onclick = () =>

@@ -2300,7 +2300,7 @@ var WebBrowser;
     //资产页面管理器
     class NNSevents {
         constructor() {
-            this.div = document.getElementById("asset-page");
+            this.div = document.getElementById("nns-page");
             this.footer = document.getElementById('footer-box');
         }
         close() {
@@ -3214,11 +3214,9 @@ var WebBrowser;
                 this.skip("/addresses");
             };
             this.asseta.onclick = () => {
-                alert("bbb");
                 this.skip("/assets");
             };
             //this.nnsa.onclick = () => {
-            //    alert("aaa")
             //    this.skip("/nnsevent");
             //}
             this.searchBtn.onclick = () => {
