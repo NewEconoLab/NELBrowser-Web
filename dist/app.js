@@ -2425,6 +2425,10 @@ var WebBrowser;
                 this.getDomainRank();
                 this.gonnsBeing.href = WebBrowser.Url.href_nnsbeing();
                 this.gonnsRank.href = WebBrowser.Url.href_nnsrank();
+                if (WebBrowser.locationtool.getNetWork() == 'testnet')
+                    $("#searchPng").attr('src', '../../fonts/search.svg');
+                else
+                    $("#searchPng").attr('src', '../../img/search-main.png');
                 this.div.hidden = false;
                 this.footer.hidden = false;
             });

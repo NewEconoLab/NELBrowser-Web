@@ -35,6 +35,10 @@
             this.getDomainRank();
             this.gonnsBeing.href = Url.href_nnsbeing();
             this.gonnsRank.href = Url.href_nnsrank();
+            if (locationtool.getNetWork() == 'testnet')
+                $("#searchPng").attr('src', '../../fonts/search.svg');
+            else
+                $("#searchPng").attr('src', '../../img/search-main.png');
             this.div.hidden = false;
             this.footer.hidden = false;
         }
