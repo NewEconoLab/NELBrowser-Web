@@ -415,7 +415,7 @@ a:hover, a:focus {
 }
 .search-wrap {
     background: #fff;
-    box-shadow: 0 2px 5px 2px #ddd;
+    box-shadow: none;
 }
 .search-input {
     border-bottom: 1px solid #eee;
