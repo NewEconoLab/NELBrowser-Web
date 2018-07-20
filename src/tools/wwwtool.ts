@@ -231,5 +231,47 @@ namespace WebBrowser
             var r = json["result"];
             return r;
         }
+        /*NNS start*/
+        //nns统计
+        static async apiaggr_getstatistics() {
+            var str = WWW.makeUrl("getstatistics", WWW.apiaggr + locationtool.getNetWork());
+            var result = await fetch(str, { "method": "get" });
+            var json = await result.json();
+            var r = json["result"];
+            return r;
+        }
+        //查询domain竞拍情况
+        static async apiaggr_getdomaininfo(domainname: string) {
+            var str = WWW.makeUrl("getdomaininfo", WWW.apiaggr + locationtool.getNetWork(), domainname);
+            var result = await fetch(str, { "method": "get" });
+            var json = await result.json();
+            var r = json["result"];
+            return r;
+        }
+        //domain正在竞拍列表
+        static async apiaggr_getauctingdomain( page: number, pagesize: number) {
+            var str = WWW.makeUrl("getauctingdomain", WWW.apiaggr + locationtool.getNetWork(), page, pagesize);
+            var result = await fetch(str, { "method": "get" });
+            var json = await result.json();
+            var r = json["result"];
+            return r;
+        }
+        //domain竞拍价值排名列表
+        static async apiaggr_getaucteddomain( page: number, pagesize: number) {
+            var str = WWW.makeUrl("getaucteddomain", WWW.apiaggr + locationtool.getNetWork(), page, pagesize);
+            var result = await fetch(str, { "method": "get" });
+            var json = await result.json();
+            var r = json["result"];
+            return r;
+        }
+        //domain竞拍加价详情
+        static async apiaggr_getbiddetailbydomain(domain: string, page: number, pagesize: number) {
+            var str = WWW.makeUrl("getbiddetailbydomain", WWW.apiaggr + locationtool.getNetWork(), domain, page, pagesize);
+            var result = await fetch(str, { "method": "get" });
+            var json = await result.json();
+            var r = json["result"];
+            return r;
+        }
+        /*NNS end*/
     }
 }

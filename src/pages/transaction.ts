@@ -20,6 +20,9 @@ namespace WebBrowser
             this.updateTxInfo(locationtool.getParam());
             let href = locationtool.getUrl() + "/transactions";
             let html = '<a href="' + href + '" target="_self">&lt&lt&ltBack to all transactions</a>';
+            if (location.pathname == '/zh/') {
+                html = '<a href="' + href + '" target="_self">&lt&lt&lt返回</a>';
+            }
             $("#goalltrans").empty();
             $("#goalltrans").append(html);
             this.div.hidden = false;

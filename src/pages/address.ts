@@ -20,6 +20,9 @@ namespace WebBrowser
             var address = locationtool.getParam();
             let href = locationtool.getUrl() + "/addresses";
             let html = '<a href="' + href + '" target="_self">&lt&lt&ltBack to all addresses</a>';
+            if (location.pathname == '/zh/') {
+                html = '<a href="' + href + '" target="_self">&lt&lt&lt返回</a>';
+            }
             $("#goalladress").empty();
             $("#goalladress").append(html);
             var addrMsg = await WWW.api_getaddrMsg(address);
@@ -37,6 +40,9 @@ namespace WebBrowser
                 $("#created").text("-");
                 $("#totalTran").text("-");
                 let html = `<div class="line" style="text-align:center;padding:16px;font-size:16px;">There is no data</div>`;
+                if (location.pathname == '/zh/') {
+                    html = `<div class="line" style="text-align:center;padding:16px;font-size:16px;">没有数据</div>`;
+                }
                 $("#addr-trans").append(html);
             }
 
@@ -48,6 +54,9 @@ namespace WebBrowser
                 this.updateAddrUTXO(address, this.pageUtilUtxo)
             } else {
                 let html = `<tr><td colspan="3" >There is no data</td></tr>`;
+                if (location.pathname == '/zh/') {
+                    html = `<tr><td colspan="3" >没有数据</td></tr>`;
+                }
                 $("#add-utxos").append(html);
             }
             //this.loadUTXOView(utxos);
@@ -98,6 +107,9 @@ namespace WebBrowser
             }
             if (!balances && !nep5ofAddress) {
                 let html = `<div class="line"><div class="title-nel" style="width:100%;text-align:center;display: block;line-height: 56px;"><span>There is no data</span></div> </div>`;
+                if (location.pathname == '/zh/') {
+                    html = `<div class="line"><div class="title-nel" style="width:100%;text-align:center;display: block;line-height: 56px;"><span>没有数据</span></div> </div>`;
+                }
                 $("#balance").append(html);
             }
         }

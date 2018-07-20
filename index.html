@@ -73,9 +73,9 @@
                         <li id="wallet-btn">
                             <a id="walleta" target="_blank">Wallet</a>
                         </li>
-                        <!--<li id="nns-btn">
+                        <li id="nns-btn">
                             <a id="nnssa">NNS Event</a>
-                        </li>-->
+                        </li>
                     </ul>
                     <ul class="nav navbar-nav navbar-right">
                         <li>
@@ -98,7 +98,7 @@
                     </ul>
                     <div class="navbar-form navbar-right input-append">
                         <div class="input-group" id="nel-search">
-                            <input id="searchText" type="text" class="form-control nel" placeholder="Block Height , Hash , Address , or Transaction" autocomplete="off">
+                            <input id="searchText" type="text" class="form-control nel" placeholder="Block Height , Hash , Address , or Transaction id" autocomplete="off">
                             <span id="searchBtn" class="input-group-addon nel ">
                                 <img src="./fonts/search.svg" width="18" height="18" />
                             </span>
@@ -346,13 +346,162 @@
             </div>
         </div>
         <!--NNS竞拍页面-->
-        <!--<div id="nns-page">
-            <div class=" container-nel">
-                <div class="title">
-                    <span>正在更新中...</span>
+        <div id="nns-page" class="container-nel" hidden style="min-height: 619px;">
+            <div class="title">
+                <span>Summary</span>
+            </div>
+            <div class="row summary">
+                <div class="col-md-3 ">
+                    <div class="nblock">
+                        <div class="ncaption">
+                            <div class="summary-name">Coinpool</div>
+                            <div class="summary-number" id="coninpool">0 SGas</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 ">
+                    <div class="nblock">
+                        <div class="ncaption">
+                            <div class="summary-name">Accumulated dividends</div>
+                            <div class="summary-number" id="accumulated">0 SGas</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 ">
+                    <div class="nblock">
+                        <div class="ncaption">
+                            <div class="summary-name">Number of domain names in use</div>
+                            <div class="summary-number" id="useCount">0</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 ">
+                    <div class="nblock">
+                        <div class="ncaption">
+                            <div class="summary-name">Number of domain names being auctioned</div>
+                            <div class="summary-number" id="beingCount">0</div>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>-->
+            <div class="title">
+                <span>Domain name search</span>
+            </div>
+            <div class="search-wrap">
+                <div class="search-input">
+                    <input type="text" name="name" value="" placeholder="Search for domain name" id="inputDomain" autocomplete="off"/>
+                    <span id="searchDomain" class="search-icon">
+                        <img src="./fonts/search.svg" width="24" height="24" />
+                    </span>
+                </div>
+                <div class="search-list" id="searchBox">
+                    <div class="domain-name" id="domainMsg"></div>
+                    <div class="domain-info" id="domainInfo"></div>
+                </div>
+            </div>
+            <div class="title">
+                <span>Domain name being auctioned</span>
+            </div>
+            <table class="table table-nel cool">
+                <thead>
+                    <tr>
+                        <th>Domain name</th>
+                        <th>TXID</th>
+                        <th>Highest bid</th>
+                        <th>Bidder</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody id="domainBeingList"></tbody>
+                <tfoot id="domainBeing" class="t-foot">
+                    <tr> <th colspan="5"><a id="gonnsBeing" target="_self">View all&gt;&gt;&gt;</a></th></tr>
+                </tfoot>
+            </table>
+            <div class="title">
+                <span>Most valuable domain name rank</span>
+            </div>
+            <table class="table table-nel cool">
+                <thead>
+                    <tr>
+                        <th>Rank</th>
+                        <th>Domain name</th>
+                        <th>TXID</th>
+                        <th>Hammer price</th>
+                        <th>Buyer</th>
+                        <th>Expire date</th>
+                    </tr>
+                </thead>
+                <tbody id="domainUseList"></tbody>
+                <tfoot id="domainUse" class="t-foot">
+                    <tr> <th colspan="6"><a id="gonnsRank" target="_self">View all&gt;&gt;&gt;</a></th></tr>
+                </tfoot>
+            </table>
+        </div>
+        <!--域名正在竞拍页面-->
+        <div id="nnsbeing-page" class="container-nel" hidden style="min-height:619px;">
+            <div class="title">
+                <span>Domain name being auctioned</span>
+            </div>
+            <table class="table table-nel cool">
+                <thead>
+                    <tr>
+                        <th>Domain name</th>
+                        <th>TXID</th>
+                        <th>Highest bid</th>
+                        <th>Bidder</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody id="domainBeingListPage"></tbody>
+            </table>
+            <div id="nnsbeing-wrap">
+                <div class="page-number">
+                    <span id="nnsbeing-page-msg"></span>
+                </div>
+                <div class="page">
+                    <div id="nnsbeing-page-previous" class="page-previous">
+                        <img src="./img/lefttrangle.svg" alt="">
+                    </div>
+                    <div style="width:1px;"></div>
+                    <div id="nnsbeing-page-next" class="page-next">
+                        <img src="./img/righttrangle.svg" alt="">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--域名竞拍排行页面-->
+        <div id="nnsrank-page" class="container-nel" hidden style="min-height:619px;">
+            <div class="title">
+                <span>Most valuable domain name rank</span>
+            </div>
+            <table class="table table-nel cool">
+                <thead>
+                    <tr>
+                        <th>Rank</th>
+                        <th>Domain name</th>
+                        <th>TXID</th>
+                        <th>Hammer price</th>
+                        <th>Buyer</th>
+                        <th>Expire date</th>
+                    </tr>
+                </thead>
+                <tbody id="domainUseListPage"></tbody>
+            </table>
+            <div id="nnsrank-wrap">
+                <div class="page-number">
+                    <span id="nnsrank-page-msg"></span>
+                </div>
+                <div class="page">
+                    <div id="nnsrank-page-previous" class="page-previous">
+                        <img src="./img/lefttrangle.svg" alt="">
+                    </div>
+                    <div style="width:1px;"></div>
+                    <div id="nnsrank-page-next" class="page-next">
+                        <img src="./img/righttrangle.svg" alt="">
+                    </div>
+                </div>
+            </div>
+        </div>
         <!--区块详情-->
         <div id="block-info" style="min-height: 619px;">
             <div class="title">
@@ -624,6 +773,46 @@
                     </thead>
                     <tbody id="txidnep5"></tbody>
                 </table>
+            </div>
+        </div>
+        <!--域名详情-->
+        <div id="domain-info" style="min-height: 619px;">
+            <div class="title">
+                <span>Domain name information</span>
+                <div class="go-back" id="goBackDomain"></div>
+            </div>
+            <div class="list-nel">
+                <div class="list-body" id="domaininfo-msg">
+                </div>
+            </div>
+            <div class="title">
+                <span>Auction information</span>
+            </div>
+            <table class="table table-nel cool">
+                <thead>
+                    <tr>
+                        <th>TXID</th>
+                        <th>Highest bid</th>
+                        <th>Raise bid</th>
+                        <th>Bidder</th>
+                        <th>Time</th>
+                    </tr>
+                </thead>
+                <tbody id="auctionInfo"></tbody>
+            </table>
+            <div id="domainHistory-page">
+                <div class="page-number">
+                    <span id="domainHistory-msg"></span>
+                </div>
+                <div class="page">
+                    <div id="domainHistory-previous" class="page-previous">
+                        <img src="./img/lefttrangle.svg" alt="">
+                    </div>
+                    <div style="width:1px;"></div>
+                    <div id="domainHistory-next" class="page-next">
+                        <img src="./img/righttrangle.svg" alt="">
+                    </div>
+                </div>
             </div>
         </div>
         <!-- wallet -->

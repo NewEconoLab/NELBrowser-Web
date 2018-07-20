@@ -13,6 +13,9 @@
 /// <reference path="./pages/transaction.ts"/>
 /// <reference path="./pages/nep5.ts"/>
 /// <reference path="./pages/nnses.ts" />
+/// <reference path="./pages/nnsbeing.ts" />
+/// <reference path="./pages/nnsrank.ts" />
+/// <reference path="./pages/nnsinfo.ts" />
 /// <reference path="./pages/404.ts"/>
 /// <reference path="./tools/locationtool.ts" />
 /// <reference path="./tools/numbertool.ts" />
@@ -39,7 +42,10 @@ namespace WebBrowser
         assets: Assets = new Assets();
         indexpage: Index = new Index();
         assetinfo: AssetInfo = new AssetInfo();
-        //nnses: NNSevents = new NNSevents();
+        nnses: NNSevents = new NNSevents();
+        nnsbeing: NNSAuction = new NNSAuction();
+        nnsrank: NNSRank = new NNSRank();
+        nnsinfo: NNSInfo = new NNSInfo();
         notfound: Notfound = new Notfound();
         nep5: Nep5page = new Nep5page();
         routet: Route = new Route();

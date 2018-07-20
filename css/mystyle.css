@@ -117,6 +117,7 @@ body {
     padding: 40px;
 }
 
+
 .table-nel {
     border-radius: 5px 5px 5px 5px;
 }
@@ -264,7 +265,7 @@ body {
 }
 
 .list-body > .line > .title-nel {
-    width: 165px;
+    width: 170px;
 }
 
 .list-head>.line .title-nel>span,
@@ -418,7 +419,101 @@ body {
     text-overflow: ellipsis;
     white-space: nowrap;
 }
+/*NNS Page start*/
+.ncaption {
+    text-align: center;
+    padding-top: 80px;
+}
 
+.summary-name {
+    height: 40px;
+    font-size: 14px;
+    margin-bottom: 7px;
+}
+.search-wrap {
+    padding: 50px 90px;
+    border-radius: 5px;
+}
+
+.search-input input {
+    border: none;
+    background: none;
+    text-align: center;
+    padding: 10px;
+    width: 90%;
+    outline: none;
+    ime-mode: disabled;
+}
+/*.search-icon{
+    border:1px solid red;
+    color:#333;
+}*/
+.search-input input::placeholder {
+    color: #B2B2B2;
+}
+.search-list{
+    margin-top:70px;
+    color:#fff;
+    padding:0 30px;
+    
+}
+.search-list .domain-name {
+    font-size: 20px;
+    text-align: center;
+    line-height: 20px;
+}
+.search-icon{
+    cursor:pointer;
+    display:inline-block;
+}
+.domain-name{
+    font-size:20px;
+    font-weight:600;
+}
+.domain-info {
+    margin-top: 20px;
+}
+.domain-info .list-line {
+    /*height:40px;*/
+    padding:13px 30px;
+}
+.domain-info .list-line:nth-of-type(odd) {
+    background: #505F79;
+}
+.domain-info .list-line:nth-of-type(even) {
+    background: #454F60;
+}
+.domain-info .list-line .line-title {
+    width: 20%;
+    display: inline-block;
+}
+.line-content {
+    display: inline-block;
+}
+.line-href {
+    color: #2DDE4F;
+}
+#domainBeingList tr td a,
+#domainUseList tr td a,
+#domainBeingListPage tr td a,
+#domainUseListPage tr td a,
+#auctionInfo tr td a {
+    display: inline-block;
+    max-width: 300px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.t-foot tr th {
+    text-align: center;
+    height: 30px;
+    line-height:30px !important;
+}
+#gonnsRank:hover, #gonnsBeing:hover {
+    color: #4DADFF;
+}
+
+/*NNS Page end*/
 /*footer start*/
 .footer-box {
     height: 200px;

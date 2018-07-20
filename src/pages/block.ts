@@ -1,4 +1,4 @@
-namespace WebBrowser
+﻿namespace WebBrowser
 {
     export class Block implements Page
     {
@@ -18,6 +18,9 @@ namespace WebBrowser
             this.queryBlock(locationtool.getParam() as number);
             let href = locationtool.getUrl() + "/blocks";
             let html = '<a href="' + href + '" target="_self">&lt&lt&ltBack to all blocks</a>';
+            if (location.pathname == '/zh/') {
+                html = '<a href="' + href + '" target="_self">&lt&lt&lt返回</a>';
+            }
             $("#goallblock").empty();
             $("#goallblock").append(html);
 

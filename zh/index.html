@@ -73,9 +73,9 @@
                         <li id="wallet-btn">
                             <a id="walleta" target="_blank">钱包</a>
                         </li>
-                        <!--<li id="nns-btn">
-                            <a id="nnssa">NNS Event</a>
-                        </li>-->
+                        <li id="nns-btn">
+                            <a id="nnssa">NNS 项目</a>
+                        </li>
                     </ul>
                     <ul class="nav navbar-nav navbar-right">
                         <li>
@@ -342,6 +342,163 @@
                 <div style="width:1px;"></div>
                 <div id="addrs-page-next" class="page-next">
                     <img src="../img/righttrangle.svg" alt="">
+                </div>
+            </div>
+        </div>
+        <!--NNS竞拍页面-->
+        <div id="nns-page" class="container-nel" hidden style="min-height: 619px;">
+            <div class="title">
+                <span>统计</span>
+            </div>
+            <div class="row summary">
+                <div class="col-md-3 ">
+                    <div class="nblock">
+                        <div class="ncaption">
+                            <div class="summary-name">奖金池</div>
+                            <div class="summary-number" id="coninpool">0 SGas</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 ">
+                    <div class="nblock">
+                        <div class="ncaption">
+                            <div class="summary-name">累计利息</div>
+                            <div class="summary-number" id="accumulated">0 SGas</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 ">
+                    <div class="nblock">
+                        <div class="ncaption">
+                            <div class="summary-name">已使用的域名数量</div>
+                            <div class="summary-number" id="useCount">0</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3 ">
+                    <div class="nblock">
+                        <div class="ncaption">
+                            <div class="summary-name">正在竞拍的域名数量</div>
+                            <div class="summary-number" id="beingCount">0</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="title">
+                <span>域名查询</span>
+            </div>
+            <div class="search-wrap">
+                <div class="search-input">
+                    <input type="text" name="name" value="" placeholder="请输入您想查询的域名" id="inputDomain" autocomplete="off" />
+                    <span id="searchDomain" class="search-icon">
+                        <img src="../fonts/search.svg" width="24" height="24" />
+                    </span>
+                </div>
+                <div class="search-list" id="searchBox">
+                    <div class="domain-name" id="domainMsg"></div>
+                    <div class="domain-info" id="domainInfo"></div>
+                </div>
+            </div>
+            <div class="title">
+                <span>正在竞拍的域名</span>
+            </div>
+            <table class="table table-nel cool">
+                <thead>
+                    <tr>
+                        <th>域名</th>
+                        <th>交易ID</th>
+                        <th>当前最高价</th>
+                        <th>竞标人</th>
+                        <th>状态</th>
+                    </tr>
+                </thead>
+                <tbody id="domainBeingList"></tbody>
+                <tfoot id="domainBeing" class="t-foot">
+                    <tr> <th colspan="5"><a id="gonnsBeing" target="_self">浏览全部&gt;&gt;&gt;</a></th></tr>
+                </tfoot>
+            </table>
+            <div class="title">
+                <span>最具价值域名排行</span>
+            </div>
+            <table class="table table-nel cool">
+                <thead>
+                    <tr>
+                        <th>排名</th>
+                        <th>域名</th>
+                        <th>交易ID</th>
+                        <th>成交价</th>
+                        <th>中标人</th>
+                        <th>域名过期时间</th>
+                    </tr>
+                </thead>
+                <tbody id="domainUseList"></tbody>
+                <tfoot id="domainUse" class="t-foot">
+                    <tr> <th colspan="6"><a id="gonnsRank" target="_self">浏览全部&gt;&gt;&gt;</a></th></tr>
+                </tfoot>
+            </table>
+        </div>
+        <!--域名正在竞拍页面-->
+        <div id="nnsbeing-page" class="container-nel" hidden style="min-height:619px;">
+            <div class="title">
+                <span>正在竞拍的域名</span>
+            </div>
+            <table class="table table-nel cool">
+                <thead>
+                    <tr>
+                        <th>域名</th>
+                        <th>交易ID</th>
+                        <th>当前最高价</th>
+                        <th>竞标人</th>
+                        <th>状态</th>
+                    </tr>
+                </thead>
+                <tbody id="domainBeingListPage"></tbody>
+            </table>
+            <div id="nnsbeing-wrap">
+                <div class="page-number">
+                    <span id="nnsbeing-page-msg"></span>
+                </div>
+                <div class="page">
+                    <div id="nnsbeing-page-previous" class="page-previous">
+                        <img src="../img/lefttrangle.svg" alt="">
+                    </div>
+                    <div style="width:1px;"></div>
+                    <div id="nnsbeing-page-next" class="page-next">
+                        <img src="../img/righttrangle.svg" alt="">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--域名竞拍排行页面-->
+        <div id="nnsrank-page" class="container-nel" hidden style="min-height:619px;">
+            <div class="title">
+                <span>最具价值域名排行</span>
+            </div>
+            <table class="table table-nel cool">
+                <thead>
+                    <tr>
+                        <th>排名</th>
+                        <th>域名</th>
+                        <th>交易ID</th>
+                        <th>成交价</th>
+                        <th>中标人</th>
+                        <th>域名过期时间</th>
+                    </tr>
+                </thead>
+                <tbody id="domainUseListPage"></tbody>
+            </table>
+            <div id="nnsrank-wrap">
+                <div class="page-number">
+                    <span id="nnsrank-page-msg"></span>
+                </div>
+                <div class="page">
+                    <div id="nnsrank-page-previous" class="page-previous">
+                        <img src="../img/lefttrangle.svg" alt="">
+                    </div>
+                    <div style="width:1px;"></div>
+                    <div id="nnsrank-page-next" class="page-next">
+                        <img src="../img/righttrangle.svg" alt="">
+                    </div>
                 </div>
             </div>
         </div>
@@ -616,6 +773,46 @@
                     </thead>
                     <tbody id="txidnep5"></tbody>
                 </table>
+            </div>
+        </div>
+        <!--域名详情-->
+        <div id="domain-info" style="min-height: 619px;">
+            <div class="title">
+                <span>Domain name information</span>
+                <div class="go-back" id="goBackDomain"></div>
+            </div>
+            <div class="list-nel">
+                <div class="list-body" id="domaininfo-msg">
+                </div>
+            </div>
+            <div class="title">
+                <span>Auction information</span>
+            </div>
+            <table class="table table-nel cool">
+                <thead>
+                    <tr>
+                        <th>交易ID</th>
+                        <th>当前最高价</th>
+                        <th>本次加价</th>
+                        <th>竞标人</th>
+                        <th>加价时间</th>
+                    </tr>
+                </thead>
+                <tbody id="auctionInfo"></tbody>
+            </table>
+            <div id="domainHistory-page">
+                <div class="page-number">
+                    <span id="domainHistory-msg"></span>
+                </div>
+                <div class="page">
+                    <div id="domainHistory-previous" class="page-previous">
+                        <img src="../img/lefttrangle.svg" alt="">
+                    </div>
+                    <div style="width:1px;"></div>
+                    <div id="domainHistory-next" class="page-next">
+                        <img src="../img/righttrangle.svg" alt="">
+                    </div>
+                </div>
             </div>
         </div>
         <!-- wallet -->

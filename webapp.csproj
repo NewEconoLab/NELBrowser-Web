@@ -111,6 +111,9 @@
     <TypeScriptCompile Include="lib\neo-ts.d.ts" />
     <TypeScriptCompile Include="src\pages\404.ts" />
     <TypeScriptCompile Include="src\pages\address.ts" />
+    <TypeScriptCompile Include="src\pages\nnsinfo.ts" />
+    <TypeScriptCompile Include="src\pages\nnsrank.ts" />
+    <TypeScriptCompile Include="src\pages\nnsbeing.ts" />
     <TypeScriptCompile Include="src\pages\addresses.ts" />
     <TypeScriptCompile Include="src\pages\nnses.ts" />
     <TypeScriptCompile Include="src\pages\nep5.ts" />

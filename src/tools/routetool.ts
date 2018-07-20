@@ -31,8 +31,10 @@ namespace WebBrowser
             this.pagelist.push( app.address );
             this.pagelist.push( app.assets );
             this.pagelist.push(app.assetinfo);
-            //this.pagelist.push(app.nnses);
-
+            this.pagelist.push(app.nnses);
+            this.pagelist.push(app.nnsbeing);
+            this.pagelist.push(app.nnsrank);
+            this.pagelist.push(app.nnsinfo);
 
             this.closePages();
             var page = this.render();
@@ -68,9 +70,18 @@ namespace WebBrowser
                 case "assets":
                     this.app.navbar.assetBtn.classList.add( "active" );
                     return this.app.assets;
-                //case "nnsevent":
-                //    this.app.navbar.nnsBtn.classList.add("active");
-                //    return this.app.nnses;
+                case "nnsevent":
+                    this.app.navbar.nnsBtn.classList.add("active");
+                    return this.app.nnses;
+                case "nnsauction":
+                    this.app.navbar.nnsBtn.classList.add("active");
+                    return this.app.nnsbeing;
+                case "nnsrank":
+                    this.app.navbar.nnsBtn.classList.add("active");
+                    return this.app.nnsrank;
+                case "nns":
+                    this.app.navbar.nnsBtn.classList.add("active");
+                    return this.app.nnsinfo;
                 case "asset":
                     this.app.navbar.assetBtn.classList.add( "active" );
                     return this.app.assetinfo;
@@ -94,7 +105,7 @@ namespace WebBrowser
                 this.app.navbar.txlistBtn.classList.remove( "active" );
                 this.app.navbar.addrsBtn.classList.remove( "active" );
                 this.app.navbar.assetBtn.classList.remove("active");
-                //this.app.navbar.nnsBtn.classList.remove("active");
+                this.app.navbar.nnsBtn.classList.remove("active");
             }
         }
     }

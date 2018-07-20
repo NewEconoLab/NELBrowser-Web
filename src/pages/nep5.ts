@@ -20,6 +20,9 @@ namespace WebBrowser
             var nep5id = locationtool.getParam();
             let href = locationtool.getUrl() + "/assets";
             let html = '<a href="' + href + '" target="_self">&lt&lt&ltBack to all assets</a>';
+            if (location.pathname == '/zh/') {
+                html = '<a href="' + href + '" target="_self">&lt&lt&lt返回</a>';
+            }
             $("#goallasset").empty();
             $("#goallasset").append(html);
             this.loadNep5InfoView(nep5id);
@@ -114,6 +117,9 @@ namespace WebBrowser
             else
             {
                 let html = `<tr><td colspan="3" >There is no data</td></tr>`;
+                if (location.pathname == '/zh/') {
+                    html = `<tr><td colspan="3" >没有数据</td></tr>`;
+                }
                 $("#assets-balance-list").append(html);
                 if (pageUtil.currentPage == 1) {
                     $(".asset-balance-page").hide();
@@ -165,6 +171,9 @@ namespace WebBrowser
                 })
             } else {
                 let html = `<tr><td colspan="4" >There is no data</td></tr>`;
+                if (location.pathname == '/zh/') {
+                    html = `<tr><td colspan="4" >没有数据</td></tr>`;
+                }
                 $("#assets-tran-list").append(html);
                 if (pageUtil.currentPage == 1) {
                     $(".asset-tran-page").hide();

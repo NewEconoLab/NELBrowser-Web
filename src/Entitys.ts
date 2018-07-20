@@ -116,6 +116,9 @@ namespace WebBrowser
         {
             return locationtool.getUrl() +  '/assets'
         }
+        static href_nnsevent() {
+            return locationtool.getUrl() + '/nnsevent'
+        }
         static href_block( block: number )
         {
             return locationtool.getUrl() +  "/block/" + block;
@@ -134,6 +137,15 @@ namespace WebBrowser
         }
         static href_nep5(nep5) {
             return locationtool.getUrl() + '/nep5/' + nep5
+        }
+        static href_nnsbeing() {
+            return locationtool.getUrl() + '/nnsauction/'
+        }
+        static href_nnsrank() {
+            return locationtool.getUrl() + '/nnsrank/'
+        }
+        static href_nns(domain) {
+            return locationtool.getUrl() + '/nns/' + domain
         }
     }
 
@@ -300,6 +312,51 @@ namespace WebBrowser
         to: string;
         txid: string;
         value: number;
+    }
+
+    export interface DomainBided
+    {
+        count: number;
+        list: {
+            fulldomain: string;
+            txid: string;
+            maxBuyer: string;
+            maxPrice: string;
+            range: number;
+            ttl: string;
+        }[];
+    }
+    export interface DomainBiding {
+        count: number;
+        list: {
+            fulldomain: string;
+            txid: string;
+            maxBuyer: string;
+            maxPrice: string;
+            auctionState: string;
+        }[];
+    }
+    export interface DomainInfo {
+        auctionState: string;
+        blockindex: string;
+        domain: string;
+        endBlockTime: string;
+        maxBuyer: string;
+        maxPrice: string;
+        startAuctionTime: string;
+        ttl: string;
+        txid: string;
+    }
+    export interface DomainInfoHistory {
+        count: number;
+        list: {
+            maxPrice: string;
+            maxBuyer: string;
+            addPriceTime: number;
+            txid: string;
+            bidder: string;
+            raisebid: number;
+        }[];
     }
 
     export interface result

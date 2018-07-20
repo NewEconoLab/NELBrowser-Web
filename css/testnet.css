@@ -430,6 +430,42 @@ table>tbody>tr {
 .title .go-back {
     color: #2DDE4F;
 }
+/*NNS Page start*/
+.summary .nblock {
+    height: 200px;
+    background-color: #454F60;
+    font-family: PingFangSC-Medium;
+    font-size: 20px;
+    color: #fff;
+    line-height: 20px;
+    position: relative;
+    border-radius: 5px;
+}
+.search-wrap {
+    background: #454F60;
+    box-shadow: 0 2px 5px 2px #151A24;
+}
+.search-input {
+    border-bottom: 1px solid #fff;
+}
+.search-input input {
+    color: #fff;
+}
+.t-foot tr th {
+    color: #fff;
+    background: #505F79;
+}
+#gonnsRank, #gonnsBeing {
+    color: #fff;
+}
+#domainBeingList tr td a,
+#domainUseList tr td a,
+#domainBeingListPage tr td a,
+#domainUseListPage tr td a,
+#auctionInfo tr td a {
+    color: #2DDE4F !important;
+}
+/*NNS Page end*/
 
 /*footer start*/
 .footer-box {

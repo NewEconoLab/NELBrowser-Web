@@ -22,6 +22,9 @@ var WebBrowser;
             this.queryBlock(WebBrowser.locationtool.getParam());
             let href = WebBrowser.locationtool.getUrl() + "/blocks";
             let html = '<a href="' + href + '" target="_self">&lt&lt&ltBack to all blocks</a>';
+            if (location.pathname == '/zh/') {
+                html = '<a href="' + href + '" target="_self">&lt&lt&lt返回</a>';
+            }
             $("#goallblock").empty();
             $("#goallblock").append(html);
             $("#block-tran-next").off("click").click(() => {
@@ -461,6 +464,57 @@ var WebBrowser;
             });
             var str;
         }
+        /*NNS start*/
+        //nns统计
+        static apiaggr_getstatistics() {
+            return __awaiter(this, void 0, void 0, function* () {
+                var str = WWW.makeUrl("getstatistics", WWW.apiaggr + WebBrowser.locationtool.getNetWork());
+                var result = yield fetch(str, { "method": "get" });
+                var json = yield result.json();
+                var r = json["result"];
+                return r;
+            });
+        }
+        //查询domain竞拍情况
+        static apiaggr_getdomaininfo(domainname) {
+            return __awaiter(this, void 0, void 0, function* () {
+                var str = WWW.makeUrl("getdomaininfo", WWW.apiaggr + WebBrowser.locationtool.getNetWork(), domainname);
+                var result = yield fetch(str, { "method": "get" });
+                var json = yield result.json();
+                var r = json["result"];
+                return r;
+            });
+        }
+        //domain正在竞拍列表
+        static apiaggr_getauctingdomain(page, pagesize) {
+            return __awaiter(this, void 0, void 0, function* () {
+                var str = WWW.makeUrl("getauctingdomain", WWW.apiaggr + WebBrowser.locationtool.getNetWork(), page, pagesize);
+                var result = yield fetch(str, { "method": "get" });
+                var json = yield result.json();
+                var r = json["result"];
+                return r;
+            });
+        }
+        //domain竞拍价值排名列表
+        static apiaggr_getaucteddomain(page, pagesize) {
+            return __awaiter(this, void 0, void 0, function* () {
+                var str = WWW.makeUrl("getaucteddomain", WWW.apiaggr + WebBrowser.locationtool.getNetWork(), page, pagesize);
+                var result = yield fetch(str, { "method": "get" });
+                var json = yield result.json();
+                var r = json["result"];
+                return r;
+            });
+        }
+        //domain竞拍加价详情
+        static apiaggr_getbiddetailbydomain(domain, page, pagesize) {
+            return __awaiter(this, void 0, void 0, function* () {
+                var str = WWW.makeUrl("getbiddetailbydomain", WWW.apiaggr + WebBrowser.locationtool.getNetWork(), domain, page, pagesize);
+                var result = yield fetch(str, { "method": "get" });
+                var json = yield result.json();
+                var r = json["result"];
+                return r;
+            });
+        }
     }
     WWW.api = "https://api.nel.group/api/";
     WWW.apiaggr = "https://apiaggr.nel.group/api/";
@@ -602,6 +656,9 @@ var WebBrowser;
                 var address = WebBrowser.locationtool.getParam();
                 let href = WebBrowser.locationtool.getUrl() + "/addresses";
                 let html = '<a href="' + href + '" target="_self">&lt&lt&ltBack to all addresses</a>';
+                if (location.pathname == '/zh/') {
+                    html = '<a href="' + href + '" target="_self">&lt&lt&lt返回</a>';
+                }
                 $("#goalladress").empty();
                 $("#goalladress").append(html);
                 var addrMsg = yield WebBrowser.WWW.api_getaddrMsg(address);
@@ -619,6 +676,9 @@ var WebBrowser;
                     $("#created").text("-");
                     $("#totalTran").text("-");
                     let html = `<div class="line" style="text-align:center;padding:16px;font-size:16px;">There is no data</div>`;
+                    if (location.pathname == '/zh/') {
+                        html = `<div class="line" style="text-align:center;padding:16px;font-size:16px;">没有数据</div>`;
+                    }
                     $("#addr-trans").append(html);
                 }
                 this.loadView(balances, nep5ofAddress);
@@ -629,6 +689,9 @@ var WebBrowser;
                 }
                 else {
                     let html = `<tr><td colspan="3" >There is no data</td></tr>`;
+                    if (location.pathname == '/zh/') {
+                        html = `<tr><td colspan="3" >没有数据</td></tr>`;
+                    }
                     $("#add-utxos").append(html);
                 }
                 //this.loadUTXOView(utxos);
@@ -670,6 +733,9 @@ var WebBrowser;
             }
             if (!balances && !nep5ofAddress) {
                 let html = `<div class="line"><div class="title-nel" style="width:100%;text-align:center;display: block;line-height: 56px;"><span>There is no data</span></div> </div>`;
+                if (location.pathname == '/zh/') {
+                    html = `<div class="line"><div class="title-nel" style="width:100%;text-align:center;display: block;line-height: 56px;"><span>没有数据</span></div> </div>`;
+                }
                 $("#balance").append(html);
             }
         }
@@ -1027,6 +1093,9 @@ var WebBrowser;
                 var assetid = WebBrowser.locationtool.getParam();
                 let href = WebBrowser.locationtool.getUrl() + "/assets";
                 let html = '<a href="' + href + '" target="_self">&lt&lt&ltBack to all assets</a>';
+                if (location.pathname == '/zh/') {
+                    html = '<a href="' + href + '" target="_self">&lt&lt&lt返回</a>';
+                }
                 $("#goallasset").empty();
                 $("#goallasset").append(html);
                 this.loadAssetInfoView(assetid);
@@ -1097,6 +1166,9 @@ var WebBrowser;
                 }
                 else {
                     let html = `<tr><td colspan="3" >There is no data</td></tr>`;
+                    if (location.pathname == '/zh/') {
+                        html = `<tr><td colspan="3" >没有数据</td></tr>`;
+                    }
                     $("#assets-balance-list").append(html);
                     if (pageUtil.currentPage == 1) {
                         $(".asset-balance-page").hide();
@@ -1353,6 +1425,9 @@ var WebBrowser;
             this.updateTxInfo(WebBrowser.locationtool.getParam());
             let href = WebBrowser.locationtool.getUrl() + "/transactions";
             let html = '<a href="' + href + '" target="_self">&lt&lt&ltBack to all transactions</a>';
+            if (location.pathname == '/zh/') {
+                html = '<a href="' + href + '" target="_self">&lt&lt&lt返回</a>';
+            }
             $("#goalltrans").empty();
             $("#goalltrans").append(html);
             this.div.hidden = false;
@@ -1847,6 +1922,9 @@ var WebBrowser;
         static href_assets() {
             return WebBrowser.locationtool.getUrl() + '/assets';
         }
+        static href_nnsevent() {
+            return WebBrowser.locationtool.getUrl() + '/nnsevent';
+        }
         static href_block(block) {
             return WebBrowser.locationtool.getUrl() + "/block/" + block;
         }
@@ -1861,6 +1939,15 @@ var WebBrowser;
         }
         static href_nep5(nep5) {
             return WebBrowser.locationtool.getUrl() + '/nep5/' + nep5;
+        }
+        static href_nnsbeing() {
+            return WebBrowser.locationtool.getUrl() + '/nnsauction/';
+        }
+        static href_nnsrank() {
+            return WebBrowser.locationtool.getUrl() + '/nnsrank/';
+        }
+        static href_nns(domain) {
+            return WebBrowser.locationtool.getUrl() + '/nns/' + domain;
         }
     }
     WebBrowser.Url = Url;
@@ -2088,6 +2175,9 @@ var WebBrowser;
                 var nep5id = WebBrowser.locationtool.getParam();
                 let href = WebBrowser.locationtool.getUrl() + "/assets";
                 let html = '<a href="' + href + '" target="_self">&lt&lt&ltBack to all assets</a>';
+                if (location.pathname == '/zh/') {
+                    html = '<a href="' + href + '" target="_self">&lt&lt&lt返回</a>';
+                }
                 $("#goallasset").empty();
                 $("#goallasset").append(html);
                 this.loadNep5InfoView(nep5id);
@@ -2178,6 +2268,9 @@ var WebBrowser;
                 }
                 else {
                     let html = `<tr><td colspan="3" >There is no data</td></tr>`;
+                    if (location.pathname == '/zh/') {
+                        html = `<tr><td colspan="3" >没有数据</td></tr>`;
+                    }
                     $("#assets-balance-list").append(html);
                     if (pageUtil.currentPage == 1) {
                         $(".asset-balance-page").hide();
@@ -2232,6 +2325,9 @@ var WebBrowser;
                 }
                 else {
                     let html = `<tr><td colspan="4" >There is no data</td></tr>`;
+                    if (location.pathname == '/zh/') {
+                        html = `<tr><td colspan="4" >没有数据</td></tr>`;
+                    }
                     $("#assets-tran-list").append(html);
                     if (pageUtil.currentPage == 1) {
                         $(".asset-tran-page").hide();
@@ -2302,6 +2398,19 @@ var WebBrowser;
         constructor() {
             this.div = document.getElementById("nns-page");
             this.footer = document.getElementById('footer-box');
+            this.gonnsBeing = document.getElementById("gonnsBeing");
+            this.gonnsRank = document.getElementById("gonnsRank");
+            let self = this;
+            $("#inputDomain").on("keydown", function (e) {
+                let domainname = $("#inputDomain").val();
+                if (e.keyCode == 13) {
+                    self.seachDomainInfo(domainname);
+                }
+            });
+            $("#searchDomain").on("click", function () {
+                let domainname = $("#inputDomain").val();
+                self.seachDomainInfo(domainname);
+            });
         }
         close() {
             this.div.hidden = true;
@@ -2309,12 +2418,855 @@ var WebBrowser;
         }
         start() {
             return __awaiter(this, void 0, void 0, function* () {
+                $("#inputDomain").val();
+                $("#searchBox").hide();
+                this.getStatistics();
+                this.getDomainList();
+                this.getDomainRank();
+                this.gonnsBeing.href = WebBrowser.Url.href_nnsbeing();
+                this.gonnsRank.href = WebBrowser.Url.href_nnsrank();
                 this.div.hidden = false;
                 this.footer.hidden = false;
             });
         }
+        //获取统计
+        getStatistics() {
+            return __awaiter(this, void 0, void 0, function* () {
+                let res = yield WebBrowser.WWW.apiaggr_getstatistics();
+                if (res) {
+                    $("#coninpool").html(res[0].bonus + " SGas");
+                    $("#accumulated").html(res[0].profit + " SGas");
+                    $("#useCount").html(res[0].usedDomainCount);
+                    $("#beingCount").html(res[0].auctingDomainCount);
+                }
+                else {
+                    $("#coninpool").html("0 SGas");
+                    $("#accumulated").html("0 SGas");
+                    $("#useCount").html("0");
+                    $("#beingCount").html("0");
+                }
+            });
+        }
+        //查询域名
+        seachDomainInfo(domainname) {
+            return __awaiter(this, void 0, void 0, function* () {
+                //let domainname = $("#searchDomain").val();
+                console.log("-----input domainname--------");
+                console.log($("#inputDomain").val());
+                console.log(domainname.indexOf(".neo"));
+                if (domainname.indexOf(".neo") == -1) {
+                    domainname = domainname + ".neo";
+                }
+                $("#domainInfo").empty();
+                let status = '';
+                let html = '';
+                let str1 = "Domain name";
+                if (location.pathname == '/zh/') {
+                    str1 = "域名";
+                }
+                let str2 = "Txid";
+                if (location.pathname == '/zh/') {
+                    str2 = "交易ID";
+                }
+                let str3 = "Hammer price";
+                if (location.pathname == '/zh/') {
+                    str3 = "成交价";
+                }
+                let str4 = "Owner";
+                if (location.pathname == '/zh/') {
+                    str4 = "中标人";
+                }
+                let str5 = "Expire date";
+                if (location.pathname == '/zh/') {
+                    str5 = "域名过期时间";
+                }
+                let str6 = "Highest bid";
+                if (location.pathname == '/zh/') {
+                    str6 = "当前最高价";
+                }
+                let str7 = "Bidder";
+                if (location.pathname == '/zh/') {
+                    str7 = "竞标人";
+                }
+                let str8 = "Status";
+                if (location.pathname == '/zh/') {
+                    str8 = "状态";
+                }
+                let res = yield WebBrowser.WWW.apiaggr_getdomaininfo(domainname);
+                console.log(res);
+                if (!res) {
+                    return false;
+                }
+                let domainInfo = res[0];
+                console.log("-----------domaininfo------------------");
+                console.log(domainInfo);
+                if (domainInfo.auctionState) {
+                    let href = WebBrowser.Url.href_nns(domainInfo.domain);
+                    let hreftxid = WebBrowser.Url.href_transaction(domainInfo.txid);
+                    let hrefaddr = WebBrowser.Url.href_address(domainInfo.maxBuyer);
+                    if (domainInfo.auctionState != "0") {
+                        switch (domainInfo.auctionState) {
+                            case '1':
+                                status = "Fixed period";
+                                if (location.pathname == '/zh/') {
+                                    status = '确定期';
+                                }
+                                break;
+                            case '2':
+                                status = "Random period";
+                                if (location.pathname == '/zh/') {
+                                    status = '随机期';
+                                }
+                                break;
+                        }
+                        $("#domainMsg").html(domainInfo.domain + " is being auctioned.");
+                        if (location.pathname == '/zh/') {
+                            $("#domainMsg").html(domainInfo.domain + " 正在竞拍中。");
+                        }
+                        html = `<div class="list-line"><div class="line-title"><span>` + str1 + `</span></div> <div class="line-content line-href"><a href="` + href + `">` + domainInfo.domain + `</a></div></div>
+                            <div class="list-line"><div class="line-title"><span>` + str2 + `</span></div> <div class="line-content line-href"><a href="` + hreftxid + `">` + domainInfo.txid + `</a></div></div>
+                            <div class="list-line"><div class="line-title"><span>` + str6 + `</span></div> <div class="line-content"><span>` + domainInfo.maxPrice + `</span></div></div>
+                            <div class="list-line"><div class="line-title"><span>` + str7 + `</span></div> <div class="line-content line-href"><a href="` + hrefaddr + `">` + domainInfo.maxBuyer + `</a></div></div>
+                            <div class="list-line"><div class="line-title"><span>` + str8 + `</span></div> <div class="line-content"><span>` + status + `</span></div></div>`;
+                    }
+                    else {
+                        $("#domainMsg").html(domainInfo.domain + " is already owned.");
+                        if (location.pathname == '/zh/') {
+                            $("#domainMsg").html(domainInfo.domain + " 已经成交了。");
+                        }
+                        let endtime = '';
+                        if (domainInfo.ttl != "0") {
+                            let time = parseFloat(domainInfo.ttl);
+                            endtime = WebBrowser.DateTool.dateFtt("dd-MM-yyyy hh:mm:ss", new Date(time * 1000));
+                            if (location.pathname == '/zh/') {
+                                let newDate = new Date();
+                                newDate.setTime(time * 1000);
+                                endtime = newDate.toLocaleString();
+                            }
+                        }
+                        else {
+                            endtime = 'Unknown';
+                            if (location.pathname == '/zh/') {
+                                endtime = '未知';
+                            }
+                        }
+                        html = `<div class="list-line"><div class="line-title"><span>` + str1 + `</span></div> <div class="line-content line-href"><a>` + domainInfo.domain + `</a></div></div>
+                            <div class="list-line"><div class="line-title"><span>` + str2 + `</span></div> <div class="line-content line-href"><a>` + domainInfo.txid + `</a></div></div>
+                            <div class="list-line"><div class="line-title"><span>` + str3 + `</span></div> <div class="line-content"><span>` + domainInfo.maxPrice + `</span></div></div>
+                            <div class="list-line"><div class="line-title"><span>` + str4 + `</span></div> <div class="line-content line-href"><a>` + domainInfo.maxBuyer + `</a></div></div>
+                            <div class="list-line"><div class="line-title"><span>` + str5 + `</span></div> <div class="line-content"><span>` + endtime + `</span></div></div>`;
+                    }
+                }
+                else {
+                    let href = '';
+                    if (WebBrowser.locationtool.getNetWork() == 'testnet')
+                        href = "https://testwallet.nel.group/";
+                    else
+                        href = "https://wallet.nel.group/";
+                    $("#domainMsg").html(domainname + " is available!");
+                    html = `<div style="text-align: center;margin-top:20px;">You can <a href="` + href + `" target="_blank">login</a> your wallet and start an auction!</div>`;
+                    if (location.pathname == '/zh/') {
+                        $("#domainMsg").html(domainname + " 可以被竞拍!");
+                        html = `<div style="text-align: center;margin-top:20px;">您可以<a href="` + href + `" target="_blank">登陆</a> 您的钱包来竞拍此域名!</div>`;
+                    }
+                }
+                $("#domainInfo").append(html);
+                $("#searchBox").show();
+            });
+        }
+        //获取域名竞拍列表
+        getDomainList() {
+            return __awaiter(this, void 0, void 0, function* () {
+                $("#domainBeingList").empty();
+                let domain = yield WebBrowser.WWW.apiaggr_getauctingdomain(1, 10);
+                if (!domain || domain[0].count == 0) {
+                    $("#domainBeing").hide();
+                    let msg = "There is no data";
+                    if (location.pathname == '/zh/') {
+                        msg = '没有数据';
+                    }
+                    $("#domainBeing").hide();
+                    let html = `
+                        <tr>
+                        <td colspan="6">` + msg + `</td>
+                        </tr>`;
+                    $("#domainBeingList").append(html);
+                    return;
+                }
+                if (domain[0].count < 10) {
+                    $("#domainBeing").hide();
+                }
+                else {
+                    $("#domainBeing").show();
+                }
+                if (domain) {
+                    let domainList = domain[0].list;
+                    domainList.forEach((domain) => {
+                        let href = WebBrowser.Url.href_nns(domain.fulldomain);
+                        let hreftxid = WebBrowser.Url.href_transaction(domain.txid);
+                        let hrefaddr = WebBrowser.Url.href_address(domain.maxBuyer);
+                        let status = '';
+                        switch (domain.auctionState) {
+                            case '0':
+                                status = 'End';
+                                if (location.pathname == '/zh/') {
+                                    status = '已结束';
+                                }
+                                break;
+                            case '1':
+                                status = "Fixed period";
+                                if (location.pathname == '/zh/') {
+                                    status = '确定期';
+                                }
+                                break;
+                            case '2':
+                                status = "Random period";
+                                if (location.pathname == '/zh/') {
+                                    status = '随机期';
+                                }
+                                break;
+                        }
+                        let html = `
+                        <tr>
+                        <td> <a href="` + href + `" target="_self">` + domain.fulldomain + `</a></td>
+                        <td> <a href="` + hreftxid + `" target="_self">` + domain.txid + `</a></td>
+                        <td>` + domain.maxPrice + ` SGas` + `</td>
+                        <td><a href="` + hrefaddr + `" target="_self">` + domain.maxBuyer + `</a></td>
+                        <td>` + status + `</td>
+                        </tr>`;
+                        $("#domainBeingList").append(html);
+                    });
+                }
+            });
+        }
+        //获取域名价值列表
+        getDomainRank() {
+            return __awaiter(this, void 0, void 0, function* () {
+                $("#domainUseList").empty();
+                let rank = yield WebBrowser.WWW.apiaggr_getaucteddomain(1, 10);
+                if (!rank || rank[0].count == 0) {
+                    $("#domainUse").hide();
+                    let msg = "There is no data";
+                    if (location.pathname == '/zh/') {
+                        msg = '没有数据';
+                    }
+                    $("#domainUse").hide();
+                    let html = `
+                        <tr>
+                        <td colspan="6">` + msg + `</td>
+                        </tr>`;
+                    $("#domainUseList").append(html);
+                    return;
+                }
+                if (rank[0].count < 10) {
+                    $("#domainUse").hide();
+                }
+                else {
+                    $("#domainUse").show();
+                }
+                if (rank) {
+                    let rankList = rank[0].list;
+                    rankList.forEach((domain) => {
+                        let endtime = '';
+                        if (domain.ttl != "0") {
+                            let time = parseFloat(domain.ttl);
+                            endtime = WebBrowser.DateTool.dateFtt("dd-MM-yyyy hh:mm:ss", new Date(time * 1000));
+                            if (location.pathname == '/zh/') {
+                                let newDate = new Date();
+                                newDate.setTime(time * 1000);
+                                endtime = newDate.toLocaleString();
+                            }
+                        }
+                        else {
+                            endtime = 'Unknown';
+                            if (location.pathname == '/zh/') {
+                                endtime = '未知';
+                            }
+                        }
+                        let href = WebBrowser.Url.href_nns(domain.fulldomain);
+                        let hreftxid = WebBrowser.Url.href_transaction(domain.txid);
+                        let hrefaddr = WebBrowser.Url.href_address(domain.maxBuyer);
+                        let html = `
+                        <tr>
+                        <td>` + domain.range + `</td>
+                        <td> <a href="` + href + `" target="_self">` + domain.fulldomain + `</a></td>
+                        <td> <a href="` + hreftxid + `" target="_self">` + domain.txid + `</a></td>
+                        <td>` + domain.maxPrice + ` SGas` + `</td>
+                        <td><a href="` + hrefaddr + `" target="_self">` + domain.maxBuyer + `</a></td>
+                        <td>` + endtime + `</td>
+                        </tr>`;
+                        $("#domainUseList").append(html);
+                    });
+                }
+            });
+        }
     }
     WebBrowser.NNSevents = NNSevents;
+})(WebBrowser || (WebBrowser = {}));
+var WebBrowser;
+(function (WebBrowser) {
+    //地址列表
+    class NNSAuction {
+        constructor() {
+            this.div = document.getElementById('nnsbeing-page');
+            this.footer = document.getElementById('footer-box');
+        }
+        close() {
+            this.div.hidden = true;
+            this.footer.hidden = true;
+        }
+        /**
+         * addrlistInit
+         */
+        domainListInit(first) {
+            return __awaiter(this, void 0, void 0, function* () {
+                $("#domainBeingListPage").empty();
+                let domain;
+                if (!first) {
+                    domain = (yield WebBrowser.WWW.apiaggr_getauctingdomain(this.pageUtil.currentPage, this.pageUtil.pageSize));
+                }
+                else {
+                    domain = (yield WebBrowser.WWW.apiaggr_getauctingdomain(1, 15));
+                    if (domain) {
+                        this.pageUtil = new WebBrowser.PageUtil(domain[0].count, 15);
+                    }
+                }
+                if (domain) {
+                    this.loadView(domain[0].list);
+                    $("#nnsbeing-wrap").show();
+                    let minNum = this.pageUtil.currentPage * this.pageUtil.pageSize - this.pageUtil.pageSize;
+                    let maxNum = this.pageUtil.totalCount;
+                    let diffNum = maxNum - minNum;
+                    if (diffNum > 15) {
+                        maxNum = this.pageUtil.currentPage * this.pageUtil.pageSize;
+                    }
+                    let pageMsg = "Domain name being auctioned " + (minNum + 1) + " to " + maxNum + " of " + this.pageUtil.totalCount;
+                    $("#nnsbeing-page").find("#nnsbeing-page-msg").html(pageMsg);
+                    if (this.pageUtil.totalPage - this.pageUtil.currentPage) {
+                        $("#nnsbeing-page-next").removeClass('disabled');
+                    }
+                    else {
+                        $("#nnsbeing-page-next").addClass('disabled');
+                    }
+                    if (this.pageUtil.currentPage - 1) {
+                        $("#nnsbeing-page-previous").removeClass('disabled');
+                    }
+                    else {
+                        $("#nnsbeing-page-previous").addClass('disabled');
+                    }
+                }
+                else {
+                    let msg = "There is no data";
+                    if (location.pathname == '/zh/') {
+                        msg = '没有数据';
+                    }
+                    let html = `
+                        <tr>
+                        <td colspan="6">` + msg + `</td>
+                        </tr>`;
+                    $('#domainBeingListPage').append(html);
+                    $("#nnsbeing-wrap").hide();
+                }
+            });
+        }
+        /**
+         * start
+         */
+        start() {
+            return __awaiter(this, void 0, void 0, function* () {
+                yield this.domainListInit(true);
+                $("#nnsbeing-page-next").off("click").click(() => {
+                    if (this.pageUtil.currentPage == this.pageUtil.totalPage) {
+                        this.pageUtil.currentPage = this.pageUtil.totalPage;
+                    }
+                    else {
+                        this.pageUtil.currentPage += 1;
+                        this.domainListInit(false);
+                    }
+                });
+                $("#nnsbeing-page-previous").off("click").click(() => {
+                    if (this.pageUtil.currentPage <= 1) {
+                        this.pageUtil.currentPage = 1;
+                    }
+                    else {
+                        this.pageUtil.currentPage -= 1;
+                        this.domainListInit(false);
+                    }
+                });
+                this.div.hidden = false;
+                this.footer.hidden = false;
+            });
+        }
+        /**
+         * loadView
+         */
+        loadView(domainlist) {
+            domainlist.forEach((domain) => {
+                let href = WebBrowser.Url.href_nns(domain.fulldomain);
+                let hreftxid = WebBrowser.Url.href_transaction(domain.txid);
+                let hrefaddr = WebBrowser.Url.href_address(domain.maxBuyer);
+                let state = '';
+                switch (domain.auctionState) {
+                    case '0':
+                        state = 'End';
+                        if (location.pathname == '/zh/') {
+                            state = '已结束';
+                        }
+                        break;
+                    case '1':
+                        state = "Fixed period";
+                        if (location.pathname == '/zh/') {
+                            state = '确定期';
+                        }
+                        break;
+                    case '2':
+                        state = "Random period";
+                        if (location.pathname == '/zh/') {
+                            state = '随机期';
+                        }
+                        break;
+                }
+                let html = `
+                        <tr>
+                        <td> <a href="` + href + `" target="_self">` + domain.fulldomain + `</a></td>
+                        <td> <a href="` + hreftxid + `" target="_self">` + domain.txid + `</a></td>
+                        <td>` + domain.maxPrice + ` SGas` + `</td>
+                        <td><a href="` + hrefaddr + `" target="_self">` + domain.maxBuyer + `</a></td>
+                        <td>` + state + `</td>
+                        </tr>`;
+                $('#domainBeingListPage').append(html);
+            });
+        }
+    }
+    WebBrowser.NNSAuction = NNSAuction;
+})(WebBrowser || (WebBrowser = {}));
+var WebBrowser;
+(function (WebBrowser) {
+    //地址列表
+    class NNSRank {
+        constructor() {
+            this.div = document.getElementById('nnsrank-page');
+            this.footer = document.getElementById('footer-box');
+        }
+        close() {
+            this.div.hidden = true;
+            this.footer.hidden = true;
+        }
+        /**
+         * addrlistInit
+         */
+        domainRankListInit(first) {
+            return __awaiter(this, void 0, void 0, function* () {
+                $("#domainUseListPage").empty();
+                let domain;
+                if (!first) {
+                    domain = (yield WebBrowser.WWW.apiaggr_getaucteddomain(this.pageUtil.currentPage, this.pageUtil.pageSize));
+                }
+                else {
+                    domain = (yield WebBrowser.WWW.apiaggr_getaucteddomain(1, 15));
+                    if (domain) {
+                        this.pageUtil = new WebBrowser.PageUtil(domain[0].count, 15);
+                    }
+                }
+                if (domain) {
+                    this.loadView(domain[0].list);
+                    $("#nnsrank-wrap").show();
+                    let minNum = this.pageUtil.currentPage * this.pageUtil.pageSize - this.pageUtil.pageSize;
+                    let maxNum = this.pageUtil.totalCount;
+                    let diffNum = maxNum - minNum;
+                    if (diffNum > 15) {
+                        maxNum = this.pageUtil.currentPage * this.pageUtil.pageSize;
+                    }
+                    let pageMsg = "Domain name being auctioned " + (minNum + 1) + " to " + maxNum + " of " + this.pageUtil.totalCount;
+                    $("#nnsrank-page").find("#nnsrank-page-msg").html(pageMsg);
+                    if (this.pageUtil.totalPage - this.pageUtil.currentPage) {
+                        $("#nnsrank-page-next").removeClass('disabled');
+                    }
+                    else {
+                        $("#nnsrank-page-next").addClass('disabled');
+                    }
+                    if (this.pageUtil.currentPage - 1) {
+                        $("#nnsrank-page-previous").removeClass('disabled');
+                    }
+                    else {
+                        $("#nnsrank-page-previous").addClass('disabled');
+                    }
+                }
+                else {
+                    let msg = "There is no data";
+                    if (location.pathname == '/zh/') {
+                        msg = '没有数据';
+                    }
+                    let html = `
+                        <tr>
+                        <td colspan="6">` + msg + `</td>
+                        </tr>`;
+                    $('#domainUseListPage').append(html);
+                    $("#nnsrank-wrap").hide();
+                }
+            });
+        }
+        /**
+         * start
+         */
+        start() {
+            return __awaiter(this, void 0, void 0, function* () {
+                yield this.domainRankListInit(true);
+                $("#nnsrank-page-next").off("click").click(() => {
+                    if (this.pageUtil.currentPage == this.pageUtil.totalPage) {
+                        this.pageUtil.currentPage = this.pageUtil.totalPage;
+                    }
+                    else {
+                        this.pageUtil.currentPage += 1;
+                        this.domainRankListInit(false);
+                    }
+                });
+                $("#nnsrank-page-previous").off("click").click(() => {
+                    if (this.pageUtil.currentPage <= 1) {
+                        this.pageUtil.currentPage = 1;
+                    }
+                    else {
+                        this.pageUtil.currentPage -= 1;
+                        this.domainRankListInit(false);
+                    }
+                });
+                this.div.hidden = false;
+                this.footer.hidden = false;
+            });
+        }
+        /**
+         * loadView
+         */
+        loadView(rankList) {
+            console.log(rankList);
+            rankList.forEach((domain) => {
+                let endtime = '';
+                if (domain.ttl != "0") {
+                    let time = parseFloat(domain.ttl);
+                    endtime = WebBrowser.DateTool.dateFtt("dd-MM-yyyy hh:mm:ss", new Date(time * 1000));
+                    if (location.pathname == '/zh/') {
+                        let newDate = new Date();
+                        newDate.setTime(time * 1000);
+                        endtime = newDate.toLocaleString();
+                    }
+                }
+                else {
+                    endtime = 'Unknown';
+                    if (location.pathname == '/zh/') {
+                        endtime = '未知';
+                    }
+                }
+                let href = WebBrowser.Url.href_nns(domain.fulldomain);
+                let hreftxid = WebBrowser.Url.href_transaction(domain.txid);
+                let hrefaddr = WebBrowser.Url.href_address(domain.maxBuyer);
+                let html = `
+                        <tr>
+                        <td>` + domain.range + `</td>
+                        <td> <a href="` + href + `" target="_self">` + domain.fulldomain + `</a></td>
+                        <td> <a href="` + hreftxid + `" target="_self">` + domain.txid + `</a></td>
+                        <td>` + domain.maxPrice + ` SGas` + `</td>
+                        <td><a href="` + hrefaddr + `" target="_self">` + domain.maxBuyer + `</a></td>
+                        <td>` + endtime + `</td>
+                        </tr>`;
+                $('#domainUseListPage').append(html);
+            });
+        }
+    }
+    WebBrowser.NNSRank = NNSRank;
+})(WebBrowser || (WebBrowser = {}));
+var WebBrowser;
+(function (WebBrowser) {
+    class NNSInfo {
+        constructor() {
+            this.div = document.getElementById("domain-info");
+            this.footer = document.getElementById('footer-box');
+        }
+        close() {
+            this.div.hidden = true;
+            this.footer.hidden = true;
+        }
+        start() {
+            let domainname = WebBrowser.locationtool.getParam();
+            this.queryDomain(domainname);
+            let html = '<a href="#" target="_self" onclick="javascript: window.history.go(-1);return false;">&lt&lt&ltGo Back</a>';
+            if (location.pathname == '/zh/') {
+                html = '<a href="#" target="_self" onclick="javascript: window.history.go(-1);return false;">&lt&lt&lt返回</a>';
+            }
+            $("#goBackDomain").empty();
+            $("#goBackDomain").append(html);
+            this.domainInfoInit(domainname, true);
+            $("#domainHistory-next").off("click").click(() => {
+                if (this.pageUtil.currentPage == this.pageUtil.totalPage) {
+                    this.pageUtil.currentPage = this.pageUtil.totalPage;
+                }
+                else {
+                    this.pageUtil.currentPage += 1;
+                    this.domainInfoInit(domainname, false);
+                }
+            });
+            $("#domainHistory-previous").off("click").click(() => {
+                if (this.pageUtil.currentPage <= 1) {
+                    this.pageUtil.currentPage = 1;
+                }
+                else {
+                    this.pageUtil.currentPage -= 1;
+                    this.domainInfoInit(domainname, false);
+                }
+            });
+            this.div.hidden = false;
+            this.footer.hidden = false;
+        }
+        queryDomain(domainname) {
+            return __awaiter(this, void 0, void 0, function* () {
+                $("#domaininfo-msg").empty();
+                let status = '';
+                let html = '';
+                let str1 = "Domain name";
+                if (location.pathname == '/zh/') {
+                    str1 = "域名";
+                }
+                let str2 = "Txid";
+                if (location.pathname == '/zh/') {
+                    str2 = "交易ID";
+                }
+                let str3 = "Auction start time";
+                if (location.pathname == '/zh/') {
+                    str3 = "竞拍开始时间";
+                }
+                let str4 = "Estimated end time";
+                if (location.pathname == '/zh/') {
+                    str4 = "预计结束时间";
+                }
+                let str5 = "Highest bid";
+                if (location.pathname == '/zh/') {
+                    str5 = "当前最高价";
+                }
+                let str6 = "Bidder";
+                if (location.pathname == '/zh/') {
+                    str6 = "竞标人";
+                }
+                let str7 = "Status";
+                if (location.pathname == '/zh/') {
+                    str7 = "状态";
+                }
+                let str8 = "Included in block";
+                if (location.pathname == '/zh/') {
+                    str8 = "区块高度";
+                }
+                let str9 = "Auction end time";
+                if (location.pathname == '/zh/') {
+                    str9 = "竞拍结束时间";
+                }
+                let str10 = "Hammer price";
+                if (location.pathname == '/zh/') {
+                    str10 = "成交价";
+                }
+                let str11 = "Owner";
+                if (location.pathname == '/zh/') {
+                    str11 = "中标人";
+                }
+                let str12 = "Expire date";
+                if (location.pathname == '/zh/') {
+                    str12 = "域名过期时间";
+                }
+                console.log(domainname);
+                let res = yield WebBrowser.WWW.apiaggr_getdomaininfo(domainname);
+                console.log(res);
+                if (!res) {
+                    html = `<div class="line" style="text-align: center;padding: 16px;font-size: 16px;"><span>There is no data </span></div>`;
+                    if (location.pathname == '/zh/') {
+                        html = `<div class="line" style="text-align: center;padding: 16px;font-size: 16px;"><span>没有数据</span></div>`;
+                    }
+                    $("#domaininfo-msg").append(html);
+                    return false;
+                }
+                let domainInfo = res[0];
+                console.log("-----------domaininfo------------------");
+                console.log(domainInfo);
+                if (domainInfo.auctionState) {
+                    //开标时间
+                    let startTime = '';
+                    if (domainInfo.startAuctionTime != "0") {
+                        let time = parseFloat(domainInfo.startAuctionTime);
+                        startTime = WebBrowser.DateTool.dateFtt("dd-MM-yyyy hh:mm:ss", new Date(time * 1000));
+                        if (location.pathname == '/zh/') {
+                            let newDate = new Date();
+                            newDate.setTime(time * 1000);
+                            startTime = newDate.toLocaleString();
+                        }
+                    }
+                    else {
+                        startTime = 'Unknown';
+                        if (location.pathname == '/zh/') {
+                            startTime = '未知';
+                        }
+                    }
+                    //预计竞拍结束时间
+                    let endTime = '';
+                    if (domainInfo.endBlockTime != "0") {
+                        let time = parseFloat(domainInfo.endBlockTime);
+                        endTime = WebBrowser.DateTool.dateFtt("dd-MM-yyyy hh:mm:ss", new Date(time * 1000));
+                        if (location.pathname == '/zh/') {
+                            let newDate = new Date();
+                            newDate.setTime(time * 1000);
+                            endTime = newDate.toLocaleString();
+                        }
+                    }
+                    else {
+                        endTime = 'Unknown';
+                        if (location.pathname == '/zh/') {
+                            endTime = '未知';
+                        }
+                    }
+                    //过期时间
+                    let expireTime = '';
+                    if (domainInfo.ttl != "0") {
+                        let time = parseFloat(domainInfo.ttl);
+                        expireTime = WebBrowser.DateTool.dateFtt("dd-MM-yyyy hh:mm:ss", new Date(time * 1000));
+                        if (location.pathname == '/zh/') {
+                            let newDate = new Date();
+                            newDate.setTime(time * 1000);
+                            expireTime = newDate.toLocaleString();
+                        }
+                    }
+                    else {
+                        expireTime = 'Unknown';
+                        if (location.pathname == '/zh/') {
+                            expireTime = '未知';
+                        }
+                    }
+                    let hrefblock = WebBrowser.Url.href_transaction(domainInfo.blockindex);
+                    let hrefaddr = WebBrowser.Url.href_address(domainInfo.maxBuyer);
+                    if (domainInfo.auctionState != "0") {
+                        switch (domainInfo.auctionState) {
+                            case '1':
+                                status = "Fixed period";
+                                if (location.pathname == '/zh/') {
+                                    status = '确定期';
+                                }
+                                break;
+                            case '2':
+                                status = "Random period";
+                                if (location.pathname == '/zh/') {
+                                    status = '随机期';
+                                }
+                                break;
+                        }
+                        let tips = "  ( This end time is uncertain. Please bid early to avoid missing domain names. )";
+                        if (location.pathname == '/zh/') {
+                            tips = " ( 结束时间并不是确定的，为了避免您错失想要的域名，请尽早出价。 )";
+                        }
+                        html = `<div class="line"><div class="title-nel"><span>` + str1 + `</span></div> <div class="content-nel"><span>` + domainInfo.domain + `</span></div></div>
+                            <div class="line"><div class="title-nel"><span>` + str2 + `</span></div> <div class="content-nel"><span>` + domainInfo.txid + `</span></div></div>
+                            <div class="line"><div class="title-nel"><span>` + str3 + `</span></div> <div class="content-nel"><span>` + startTime + `</span></div></div>
+                            <div class="line"><div class="title-nel"><span>` + str4 + `</span></div><div class="content-nel"><span style="white-space: nowrap;">` + endTime + tips + `</span></div></div>
+                            <div class="line"><div class="title-nel"><span>` + str5 + `</span></div><div class="content-nel"><span>` + domainInfo.maxPrice + `</span></div></div>
+                            <div class="line"><div class="title-nel"><span>` + str6 + `</span></div><div class="content-nel"><span><a href="` + hrefaddr + `">` + domainInfo.maxBuyer + `</a></span></div></div>
+                            <div class="line"><div class="title-nel"><span>` + str7 + `</span></div><div class="content-nel"><span>` + status + `</span></div></div>
+                            <div class="line"><div class="title-nel"><span>` + str8 + `</span></div><div class="content-nel"><span><a href="` + hrefblock + `">` + domainInfo.blockindex + `</a></span></div></div>`;
+                    }
+                    else {
+                        html = `<div class="line"><div class="title-nel"><span>` + str1 + `</span></div> <div class="content-nel"><span>` + domainInfo.domain + `</span></div></div>
+                    <div class="line"><div class="title-nel"><span>` + str2 + `</span></div> <div class="content-nel"><span>` + domainInfo.txid + `</span></div></div>
+                    <div class="line"><div class="title-nel"><span>` + str3 + `</span></div> <div class="content-nel"><span>` + startTime + `</span></div></div>
+                    <div class="line"><div class="title-nel"><span>` + str9 + `</span></div><div class="content-nel"><span>` + endTime + `</span></div></div>
+                    <div class="line"><div class="title-nel"><span>` + str10 + `</span></div><div class="content-nel"><span>` + domainInfo.maxPrice + `</span></div></div>
+                    <div class="line"><div class="title-nel"><span>` + str11 + `</span></div><div class="content-nel"><span><a href="` + hrefaddr + `">` + domainInfo.maxBuyer + `</a></span></div></div>
+                    <div class="line"><div class="title-nel"><span>` + str12 + `</span></div><div class="content-nel"><span>` + expireTime + `</span></div></div>
+                    <div class="line"><div class="title-nel"><span>` + str8 + `</span></div><div class="content-nel"><span><a href="` + hrefblock + `">` + domainInfo.blockindex + `</a></span></div></div>`;
+                    }
+                }
+                $("#domaininfo-msg").append(html);
+            });
+        }
+        domainInfoInit(domainname, first) {
+            return __awaiter(this, void 0, void 0, function* () {
+                $("#auctionInfo").empty();
+                let domain;
+                if (!first) {
+                    domain = (yield WebBrowser.WWW.apiaggr_getbiddetailbydomain(domainname, this.pageUtil.currentPage, this.pageUtil.pageSize));
+                }
+                else {
+                    domain = (yield WebBrowser.WWW.apiaggr_getbiddetailbydomain(domainname, 1, 10));
+                    if (domain) {
+                        this.pageUtil = new WebBrowser.PageUtil(domain[0].count - 1, 10);
+                    }
+                }
+                if (domain && domain[0].list.length != 0) {
+                    this.loadDomainView(domain[0].list);
+                    if (domain.count <= 11) {
+                        $("#domainHistory-page").hide();
+                    }
+                    else {
+                        $("#domainHistory-next").addClass('disabled');
+                        $("#domainHistory-page").show();
+                    }
+                }
+                else {
+                    let html = `<tr><td colspan="5">There is no data</td></tr>`;
+                    if (location.pathname == '/zh/') {
+                        html = `<tr><td colspan="5">没有数据</td></tr>`;
+                    }
+                    $("#domainHistory-page").hide();
+                    $("#auctionInfo").append(html);
+                    return;
+                }
+                let minNum = this.pageUtil.currentPage * this.pageUtil.pageSize - this.pageUtil.pageSize;
+                let maxNum = this.pageUtil.totalCount;
+                let diffNum = maxNum - minNum;
+                if (diffNum > 10) {
+                    maxNum = this.pageUtil.currentPage * this.pageUtil.pageSize;
+                }
+                let pageMsg = "Auction information " + (minNum + 1) + " to " + maxNum + " of " + this.pageUtil.totalCount;
+                $("#domainHistory-page").find("#domainHistory-msg").html(pageMsg);
+                if (this.pageUtil.totalPage - this.pageUtil.currentPage) {
+                    $("#domainHistory-next").removeClass('disabled');
+                }
+                else {
+                    $("#domainHistory-next").addClass('disabled');
+                }
+                if (this.pageUtil.currentPage - 1) {
+                    $("#domainHistory-previous").removeClass('disabled');
+                }
+                else {
+                    $("#domainHistory-previous").addClass('disabled');
+                }
+            });
+        }
+        loadDomainView(bidHistory) {
+            console.log(bidHistory);
+            bidHistory.forEach((domain) => {
+                let bidTime = '';
+                if (domain.addPriceTime != "0") {
+                    let time = parseFloat(domain.addPriceTime);
+                    bidTime = WebBrowser.DateTool.dateFtt("dd-MM-yyyy hh:mm:ss", new Date(time * 1000));
+                    if (location.pathname == '/zh/') {
+                        let newDate = new Date();
+                        newDate.setTime(time * 1000);
+                        bidTime = newDate.toLocaleString();
+                    }
+                }
+                else {
+                    bidTime = 'Unknown';
+                    if (location.pathname == '/zh/') {
+                        bidTime = '未知';
+                    }
+                }
+                let hreftxid = WebBrowser.Url.href_transaction(domain.txid);
+                let hrefaddr = WebBrowser.Url.href_address(domain.maxBuyer);
+                let html = `
+                        <tr>
+                        <td> <a href="` + hreftxid + `" target="_self">` + domain.txid + `</a></td>
+                        <td>` + domain.maxPrice + ` SGas` + `</td>
+                        <td>` + domain.raisebid + ` SGas` + `</td>
+                        <td><a href="` + hrefaddr + `" target="_self">` + domain.maxBuyer + `</a></td>
+                        <td>` + bidTime + `</td>
+                        </tr>`;
+                $('#auctionInfo').append(html);
+            });
+        }
+    }
+    WebBrowser.NNSInfo = NNSInfo;
 })(WebBrowser || (WebBrowser = {}));
 /// <reference path="../app.ts"/>
 var WebBrowser;
@@ -2421,7 +3373,10 @@ var WebBrowser;
             this.pagelist.push(app.address);
             this.pagelist.push(app.assets);
             this.pagelist.push(app.assetinfo);
-            //this.pagelist.push(app.nnses);
+            this.pagelist.push(app.nnses);
+            this.pagelist.push(app.nnsbeing);
+            this.pagelist.push(app.nnsrank);
+            this.pagelist.push(app.nnsinfo);
             this.closePages();
             var page = this.render();
             page.start();
@@ -2453,9 +3408,18 @@ var WebBrowser;
                 case "assets":
                     this.app.navbar.assetBtn.classList.add("active");
                     return this.app.assets;
-                //case "nnsevent":
-                //    this.app.navbar.nnsBtn.classList.add("active");
-                //    return this.app.nnses;
+                case "nnsevent":
+                    this.app.navbar.nnsBtn.classList.add("active");
+                    return this.app.nnses;
+                case "nnsauction":
+                    this.app.navbar.nnsBtn.classList.add("active");
+                    return this.app.nnsbeing;
+                case "nnsrank":
+                    this.app.navbar.nnsBtn.classList.add("active");
+                    return this.app.nnsrank;
+                case "nns":
+                    this.app.navbar.nnsBtn.classList.add("active");
+                    return this.app.nnsinfo;
                 case "asset":
                     this.app.navbar.assetBtn.classList.add("active");
                     return this.app.assetinfo;
@@ -2475,7 +3439,7 @@ var WebBrowser;
                 this.app.navbar.txlistBtn.classList.remove("active");
                 this.app.navbar.addrsBtn.classList.remove("active");
                 this.app.navbar.assetBtn.classList.remove("active");
-                //this.app.navbar.nnsBtn.classList.remove("active");
+                this.app.navbar.nnsBtn.classList.remove("active");
             }
         }
     }
@@ -3192,8 +4156,8 @@ var WebBrowser;
             this.asseta = document.getElementById("assetsa");
             this.walletBtn = document.getElementById("wallet-btn");
             this.walleta = document.getElementById("walleta");
-            //nnsBtn: HTMLLIElement = document.getElementById("nns-btn") as HTMLLIElement;
-            //nnsa: HTMLAnchorElement = document.getElementById("nnssa") as HTMLAnchorElement;
+            this.nnsBtn = document.getElementById("nns-btn");
+            this.nnsa = document.getElementById("nnssa");
             this.searchBtn = document.getElementById("searchBtn");
             this.searchText = document.getElementById("searchText");
             this.searchList = document.getElementById("seach_list");
@@ -3216,9 +4180,9 @@ var WebBrowser;
             this.asseta.onclick = () => {
                 this.skip("/assets");
             };
-            //this.nnsa.onclick = () => {
-            //    this.skip("/nnsevent");
-            //}
+            this.nnsa.onclick = () => {
+                this.skip("/nnsevent");
+            };
             this.searchBtn.onclick = () => {
                 this.jump();
             };
@@ -3428,6 +4392,9 @@ var WebBrowser;
 /// <reference path="./pages/transaction.ts"/>
 /// <reference path="./pages/nep5.ts"/>
 /// <reference path="./pages/nnses.ts" />
+/// <reference path="./pages/nnsbeing.ts" />
+/// <reference path="./pages/nnsrank.ts" />
+/// <reference path="./pages/nnsinfo.ts" />
 /// <reference path="./pages/404.ts"/>
 /// <reference path="./tools/locationtool.ts" />
 /// <reference path="./tools/numbertool.ts" />
@@ -3452,6 +4419,9 @@ var WebBrowser;
 /// <reference path="./pages/transaction.ts"/>
 /// <reference path="./pages/nep5.ts"/>
 /// <reference path="./pages/nnses.ts" />
+/// <reference path="./pages/nnsbeing.ts" />
+/// <reference path="./pages/nnsrank.ts" />
+/// <reference path="./pages/nnsinfo.ts" />
 /// <reference path="./pages/404.ts"/>
 /// <reference path="./tools/locationtool.ts" />
 /// <reference path="./tools/numbertool.ts" />
@@ -3475,7 +4445,10 @@ var WebBrowser;
             this.assets = new WebBrowser.Assets();
             this.indexpage = new WebBrowser.Index();
             this.assetinfo = new WebBrowser.AssetInfo();
-            //nnses: NNSevents = new NNSevents();
+            this.nnses = new WebBrowser.NNSevents();
+            this.nnsbeing = new WebBrowser.NNSAuction();
+            this.nnsrank = new WebBrowser.NNSRank();
+            this.nnsinfo = new WebBrowser.NNSInfo();
             this.notfound = new WebBrowser.Notfound();
             this.nep5 = new WebBrowser.Nep5page();
             this.routet = new WebBrowser.Route();
