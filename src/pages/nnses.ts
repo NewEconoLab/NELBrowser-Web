@@ -85,7 +85,7 @@
             if (location.pathname == '/zh/') {
                 str4 = "中标人";
             }
-            let str5 = "Expire date";
+            let str5 = "Expiration date";
             if (location.pathname == '/zh/') {
                 str5 = "域名过期时间";
             }
@@ -116,13 +116,13 @@
                 if (domainInfo.auctionState != "0") {
                     switch (domainInfo.auctionState) {
                         case '1':
-                            status = "Fixed period";
+                            status = "Auction period";
                             if (location.pathname == '/zh/') {
                                 status = '确定期';
                             }
                             break;
                         case '2':
-                            status = "Random period";
+                            status = "Overtime bidding";
                             if (location.pathname == '/zh/') {
                                 status = '随机期';
                             }
@@ -222,13 +222,13 @@
                             }
                             break;
                         case '1':
-                            status = "Fixed period";
+                            status = "Auction period";
                             if (location.pathname == '/zh/') {
                                 status = '确定期';
                             }
                             break;
                         case '2':
-                            status = "Random period";
+                            status = "Overtime bidding";
                             if (location.pathname == '/zh/') {
                                 status = '随机期';
                             }

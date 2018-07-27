@@ -36,7 +36,7 @@
                 if (diffNum > 15) {
                     maxNum = this.pageUtil.currentPage * this.pageUtil.pageSize;
                 }
-                let pageMsg = "Domain name being auctioned " + (minNum + 1) + " to " + maxNum + " of " + this.pageUtil.totalCount;
+                let pageMsg = "Live auctions " + (minNum + 1) + " to " + maxNum + " of " + this.pageUtil.totalCount;
                 $("#nnsrank-page").find("#nnsrank-page-msg").html(pageMsg);
                 if (this.pageUtil.totalPage - this.pageUtil.currentPage) {
                     $("#nnsrank-page-next").removeClass('disabled');

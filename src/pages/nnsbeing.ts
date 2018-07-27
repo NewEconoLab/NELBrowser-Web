@@ -37,7 +37,7 @@
                 if (diffNum > 15) {
                     maxNum = this.pageUtil.currentPage * this.pageUtil.pageSize;
                 }
-                let pageMsg = "Domain name being auctioned " + (minNum + 1) + " to " + maxNum + " of " + this.pageUtil.totalCount;
+                let pageMsg = "Live auctions " + (minNum + 1) + " to " + maxNum + " of " + this.pageUtil.totalCount;
                 $("#nnsbeing-page").find("#nnsbeing-page-msg").html(pageMsg);
                 if (this.pageUtil.totalPage - this.pageUtil.currentPage) {
                     $("#nnsbeing-page-next").removeClass('disabled');
@@ -107,13 +107,13 @@
                         }
                         break;
                     case '1':
-                        state = "Fixed period";
+                        state = "Auction period";
                         if (location.pathname == '/zh/') {
                             state = '确定期';
                         }
                         break;
                     case '2':
-                        state = "Random period";
+                        state = "Overtime bidding";
                         if (location.pathname == '/zh/') {
                             state = '随机期';
                         }
