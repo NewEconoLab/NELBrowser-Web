@@ -158,10 +158,10 @@
                             endtime = '未知';
                         }
                     }
-                    html = `<div class="list-line"><div class="line-title"><span>` + str1 + `</span></div> <div class="line-content line-href"><a>` + domainInfo.domain + `</a></div></div>
-                            <div class="list-line"><div class="line-title"><span>`+ str2 + `</span></div> <div class="line-content line-href"><a>` + domainInfo.txid + `</a></div></div>
+                    html = `<div class="list-line"><div class="line-title"><span>` + str1 + `</span></div> <div class="line-content line-href"><a href="` + href + `">` + domainInfo.domain + `</a></div></div>
+                            <div class="list-line"><div class="line-title"><span>`+ str2 + `</span></div> <div class="line-content line-href"><a href="` + hreftxid + `">` + domainInfo.txid + `</a></div></div>
                             <div class="list-line"><div class="line-title"><span>`+ str3 + `</span></div> <div class="line-content"><span>` + domainInfo.maxPrice + `</span></div></div>
-                            <div class="list-line"><div class="line-title"><span>`+ str4 + `</span></div> <div class="line-content line-href"><a>` + domainInfo.maxBuyer + `</a></div></div>
+                            <div class="list-line"><div class="line-title"><span>`+ str4 + `</span></div> <div class="line-content line-href"><a href="` + hrefaddr +`">` + domainInfo.maxBuyer + `</a></div></div>
                             <div class="list-line"><div class="line-title"><span>`+ str5 + `</span></div> <div class="line-content"><span>` + endtime + `</span></div></div>`;
                 }
             }
@@ -177,7 +177,7 @@
                 html = `<div style="text-align: center;margin-top:20px;">You can <a href="` + href +`" target="_blank">login</a> your wallet and start an auction!</div>`;
                 if (location.pathname == '/zh/') {
                     $("#domainMsg").html(domainname + " 可以被竞拍!");
-                    html = `<div style="text-align: center;margin-top:20px;">您可以<a href="` + href +`" target="_blank">登陆</a> 您的钱包来竞拍此域名!</div>`;
+                    html = `<div style="text-align: center;margin-top:20px;">您可以 <a href="` + href +`" target="_blank">登陆</a> 您的钱包来竞拍此域名!</div>`;
                 }
             }
             $("#domainInfo").append(html);
