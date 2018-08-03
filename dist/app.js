@@ -475,6 +475,16 @@ var WebBrowser;
                 return r;
             });
         }
+        //根据txid获取nep5
+        static api_getnep5balanceofaddress(nep5, addr) {
+            return __awaiter(this, void 0, void 0, function* () {
+                var str = WWW.makeRpcUrl("getnep5balanceofaddress", nep5, addr);
+                var result = yield fetch(str, { "method": "get" });
+                var json = yield result.json();
+                var r = json["result"];
+                return r;
+            });
+        }
         //查询domain竞拍情况
         static apiaggr_getdomaininfo(domainname) {
             return __awaiter(this, void 0, void 0, function* () {
@@ -2437,17 +2447,34 @@ var WebBrowser;
         getStatistics() {
             return __awaiter(this, void 0, void 0, function* () {
                 let res = yield WebBrowser.WWW.apiaggr_getstatistics();
+                let res2 = '';
+                var arr = location.hash.split('/');
+                //let arr = hash;
+                if (arr[0] == '#mainnet') {
+                    res2 = yield WebBrowser.WWW.api_getnep5balanceofaddress("", "");
+                }
+                if (arr[0] == "#testnet") {
+                    res2 = yield WebBrowser.WWW.api_getnep5balanceofaddress("2761020e5e6dfcd8d37fdd50ff98fa0f93bccf54", "ALjSnMZidJqd18iQaoCgFun6iqWRm2cVtj");
+                }
+                console.log(res2);
                 if (res) {
-                    $("#coninpool").html(res[0].bonus + " SGas");
+                    //$("#coninpool").html(res[0].bonus + " SGas");
                     $("#accumulated").html(res[0].profit + " SGas");
                     $("#useCount").html(res[0].usedDomainCount);
                     $("#beingCount").html(res[0].auctingDomainCount);
                 }
                 else {
-                    $("#coninpool").html("0 SGas");
+                    //$("#coninpool").html("0 SGas");
                     $("#accumulated").html("0 SGas");
                     $("#useCount").html("0");
                     $("#beingCount").html("0");
+                }
+                if (res2) {
+                    let coninpool = res2[0].nep5balance;
+                    $("#coninpool").html(coninpool + " SGas");
+                }
+                else {
+                    $("#coninpool").html("0 SGas");
                 }
             });
         }

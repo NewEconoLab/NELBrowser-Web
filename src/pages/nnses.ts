@@ -45,16 +45,37 @@
         //获取统计
         async getStatistics() {
             let res = await WWW.apiaggr_getstatistics();
+            let res2: any = '';
+            var arr = location.hash.split('/');
+            
+            //let arr = hash;
+            if (arr[0] == '#mainnet') {
+                res2 = await WWW.api_getnep5balanceofaddress("", "");
+                
+            }
+                
+            if (arr[0] == "#testnet") {
+                res2 = await WWW.api_getnep5balanceofaddress("2761020e5e6dfcd8d37fdd50ff98fa0f93bccf54", "ALjSnMZidJqd18iQaoCgFun6iqWRm2cVtj");
+            }
+            console.log(res2);
+                
+
             if (res) {
-                $("#coninpool").html(res[0].bonus + " SGas");
+                //$("#coninpool").html(res[0].bonus + " SGas");
                 $("#accumulated").html(res[0].profit + " SGas");
                 $("#useCount").html(res[0].usedDomainCount);
                 $("#beingCount").html(res[0].auctingDomainCount);
             } else {
-                $("#coninpool").html("0 SGas");
+                //$("#coninpool").html("0 SGas");
                 $("#accumulated").html("0 SGas");
                 $("#useCount").html("0");
                 $("#beingCount").html("0");
+            }
+            if (res2) {
+                let coninpool = res2[0].nep5balance;
+                $("#coninpool").html(coninpool + " SGas");
+            } else {
+                $("#coninpool").html("0 SGas");
             }
         }
         //查询域名

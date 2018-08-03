@@ -240,6 +240,14 @@ namespace WebBrowser
             var r = json["result"];
             return r;
         }
+        //根据txid获取nep5
+        static async api_getnep5balanceofaddress(nep5: string,addr: string) {
+            var str = WWW.makeRpcUrl("getnep5balanceofaddress", nep5, addr);
+            var result = await fetch(str, { "method": "get" });
+            var json = await result.json();
+            var r = json["result"];
+            return r;
+        }
         //查询domain竞拍情况
         static async apiaggr_getdomaininfo(domainname: string) {
             var str = WWW.makeUrl("getdomaininfo", WWW.apiaggr + locationtool.getNetWork(), domainname);
