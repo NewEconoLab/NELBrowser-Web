@@ -527,7 +527,7 @@ var WebBrowser;
         }
     }
     WWW.api = "https://api.nel.group/api/";
-    WWW.apiaggr = "https://apiaggr.nel.group/api/";
+    WWW.apiaggr = "https://apiscan.nel.group/api/";
     WebBrowser.WWW = WWW;
 })(WebBrowser || (WebBrowser = {}));
 var WebBrowser;

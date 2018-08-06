@@ -4,7 +4,7 @@ namespace WebBrowser
     export class WWW
     {
         static api: string = "https://api.nel.group/api/";
-        static apiaggr: string = "https://apiaggr.nel.group/api/";
+        static apiaggr: string = "https://apiscan.nel.group/api/";
 
         static makeRpcUrl(method: string, ..._params: any[])
         {
