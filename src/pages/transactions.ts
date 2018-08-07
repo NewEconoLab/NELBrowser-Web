@@ -112,8 +112,24 @@ namespace WebBrowser
 
         async getTxLine( txid: string, type: string, size: string, index: string, vins, vouts )
         {
+            console.log(vins)
+            console.log(JSON.stringify(vins));
+            console.log("--------------")
+            console.log(vouts)
+            console.log(JSON.stringify(vouts));
             var id = txid.replace( '0x', '' );
-            id = id.substring( 0, 6 ) + '...' + id.substring( id.length - 6 );
+            id = id.substring(0, 6) + '...' + id.substring(id.length - 6);
+            if (vins.length == 0 && vouts.length == 0) {
+                return `<div class="line">
+                            <div class="line-general">
+                                <div class="content-nel"><span><a href="`+ Url.href_transaction(txid) + `" target="_self">` + id + `</a></span></div>
+                                <div class="content-nel"><span>`+ type.replace("Transaction", "") + `</span></div>
+                                <div class="content-nel"><span>`+ size + ` bytes</span></div>
+                                <div class="content-nel"><span><a href="`+ Url.href_block(parseInt(index)) + `" target="_self">` + index + `</a></span></div>
+                            </div>
+                            <a class="end" id="genbtn" style="border-left:none;"></a>
+                        </div>`;
+            }
             return `
             <div class="line">
                 <div class="line-general">

@@ -41,12 +41,12 @@ namespace WebBrowser
             let ajax: Ajax = new Ajax();
             let blocks: Block[] = await ajax.post('getblock', [txInfo.blockindex]);
             let block: Block = blocks[0];
-            let time = DateTool.dateFtt("dd-MM-yyyy hh:mm:ss", new Date(block.time * 1000));
-            if (location.pathname == '/zh/') {
-                let newDate = new Date();
-                newDate.setTime(block.time * 1000);
-                time = newDate.toLocaleString();
-            }
+            let time = DateTool.getTime(block.time);
+            //if (location.pathname == '/zh/') {
+            //    let newDate = new Date();
+            //    newDate.setTime(block.time * 1000);
+            //    time = newDate.toLocaleString();
+            //}
             $("#transaction-time").text(time);
             //let allAsset: Asset[] = await WWW.api_getAllAssets();
 
@@ -103,7 +103,7 @@ namespace WebBrowser
 
             $("#txidnep5").empty();
             let txidNep = await WWW.api_getnep5transferbytxid(txid);
-            console.log(txidNep);
+            //console.log(txidNep);
             if (txidNep) {
                 $(".txidnep-warp").show();
                 txidNep.forEach((item) => {

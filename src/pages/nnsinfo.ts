@@ -95,9 +95,7 @@
             if (location.pathname == '/zh/') {
                 str12 = "域名过期时间";
             }
-            console.log(domainname)
             let res = await WWW.apiaggr_getdomaininfo(domainname);
-            console.log(res);
             if (!res) {
                 html = `<div class="line" style="text-align: center;padding: 16px;font-size: 16px;"><span>There is no data </span></div>`;
                 if (location.pathname == '/zh/') {
@@ -107,19 +105,17 @@
                 return false;
             }
             let domainInfo: DomainInfo = res[0] as DomainInfo;
-            console.log("-----------domaininfo------------------")
-            console.log(domainInfo);
             if (domainInfo.auctionState) {
                 //开标时间
                 let startTime = '';
                 if (domainInfo.startAuctionTime != "0") {
                     let time = parseFloat(domainInfo.startAuctionTime);
-                    startTime = DateTool.dateFtt("dd-MM-yyyy hh:mm:ss", new Date(time * 1000));
-                    if (location.pathname == '/zh/') {
-                        let newDate = new Date();
-                        newDate.setTime(time * 1000);
-                        startTime = newDate.toLocaleString();
-                    }
+                    startTime = DateTool.getTime(time);
+                    //if (location.pathname == '/zh/') {
+                    //    let newDate = new Date();
+                    //    newDate.setTime(time * 1000);
+                    //    startTime = newDate.toLocaleString();
+                    //}
                 } else {
                     startTime = 'Unknown';
                     if (location.pathname == '/zh/') {
@@ -130,12 +126,12 @@
                 let endTime = '';
                 if (domainInfo.endBlockTime != "0") {
                     let time = parseFloat(domainInfo.endBlockTime);
-                    endTime = DateTool.dateFtt("dd-MM-yyyy hh:mm:ss", new Date(time * 1000));
-                    if (location.pathname == '/zh/') {
-                        let newDate = new Date();
-                        newDate.setTime(time * 1000);
-                        endTime = newDate.toLocaleString();
-                    }
+                    endTime = DateTool.getTime(time);
+                    //if (location.pathname == '/zh/') {
+                    //    let newDate = new Date();
+                    //    newDate.setTime(time * 1000);
+                    //    endTime = newDate.toLocaleString();
+                    //}
                 } else {
                     endTime = 'Unknown';
                     if (location.pathname == '/zh/') {
@@ -146,12 +142,12 @@
                 let expireTime = '';
                 if (domainInfo.ttl != "0") {
                     let time = parseFloat(domainInfo.ttl);
-                    expireTime = DateTool.dateFtt("dd-MM-yyyy hh:mm:ss", new Date(time * 1000));
-                    if (location.pathname == '/zh/') {
-                        let newDate = new Date();
-                        newDate.setTime(time * 1000);
-                        expireTime = newDate.toLocaleString();
-                    }
+                    expireTime = DateTool.getTime(time);
+                    //if (location.pathname == '/zh/') {
+                    //    let newDate = new Date();
+                    //    newDate.setTime(time * 1000);
+                    //    expireTime = newDate.toLocaleString();
+                    //}
                 } else {
                     expireTime = 'Unknown';
                     if (location.pathname == '/zh/') {
@@ -258,17 +254,16 @@
         }
 
         public loadDomainView(bidHistory) {
-            console.log(bidHistory);
             bidHistory.forEach((domain) => {
                 let bidTime = '';
                 if (domain.addPriceTime != "0") {
                     let time = parseFloat(domain.addPriceTime);
-                    bidTime = DateTool.dateFtt("dd-MM-yyyy hh:mm:ss", new Date(time * 1000));
-                    if (location.pathname == '/zh/') {
-                        let newDate = new Date();
-                        newDate.setTime(time * 1000);
-                        bidTime = newDate.toLocaleString();
-                    }
+                    bidTime = DateTool.getTime(time);
+                    //if (location.pathname == '/zh/') {
+                    //    let newDate = new Date();
+                    //    newDate.setTime(time * 1000);
+                    //    bidTime = newDate.toLocaleString();
+                    //}
                 } else {
                     bidTime = 'Unknown';
                     if (location.pathname == '/zh/') {

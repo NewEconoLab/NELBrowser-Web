@@ -48,18 +48,13 @@
             let res2: any = '';
             var arr = location.hash.split('/');
             
-            //let arr = hash;
             if (arr[0] == '#mainnet') {
                 res2 = await WWW.api_getnep5balanceofaddress("", "");
                 
             }
-                
             if (arr[0] == "#testnet") {
                 res2 = await WWW.api_getnep5balanceofaddress("2761020e5e6dfcd8d37fdd50ff98fa0f93bccf54", "ALjSnMZidJqd18iQaoCgFun6iqWRm2cVtj");
             }
-            console.log(res2);
-                
-
             if (res) {
                 //$("#coninpool").html(res[0].bonus + " SGas");
                 $("#accumulated").html(res[0].profit + " SGas");
@@ -81,9 +76,6 @@
         //查询域名
         async seachDomainInfo(domainname:string) {
             //let domainname = $("#searchDomain").val();
-            console.log("-----input domainname--------");
-            console.log($("#inputDomain").val());
-            console.log(domainname.indexOf(".neo"));
             if (domainname.indexOf(".neo") == -1) {
                 domainname = domainname + ".neo";
             } 
@@ -123,13 +115,10 @@
                 str8 = "状态";
             }
             let res = await WWW.apiaggr_getdomaininfo(domainname);
-            console.log(res);
             if (!res) {
                 return false;
             }
             let domainInfo: DomainInfo = res[0] as DomainInfo;
-            console.log("-----------domaininfo------------------")
-            console.log(domainInfo);
             if (domainInfo.auctionState) {
                 let href = Url.href_nns(domainInfo.domain);
                 let hreftxid = Url.href_transaction(domainInfo.txid);
@@ -167,12 +156,12 @@
                     let endtime = '';
                     if (domainInfo.ttl != "0") {
                         let time = parseFloat(domainInfo.ttl);
-                        endtime = DateTool.dateFtt("dd-MM-yyyy hh:mm:ss", new Date(time * 1000));
-                        if (location.pathname == '/zh/') {
-                            let newDate = new Date();
-                            newDate.setTime(time * 1000);
-                            endtime = newDate.toLocaleString();
-                        }
+                        endtime = DateTool.getTime(time);
+                        //if (location.pathname == '/zh/') {
+                        //    let newDate = new Date();
+                        //    newDate.setTime(time * 1000);
+                        //    endtime = newDate.toLocaleString();
+                        //}
                     } else {
                         endtime = 'Unknown';
                         if (location.pathname == '/zh/') {
@@ -296,12 +285,12 @@
                     let endtime = '';
                     if (domain.ttl != "0") {
                         let time = parseFloat(domain.ttl);
-                        endtime = DateTool.dateFtt("dd-MM-yyyy hh:mm:ss", new Date(time * 1000));
-                        if (location.pathname == '/zh/') {
-                            let newDate = new Date();
-                            newDate.setTime(time * 1000);
-                            endtime = newDate.toLocaleString();
-                        }
+                        endtime = DateTool.getTime(time);
+                        //if (location.pathname == '/zh/') {
+                        //    let newDate = new Date();
+                        //    newDate.setTime(time * 1000);
+                        //    endtime = newDate.toLocaleString();
+                        //}
                     } else {
                         endtime = 'Unknown';
                         if (location.pathname == '/zh/') {

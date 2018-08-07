@@ -69,12 +69,12 @@ namespace WebBrowser
         //AddressInfo视图
         loadAddressInfo(address: string, addrMsg: AddressMsg[])
         {
-            let createdTime = DateTool.dateFtt("dd-MM-yyyy hh:mm:ss", new Date(addrMsg[0].firstuse.blocktime.$date));
-            if (location.pathname == '/zh/') {
-                let newDate = new Date();
-                newDate.setTime(addrMsg[0].firstuse.blocktime.$date);
-                createdTime = newDate.toLocaleString();
-            } 
+            let createdTime = DateTool.getTime(addrMsg[0].firstuse.blocktime.$date);
+            //if (location.pathname == '/zh/') {
+            //    let newDate = new Date();
+            //    newDate.setTime(addrMsg[0].firstuse.blocktime.$date);
+            //    createdTime = newDate.toLocaleString();
+            //} 
             let totalTran = addrMsg[0].txcount;
             $("#address").text(address);
             $("#created").text(createdTime);
@@ -200,12 +200,12 @@ namespace WebBrowser
                 }
                 for (var n = 0; n < listLength; n++) {
                     let txid = txlist[n].txid;
-                    let time = DateTool.dateFtt("dd-MM-yyyy hh:mm:ss", new Date(txlist[n].blocktime.$date));
-                    if (location.pathname == '/zh/') {
-                        let newDate = new Date();
-                        newDate.setTime(txlist[n].blocktime.$date);
-                        time = newDate.toLocaleString();
-                    }
+                    let time = DateTool.getTime(txlist[n].blocktime.$date);
+                    //if (location.pathname == '/zh/') {
+                    //    let newDate = new Date();
+                    //    newDate.setTime(txlist[n].blocktime.$date);
+                    //    time = newDate.toLocaleString();
+                    //}
                     let html: string = await this.getAddrTransLine(txid, txlist[n].type, time, txlist[n].vin, txlist[n].vout);
                     $("#addr-trans").append(html);
                 }
@@ -266,7 +266,7 @@ namespace WebBrowser
             }
         }
 
-        async getAddrTransLine(txid: string, type: string, time: number, vins, vouts) {
+        async getAddrTransLine(txid: string, type: string, time: string, vins, vouts) {
             var id = txid.replace('0x', '');
             id = id.substring(0, 6) + '...' + id.substring(id.length - 6);
             return `

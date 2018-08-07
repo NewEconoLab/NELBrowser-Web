@@ -92,18 +92,17 @@
          */
         public loadView(rankList)
         {
-            console.log(rankList);
             rankList.forEach((domain) =>
             {
                 let endtime = '';
                 if (domain.ttl != "0") {
                     let time = parseFloat(domain.ttl);
-                    endtime = DateTool.dateFtt("dd-MM-yyyy hh:mm:ss", new Date(time * 1000));
-                    if (location.pathname == '/zh/') {
-                        let newDate = new Date();
-                        newDate.setTime(time * 1000);
-                        endtime = newDate.toLocaleString();
-                    }
+                    endtime = DateTool.getTime(time);
+                    //if (location.pathname == '/zh/') {
+                    //    let newDate = new Date();
+                    //    newDate.setTime(time * 1000);
+                    //    endtime = newDate.toLocaleString();
+                    //}
                 } else {
                     endtime = 'Unknown';
                     if (location.pathname == '/zh/') {

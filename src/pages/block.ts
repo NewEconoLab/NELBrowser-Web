@@ -49,12 +49,12 @@
             let ajax: Ajax = new Ajax();
             let blocks: Block[] = await ajax.post( 'getblock', [index] );
             let block: Block = blocks[0];
-            let time = DateTool.dateFtt("dd-MM-yyyy hh:mm:ss", new Date(block.time * 1000));
-            if (location.pathname == '/zh/') {
-                let newDate = new Date();
-                newDate.setTime(block.time * 1000);
-                time = newDate.toLocaleString();
-            } 
+            let time = DateTool.getTime(block.time);
+            //if (location.pathname == '/zh/') {
+            //    let newDate = new Date();
+            //    newDate.setTime(block.time * 1000);
+            //    time = newDate.toLocaleString();
+            //} 
 
             $("#hash" ).text( block.hash );
             $("#size" ).text( block.size + ' byte' );

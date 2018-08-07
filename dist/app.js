@@ -53,12 +53,12 @@ var WebBrowser;
                 let ajax = new WebBrowser.Ajax();
                 let blocks = yield ajax.post('getblock', [index]);
                 let block = blocks[0];
-                let time = WebBrowser.DateTool.dateFtt("dd-MM-yyyy hh:mm:ss", new Date(block.time * 1000));
-                if (location.pathname == '/zh/') {
-                    let newDate = new Date();
-                    newDate.setTime(block.time * 1000);
-                    time = newDate.toLocaleString();
-                }
+                let time = WebBrowser.DateTool.getTime(block.time);
+                //if (location.pathname == '/zh/') {
+                //    let newDate = new Date();
+                //    newDate.setTime(block.time * 1000);
+                //    time = newDate.toLocaleString();
+                //} 
                 $("#hash").text(block.hash);
                 $("#size").text(block.size + ' byte');
                 $("#time").text(time);
@@ -194,12 +194,12 @@ var WebBrowser;
                 //let newDate = new Date();
                 blocks.forEach((item, index, input) => {
                     //newDate.setTime(item.time * 1000);
-                    let time = WebBrowser.DateTool.dateFtt("dd-MM-yyyy hh:mm:ss", new Date(item.time * 1000));
-                    if (location.pathname == '/zh/') {
-                        let newDate = new Date();
-                        newDate.setTime(item.time * 1000);
-                        time = newDate.toLocaleString();
-                    }
+                    let time = WebBrowser.DateTool.getTime(item.time);
+                    //if (location.pathname == '/zh/') {
+                    //    let newDate = new Date();
+                    //    newDate.setTime(item.time * 1000);
+                    //    time = newDate.toLocaleString();
+                    //} 
                     let html = `
                 <tr>
                 <td><a href="` + WebBrowser.Url.href_block(item.index) + `" target="_self">` + item.index + `</a></td>
@@ -640,6 +640,16 @@ var WebBrowser;
                     fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
             return fmt;
         }
+        static getTime(date) {
+            date = date.toString().length == 10 ? date * 1000 : date;
+            let time = new Date(date);
+            if (location.pathname != '/zh/') {
+                return new Date(time).toUTCString();
+            }
+            else {
+                return this.dateFtt("yyyy/MM/dd hh:mm:ss", new Date(time));
+            }
+        }
     }
     WebBrowser.DateTool = DateTool;
 })(WebBrowser || (WebBrowser = {}));
@@ -711,12 +721,12 @@ var WebBrowser;
         }
         //AddressInfo视图
         loadAddressInfo(address, addrMsg) {
-            let createdTime = WebBrowser.DateTool.dateFtt("dd-MM-yyyy hh:mm:ss", new Date(addrMsg[0].firstuse.blocktime.$date));
-            if (location.pathname == '/zh/') {
-                let newDate = new Date();
-                newDate.setTime(addrMsg[0].firstuse.blocktime.$date);
-                createdTime = newDate.toLocaleString();
-            }
+            let createdTime = WebBrowser.DateTool.getTime(addrMsg[0].firstuse.blocktime.$date);
+            //if (location.pathname == '/zh/') {
+            //    let newDate = new Date();
+            //    newDate.setTime(addrMsg[0].firstuse.blocktime.$date);
+            //    createdTime = newDate.toLocaleString();
+            //} 
             let totalTran = addrMsg[0].txcount;
             $("#address").text(address);
             $("#created").text(createdTime);
@@ -839,12 +849,12 @@ var WebBrowser;
                     }
                     for (var n = 0; n < listLength; n++) {
                         let txid = txlist[n].txid;
-                        let time = WebBrowser.DateTool.dateFtt("dd-MM-yyyy hh:mm:ss", new Date(txlist[n].blocktime.$date));
-                        if (location.pathname == '/zh/') {
-                            let newDate = new Date();
-                            newDate.setTime(txlist[n].blocktime.$date);
-                            time = newDate.toLocaleString();
-                        }
+                        let time = WebBrowser.DateTool.getTime(txlist[n].blocktime.$date);
+                        //if (location.pathname == '/zh/') {
+                        //    let newDate = new Date();
+                        //    newDate.setTime(txlist[n].blocktime.$date);
+                        //    time = newDate.toLocaleString();
+                        //}
                         let html = yield this.getAddrTransLine(txid, txlist[n].type, time, txlist[n].vin, txlist[n].vout);
                         $("#addr-trans").append(html);
                     }
@@ -1003,19 +1013,19 @@ var WebBrowser;
                 let addrlist = yield WebBrowser.WWW.getaddrs(this.pageUtil.pageSize, this.pageUtil.currentPage);
                 //let newDate: Date = new Date();
                 addrlist.map((item) => {
-                    let firstTime = WebBrowser.DateTool.dateFtt("dd-MM-yyyy hh:mm:ss", new Date(item.firstuse.blocktime.$date));
-                    if (location.pathname == '/zh/') {
-                        let newDate = new Date();
-                        newDate.setTime(item.firstuse.blocktime.$date);
-                        firstTime = newDate.toLocaleString();
-                    }
+                    let firstTime = WebBrowser.DateTool.getTime(item.firstuse.blocktime.$date);
+                    //if (location.pathname == '/zh/') {
+                    //    let newDate = new Date();
+                    //    newDate.setTime(item.firstuse.blocktime.$date);
+                    //    firstTime = newDate.toLocaleString();
+                    //}
                     item.firstDate = firstTime;
-                    let lastTime = WebBrowser.DateTool.dateFtt("dd-MM-yyyy hh:mm:ss", new Date(item.lastuse.blocktime.$date));
-                    if (location.pathname == '/zh/') {
-                        let newDate = new Date();
-                        newDate.setTime(item.lastuse.blocktime.$date);
-                        lastTime = newDate.toLocaleString();
-                    }
+                    let lastTime = WebBrowser.DateTool.getTime(item.lastuse.blocktime.$date);
+                    //if (location.pathname == '/zh/') {
+                    //    let newDate = new Date();
+                    //    newDate.setTime(item.lastuse.blocktime.$date);
+                    //    lastTime = newDate.toLocaleString();
+                    //}
                     item.lastDate = lastTime;
                 });
                 this.loadView(addrlist);
@@ -1456,12 +1466,12 @@ var WebBrowser;
                 let ajax = new WebBrowser.Ajax();
                 let blocks = yield ajax.post('getblock', [txInfo.blockindex]);
                 let block = blocks[0];
-                let time = WebBrowser.DateTool.dateFtt("dd-MM-yyyy hh:mm:ss", new Date(block.time * 1000));
-                if (location.pathname == '/zh/') {
-                    let newDate = new Date();
-                    newDate.setTime(block.time * 1000);
-                    time = newDate.toLocaleString();
-                }
+                let time = WebBrowser.DateTool.getTime(block.time);
+                //if (location.pathname == '/zh/') {
+                //    let newDate = new Date();
+                //    newDate.setTime(block.time * 1000);
+                //    time = newDate.toLocaleString();
+                //}
                 $("#transaction-time").text(time);
                 //let allAsset: Asset[] = await WWW.api_getAllAssets();
                 let arr = new Array();
@@ -1508,7 +1518,7 @@ var WebBrowser;
                 });
                 $("#txidnep5").empty();
                 let txidNep = yield WebBrowser.WWW.api_getnep5transferbytxid(txid);
-                console.log(txidNep);
+                //console.log(txidNep);
                 if (txidNep) {
                     $(".txidnep-warp").show();
                     txidNep.forEach((item) => {
@@ -1806,12 +1816,12 @@ var WebBrowser;
                 blocks.forEach((item, index, input) => {
                     //var newDate = new Date();
                     //newDate.setTime(item.time * 1000);
-                    let time = WebBrowser.DateTool.dateFtt("dd-MM-yyyy hh:mm:ss", new Date(item.time * 1000));
-                    if (location.pathname == '/zh/') {
-                        let newDate = new Date();
-                        newDate.setTime(item.time * 1000);
-                        time = newDate.toLocaleString();
-                    }
+                    let time = WebBrowser.DateTool.getTime(item.time);
+                    //if (location.pathname == '/zh/') {
+                    //    let newDate = new Date();
+                    //    newDate.setTime(item.time * 1000);
+                    //    time = newDate.toLocaleString();
+                    //}
                     html_blocks += `
                 <tr><td>
                 <a class="code" target="_self" href ='` + WebBrowser.Url.href_block(item.index) + `' > 
@@ -2081,8 +2091,24 @@ var WebBrowser;
         }
         getTxLine(txid, type, size, index, vins, vouts) {
             return __awaiter(this, void 0, void 0, function* () {
+                console.log(vins);
+                console.log(JSON.stringify(vins));
+                console.log("--------------");
+                console.log(vouts);
+                console.log(JSON.stringify(vouts));
                 var id = txid.replace('0x', '');
                 id = id.substring(0, 6) + '...' + id.substring(id.length - 6);
+                if (vins.length == 0 && vouts.length == 0) {
+                    return `<div class="line">
+                            <div class="line-general">
+                                <div class="content-nel"><span><a href="` + WebBrowser.Url.href_transaction(txid) + `" target="_self">` + id + `</a></span></div>
+                                <div class="content-nel"><span>` + type.replace("Transaction", "") + `</span></div>
+                                <div class="content-nel"><span>` + size + ` bytes</span></div>
+                                <div class="content-nel"><span><a href="` + WebBrowser.Url.href_block(parseInt(index)) + `" target="_self">` + index + `</a></span></div>
+                            </div>
+                            <a class="end" id="genbtn" style="border-left:none;"></a>
+                        </div>`;
+                }
                 return `
             <div class="line">
                 <div class="line-general">
@@ -2449,14 +2475,12 @@ var WebBrowser;
                 let res = yield WebBrowser.WWW.apiaggr_getstatistics();
                 let res2 = '';
                 var arr = location.hash.split('/');
-                //let arr = hash;
                 if (arr[0] == '#mainnet') {
                     res2 = yield WebBrowser.WWW.api_getnep5balanceofaddress("", "");
                 }
                 if (arr[0] == "#testnet") {
                     res2 = yield WebBrowser.WWW.api_getnep5balanceofaddress("2761020e5e6dfcd8d37fdd50ff98fa0f93bccf54", "ALjSnMZidJqd18iQaoCgFun6iqWRm2cVtj");
                 }
-                console.log(res2);
                 if (res) {
                     //$("#coninpool").html(res[0].bonus + " SGas");
                     $("#accumulated").html(res[0].profit + " SGas");
@@ -2482,9 +2506,6 @@ var WebBrowser;
         seachDomainInfo(domainname) {
             return __awaiter(this, void 0, void 0, function* () {
                 //let domainname = $("#searchDomain").val();
-                console.log("-----input domainname--------");
-                console.log($("#inputDomain").val());
-                console.log(domainname.indexOf(".neo"));
                 if (domainname.indexOf(".neo") == -1) {
                     domainname = domainname + ".neo";
                 }
@@ -2524,13 +2545,10 @@ var WebBrowser;
                     str8 = "状态";
                 }
                 let res = yield WebBrowser.WWW.apiaggr_getdomaininfo(domainname);
-                console.log(res);
                 if (!res) {
                     return false;
                 }
                 let domainInfo = res[0];
-                console.log("-----------domaininfo------------------");
-                console.log(domainInfo);
                 if (domainInfo.auctionState) {
                     let href = WebBrowser.Url.href_nns(domainInfo.domain);
                     let hreftxid = WebBrowser.Url.href_transaction(domainInfo.txid);
@@ -2568,12 +2586,12 @@ var WebBrowser;
                         let endtime = '';
                         if (domainInfo.ttl != "0") {
                             let time = parseFloat(domainInfo.ttl);
-                            endtime = WebBrowser.DateTool.dateFtt("dd-MM-yyyy hh:mm:ss", new Date(time * 1000));
-                            if (location.pathname == '/zh/') {
-                                let newDate = new Date();
-                                newDate.setTime(time * 1000);
-                                endtime = newDate.toLocaleString();
-                            }
+                            endtime = WebBrowser.DateTool.getTime(time);
+                            //if (location.pathname == '/zh/') {
+                            //    let newDate = new Date();
+                            //    newDate.setTime(time * 1000);
+                            //    endtime = newDate.toLocaleString();
+                            //}
                         }
                         else {
                             endtime = 'Unknown';
@@ -2701,12 +2719,12 @@ var WebBrowser;
                         let endtime = '';
                         if (domain.ttl != "0") {
                             let time = parseFloat(domain.ttl);
-                            endtime = WebBrowser.DateTool.dateFtt("dd-MM-yyyy hh:mm:ss", new Date(time * 1000));
-                            if (location.pathname == '/zh/') {
-                                let newDate = new Date();
-                                newDate.setTime(time * 1000);
-                                endtime = newDate.toLocaleString();
-                            }
+                            endtime = WebBrowser.DateTool.getTime(time);
+                            //if (location.pathname == '/zh/') {
+                            //    let newDate = new Date();
+                            //    newDate.setTime(time * 1000);
+                            //    endtime = newDate.toLocaleString();
+                            //}
                         }
                         else {
                             endtime = 'Unknown';
@@ -2969,17 +2987,16 @@ var WebBrowser;
          * loadView
          */
         loadView(rankList) {
-            console.log(rankList);
             rankList.forEach((domain) => {
                 let endtime = '';
                 if (domain.ttl != "0") {
                     let time = parseFloat(domain.ttl);
-                    endtime = WebBrowser.DateTool.dateFtt("dd-MM-yyyy hh:mm:ss", new Date(time * 1000));
-                    if (location.pathname == '/zh/') {
-                        let newDate = new Date();
-                        newDate.setTime(time * 1000);
-                        endtime = newDate.toLocaleString();
-                    }
+                    endtime = WebBrowser.DateTool.getTime(time);
+                    //if (location.pathname == '/zh/') {
+                    //    let newDate = new Date();
+                    //    newDate.setTime(time * 1000);
+                    //    endtime = newDate.toLocaleString();
+                    //}
                 }
                 else {
                     endtime = 'Unknown';
@@ -3100,9 +3117,7 @@ var WebBrowser;
                 if (location.pathname == '/zh/') {
                     str12 = "域名过期时间";
                 }
-                console.log(domainname);
                 let res = yield WebBrowser.WWW.apiaggr_getdomaininfo(domainname);
-                console.log(res);
                 if (!res) {
                     html = `<div class="line" style="text-align: center;padding: 16px;font-size: 16px;"><span>There is no data </span></div>`;
                     if (location.pathname == '/zh/') {
@@ -3112,19 +3127,17 @@ var WebBrowser;
                     return false;
                 }
                 let domainInfo = res[0];
-                console.log("-----------domaininfo------------------");
-                console.log(domainInfo);
                 if (domainInfo.auctionState) {
                     //开标时间
                     let startTime = '';
                     if (domainInfo.startAuctionTime != "0") {
                         let time = parseFloat(domainInfo.startAuctionTime);
-                        startTime = WebBrowser.DateTool.dateFtt("dd-MM-yyyy hh:mm:ss", new Date(time * 1000));
-                        if (location.pathname == '/zh/') {
-                            let newDate = new Date();
-                            newDate.setTime(time * 1000);
-                            startTime = newDate.toLocaleString();
-                        }
+                        startTime = WebBrowser.DateTool.getTime(time);
+                        //if (location.pathname == '/zh/') {
+                        //    let newDate = new Date();
+                        //    newDate.setTime(time * 1000);
+                        //    startTime = newDate.toLocaleString();
+                        //}
                     }
                     else {
                         startTime = 'Unknown';
@@ -3136,12 +3149,12 @@ var WebBrowser;
                     let endTime = '';
                     if (domainInfo.endBlockTime != "0") {
                         let time = parseFloat(domainInfo.endBlockTime);
-                        endTime = WebBrowser.DateTool.dateFtt("dd-MM-yyyy hh:mm:ss", new Date(time * 1000));
-                        if (location.pathname == '/zh/') {
-                            let newDate = new Date();
-                            newDate.setTime(time * 1000);
-                            endTime = newDate.toLocaleString();
-                        }
+                        endTime = WebBrowser.DateTool.getTime(time);
+                        //if (location.pathname == '/zh/') {
+                        //    let newDate = new Date();
+                        //    newDate.setTime(time * 1000);
+                        //    endTime = newDate.toLocaleString();
+                        //}
                     }
                     else {
                         endTime = 'Unknown';
@@ -3153,12 +3166,12 @@ var WebBrowser;
                     let expireTime = '';
                     if (domainInfo.ttl != "0") {
                         let time = parseFloat(domainInfo.ttl);
-                        expireTime = WebBrowser.DateTool.dateFtt("dd-MM-yyyy hh:mm:ss", new Date(time * 1000));
-                        if (location.pathname == '/zh/') {
-                            let newDate = new Date();
-                            newDate.setTime(time * 1000);
-                            expireTime = newDate.toLocaleString();
-                        }
+                        expireTime = WebBrowser.DateTool.getTime(time);
+                        //if (location.pathname == '/zh/') {
+                        //    let newDate = new Date();
+                        //    newDate.setTime(time * 1000);
+                        //    expireTime = newDate.toLocaleString();
+                        //}
                     }
                     else {
                         expireTime = 'Unknown';
@@ -3265,17 +3278,16 @@ var WebBrowser;
             });
         }
         loadDomainView(bidHistory) {
-            console.log(bidHistory);
             bidHistory.forEach((domain) => {
                 let bidTime = '';
                 if (domain.addPriceTime != "0") {
                     let time = parseFloat(domain.addPriceTime);
-                    bidTime = WebBrowser.DateTool.dateFtt("dd-MM-yyyy hh:mm:ss", new Date(time * 1000));
-                    if (location.pathname == '/zh/') {
-                        let newDate = new Date();
-                        newDate.setTime(time * 1000);
-                        bidTime = newDate.toLocaleString();
-                    }
+                    bidTime = WebBrowser.DateTool.getTime(time);
+                    //if (location.pathname == '/zh/') {
+                    //    let newDate = new Date();
+                    //    newDate.setTime(time * 1000);
+                    //    bidTime = newDate.toLocaleString();
+                    //}
                 }
                 else {
                     bidTime = 'Unknown';

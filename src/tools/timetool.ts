@@ -2,11 +2,9 @@ namespace WebBrowser
 {
 
 
-    export class DateTool
-    {
+    export class DateTool {
         /**************************************时间格式化处理************************************/
-        static dateFtt(fmt, date)   
-        { //author: meizz   
+        static dateFtt(fmt, date): string { //author: meizz   
             var o = {
                 "M+": date.getMonth() + 1,                 //月份   
                 "d+": date.getDate(),                    //日   
@@ -20,8 +18,18 @@ namespace WebBrowser
                 fmt = fmt.replace(RegExp.$1, (date.getFullYear() + "").substr(4 - RegExp.$1.length));
             for (var k in o)
                 if (new RegExp("(" + k + ")").test(fmt))
-                    fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[ k ]) : (("00" + o[ k ]).substr(("" + o[ k ]).length)));
+                    fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
             return fmt;
+        }
+
+        static getTime(date: number) {
+            date = date.toString().length == 10 ? date * 1000 : date;
+            let time = new Date(date);
+            if (location.pathname != '/zh/') {
+                return new Date(time).toUTCString();
+            } else {
+                return this.dateFtt("yyyy/MM/dd hh:mm:ss", new Date(time));
+            }
         }
     }
 }
