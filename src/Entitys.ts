@@ -341,6 +341,7 @@ namespace WebBrowser
         blockindex: string;
         domain: string;
         endBlockTime: string;
+        id: string;
         maxBuyer: string;
         maxPrice: string;
         startAuctionTime: string;

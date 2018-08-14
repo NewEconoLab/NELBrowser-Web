@@ -273,8 +273,8 @@ namespace WebBrowser
             return r;
         }
         //domain竞拍加价详情
-        static async apiaggr_getbiddetailbydomain(domain: string, page: number, pagesize: number) {
-            var str = WWW.makeUrl("getbiddetailbydomain", WWW.apiaggr + locationtool.getNetWork(), domain, page, pagesize);
+        static async apiaggr_getbiddetailbyauctionid(id: string, page: number, pagesize: number) {
+            var str = WWW.makeUrl("getbiddetailbyauctionid", WWW.apiaggr + locationtool.getNetWork(), id, page, pagesize);
             var result = await fetch(str, { "method": "get" });
             var json = await result.json();
             var r = json["result"];

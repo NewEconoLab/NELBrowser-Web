@@ -4,6 +4,7 @@
     {
         div: HTMLDivElement = document.getElementById("domain-info") as HTMLDivElement;
         footer: HTMLDivElement = document.getElementById('footer-box') as HTMLDivElement;
+        domainDetail: DomainInfo;
         private pageUtil: PageUtil;
         close(): void
         {
@@ -21,13 +22,12 @@
             }
             $("#goBackDomain").empty();
             $("#goBackDomain").append(html);
-            this.domainInfoInit(domainname, true);  
             $("#domainHistory-next").off("click").click(() => {
                 if (this.pageUtil.currentPage == this.pageUtil.totalPage) {
                     this.pageUtil.currentPage = this.pageUtil.totalPage;
                 } else {
                     this.pageUtil.currentPage += 1;
-                    this.domainInfoInit(domainname,false);                    
+                    this.domainInfoInit(this.domainDetail.id, false);                    
                 }
             });
             $("#domainHistory-previous").off("click").click(() => {
@@ -35,7 +35,7 @@
                     this.pageUtil.currentPage = 1;
                 } else {
                     this.pageUtil.currentPage -= 1;
-                    this.domainInfoInit(domainname,false);  
+                    this.domainInfoInit(this.domainDetail.id, false);  
                 }
             });
             this.div.hidden = false;
@@ -97,19 +97,21 @@
             }
             let res = await WWW.apiaggr_getdomaininfo(domainname);
             if (!res) {
-                html = `<div class="line" style="text-align: center;padding: 16px;font-size: 16px;"><span>There is no data </span></div>`;
+                html = `<div class="line" style="text-align: center;padding: 16px;font-size: 16px;color:#fff;"><span>There is no data </span></div>`;
                 if (location.pathname == '/zh/') {
-                    html = `<div class="line" style="text-align: center;padding: 16px;font-size: 16px;"><span>没有数据</span></div>`;
+                    html = `<div class="line" style="text-align: center;padding: 16px;font-size: 16px;color:#fff;"><span>没有数据</span></div>`;
                 }
                 $("#domaininfo-msg").append(html);
+                this.domainInfoInit("", true); 
                 return false;
             }
-            let domainInfo: DomainInfo = res[0] as DomainInfo;
-            if (domainInfo.auctionState) {
+            this.domainDetail = res[0] as DomainInfo;
+            this.domainInfoInit(this.domainDetail.id, true);  
+            if (this.domainDetail.auctionState) {
                 //开标时间
                 let startTime = '';
-                if (domainInfo.startAuctionTime != "0") {
-                    let time = parseFloat(domainInfo.startAuctionTime);
+                if (this.domainDetail.startAuctionTime != "0") {
+                    let time = parseFloat(this.domainDetail.startAuctionTime);
                     startTime = DateTool.getTime(time);
                     //if (location.pathname == '/zh/') {
                     //    let newDate = new Date();
@@ -124,8 +126,8 @@
                 }
                 //预计竞拍结束时间
                 let endTime = '';
-                if (domainInfo.endBlockTime != "0") {
-                    let time = parseFloat(domainInfo.endBlockTime);
+                if (this.domainDetail.endBlockTime != "0") {
+                    let time = parseFloat(this.domainDetail.endBlockTime);
                     endTime = DateTool.getTime(time);
                     //if (location.pathname == '/zh/') {
                     //    let newDate = new Date();
@@ -140,8 +142,8 @@
                 }
                 //过期时间
                 let expireTime = '';
-                if (domainInfo.ttl != "0") {
-                    let time = parseFloat(domainInfo.ttl);
+                if (this.domainDetail.ttl != "0") {
+                    let time = parseFloat(this.domainDetail.ttl);
                     expireTime = DateTool.getTime(time);
                     //if (location.pathname == '/zh/') {
                     //    let newDate = new Date();
@@ -154,10 +156,10 @@
                         expireTime = '未知';
                     }
                 }
-                let hrefblock = Url.href_transaction(domainInfo.blockindex);
-                let hrefaddr = Url.href_address(domainInfo.maxBuyer);
-                if (domainInfo.auctionState != "0") {
-                    switch (domainInfo.auctionState) {
+                let hrefblock = Url.href_transaction(this.domainDetail.blockindex);
+                let hrefaddr = Url.href_address(this.domainDetail.maxBuyer);
+                if (this.domainDetail.auctionState != "0") {
+                    switch (this.domainDetail.auctionState) {
                         case '1':
                             status = "Auction period";
                             if (location.pathname == '/zh/') {
@@ -176,42 +178,41 @@
                         tips = " ( 结束时间并不是确定的，为了避免您错失想要的域名，请尽早出价。 )";
                     }
                     
-                    html = `<div class="line"><div class="title-nel"><span>` + str1 + `</span></div> <div class="content-nel"><span>` + domainInfo.domain + `</span></div></div>
-                            <div class="line"><div class="title-nel"><span>`+ str2 + `</span></div> <div class="content-nel"><span>` + domainInfo.txid + `</span></div></div>
+                    html = `<div class="line"><div class="title-nel"><span>` + str1 + `</span></div> <div class="content-nel"><span>` + this.domainDetail.domain + `</span></div></div>
+                            <div class="line"><div class="title-nel"><span>`+ str2 + `</span></div> <div class="content-nel"><span>` + this.domainDetail.txid + `</span></div></div>
                             <div class="line"><div class="title-nel"><span>`+ str3 + `</span></div> <div class="content-nel"><span>` + startTime + `</span></div></div>
                             <div class="line"><div class="title-nel"><span>`+ str4 + `</span></div><div class="content-nel"><span style="white-space: nowrap;">` + endTime + tips + `</span></div></div>
-                            <div class="line"><div class="title-nel"><span>`+ str5 + `</span></div><div class="content-nel"><span>` + domainInfo.maxPrice + `</span></div></div>
-                            <div class="line"><div class="title-nel"><span>`+ str6 + `</span></div><div class="content-nel"><span><a href="` + hrefaddr + `">` + domainInfo.maxBuyer + `</a></span></div></div>
+                            <div class="line"><div class="title-nel"><span>`+ str5 + `</span></div><div class="content-nel"><span>` + this.domainDetail.maxPrice + `</span></div></div>
+                            <div class="line"><div class="title-nel"><span>`+ str6 + `</span></div><div class="content-nel"><span><a href="` + hrefaddr + `">` + this.domainDetail.maxBuyer + `</a></span></div></div>
                             <div class="line"><div class="title-nel"><span>`+ str7 + `</span></div><div class="content-nel"><span>` + status + `</span></div></div>
-                            <div class="line"><div class="title-nel"><span>`+ str8 + `</span></div><div class="content-nel"><span><a href="` + hrefblock + `">` + domainInfo.blockindex + `</a></span></div></div>`;
+                            <div class="line"><div class="title-nel"><span>`+ str8 + `</span></div><div class="content-nel"><span><a href="` + hrefblock + `">` + this.domainDetail.blockindex + `</a></span></div></div>`;
                 }
                 else {
-                    html = `<div class="line"><div class="title-nel"><span>` + str1 + `</span></div> <div class="content-nel"><span>` + domainInfo.domain + `</span></div></div>
-                    <div class="line"><div class="title-nel"><span>` + str2 + `</span></div> <div class="content-nel"><span>` + domainInfo.txid + `</span></div></div>
+                    html = `<div class="line"><div class="title-nel"><span>` + str1 + `</span></div> <div class="content-nel"><span>` + this.domainDetail.domain + `</span></div></div>
+                    <div class="line"><div class="title-nel"><span>` + str2 + `</span></div> <div class="content-nel"><span>` + this.domainDetail.txid + `</span></div></div>
                     <div class="line"><div class="title-nel"><span>` + str3 + `</span></div> <div class="content-nel"><span>` + startTime + `</span></div></div>
                     <div class="line"><div class="title-nel"><span>` + str9 + `</span></div><div class="content-nel"><span>` + endTime + `</span></div></div>
-                    <div class="line"><div class="title-nel"><span>` + str10 + `</span></div><div class="content-nel"><span>` + domainInfo.maxPrice + `</span></div></div>
-                    <div class="line"><div class="title-nel"><span>` + str11 + `</span></div><div class="content-nel"><span><a href="` + hrefaddr + `">` + domainInfo.maxBuyer + `</a></span></div></div>
+                    <div class="line"><div class="title-nel"><span>` + str10 + `</span></div><div class="content-nel"><span>` + this.domainDetail.maxPrice + `</span></div></div>
+                    <div class="line"><div class="title-nel"><span>` + str11 + `</span></div><div class="content-nel"><span><a href="` + hrefaddr + `">` + this.domainDetail.maxBuyer + `</a></span></div></div>
                     <div class="line"><div class="title-nel"><span>` + str12 + `</span></div><div class="content-nel"><span>` + expireTime + `</span></div></div>
-                    <div class="line"><div class="title-nel"><span>` + str8 + `</span></div><div class="content-nel"><span><a href="` + hrefblock + `">` + domainInfo.blockindex + `</a></span></div></div>`;
+                    <div class="line"><div class="title-nel"><span>` + str8 + `</span></div><div class="content-nel"><span><a href="` + hrefblock + `">` + this.domainDetail.blockindex + `</a></span></div></div>`;
                 }
                 
             }
             $("#domaininfo-msg").append(html);
         }
 
-        async domainInfoInit(domainname: string, first: boolean) {
+        async domainInfoInit(id: string, first: boolean) {
             $("#auctionInfo").empty();
             let domain: DomainInfoHistory;
             if (!first) {  //判断是否为初始加载
-                domain = await WWW.apiaggr_getbiddetailbydomain(domainname, this.pageUtil.currentPage, this.pageUtil.pageSize) as DomainInfoHistory;
+                domain = await WWW.apiaggr_getbiddetailbyauctionid(id, this.pageUtil.currentPage, this.pageUtil.pageSize) as DomainInfoHistory;
             } else {     //初始加载
-                domain = await WWW.apiaggr_getbiddetailbydomain(domainname, 1, 10) as DomainInfoHistory;
+                domain = await WWW.apiaggr_getbiddetailbyauctionid(id, 1, 10) as DomainInfoHistory;
                 if (domain) {
                     this.pageUtil = new PageUtil(domain[0].count, 10);
                 }
             }
-            console.log(this.pageUtil);
             if (domain && domain[0].list.length!=0) {
                 this.loadDomainView(domain[0].list);
 
