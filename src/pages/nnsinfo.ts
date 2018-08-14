@@ -208,9 +208,10 @@
             } else {     //初始加载
                 domain = await WWW.apiaggr_getbiddetailbydomain(domainname, 1, 10) as DomainInfoHistory;
                 if (domain) {
-                    this.pageUtil = new PageUtil(domain[0].count-1, 10);
+                    this.pageUtil = new PageUtil(domain[0].count, 10);
                 }
             }
+            console.log(this.pageUtil);
             if (domain && domain[0].list.length!=0) {
                 this.loadDomainView(domain[0].list);
 

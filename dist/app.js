@@ -455,6 +455,7 @@ var WebBrowser;
         }
         //search asset list
         static apiaggr_searchAsset(str) {
+            var str;
             return __awaiter(this, void 0, void 0, function* () {
                 str = WWW.makeUrl("fuzzysearchasset", WWW.apiaggr + WebBrowser.locationtool.getNetWork(), str);
                 var result = yield fetch(str, { "method": "get" });
@@ -462,7 +463,6 @@ var WebBrowser;
                 var r = json["result"];
                 return r;
             });
-            var str;
         }
         /*NNS start*/
         //nns统计
@@ -589,7 +589,8 @@ var WebBrowser;
                     break;
                 }
             }
-            if (count.compareTo(sendcount) >= 0) {
+            if (count.compareTo(sendcount) >= 0) //输入大于0
+             {
                 tran.outputs = [];
                 //输出
                 var output = new ThinNeo.TransactionOutput();
@@ -2771,10 +2772,10 @@ var WebBrowser;
             return __awaiter(this, void 0, void 0, function* () {
                 $("#domainBeingListPage").empty();
                 let domain;
-                if (!first) {
+                if (!first) { //判断是否为初始加载
                     domain = (yield WebBrowser.WWW.apiaggr_getauctingdomain(this.pageUtil.currentPage, this.pageUtil.pageSize));
                 }
-                else {
+                else { //初始加载
                     domain = (yield WebBrowser.WWW.apiaggr_getauctingdomain(1, 15));
                     if (domain) {
                         this.pageUtil = new WebBrowser.PageUtil(domain[0].count, 15);
@@ -2908,10 +2909,10 @@ var WebBrowser;
             return __awaiter(this, void 0, void 0, function* () {
                 $("#domainUseListPage").empty();
                 let domain;
-                if (!first) {
+                if (!first) { //判断是否为初始加载
                     domain = (yield WebBrowser.WWW.apiaggr_getaucteddomain(this.pageUtil.currentPage, this.pageUtil.pageSize));
                 }
-                else {
+                else { //初始加载
                     domain = (yield WebBrowser.WWW.apiaggr_getaucteddomain(1, 15));
                     if (domain) {
                         this.pageUtil = new WebBrowser.PageUtil(domain[0].count, 15);
@@ -3227,15 +3228,16 @@ var WebBrowser;
             return __awaiter(this, void 0, void 0, function* () {
                 $("#auctionInfo").empty();
                 let domain;
-                if (!first) {
+                if (!first) { //判断是否为初始加载
                     domain = (yield WebBrowser.WWW.apiaggr_getbiddetailbydomain(domainname, this.pageUtil.currentPage, this.pageUtil.pageSize));
                 }
-                else {
+                else { //初始加载
                     domain = (yield WebBrowser.WWW.apiaggr_getbiddetailbydomain(domainname, 1, 10));
                     if (domain) {
-                        this.pageUtil = new WebBrowser.PageUtil(domain[0].count - 1, 10);
+                        this.pageUtil = new WebBrowser.PageUtil(domain[0].count, 10);
                     }
                 }
+                console.log(this.pageUtil);
                 if (domain && domain[0].list.length != 0) {
                     this.loadDomainView(domain[0].list);
                     if (domain.count <= 11) {
