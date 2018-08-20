@@ -11,11 +11,13 @@ body {
     padding-top: 30px;
     margin: 0;
 }
-
+a{
+    cursor:pointer;
+}
 
 #searchText, #searchText:hover, #searchText:focus {
     border: 0;
-    width: 460px;
+    width: 370px;
 }
 
 #searchBtn {
@@ -23,7 +25,7 @@ body {
 }
 
 .input-append:hover #searchText, .input-append #searchText:hover, .input-append #searchText:focus {
-    width: 460px;
+    width: 370px;
     border-right: 0;
     outline: 0;
 }
@@ -590,19 +592,4 @@ body {
     width: 80px;
 }
 
-.footer-language {
-    position: absolute;
-    right: 10px;
-    top: 91px;
-}
-.footer-language .dropdown-toggle {
-    font-size: 18px;
-    color: #FFFFFF;
-    text-align: right;
-    line-height: 18px;
-    text-decoration:none;
-}
-.footer-language .open > .dropdown-nel {
-    left:-63px;
-}
 /*footer end*/
