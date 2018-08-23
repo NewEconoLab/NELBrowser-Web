@@ -393,6 +393,10 @@ var WebBrowser;
                 var result = yield fetch(str, { "method": "get" });
                 var json = yield result.json();
                 var r = json["result"];
+                if (r) {
+                    r = json["result"][0];
+                    return r["list"];
+                }
                 return r;
             });
         }
@@ -859,6 +863,13 @@ var WebBrowser;
                         let html = yield this.getAddrTransLine(txid, txlist[n].type, time, txlist[n].vin, txlist[n].vout);
                         $("#addr-trans").append(html);
                     }
+                }
+                else {
+                    let html = `<div class="line" style="text-align:center;padding:16px;font-size:16px;">There is no data</div>`;
+                    if (location.pathname == '/zh/') {
+                        html = `<div class="line" style="text-align:center;padding:16px;font-size:16px;">没有数据</div>`;
+                    }
+                    $("#addr-trans").append(html);
                 }
                 let minNum = pageUtil.currentPage * pageUtil.pageSize - pageUtil.pageSize;
                 let maxNum = pageUtil.totalCount;

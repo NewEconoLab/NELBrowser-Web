@@ -172,7 +172,11 @@ namespace WebBrowser
             var result = await fetch(str, { "method": "get"});
             var json = await result.json();
             var r = json["result"];
-            return r as TransOfAddress[];
+            if (r) {
+                r = json["result"][0];
+                return r["list"] as TransOfAddress[];
+            }
+            return r
         }
 
         static async api_getaddrMsg(addr: string) {
