@@ -4523,6 +4523,20 @@ var WebBrowser;
             $("#searchText").focusout(() => {
                 $("#nel-search").removeClass("nel-input");
             });
+            let language = sessionStorage.getItem("language");
+            if (!language) {
+                !function () {
+                    let lang = navigator.language; //常规浏览器语言和IE浏览器
+                    lang = lang.substr(0, 2); //截取lang前2位字符
+                    if (lang == 'zh') {
+                        window.location.href = '/zh/' + location.hash;
+                    }
+                    else {
+                        window.location.href = '/' + location.hash;
+                    }
+                    sessionStorage.setItem("language", "fisrtTime");
+                }();
+            }
         }
         //区块列表
         blocksPage() {
