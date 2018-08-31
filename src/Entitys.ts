@@ -318,10 +318,12 @@ namespace WebBrowser
     {
         count: number;
         list: {
-            fulldomain: string;
-            txid: string;
-            maxBuyer: string;
+            fulldomain: string;            
             maxPrice: string;
+            maxBuyer: string;
+            lastTime: {
+                txid: string;
+            }
             range: number;
             ttl: string;
         }[];
@@ -337,26 +339,36 @@ namespace WebBrowser
         }[];
     }
     export interface DomainInfo {
-        auctionState: string;
-        blockindex: string;
-        domain: string;
-        endBlockTime: string;
-        id: string;
-        maxBuyer: string;
-        maxPrice: string;
-        startAuctionTime: string;
-        ttl: string;
-        txid: string;
+        auctionId: string,
+        fulldomain: string,
+        auctionState: string,
+        startTime: {
+            blockindex: number,
+            blocktime: number,
+        }
+        maxPrice: string,
+        maxBuyer: string,
+        endTime: {
+            blocktime:number
+        }
+        ttl: number;
+    }
+    export interface DomainPriceRank {
+        list: {
+            rank: number;
+            address: string;
+            totalValue: string;
+        }[];
+        count: number;
     }
     export interface DomainInfoHistory {
         count: number;
         list: {
-            maxPrice: string;
-            maxBuyer: string;
-            addPriceTime: number;
             txid: string;
-            bidder: string;
-            raisebid: number;
+            type: string;
+            address: string;
+            value: string;
+            time: number;
         }[];
     }
 

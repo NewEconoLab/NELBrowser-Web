@@ -244,7 +244,7 @@ namespace WebBrowser
             var r = json["result"];
             return r;
         }
-        //根据txid获取nep5
+        //根据txid获取nep5(获取未发放的分红)
         static async api_getnep5balanceofaddress(nep5: string,addr: string) {
             var str = WWW.makeRpcUrl("getnep5balanceofaddress", nep5, addr);
             var result = await fetch(str, { "method": "get" });
@@ -252,14 +252,7 @@ namespace WebBrowser
             var r = json["result"];
             return r;
         }
-        //查询domain竞拍情况
-        static async apiaggr_getdomaininfo(domainname: string) {
-            var str = WWW.makeUrl("getdomaininfo", WWW.apiaggr + locationtool.getNetWork(), domainname);
-            var result = await fetch(str, { "method": "get" });
-            var json = await result.json();
-            var r = json["result"];
-            return r;
-        }
+        
         //domain正在竞拍列表
         static async apiaggr_getauctingdomain( page: number, pagesize: number) {
             var str = WWW.makeUrl("getauctingdomain", WWW.apiaggr + locationtool.getNetWork(), page, pagesize);
@@ -276,9 +269,25 @@ namespace WebBrowser
             var r = json["result"];
             return r;
         }
+        //domain竞拍详情||查询domain竞拍情况
+        static async apiaggr_getauctioninfo(domain: string) {
+            var str = WWW.makeUrl("searchbydomain", WWW.apiaggr + locationtool.getNetWork(), domain);
+            var result = await fetch(str, { "method": "get" });
+            var json = await result.json();
+            var r = json["result"];
+            return r;
+        }
+        //domain加价排行
+        static async apiaggr_getauctioninfoRank(id: string, page: number, pagesize: number) {
+            var str = WWW.makeUrl("getauctioninfoRank", WWW.apiaggr + locationtool.getNetWork(), id, page, pagesize);
+            var result = await fetch(str, { "method": "get" });
+            var json = await result.json();
+            var r = json["result"];
+            return r;
+        }
         //domain竞拍加价详情
-        static async apiaggr_getbiddetailbyauctionid(id: string, page: number, pagesize: number) {
-            var str = WWW.makeUrl("getbiddetailbyauctionid", WWW.apiaggr + locationtool.getNetWork(), id, page, pagesize);
+        static async apiaggr_getauctioninfoTx(id: string, page: number, pagesize: number) {
+            var str = WWW.makeUrl("getauctioninfoTx", WWW.apiaggr + locationtool.getNetWork(), id, page, pagesize);
             var result = await fetch(str, { "method": "get" });
             var json = await result.json();
             var r = json["result"];

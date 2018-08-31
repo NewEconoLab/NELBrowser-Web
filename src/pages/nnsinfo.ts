@@ -6,6 +6,7 @@
         footer: HTMLDivElement = document.getElementById('footer-box') as HTMLDivElement;
         domainDetail: DomainInfo;
         private pageUtil: PageUtil;
+        private rankpageUtil: PageUtil;
         close(): void
         {
             this.div.hidden = true;
@@ -27,7 +28,7 @@
                     this.pageUtil.currentPage = this.pageUtil.totalPage;
                 } else {
                     this.pageUtil.currentPage += 1;
-                    this.domainInfoInit(this.domainDetail.id, false);                    
+                    this.domainInfoInit(this.domainDetail.auctionId, false);                    
                 }
             });
             $("#domainHistory-previous").off("click").click(() => {
@@ -35,180 +36,261 @@
                     this.pageUtil.currentPage = 1;
                 } else {
                     this.pageUtil.currentPage -= 1;
-                    this.domainInfoInit(this.domainDetail.id, false);  
+                    this.domainInfoInit(this.domainDetail.auctionId, false);  
+                }
+            });
+            $("#domainRank-next").off("click").click(() => {
+                if (this.rankpageUtil.currentPage == this.pageUtil.totalPage) {
+                    this.rankpageUtil.currentPage = this.pageUtil.totalPage;
+                } else {
+                    this.rankpageUtil.currentPage += 1;
+                    this.getDomainRank(this.domainDetail.auctionId, false);
+                }
+            });
+            $("#domainRank-previous").off("click").click(() => {
+                if (this.rankpageUtil.currentPage <= 1) {
+                    this.rankpageUtil.currentPage = 1;
+                } else {
+                    this.rankpageUtil.currentPage -= 1;
+                    this.getDomainRank(this.domainDetail.auctionId, false);
                 }
             });
             this.div.hidden = false;
             this.footer.hidden = false;
         }
+        //语言切换
+        languageToggle() {
+            //let status = '';
+            let arr: Array<string> = [];
+            arr[0] = "Domain name";
+            arr[1] = "Txid";
+            arr[2] = "Auction start time";
+            arr[3] = "Estimated end time";
+            arr[4] = "Highest bid";
+            arr[5] = "Bidder";
+            arr[6] = "Status";
+            arr[7] = "Auction-starting block";
+            arr[8] = "Auction end time";
+            arr[9] = "Hammer price";
+            arr[10] = "Owner";
+            arr[11] = "Expiration date";
+            arr[12] = `<p>The auction period is the first stage of the auction and its duration is 3 days, during which all bids are valid. An overtime bidding of up to 2 days will be triggered when someone bids on the last day of the auction period. Otherwise the auction ends at the end of the auction period.</p>
+                        <p>The overtime bidding is the second stage of the auction. Its maximum duration is 2 days. During this period, any bid may trigger the end of the bidding of this domain and the bid will be invalid. The latter one bids, the more likely it triggers the end of the bidding. So it's advised to place a bid as early as possible to avoid missing this domain. </p>`
 
+            if (location.pathname == '/zh/') {
+                arr[0] = "域名";
+                arr[1] = "交易ID";
+                arr[2] = "竞拍开始时间";
+                arr[3] = "预计结束时间";
+                arr[4] = "当前最高价";
+                arr[5] = "竞标人";
+                arr[6] = "状态";
+                arr[7] = "开标所属区块";
+                arr[8] = "竞拍结束时间";
+                arr[9] = "成交价";
+                arr[10] = "中标人";
+                arr[11] = "域名过期时间";
+                arr[12] = `<p>确定期为竞拍第一阶段，时长为3天，此期间所有的出价都有效。当确定期最后一天有人出价时将触发最大时长为2天的随机期。否则竞拍即在确定期结束。</p>
+                        <p>随机期为竞拍第二阶段，最大时长为2天，此期间任意一个出价都有可能触发该域名竞拍的结束从而出价无效，越靠后的出价触发结束的可能性越大，因此请尽早出价以免错失该域名。</p>`;
+            }
+            return arr;
+        }
+
+        //加载域名信息详情
         async queryDomain(domainname: string )
         {
             $("#domaininfo-msg").empty();
-            let status = '';
             let html = '';
-            let str1 = "Domain name";
-            if (location.pathname == '/zh/') {
-                str1 = "域名";
-            }
-            let str2 = "Txid";
-            if (location.pathname == '/zh/') {
-                str2 = "交易ID";
-            }
-            let str3 = "Auction start time";
-            if (location.pathname == '/zh/') {
-                str3 = "竞拍开始时间";
-            }
-            let str4 = "Estimated end time";
-            if (location.pathname == '/zh/') {
-                str4 = "预计结束时间";
-            }
-            let str5 = "Highest bid";
-            if (location.pathname == '/zh/') {
-                str5 = "当前最高价";
-            }
-            let str6 = "Bidder";
-            if (location.pathname == '/zh/') {
-                str6 = "竞标人";
-            }
-            let str7 = "Status";
-            if (location.pathname == '/zh/') {
-                str7 = "状态";
-            }
-            let str8 = "Included in block";
-            if (location.pathname == '/zh/') {
-                str8 = "区块高度";
-            }
-            let str9 = "Auction end time";
-            if (location.pathname == '/zh/') {
-                str9 = "竞拍结束时间";
-            }
-            let str10 = "Hammer price";
-            if (location.pathname == '/zh/') {
-                str10 = "成交价";
-            }
-            let str11 = "Owner";
-            if (location.pathname == '/zh/') {
-                str11 = "中标人";
-            }
-            let str12 = "Expiration date";
-            if (location.pathname == '/zh/') {
-                str12 = "域名过期时间";
-            }
-            let res = await WWW.apiaggr_getdomaininfo(domainname);
+            let res = await WWW.apiaggr_getauctioninfo(domainname);
             if (!res) {
                 html = `<div class="line" style="text-align: center;padding: 16px;font-size: 16px;color:#fff;"><span>There is no data </span></div>`;
                 if (location.pathname == '/zh/') {
                     html = `<div class="line" style="text-align: center;padding: 16px;font-size: 16px;color:#fff;"><span>没有数据</span></div>`;
                 }
                 $("#domaininfo-msg").append(html);
+                this.getDomainRank("", true);
                 this.domainInfoInit("", true); 
                 return false;
             }
             this.domainDetail = res[0] as DomainInfo;
-            this.domainInfoInit(this.domainDetail.id, true);  
-            if (this.domainDetail.auctionState) {
-                //开标时间
-                let startTime = '';
-                if (this.domainDetail.startAuctionTime != "0") {
-                    let time = parseFloat(this.domainDetail.startAuctionTime);
-                    startTime = DateTool.getTime(time);
-                    //if (location.pathname == '/zh/') {
-                    //    let newDate = new Date();
-                    //    newDate.setTime(time * 1000);
-                    //    startTime = newDate.toLocaleString();
-                    //}
-                } else {
-                    startTime = 'Unknown';
-                    if (location.pathname == '/zh/') {
-                        startTime = '未知';
-                    }
+            console.log(this.domainDetail)
+            this.domainInfoInit(this.domainDetail.auctionId, true);
+            this.getDomainRank(this.domainDetail.auctionId, true);
+            let strArr = this.languageToggle();
+            /**域名详情start*/
+            //开标时间
+            let startTime = '';
+            if (this.domainDetail.startTime.blocktime != 0) {
+                startTime = DateTool.getTime(this.domainDetail.startTime.blocktime);
+            } else {
+                startTime = 'Unknown';
+                if (location.pathname == '/zh/') {
+                    startTime = '未知';
                 }
-                //预计竞拍结束时间
-                let endTime = '';
-                if (this.domainDetail.endBlockTime != "0") {
-                    let time = parseFloat(this.domainDetail.endBlockTime);
-                    endTime = DateTool.getTime(time);
-                    //if (location.pathname == '/zh/') {
-                    //    let newDate = new Date();
-                    //    newDate.setTime(time * 1000);
-                    //    endTime = newDate.toLocaleString();
-                    //}
-                } else {
-                    endTime = 'Unknown';
-                    if (location.pathname == '/zh/') {
-                        endTime = '未知';
-                    }
+            }
+            //预计竞拍结束时间
+            let endTime = '';
+            if (this.domainDetail.endTime.blocktime != 0) {
+                endTime = DateTool.getTime(this.domainDetail.endTime.blocktime);
+            } else {
+                endTime = 'Unknown';
+                if (location.pathname == '/zh/') {
+                    endTime = '未知';
                 }
-                //过期时间
-                let expireTime = '';
-                if (this.domainDetail.ttl != "0") {
-                    let time = parseFloat(this.domainDetail.ttl);
-                    expireTime = DateTool.getTime(time);
-                    //if (location.pathname == '/zh/') {
-                    //    let newDate = new Date();
-                    //    newDate.setTime(time * 1000);
-                    //    expireTime = newDate.toLocaleString();
-                    //}
-                } else {
-                    expireTime = 'Unknown';
-                    if (location.pathname == '/zh/') {
-                        expireTime = '未知';
-                    }
+            }
+            //过期时间
+            let expireTime = '';
+            if (this.domainDetail.ttl != 0) {
+                expireTime = DateTool.getTime(this.domainDetail.ttl);
+            } else {
+                expireTime = 'Unknown';
+                if (location.pathname == '/zh/') {
+                    expireTime = '未知';
                 }
-                let hrefblock = Url.href_transaction(this.domainDetail.blockindex);
-                let hrefaddr = Url.href_address(this.domainDetail.maxBuyer);
-                if (this.domainDetail.auctionState != "0") {
-                    switch (this.domainDetail.auctionState) {
-                        case '1':
-                            status = "Auction period";
-                            if (location.pathname == '/zh/') {
-                                status = '确定期';
-                            }
-                            break;
-                        case '2':
-                            status = "Overtime bidding";
-                            if (location.pathname == '/zh/') {
-                                status = '随机期';
-                            }
-                            break;
-                    }
-                    let tips = "  ( This end time is uncertain. Please bid early to avoid missing domain names. )";
-                    if (location.pathname == '/zh/') {
-                        tips = " ( 结束时间并不是确定的，为了避免您错失想要的域名，请尽早出价。 )";
-                    }
-                    
-                    html = `<div class="line"><div class="title-nel"><span>` + str1 + `</span></div> <div class="content-nel"><span>` + this.domainDetail.domain + `</span></div></div>
-                            <div class="line"><div class="title-nel"><span>`+ str2 + `</span></div> <div class="content-nel"><span>` + this.domainDetail.txid + `</span></div></div>
-                            <div class="line"><div class="title-nel"><span>`+ str3 + `</span></div> <div class="content-nel"><span>` + startTime + `</span></div></div>
-                            <div class="line"><div class="title-nel"><span>`+ str4 + `</span></div><div class="content-nel"><span style="white-space: nowrap;">` + endTime + tips + `</span></div></div>
-                            <div class="line"><div class="title-nel"><span>`+ str5 + `</span></div><div class="content-nel"><span>` + this.domainDetail.maxPrice + `</span></div></div>
-                            <div class="line"><div class="title-nel"><span>`+ str6 + `</span></div><div class="content-nel"><span><a href="` + hrefaddr + `">` + this.domainDetail.maxBuyer + `</a></span></div></div>
-                            <div class="line"><div class="title-nel"><span>`+ str7 + `</span></div><div class="content-nel"><span>` + status + `</span></div></div>
-                            <div class="line"><div class="title-nel"><span>`+ str8 + `</span></div><div class="content-nel"><span><a href="` + hrefblock + `">` + this.domainDetail.blockindex + `</a></span></div></div>`;
-                }
-                else {
-                    html = `<div class="line"><div class="title-nel"><span>` + str1 + `</span></div> <div class="content-nel"><span>` + this.domainDetail.domain + `</span></div></div>
-                    <div class="line"><div class="title-nel"><span>` + str2 + `</span></div> <div class="content-nel"><span>` + this.domainDetail.txid + `</span></div></div>
-                    <div class="line"><div class="title-nel"><span>` + str3 + `</span></div> <div class="content-nel"><span>` + startTime + `</span></div></div>
-                    <div class="line"><div class="title-nel"><span>` + str9 + `</span></div><div class="content-nel"><span>` + endTime + `</span></div></div>
-                    <div class="line"><div class="title-nel"><span>` + str10 + `</span></div><div class="content-nel"><span>` + this.domainDetail.maxPrice + `</span></div></div>
-                    <div class="line"><div class="title-nel"><span>` + str11 + `</span></div><div class="content-nel"><span><a href="` + hrefaddr + `">` + this.domainDetail.maxBuyer + `</a></span></div></div>
-                    <div class="line"><div class="title-nel"><span>` + str12 + `</span></div><div class="content-nel"><span>` + expireTime + `</span></div></div>
-                    <div class="line"><div class="title-nel"><span>` + str8 + `</span></div><div class="content-nel"><span><a href="` + hrefblock + `">` + this.domainDetail.blockindex + `</a></span></div></div>`;
-                }
+            }
+            let hrefblock = Url.href_transaction(this.domainDetail.startTime.blockindex.toString()); //区块高度的链接
+            let hrefaddr = Url.href_address(this.domainDetail.maxBuyer);
                 
+            let imgIcon = '';
+            if (this.domainDetail.auctionState == "0201" || this.domainDetail.auctionState == "0301") {
+                
+                switch (this.domainDetail.auctionState) {
+                    case '0201':
+                        imgIcon = `<div class="hint-box">
+                                <div class="hint-msg">
+                                    <div class="hint-img">
+                                        <img src="../../img/notice-g.png" alt="">
+                                    </div>
+                                    <div class="hint-content">  
+                                        ${strArr[12]}
+                                    </div>
+                                </div>
+                            </div>`;
+                        status = `<span style="color:#2DDE4F">Auction period</span>${imgIcon}`;
+                        if (location.pathname == '/zh/') {
+                            status = `<span style="color:#2DDE4F">确定期</span>${imgIcon}`;
+                        }
+                            
+                        break;
+                    case '0301':
+                        imgIcon = `<div class="hint-box">
+                                <div class="hint-msg">
+                                    <div class="hint-img">
+                                        <img src="../../img/notice-b.png" alt="">                              
+                                    </div>
+                                    <div class="hint-content">  
+                                        ${strArr[12]}
+                                    </div>
+                                </div>
+                            </div>`;
+                        status = `<span style="color:#2DDE4F">Overtime bidding</span>${imgIcon}`;
+                        if (location.pathname == '/zh/') {
+                            status = `<span style="color:#2DDE4F">随机期</span>${imgIcon}`;
+                        }
+                            
+                        break;
+                }
+                let tips = "  ( This end time is uncertain. Please bid early to avoid missing domain names. )";
+                if (location.pathname == '/zh/') {
+                    tips = " ( 结束时间并不是确定的，为了避免您错失想要的域名，请尽早出价。 )";
+                }
+
+                html = `<div class="line"><div class="title-nel"><span>` + strArr[0] + `</span></div> <div class="content-nel"><span>` + this.domainDetail.fulldomain + `</span></div></div>
+                        <div class="line"><div class="title-nel"><span>`+ strArr[1] + `</span></div> <div class="content-nel"><span>` + this.domainDetail.auctionId + `</span></div></div>
+                        <div class="line"><div class="title-nel"><span>`+ strArr[2] + `</span></div> <div class="content-nel"><span>` + startTime + `</span></div></div>
+                        <div class="line"><div class="title-nel"><span>`+ strArr[3] + `</span></div><div class="content-nel"><span style="white-space: nowrap;">` + endTime + tips + `</span></div></div>
+                        <div class="line"><div class="title-nel"><span>`+ strArr[4] + `</span></div><div class="content-nel"><span>` + this.domainDetail.maxPrice + `</span></div></div>
+                        <div class="line"><div class="title-nel"><span>`+ strArr[5] + `</span></div><div class="content-nel"><span><a href="` + hrefaddr + `">` + this.domainDetail.maxBuyer + `</a></span></div></div>
+                        <div class="line"><div class="title-nel"><span>`+ strArr[6] + `</span></div><div class="content-nel">` + status + `</div></div>
+                        <div class="line"><div class="title-nel"><span style="font-size:14px;">`+ strArr[7] + `</span></div><div class="content-nel"><span><a href="` + hrefblock + `">` + this.domainDetail.startTime.blockindex + `</a></span></div></div>`;
+            }
+            else {
+                html = `<div class="line"><div class="title-nel"><span>` + strArr[0] + `</span></div> <div class="content-nel"><span>` + this.domainDetail.fulldomain + `</span></div></div>
+                <div class="line"><div class="title-nel"><span>` + strArr[1] + `</span></div> <div class="content-nel"><span>` + this.domainDetail.auctionId +`</span></div></div>
+                <div class="line"><div class="title-nel"><span>` + strArr[2] + `</span></div> <div class="content-nel"><span>` + startTime + `</span></div></div>
+                <div class="line"><div class="title-nel"><span>` + strArr[8] + `</span></div><div class="content-nel"><span>` + endTime + `</span></div></div>
+                <div class="line"><div class="title-nel"><span>` + strArr[9] + `</span></div><div class="content-nel"><span>` + this.domainDetail.maxPrice + `</span></div></div>
+                <div class="line"><div class="title-nel"><span>` + strArr[10] + `</span></div><div class="content-nel"><span><a href="` + hrefaddr + `">` + this.domainDetail.maxBuyer + `</a></span></div></div>
+                <div class="line"><div class="title-nel"><span>` + strArr[11] + `</span></div><div class="content-nel"><span>` + expireTime + `</span></div></div>
+                <div class="line"><div class="title-nel"><span style="font-size:14px;">` + strArr[7] + `</span></div><div class="content-nel"><span><a href="` + hrefblock + `">` + this.domainDetail.startTime.blockindex + `</a></span></div></div>`;
             }
             $("#domaininfo-msg").append(html);
         }
-
-        async domainInfoInit(id: string, first: boolean) {
-            $("#auctionInfo").empty();
+        //加载域名竞拍金额排名
+        async getDomainRank(domainid: string, first: boolean) {
+            $("#auctionRank").empty();
+            let html = `<tr><td colspan="5">There is no data</td></tr>`;
+            if (location.pathname == '/zh/') {
+                html = `<tr><td colspan="5">没有数据</td></tr>`;
+            }
+            $("#domainRank-page").hide();
+            $("#auctionRank").append(html);
+            return false;
             let domain: DomainInfoHistory;
             if (!first) {  //判断是否为初始加载
-                domain = await WWW.apiaggr_getbiddetailbyauctionid(id, this.pageUtil.currentPage, this.pageUtil.pageSize) as DomainInfoHistory;
+                domain = await WWW.apiaggr_getauctioninfoRank(domainid, this.rankpageUtil.currentPage, this.rankpageUtil.pageSize) as DomainInfoHistory;
             } else {     //初始加载
-                domain = await WWW.apiaggr_getbiddetailbyauctionid(id, 1, 10) as DomainInfoHistory;
+                domain = await WWW.apiaggr_getauctioninfoRank(domainid, 1, 10) as DomainInfoHistory;
+                if (domain) {
+                    this.rankpageUtil = new PageUtil(domain[0].count, 10);
+                }
+            }
+            if (domain && domain[0].list.length != 0) {
+                this.loadDomainRankView(domain[0].list);
+
+                if (domain.count <= 11) {
+                    $("#domainRank-page").hide();
+                } else {
+                    $("#domainRank-next").addClass('disabled');
+                    $("#domainRank-page").show();
+                }
+            }
+            else {
+                let html = `<tr><td colspan="5">There is no data</td></tr>`;
+                if (location.pathname == '/zh/') {
+                    html = `<tr><td colspan="5">没有数据</td></tr>`;
+                }
+                $("#domainRank-page").hide();
+                $("#auctionRank").append(html);
+                return
+            }
+
+            let minNum = this.pageUtil.currentPage * this.pageUtil.pageSize - this.pageUtil.pageSize;
+            let maxNum = this.pageUtil.totalCount;
+            let diffNum = maxNum - minNum;
+            if (diffNum > 10) {
+                maxNum = this.pageUtil.currentPage * this.pageUtil.pageSize;
+            }
+            let pageMsg = "Bid rank " + (minNum + 1) + " to " + maxNum + " of " + this.pageUtil.totalCount;
+            $("#domainRank-page").find("#domainHistory-msg").html(pageMsg);
+            if (this.pageUtil.totalPage - this.pageUtil.currentPage) {
+                $("#domainRank-next").removeClass('disabled');
+            } else {
+                $("#domainRank-next").addClass('disabled');
+            }
+            if (this.pageUtil.currentPage - 1) {
+                $("#domainRank-previous").removeClass('disabled');
+            } else {
+                $("#domainRank-previous").addClass('disabled');
+            }
+
+        }
+
+        //加载域名操作详情
+        async domainInfoInit(id: string, first: boolean) {
+            $("#auctionInfo").empty();
+            let html = `<tr><td colspan="6">There is no data</td></tr>`;
+            if (location.pathname == '/zh/') {
+                html = `<tr><td colspan="6">没有数据</td></tr>`;
+            }
+            $("#domainHistory-page").hide();
+            $("#auctionInfo").append(html);
+            return false;
+            let domain: DomainInfoHistory;
+            if (!first) {  //判断是否为初始加载
+                domain = await WWW.apiaggr_getauctioninfoTx(id, this.pageUtil.currentPage, this.pageUtil.pageSize) as DomainInfoHistory;
+            } else {     //初始加载
+                domain = await WWW.apiaggr_getauctioninfoTx(id, 1, 10) as DomainInfoHistory;
                 if (domain) {
                     this.pageUtil = new PageUtil(domain[0].count, 10);
                 }
@@ -224,15 +306,14 @@
                 }
             }
             else {
-                let html = `<tr><td colspan="5">There is no data</td></tr>`;
+                let html = `<tr><td colspan="6">There is no data</td></tr>`;
                 if (location.pathname == '/zh/') {
-                    html = `<tr><td colspan="5">没有数据</td></tr>`;
+                    html = `<tr><td colspan="6">没有数据</td></tr>`;
                 }
                 $("#domainHistory-page").hide();
                 $("#auctionInfo").append(html);
                 return
             }
-            
 
             let minNum = this.pageUtil.currentPage * this.pageUtil.pageSize - this.pageUtil.pageSize;
             let maxNum = this.pageUtil.totalCount;
@@ -254,35 +335,90 @@
             }
 
         }
-
+        //加载竞拍信息
         public loadDomainView(bidHistory) {
             bidHistory.forEach((domain) => {
                 let bidTime = '';
-                if (domain.addPriceTime != "0") {
-                    let time = parseFloat(domain.addPriceTime);
-                    bidTime = DateTool.getTime(time);
-                    //if (location.pathname == '/zh/') {
-                    //    let newDate = new Date();
-                    //    newDate.setTime(time * 1000);
-                    //    bidTime = newDate.toLocaleString();
-                    //}
+                if (domain.time != 0) {
+                    bidTime = DateTool.getTime(domain.time);
                 } else {
                     bidTime = 'Unknown';
                     if (location.pathname == '/zh/') {
                         bidTime = '未知';
                     }
                 }
+                let strTip = 'This bid triggered the closing of the domain auction and was not successful.';
+                if (location.pathname == '/zh/') {
+                    strTip = "此次出价触发竞拍结束，出价失败。";
+                }               
+                
+                let type = '';
+                switch (domain.type) {
+                    case '500301':
+                        type = "Open Auction";
+                        if (location.pathname == '/zh/') {
+                            type = "开标";
+                        }
+                        break;
+                    case '500302':
+                        type = "Raise Bid";
+                        if (location.pathname == '/zh/') {
+                            type = "加价";
+                        }
+                        break;
+                    case '500303':
+                        let imgIcon = `<div class="hint-box">
+                                <div class="hint-msg">
+                                    <div class="hint-img">
+                                        <img src="../../img/notice-g.png" alt="">
+                                    </div>
+                                    <div class="hint-content">
+                                        ${strTip}
+                                    </div>
+                                </div>
+                            </div>`;
+                        type = "End of Auction" + imgIcon;
+                        if (location.pathname == '/zh/') {
+                            type = "竞拍结束" + imgIcon;
+                        }
+                        break;
+                    case '500304':
+                        type = "Recover SGas";
+                        if (location.pathname == '/zh/') {
+                            type = "领取领回SGas";
+                        }
+                        break;
+                    case '500305':
+                        type = "Get Domain";
+                        if (location.pathname == '/zh/') {
+                            type = "领取域名";
+                        }
+                        break;
+                }
                 let hreftxid = Url.href_transaction(domain.txid);
                 let hrefaddr = Url.href_address(domain.maxBuyer);
                 let html = `
                         <tr>
                         <td> <a href="`+ hreftxid + `" target="_self">` + domain.txid + `</a></td>
-                        <td>` + domain.maxPrice + ` SGas` + `</td>
-                        <td>` + domain.raisebid + ` SGas` + `</td>
+                        <td>` + type + `</td>
                         <td><a href="`+ hrefaddr + `" target="_self">` + domain.maxBuyer + `</a></td>
+                        <td>` + domain.value + ` SGas` + `</td>
                         <td>` + bidTime + `</td>
                         </tr>`;
                 $('#auctionInfo').append(html);
+            });
+        }
+        //加载竞拍排名
+        public loadDomainRankView(bidRank) {
+            bidRank.forEach((domain) => {
+                let hrefaddr = Url.href_address(domain.maxBuyer);
+                let html = `
+                        <tr>
+                        <td>` + domain.rank + `</td>
+                        <td>` + domain.totalValue + ` SGas` + `</td>
+                        <td><a href="`+ hrefaddr + `" target="_self">` + domain.address + `</a></td>
+                        </tr>`;
+                $('#auctionRank').append(html);
             });
         }
     }

@@ -801,16 +801,43 @@
                 </div>
             </div>
             <div class="title">
+                <span>竞价排行</span>
+            </div>
+            <table class="table table-nel cool">
+                <thead>
+                    <tr>
+                        <th>排行</th>
+                        <th>竞标价格</th>
+                        <th>竞标人</th>
+                    </tr>
+                </thead>
+                <tbody id="auctionRank"></tbody>
+            </table>
+            <div id="domainRank-page">
+                <div class="page-number">
+                    <span id="domainRank-msg"></span>
+                </div>
+                <div class="page">
+                    <div id="domainRank-previous" class="page-previous">
+                        <img src="../img/lefttrangle.svg" alt="">
+                    </div>
+                    <div style="width:1px;"></div>
+                    <div id="domainRank-next" class="page-next">
+                        <img src="../img/righttrangle.svg" alt="">
+                    </div>
+                </div>
+            </div>
+            <div class="title">
                 <span>竞拍信息</span>
             </div>
             <table class="table table-nel cool">
                 <thead>
                     <tr>
                         <th>交易ID</th>
-                        <th>当前最高价</th>
-                        <th>本次加价</th>
-                        <th>最高竞标人</th>
-                        <th>加价时间</th>
+                        <th>类型</th>
+                        <th>地址</th>
+                        <th>金额</th>
+                        <th>时间</th>
                     </tr>
                 </thead>
                 <tbody id="auctionInfo"></tbody>

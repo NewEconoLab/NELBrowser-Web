@@ -73,6 +73,33 @@
                 $("#coninpool").html("0 SGas");
             }
         }
+        //语言切换
+        languageToggle() {
+            //let status = '';
+            let arr: Array<string> = [];
+            arr[0] = "Domain name";
+            arr[1] = "Txid";
+            arr[2] = "Hammer price";
+            arr[3] = "Owner";
+            arr[4] = "Expiration date";
+            arr[5] = "Highest bid";
+            arr[6] = "Bidder";
+            arr[7] = "Auction-starting block";
+            arr[8] = "Status";
+           
+            if (location.pathname == '/zh/') {
+                arr[0] = "域名";
+                arr[1] = "交易ID";
+                arr[2] = "成交价";
+                arr[3] = "中标人";
+                arr[4] = "域名过期时间";
+                arr[5] = "当前最高价";
+                arr[6] = "竞标人";
+                arr[7] = "状态";
+            }
+
+            return arr;
+        }
         //查询域名
         async seachDomainInfo(domainname:string) {
             //let domainname = $("#searchDomain").val();
@@ -81,102 +108,10 @@
             } 
             $("#domainInfo").empty();
             let status = '';
-            let html = '';
-            let str1 = "Domain name";
-            if (location.pathname == '/zh/') {
-                str1 = "域名";
-            }
-            let str2 = "Txid";
-            if (location.pathname == '/zh/') {
-                str2 = "交易ID";
-            }
-            let str3 = "Hammer price";
-            if (location.pathname == '/zh/') {
-                str3 = "成交价";
-            }
-            let str4 = "Owner";
-            if (location.pathname == '/zh/') {
-                str4 = "中标人";
-            }
-            let str5 = "Expiration date";
-            if (location.pathname == '/zh/') {
-                str5 = "域名过期时间";
-            }
-            let str6 = "Highest bid";
-            if (location.pathname == '/zh/') {
-                str6 = "当前最高价";
-            }
-            let str7 = "Bidder";
-            if (location.pathname == '/zh/') {
-                str7 = "竞标人";
-            }
-            let str8 = "Status";
-            if (location.pathname == '/zh/') {
-                str8 = "状态";
-            }
-            let res = await WWW.apiaggr_getdomaininfo(domainname);
+            let html = '';            
+            let strArr = this.languageToggle();
+            let res = await WWW.apiaggr_getauctioninfo(domainname);
             if (!res) {
-                return false;
-            }
-            let domainInfo: DomainInfo = res[0] as DomainInfo;
-            if (domainInfo.auctionState) {
-                let href = Url.href_nns(domainInfo.domain);
-                let hreftxid = Url.href_transaction(domainInfo.txid);
-                let hrefaddr = Url.href_address(domainInfo.maxBuyer);
-                if (domainInfo.auctionState != "0") {
-                    switch (domainInfo.auctionState) {
-                        case '1':
-                            status = "Auction period";
-                            if (location.pathname == '/zh/') {
-                                status = '确定期';
-                            }
-                            break;
-                        case '2':
-                            status = "Overtime bidding";
-                            if (location.pathname == '/zh/') {
-                                status = '随机期';
-                            }
-                            break;
-                    }
-                    $("#domainMsg").html(domainInfo.domain + " is being auctioned.");
-                    if (location.pathname == '/zh/') {
-                        $("#domainMsg").html(domainInfo.domain + " 正在竞拍中。");
-                    }
-                    html = `<div class="list-line"><div class="line-title"><span>` + str1 + `</span></div> <div class="line-content line-href"><a href="` + href + `">` + domainInfo.domain + `</a></div></div>
-                            <div class="list-line"><div class="line-title"><span>`+ str2 + `</span></div> <div class="line-content line-href"><a href="` + hreftxid + `">` + domainInfo.txid + `</a></div></div>
-                            <div class="list-line"><div class="line-title"><span>`+ str6 + `</span></div> <div class="line-content"><span>` + domainInfo.maxPrice + `</span></div></div>
-                            <div class="list-line"><div class="line-title"><span>`+ str7 + `</span></div> <div class="line-content line-href"><a href="` + hrefaddr +`">` + domainInfo.maxBuyer + `</a></div></div>
-                            <div class="list-line"><div class="line-title"><span>`+ str8 + `</span></div> <div class="line-content"><span>` + status + `</span></div></div>`;
-                }
-                else {
-                    $("#domainMsg").html(domainInfo.domain + " is already owned.");
-                    if (location.pathname == '/zh/') {
-                        $("#domainMsg").html(domainInfo.domain + " 已经成交了。");
-                    }
-                    let endtime = '';
-                    if (domainInfo.ttl != "0") {
-                        let time = parseFloat(domainInfo.ttl);
-                        endtime = DateTool.getTime(time);
-                        //if (location.pathname == '/zh/') {
-                        //    let newDate = new Date();
-                        //    newDate.setTime(time * 1000);
-                        //    endtime = newDate.toLocaleString();
-                        //}
-                    } else {
-                        endtime = 'Unknown';
-                        if (location.pathname == '/zh/') {
-                            endtime = '未知';
-                        }
-                    }
-                    html = `<div class="list-line"><div class="line-title"><span>` + str1 + `</span></div> <div class="line-content line-href"><a href="` + href + `">` + domainInfo.domain + `</a></div></div>
-                            <div class="list-line"><div class="line-title"><span>`+ str2 + `</span></div> <div class="line-content line-href"><a href="` + hreftxid + `">` + domainInfo.txid + `</a></div></div>
-                            <div class="list-line"><div class="line-title"><span>`+ str3 + `</span></div> <div class="line-content"><span>` + domainInfo.maxPrice + `</span></div></div>
-                            <div class="list-line"><div class="line-title"><span>`+ str4 + `</span></div> <div class="line-content line-href"><a href="` + hrefaddr +`">` + domainInfo.maxBuyer + `</a></div></div>
-                            <div class="list-line"><div class="line-title"><span>`+ str5 + `</span></div> <div class="line-content"><span>` + endtime + `</span></div></div>`;
-                }
-            }
-            else
-            {
                 let href = '';
                 if (locationtool.getNetWork() == 'testnet')
                     href = "https://testwallet.nel.group/";
@@ -184,17 +119,86 @@
                     href = "https://wallet.nel.group/";
 
                 $("#domainMsg").html(domainname + " is available!");
-                html = `<div style="text-align: center;margin-top:20px;">You can <a href="` + href +`" target="_blank">login</a> your wallet and start an auction!</div>`;
+                html = `<div style="text-align: center;margin-top:20px;">You can <a href="` + href + `" target="_blank">login</a> your wallet and start an auction!</div>`;
                 if (location.pathname == '/zh/') {
                     $("#domainMsg").html(domainname + " 可以被竞拍!");
-                    html = `<div style="text-align: center;margin-top:20px;">您可以 <a href="` + href +`" target="_blank">登陆</a> 您的钱包来竞拍此域名!</div>`;
+                    html = `<div style="text-align: center;margin-top:20px;">您可以 <a href="` + href + `" target="_blank">登陆</a> 您的钱包来竞拍此域名!</div>`;
+                }
+                $("#domainInfo").append(html);
+                $("#searchBox").show();
+                return false;
+            }
+            let domainInfo: DomainInfo = res[0] as DomainInfo;
+
+            if (domainInfo.auctionState == "0501" || domainInfo.auctionState == "0601") {//可开拍
+                let href = '';
+                if (locationtool.getNetWork() == 'testnet')
+                    href = "https://testwallet.nel.group/";
+                else
+                    href = "https://wallet.nel.group/";
+
+                $("#domainMsg").html(domainname + " is available!");
+                html = `<div style="text-align: center;margin-top:20px;">You can <a href="` + href + `" target="_blank">login</a> your wallet and start an auction!</div>`;
+                if (location.pathname == '/zh/') {
+                    $("#domainMsg").html(domainname + " 可以被竞拍!");
+                    html = `<div style="text-align: center;margin-top:20px;">您可以 <a href="` + href + `" target="_blank">登陆</a> 您的钱包来竞拍此域名!</div>`;
+                }
+            }
+            else {//已经开拍过的
+                let href = Url.href_nns(domainInfo.fulldomain);
+                let hreftxid = Url.href_transaction(domainInfo.auctionId);
+                let hrefaddr = Url.href_address(domainInfo.maxBuyer);
+                if (domainInfo.auctionState == "0201" || domainInfo.auctionState == "0301") {
+                    switch (domainInfo.auctionState) {
+                        case '0201':
+                            status = "Auction period";
+                            if (location.pathname == '/zh/') {
+                                status = '确定期';
+                            }
+                            break;
+                        case '0301':
+                            status = "Overtime bidding";
+                            if (location.pathname == '/zh/') {
+                                status = '随机期';
+                            }
+                            break;
+                    }
+                    $("#domainMsg").html(domainInfo.fulldomain + " is being auctioned.");
+                    if (location.pathname == '/zh/') {
+                        $("#domainMsg").html(domainInfo.fulldomain + " 正在竞拍中。");
+                    }
+                    html = `<div class="list-line"><div class="line-title"><span>` + strArr[0] + `</span></div> <div class="line-content line-href"><a href="` + href + `">` + domainInfo.fulldomain + `</a></div></div>
+                            <div class="list-line"><div class="line-title"><span>`+ strArr[1] + `</span></div> <div class="line-content line-href"><a href="` + hreftxid + `">` + domainInfo.auctionId + `</a></div></div>
+                            <div class="list-line"><div class="line-title"><span>`+ strArr[5] + `</span></div> <div class="line-content"><span>` + domainInfo.maxPrice + `</span></div></div>
+                            <div class="list-line"><div class="line-title"><span>`+ strArr[6] + `</span></div> <div class="line-content line-href"><a href="` + hrefaddr +`">` + domainInfo.maxBuyer + `</a></div></div>
+                            <div class="list-line"><div class="line-title"><span>`+ strArr[7] + `</span></div> <div class="line-content"><span>` + status + `</span></div></div>`;
+                }
+                else {
+                    $("#domainMsg").html(domainInfo.fulldomain + " is already owned.");
+                    if (location.pathname == '/zh/') {
+                        $("#domainMsg").html(domainInfo.fulldomain + " 已经成交了。");
+                    }
+                    let endtime = '';
+                    if (domainInfo.ttl != 0) {
+                        endtime = DateTool.getTime(domainInfo.ttl);
+                    } else {
+                        endtime = 'Unknown';
+                        if (location.pathname == '/zh/') {
+                            endtime = '未知';
+                        }
+                    }
+                    html = `<div class="list-line"><div class="line-title"><span>` + strArr[0] + `</span></div> <div class="line-content line-href"><a href="` + href + `">` + domainInfo.fulldomain + `</a></div></div>
+                            <div class="list-line"><div class="line-title"><span>`+ strArr[1] + `</span></div> <div class="line-content line-href"><a href="` + hreftxid + `">` + domainInfo.auctionId + `</a></div></div>
+                            <div class="list-line"><div class="line-title"><span>`+ strArr[2] + `</span></div> <div class="line-content"><span>` + domainInfo.maxPrice + `</span></div></div>
+                            <div class="list-line"><div class="line-title"><span>`+ strArr[3] + `</span></div> <div class="line-content line-href"><a href="` + hrefaddr +`">` + domainInfo.maxBuyer + `</a></div></div>
+                            <div class="list-line"><div class="line-title"><span>`+ strArr[4] + `</span></div> <div class="line-content"><span>` + endtime + `</span></div></div>`;
                 }
             }
             $("#domainInfo").append(html);
             $("#searchBox").show();
             
         }
-        //获取域名竞拍列表
+        //获取域名正在竞拍列表
         async getDomainList() {
             $("#domainBeingList").empty();
             let domain: DomainBiding = await WWW.apiaggr_getauctingdomain(1, 10) as DomainBiding;
@@ -225,19 +229,19 @@
                     let hrefaddr = Url.href_address(domain.maxBuyer);
                     let status = '';
                     switch (domain.auctionState) {
-                        case '0':
+                        case '0401':
                             status = 'End';
                             if (location.pathname == '/zh/') {
                                 status = '已结束';
                             }
                             break;
-                        case '1':
+                        case '0201':
                             status = "Auction period";
                             if (location.pathname == '/zh/') {
                                 status = '确定期';
                             }
                             break;
-                        case '2':
+                        case '0301':
                             status = "Overtime bidding";
                             if (location.pathname == '/zh/') {
                                 status = '随机期';
@@ -260,6 +264,7 @@
         async getDomainRank() {
             $("#domainUseList").empty();
             let rank: DomainBided = await WWW.apiaggr_getaucteddomain(1, 10) as DomainBided;
+            console.log(rank)
             if (!rank || rank[0].count == 0) {
                 $("#domainUse").hide();
                 let msg = "There is no data";
@@ -286,11 +291,6 @@
                     if (domain.ttl != "0") {
                         let time = parseFloat(domain.ttl);
                         endtime = DateTool.getTime(time);
-                        //if (location.pathname == '/zh/') {
-                        //    let newDate = new Date();
-                        //    newDate.setTime(time * 1000);
-                        //    endtime = newDate.toLocaleString();
-                        //}
                     } else {
                         endtime = 'Unknown';
                         if (location.pathname == '/zh/') {
@@ -305,7 +305,7 @@
                         <tr>
                         <td>` + domain.range + `</td>
                         <td> <a href="`+ href + `" target="_self">` + domain.fulldomain + `</a></td>
-                        <td> <a href="`+ hreftxid + `" target="_self">` + domain.txid + `</a></td>
+                        <td> <a href="`+ hreftxid + `" target="_self">` + domain.lastTime.txid + `</a></td>
                         <td>` + domain.maxPrice + ` SGas` + `</td>
                         <td><a href="`+ hrefaddr + `" target="_self">` + domain.maxBuyer + `</a></td>
                         <td>` + endtime + `</td>
