@@ -332,10 +332,13 @@ namespace WebBrowser
         count: number;
         list: {
             fulldomain: string;
-            txid: string;
+            auctionState: string;
+            lastTime: {
+                txid: string;
+            }
             maxBuyer: string;
             maxPrice: string;
-            auctionState: string;
+            
         }[];
     }
     export interface DomainInfo {
@@ -354,21 +357,21 @@ namespace WebBrowser
         ttl: number;
     }
     export interface DomainPriceRank {
-        list: {
-            rank: number;
-            address: string;
-            totalValue: string;
-        }[];
         count: number;
+        list: {
+            address: string;
+            range: number;            
+            totalValue: string;
+        }[];        
     }
     export interface DomainInfoHistory {
         count: number;
         list: {
+            address: string;
+            amount: string;
+            time: number;
             txid: string;
             type: string;
-            address: string;
-            value: string;
-            time: number;
         }[];
     }
 

@@ -19,10 +19,12 @@
                 if (e.keyCode == 13) {
                     self.seachDomainInfo(domainname);
                 }
+                $("#inputDomain").val("")
             })
             $("#searchDomain").on("click", function () {
                 let domainname: string = $("#inputDomain").val() as string;
                 self.seachDomainInfo(domainname);
+                $("#inputDomain").val("")
             })
         }
 
@@ -225,7 +227,7 @@
                 let domainList = domain[0].list;
                 domainList.forEach((domain) => {
                     let href = Url.href_nns(domain.fulldomain);
-                    let hreftxid = Url.href_transaction(domain.txid);
+                    let hreftxid = Url.href_transaction(domain.lastTime.txid);
                     let hrefaddr = Url.href_address(domain.maxBuyer);
                     let status = '';
                     switch (domain.auctionState) {
@@ -251,7 +253,7 @@
                     let html = `
                         <tr>
                         <td> <a href="`+ href + `" target="_self">` + domain.fulldomain + `</a></td>
-                        <td> <a href="`+ hreftxid + `" target="_self">` + domain.txid + `</a></td>
+                        <td> <a href="`+ hreftxid + `" target="_self">` + domain.lastTime.txid + `</a></td>
                         <td>` + domain.maxPrice+` SGas` + `</td>
                         <td><a href="`+ hrefaddr + `" target="_self">` + domain.maxBuyer + `</a></td>
                         <td>` + status + `</td>
@@ -264,7 +266,6 @@
         async getDomainRank() {
             $("#domainUseList").empty();
             let rank: DomainBided = await WWW.apiaggr_getaucteddomain(1, 10) as DomainBided;
-            console.log(rank)
             if (!rank || rank[0].count == 0) {
                 $("#domainUse").hide();
                 let msg = "There is no data";

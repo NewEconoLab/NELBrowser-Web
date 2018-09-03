@@ -219,26 +219,19 @@
         //加载域名竞拍金额排名
         async getDomainRank(domainid: string, first: boolean) {
             $("#auctionRank").empty();
-            let html = `<tr><td colspan="5">There is no data</td></tr>`;
-            if (location.pathname == '/zh/') {
-                html = `<tr><td colspan="5">没有数据</td></tr>`;
-            }
-            $("#domainRank-page").hide();
-            $("#auctionRank").append(html);
-            return false;
-            let domain: DomainInfoHistory;
+            let domain: DomainPriceRank;
             if (!first) {  //判断是否为初始加载
-                domain = await WWW.apiaggr_getauctioninfoRank(domainid, this.rankpageUtil.currentPage, this.rankpageUtil.pageSize) as DomainInfoHistory;
+                domain = await WWW.apiaggr_getauctioninfoRank(domainid, this.rankpageUtil.currentPage, this.rankpageUtil.pageSize) as DomainPriceRank;
             } else {     //初始加载
-                domain = await WWW.apiaggr_getauctioninfoRank(domainid, 1, 10) as DomainInfoHistory;
+                domain = await WWW.apiaggr_getauctioninfoRank(domainid, 1, 10) as DomainPriceRank;
                 if (domain) {
                     this.rankpageUtil = new PageUtil(domain[0].count, 10);
                 }
-            }
+            }            
             if (domain && domain[0].list.length != 0) {
                 this.loadDomainRankView(domain[0].list);
 
-                if (domain.count <= 11) {
+                if (domain[0].count < 10) {
                     $("#domainRank-page").hide();
                 } else {
                     $("#domainRank-next").addClass('disabled');
@@ -255,20 +248,20 @@
                 return
             }
 
-            let minNum = this.pageUtil.currentPage * this.pageUtil.pageSize - this.pageUtil.pageSize;
-            let maxNum = this.pageUtil.totalCount;
+            let minNum = this.rankpageUtil.currentPage * this.rankpageUtil.pageSize - this.rankpageUtil.pageSize;
+            let maxNum = this.rankpageUtil.totalCount;
             let diffNum = maxNum - minNum;
             if (diffNum > 10) {
-                maxNum = this.pageUtil.currentPage * this.pageUtil.pageSize;
+                maxNum = this.rankpageUtil.currentPage * this.rankpageUtil.pageSize;
             }
-            let pageMsg = "Bid rank " + (minNum + 1) + " to " + maxNum + " of " + this.pageUtil.totalCount;
-            $("#domainRank-page").find("#domainHistory-msg").html(pageMsg);
-            if (this.pageUtil.totalPage - this.pageUtil.currentPage) {
+            let pageMsg = "Bid rank " + (minNum + 1) + " to " + maxNum + " of " + this.rankpageUtil.totalCount;
+            $("#domainRank-page").find("#domainRank-msg").html(pageMsg);
+            if (this.rankpageUtil.totalPage - this.rankpageUtil.currentPage) {
                 $("#domainRank-next").removeClass('disabled');
             } else {
                 $("#domainRank-next").addClass('disabled');
             }
-            if (this.pageUtil.currentPage - 1) {
+            if (this.rankpageUtil.currentPage - 1) {
                 $("#domainRank-previous").removeClass('disabled');
             } else {
                 $("#domainRank-previous").addClass('disabled');
@@ -279,13 +272,6 @@
         //加载域名操作详情
         async domainInfoInit(id: string, first: boolean) {
             $("#auctionInfo").empty();
-            let html = `<tr><td colspan="6">There is no data</td></tr>`;
-            if (location.pathname == '/zh/') {
-                html = `<tr><td colspan="6">没有数据</td></tr>`;
-            }
-            $("#domainHistory-page").hide();
-            $("#auctionInfo").append(html);
-            return false;
             let domain: DomainInfoHistory;
             if (!first) {  //判断是否为初始加载
                 domain = await WWW.apiaggr_getauctioninfoTx(id, this.pageUtil.currentPage, this.pageUtil.pageSize) as DomainInfoHistory;
@@ -298,7 +284,7 @@
             if (domain && domain[0].list.length!=0) {
                 this.loadDomainView(domain[0].list);
 
-                if (domain.count <= 11) {
+                if (domain[0].count <= 11) {
                     $("#domainHistory-page").hide();
                 } else {
                     $("#domainHistory-next").addClass('disabled');
@@ -337,6 +323,7 @@
         }
         //加载竞拍信息
         public loadDomainView(bidHistory) {
+            console.log(bidHistory)
             bidHistory.forEach((domain) => {
                 let bidTime = '';
                 if (domain.time != 0) {
@@ -346,11 +333,7 @@
                     if (location.pathname == '/zh/') {
                         bidTime = '未知';
                     }
-                }
-                let strTip = 'This bid triggered the closing of the domain auction and was not successful.';
-                if (location.pathname == '/zh/') {
-                    strTip = "此次出价触发竞拍结束，出价失败。";
-                }               
+                }                               
                 
                 let type = '';
                 switch (domain.type) {
@@ -367,12 +350,16 @@
                         }
                         break;
                     case '500303':
+                        let strTip = '<p>This bid triggered the closing of the domain auction and was not successful.</p>';
+                        if (location.pathname == '/zh/') {
+                            strTip = "<p>此次出价触发竞拍结束，出价失败。</p>";
+                        }
                         let imgIcon = `<div class="hint-box">
                                 <div class="hint-msg">
                                     <div class="hint-img">
                                         <img src="../../img/notice-g.png" alt="">
                                     </div>
-                                    <div class="hint-content">
+                                    <div class="hint-content hint-width">
                                         ${strTip}
                                     </div>
                                 </div>
@@ -385,7 +372,7 @@
                     case '500304':
                         type = "Recover SGas";
                         if (location.pathname == '/zh/') {
-                            type = "领取领回SGas";
+                            type = "领回SGas";
                         }
                         break;
                     case '500305':
@@ -396,13 +383,20 @@
                         break;
                 }
                 let hreftxid = Url.href_transaction(domain.txid);
-                let hrefaddr = Url.href_address(domain.maxBuyer);
+                let txid = domain.txid.substring(0, 4) + '...' + domain.txid.substring(domain.txid.length - 4);
+                let addr = "null";
+                if (!!domain.address) {
+                    let hrefaddr = Url.href_address(domain.address);
+                    let address = domain.address.substring(0, 4) + '...' + domain.address.substring(domain.address.length - 4);
+                    addr = `<a href="` + hrefaddr + `" target="_self">` + address + `</a>`
+                }               
+                
                 let html = `
                         <tr>
-                        <td> <a href="`+ hreftxid + `" target="_self">` + domain.txid + `</a></td>
+                        <td> <a href="`+ hreftxid + `" target="_self">` + txid + `</a></td>
                         <td>` + type + `</td>
-                        <td><a href="`+ hrefaddr + `" target="_self">` + domain.maxBuyer + `</a></td>
-                        <td>` + domain.value + ` SGas` + `</td>
+                        <td>` + addr + `</td>
+                        <td>` + domain.amount + ` SGas` + `</td>
                         <td>` + bidTime + `</td>
                         </tr>`;
                 $('#auctionInfo').append(html);
@@ -411,10 +405,10 @@
         //加载竞拍排名
         public loadDomainRankView(bidRank) {
             bidRank.forEach((domain) => {
-                let hrefaddr = Url.href_address(domain.maxBuyer);
+                let hrefaddr = Url.href_address(domain.address);
                 let html = `
                         <tr>
-                        <td>` + domain.rank + `</td>
+                        <td>` + domain.range + `</td>
                         <td>` + domain.totalValue + ` SGas` + `</td>
                         <td><a href="`+ hrefaddr + `" target="_self">` + domain.address + `</a></td>
                         </tr>`;

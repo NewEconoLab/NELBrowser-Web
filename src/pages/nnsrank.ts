@@ -98,11 +98,6 @@
                 if (domain.ttl != "0") {
                     let time = parseFloat(domain.ttl);
                     endtime = DateTool.getTime(time);
-                    //if (location.pathname == '/zh/') {
-                    //    let newDate = new Date();
-                    //    newDate.setTime(time * 1000);
-                    //    endtime = newDate.toLocaleString();
-                    //}
                 } else {
                     endtime = 'Unknown';
                     if (location.pathname == '/zh/') {
@@ -110,13 +105,13 @@
                     }
                 }
                 let href = Url.href_nns(domain.fulldomain);
-                let hreftxid = Url.href_transaction(domain.txid);
+                let hreftxid = Url.href_transaction(domain.lastTime.txid);
                 let hrefaddr = Url.href_address(domain.maxBuyer);
                 let html = `
                         <tr>
                         <td>` + domain.range + `</td>
                         <td> <a href="`+ href + `" target="_self">` + domain.fulldomain + `</a></td>
-                        <td> <a href="`+ hreftxid + `" target="_self">` + domain.txid + `</a></td>
+                        <td> <a href="`+ hreftxid + `" target="_self">` + domain.lastTime.txid + `</a></td>
                         <td>` + domain.maxPrice + ` SGas` + `</td>
                         <td><a href="`+ hrefaddr + `" target="_self">` + domain.maxBuyer + `</a></td>
                         <td>` + endtime + `</td>

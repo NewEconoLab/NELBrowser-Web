@@ -96,7 +96,7 @@
             domainlist.forEach((domain) =>
             {
                 let href = Url.href_nns(domain.fulldomain);
-                let hreftxid = Url.href_transaction(domain.txid);
+                let hreftxid = Url.href_transaction(domain.lastTime.txid);
                 let hrefaddr = Url.href_address(domain.maxBuyer);
                 let state = '';
                 switch (domain.auctionState) {
@@ -122,7 +122,7 @@
                 let html = `
                         <tr>
                         <td> <a href="`+ href + `" target="_self">` + domain.fulldomain + `</a></td>
-                        <td> <a href="`+ hreftxid + `" target="_self">` + domain.txid + `</a></td>
+                        <td> <a href="`+ hreftxid + `" target="_self">` + domain.lastTime.txid + `</a></td>
                         <td>` + domain.maxPrice + ` SGas` + `</td>
                         <td><a href="`+ hrefaddr + `" target="_self">` + domain.maxBuyer + `</a></td>
                         <td>` + state + `</td>

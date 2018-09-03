@@ -2464,10 +2464,12 @@ var WebBrowser;
                 if (e.keyCode == 13) {
                     self.seachDomainInfo(domainname);
                 }
+                $("#inputDomain").val("");
             });
             $("#searchDomain").on("click", function () {
                 let domainname = $("#inputDomain").val();
                 self.seachDomainInfo(domainname);
+                $("#inputDomain").val("");
             });
         }
         close() {
@@ -2675,7 +2677,7 @@ var WebBrowser;
                     let domainList = domain[0].list;
                     domainList.forEach((domain) => {
                         let href = WebBrowser.Url.href_nns(domain.fulldomain);
-                        let hreftxid = WebBrowser.Url.href_transaction(domain.txid);
+                        let hreftxid = WebBrowser.Url.href_transaction(domain.lastTime.txid);
                         let hrefaddr = WebBrowser.Url.href_address(domain.maxBuyer);
                         let status = '';
                         switch (domain.auctionState) {
@@ -2701,7 +2703,7 @@ var WebBrowser;
                         let html = `
                         <tr>
                         <td> <a href="` + href + `" target="_self">` + domain.fulldomain + `</a></td>
-                        <td> <a href="` + hreftxid + `" target="_self">` + domain.txid + `</a></td>
+                        <td> <a href="` + hreftxid + `" target="_self">` + domain.lastTime.txid + `</a></td>
                         <td>` + domain.maxPrice + ` SGas` + `</td>
                         <td><a href="` + hrefaddr + `" target="_self">` + domain.maxBuyer + `</a></td>
                         <td>` + status + `</td>
@@ -2716,7 +2718,6 @@ var WebBrowser;
             return __awaiter(this, void 0, void 0, function* () {
                 $("#domainUseList").empty();
                 let rank = yield WebBrowser.WWW.apiaggr_getaucteddomain(1, 10);
-                console.log(rank);
                 if (!rank || rank[0].count == 0) {
                     $("#domainUse").hide();
                     let msg = "There is no data";
@@ -2871,7 +2872,7 @@ var WebBrowser;
         loadView(domainlist) {
             domainlist.forEach((domain) => {
                 let href = WebBrowser.Url.href_nns(domain.fulldomain);
-                let hreftxid = WebBrowser.Url.href_transaction(domain.txid);
+                let hreftxid = WebBrowser.Url.href_transaction(domain.lastTime.txid);
                 let hrefaddr = WebBrowser.Url.href_address(domain.maxBuyer);
                 let state = '';
                 switch (domain.auctionState) {
@@ -2897,7 +2898,7 @@ var WebBrowser;
                 let html = `
                         <tr>
                         <td> <a href="` + href + `" target="_self">` + domain.fulldomain + `</a></td>
-                        <td> <a href="` + hreftxid + `" target="_self">` + domain.txid + `</a></td>
+                        <td> <a href="` + hreftxid + `" target="_self">` + domain.lastTime.txid + `</a></td>
                         <td>` + domain.maxPrice + ` SGas` + `</td>
                         <td><a href="` + hrefaddr + `" target="_self">` + domain.maxBuyer + `</a></td>
                         <td>` + state + `</td>
@@ -3011,11 +3012,6 @@ var WebBrowser;
                 if (domain.ttl != "0") {
                     let time = parseFloat(domain.ttl);
                     endtime = WebBrowser.DateTool.getTime(time);
-                    //if (location.pathname == '/zh/') {
-                    //    let newDate = new Date();
-                    //    newDate.setTime(time * 1000);
-                    //    endtime = newDate.toLocaleString();
-                    //}
                 }
                 else {
                     endtime = 'Unknown';
@@ -3024,13 +3020,13 @@ var WebBrowser;
                     }
                 }
                 let href = WebBrowser.Url.href_nns(domain.fulldomain);
-                let hreftxid = WebBrowser.Url.href_transaction(domain.txid);
+                let hreftxid = WebBrowser.Url.href_transaction(domain.lastTime.txid);
                 let hrefaddr = WebBrowser.Url.href_address(domain.maxBuyer);
                 let html = `
                         <tr>
                         <td>` + domain.range + `</td>
                         <td> <a href="` + href + `" target="_self">` + domain.fulldomain + `</a></td>
-                        <td> <a href="` + hreftxid + `" target="_self">` + domain.txid + `</a></td>
+                        <td> <a href="` + hreftxid + `" target="_self">` + domain.lastTime.txid + `</a></td>
                         <td>` + domain.maxPrice + ` SGas` + `</td>
                         <td><a href="` + hrefaddr + `" target="_self">` + domain.maxBuyer + `</a></td>
                         <td>` + endtime + `</td>
@@ -3259,13 +3255,6 @@ var WebBrowser;
         getDomainRank(domainid, first) {
             return __awaiter(this, void 0, void 0, function* () {
                 $("#auctionRank").empty();
-                let html = `<tr><td colspan="5">There is no data</td></tr>`;
-                if (location.pathname == '/zh/') {
-                    html = `<tr><td colspan="5">没有数据</td></tr>`;
-                }
-                $("#domainRank-page").hide();
-                $("#auctionRank").append(html);
-                return false;
                 let domain;
                 if (!first) { //判断是否为初始加载
                     domain = (yield WebBrowser.WWW.apiaggr_getauctioninfoRank(domainid, this.rankpageUtil.currentPage, this.rankpageUtil.pageSize));
@@ -3278,7 +3267,7 @@ var WebBrowser;
                 }
                 if (domain && domain[0].list.length != 0) {
                     this.loadDomainRankView(domain[0].list);
-                    if (domain.count <= 11) {
+                    if (domain[0].count < 10) {
                         $("#domainRank-page").hide();
                     }
                     else {
@@ -3295,21 +3284,21 @@ var WebBrowser;
                     $("#auctionRank").append(html);
                     return;
                 }
-                let minNum = this.pageUtil.currentPage * this.pageUtil.pageSize - this.pageUtil.pageSize;
-                let maxNum = this.pageUtil.totalCount;
+                let minNum = this.rankpageUtil.currentPage * this.rankpageUtil.pageSize - this.rankpageUtil.pageSize;
+                let maxNum = this.rankpageUtil.totalCount;
                 let diffNum = maxNum - minNum;
                 if (diffNum > 10) {
-                    maxNum = this.pageUtil.currentPage * this.pageUtil.pageSize;
+                    maxNum = this.rankpageUtil.currentPage * this.rankpageUtil.pageSize;
                 }
-                let pageMsg = "Bid rank " + (minNum + 1) + " to " + maxNum + " of " + this.pageUtil.totalCount;
-                $("#domainRank-page").find("#domainHistory-msg").html(pageMsg);
-                if (this.pageUtil.totalPage - this.pageUtil.currentPage) {
+                let pageMsg = "Bid rank " + (minNum + 1) + " to " + maxNum + " of " + this.rankpageUtil.totalCount;
+                $("#domainRank-page").find("#domainRank-msg").html(pageMsg);
+                if (this.rankpageUtil.totalPage - this.rankpageUtil.currentPage) {
                     $("#domainRank-next").removeClass('disabled');
                 }
                 else {
                     $("#domainRank-next").addClass('disabled');
                 }
-                if (this.pageUtil.currentPage - 1) {
+                if (this.rankpageUtil.currentPage - 1) {
                     $("#domainRank-previous").removeClass('disabled');
                 }
                 else {
@@ -3321,13 +3310,6 @@ var WebBrowser;
         domainInfoInit(id, first) {
             return __awaiter(this, void 0, void 0, function* () {
                 $("#auctionInfo").empty();
-                let html = `<tr><td colspan="6">There is no data</td></tr>`;
-                if (location.pathname == '/zh/') {
-                    html = `<tr><td colspan="6">没有数据</td></tr>`;
-                }
-                $("#domainHistory-page").hide();
-                $("#auctionInfo").append(html);
-                return false;
                 let domain;
                 if (!first) { //判断是否为初始加载
                     domain = (yield WebBrowser.WWW.apiaggr_getauctioninfoTx(id, this.pageUtil.currentPage, this.pageUtil.pageSize));
@@ -3340,7 +3322,7 @@ var WebBrowser;
                 }
                 if (domain && domain[0].list.length != 0) {
                     this.loadDomainView(domain[0].list);
-                    if (domain.count <= 11) {
+                    if (domain[0].count <= 11) {
                         $("#domainHistory-page").hide();
                     }
                     else {
@@ -3381,6 +3363,7 @@ var WebBrowser;
         }
         //加载竞拍信息
         loadDomainView(bidHistory) {
+            console.log(bidHistory);
             bidHistory.forEach((domain) => {
                 let bidTime = '';
                 if (domain.time != 0) {
@@ -3391,10 +3374,6 @@ var WebBrowser;
                     if (location.pathname == '/zh/') {
                         bidTime = '未知';
                     }
-                }
-                let strTip = 'This bid triggered the closing of the domain auction and was not successful.';
-                if (location.pathname == '/zh/') {
-                    strTip = "此次出价触发竞拍结束，出价失败。";
                 }
                 let type = '';
                 switch (domain.type) {
@@ -3411,12 +3390,16 @@ var WebBrowser;
                         }
                         break;
                     case '500303':
+                        let strTip = '<p>This bid triggered the closing of the domain auction and was not successful.</p>';
+                        if (location.pathname == '/zh/') {
+                            strTip = "<p>此次出价触发竞拍结束，出价失败。</p>";
+                        }
                         let imgIcon = `<div class="hint-box">
                                 <div class="hint-msg">
                                     <div class="hint-img">
                                         <img src="../../img/notice-g.png" alt="">
                                     </div>
-                                    <div class="hint-content">
+                                    <div class="hint-content hint-width">
                                         ${strTip}
                                     </div>
                                 </div>
@@ -3429,7 +3412,7 @@ var WebBrowser;
                     case '500304':
                         type = "Recover SGas";
                         if (location.pathname == '/zh/') {
-                            type = "领取领回SGas";
+                            type = "领回SGas";
                         }
                         break;
                     case '500305':
@@ -3440,13 +3423,19 @@ var WebBrowser;
                         break;
                 }
                 let hreftxid = WebBrowser.Url.href_transaction(domain.txid);
-                let hrefaddr = WebBrowser.Url.href_address(domain.maxBuyer);
+                let txid = domain.txid.substring(0, 4) + '...' + domain.txid.substring(domain.txid.length - 4);
+                let addr = "null";
+                if (!!domain.address) {
+                    let hrefaddr = WebBrowser.Url.href_address(domain.address);
+                    let address = domain.address.substring(0, 4) + '...' + domain.address.substring(domain.address.length - 4);
+                    addr = `<a href="` + hrefaddr + `" target="_self">` + address + `</a>`;
+                }
                 let html = `
                         <tr>
-                        <td> <a href="` + hreftxid + `" target="_self">` + domain.txid + `</a></td>
+                        <td> <a href="` + hreftxid + `" target="_self">` + txid + `</a></td>
                         <td>` + type + `</td>
-                        <td><a href="` + hrefaddr + `" target="_self">` + domain.maxBuyer + `</a></td>
-                        <td>` + domain.value + ` SGas` + `</td>
+                        <td>` + addr + `</td>
+                        <td>` + domain.amount + ` SGas` + `</td>
                         <td>` + bidTime + `</td>
                         </tr>`;
                 $('#auctionInfo').append(html);
@@ -3455,10 +3444,10 @@ var WebBrowser;
         //加载竞拍排名
         loadDomainRankView(bidRank) {
             bidRank.forEach((domain) => {
-                let hrefaddr = WebBrowser.Url.href_address(domain.maxBuyer);
+                let hrefaddr = WebBrowser.Url.href_address(domain.address);
                 let html = `
                         <tr>
-                        <td>` + domain.rank + `</td>
+                        <td>` + domain.range + `</td>
                         <td>` + domain.totalValue + ` SGas` + `</td>
                         <td><a href="` + hrefaddr + `" target="_self">` + domain.address + `</a></td>
                         </tr>`;

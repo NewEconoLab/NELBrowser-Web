@@ -588,6 +588,14 @@ a{
     line-height: 16px;
     margin-bottom: 0;
 }
+.hint-width {
+    width: 240px;
+}
+
+.hint-width p {
+    text-indent: 0;
+}
+
 /*NNS Page end*/
 /*footer start*/
 .footer-box {
