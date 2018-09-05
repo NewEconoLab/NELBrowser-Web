@@ -128,7 +128,7 @@
                         <tr>
                         <td> <a href="`+ href + `" target="_self">` + domain.fulldomain + `</a></td>
                         <td> <a href="`+ hreftxid + `" target="_self">` + txid + `</a></td>
-                        <td>` + domain.maxPrice + ` SGas` + `</td>
+                        <td>` + domain.maxPrice + ` CGas` + `</td>
                         <td><a href="`+ hrefaddr + `" target="_self">` + address + `</a></td>
                         <td>` + state + `</td>
                         </tr>`;

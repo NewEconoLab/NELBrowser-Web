@@ -2506,23 +2506,23 @@ var WebBrowser;
                     res2 = yield WebBrowser.WWW.api_getnep5balanceofaddress("2761020e5e6dfcd8d37fdd50ff98fa0f93bccf54", "ALjSnMZidJqd18iQaoCgFun6iqWRm2cVtj");
                 }
                 if (res) {
-                    //$("#coninpool").html(res[0].bonus + " SGas");
-                    $("#accumulated").html(res[0].profit + " SGas");
+                    //$("#coninpool").html(res[0].bonus + " CGas");
+                    $("#accumulated").html(res[0].profit + " CGas");
                     $("#useCount").html(res[0].usedDomainCount);
                     $("#beingCount").html(res[0].auctingDomainCount);
                 }
                 else {
-                    //$("#coninpool").html("0 SGas");
-                    $("#accumulated").html("0 SGas");
+                    //$("#coninpool").html("0 CGas");
+                    $("#accumulated").html("0 CGas");
                     $("#useCount").html("0");
                     $("#beingCount").html("0");
                 }
                 if (res2) {
                     let coninpool = res2[0].nep5balance;
-                    $("#coninpool").html(coninpool + " SGas");
+                    $("#coninpool").html(coninpool + " CGas");
                 }
                 else {
-                    $("#coninpool").html("0 SGas");
+                    $("#coninpool").html("0 CGas");
                 }
             });
         }
@@ -2709,7 +2709,7 @@ var WebBrowser;
                         <tr>
                         <td> <a href="` + href + `" target="_self">` + domain.fulldomain + `</a></td>
                         <td> <a href="` + hreftxid + `" target="_self">` + txid + `</a></td>
-                        <td>` + domain.maxPrice + ` SGas` + `</td>
+                        <td>` + domain.maxPrice + ` CGas` + `</td>
                         <td><a href="` + hrefaddr + `" target="_self">` + address + `</a></td>
                         <td>` + status + `</td>
                         </tr>`;
@@ -2770,7 +2770,7 @@ var WebBrowser;
                         <td>` + domain.range + `</td>
                         <td> <a href="` + href + `" target="_self">` + domain.fulldomain + `</a></td>
                         <td> <a href="` + hreftxid + `" target="_self">` + txid + `</a></td>
-                        <td>` + domain.maxPrice + ` SGas` + `</td>
+                        <td>` + domain.maxPrice + ` CGas` + `</td>
                         <td><a href="` + hrefaddr + `" target="_self">` + address + `</a></td>
                         <td>` + endtime + `</td>
                         </tr>`;
@@ -2914,7 +2914,7 @@ var WebBrowser;
                         <tr>
                         <td> <a href="` + href + `" target="_self">` + domain.fulldomain + `</a></td>
                         <td> <a href="` + hreftxid + `" target="_self">` + txid + `</a></td>
-                        <td>` + domain.maxPrice + ` SGas` + `</td>
+                        <td>` + domain.maxPrice + ` CGas` + `</td>
                         <td><a href="` + hrefaddr + `" target="_self">` + address + `</a></td>
                         <td>` + state + `</td>
                         </tr>`;
@@ -3047,7 +3047,7 @@ var WebBrowser;
                         <td>` + domain.range + `</td>
                         <td> <a href="` + href + `" target="_self">` + domain.fulldomain + `</a></td>
                         <td> <a href="` + hreftxid + `" target="_self">` + txid + `</a></td>
-                        <td>` + domain.maxPrice + ` SGas` + `</td>
+                        <td>` + domain.maxPrice + ` CGas` + `</td>
                         <td><a href="` + hrefaddr + `" target="_self">` + address + `</a></td>
                         <td>` + endtime + `</td>
                         </tr>`;
@@ -3430,9 +3430,9 @@ var WebBrowser;
                         }
                         break;
                     case '500304':
-                        type = "Recover SGas";
+                        type = "Recover CGas";
                         if (location.pathname == '/zh/') {
-                            type = "领回SGas";
+                            type = "领回CGas";
                         }
                         break;
                     case '500305':
@@ -3455,7 +3455,7 @@ var WebBrowser;
                         <td> <a href="` + hreftxid + `" target="_self">` + txid + `</a></td>
                         <td>` + type + `</td>
                         <td>` + addr + `</td>
-                        <td>` + domain.amount + ` SGas` + `</td>
+                        <td>` + domain.amount + ` CGas` + `</td>
                         <td>` + bidTime + `</td>
                         </tr>`;
                 $('#auctionInfo').append(html);
@@ -3468,7 +3468,7 @@ var WebBrowser;
                 let html = `
                         <tr>
                         <td>` + domain.range + `</td>
-                        <td>` + domain.totalValue + ` SGas` + `</td>
+                        <td>` + domain.totalValue + ` CGas` + `</td>
                         <td><a href="` + hrefaddr + `" target="_self">` + domain.address + `</a></td>
                         </tr>`;
                 $('#auctionRank').append(html);

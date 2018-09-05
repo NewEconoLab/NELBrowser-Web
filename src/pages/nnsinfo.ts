@@ -370,9 +370,9 @@
                         }
                         break;
                     case '500304':
-                        type = "Recover SGas";
+                        type = "Recover CGas";
                         if (location.pathname == '/zh/') {
-                            type = "领回SGas";
+                            type = "领回CGas";
                         }
                         break;
                     case '500305':
@@ -396,7 +396,7 @@
                         <td> <a href="`+ hreftxid + `" target="_self">` + txid + `</a></td>
                         <td>` + type + `</td>
                         <td>` + addr + `</td>
-                        <td>` + domain.amount + ` SGas` + `</td>
+                        <td>` + domain.amount + ` CGas` + `</td>
                         <td>` + bidTime + `</td>
                         </tr>`;
                 $('#auctionInfo').append(html);
@@ -409,7 +409,7 @@
                 let html = `
                         <tr>
                         <td>` + domain.range + `</td>
-                        <td>` + domain.totalValue + ` SGas` + `</td>
+                        <td>` + domain.totalValue + ` CGas` + `</td>
                         <td><a href="`+ hrefaddr + `" target="_self">` + domain.address + `</a></td>
                         </tr>`;
                 $('#auctionRank').append(html);
