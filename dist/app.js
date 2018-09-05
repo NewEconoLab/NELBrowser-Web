@@ -2679,6 +2679,11 @@ var WebBrowser;
                         let href = WebBrowser.Url.href_nns(domain.fulldomain);
                         let hreftxid = WebBrowser.Url.href_transaction(domain.lastTime.txid);
                         let hrefaddr = WebBrowser.Url.href_address(domain.maxBuyer);
+                        let txid = domain.lastTime.txid.substring(0, 4) + '...' + domain.lastTime.txid.substring(domain.lastTime.txid.length - 4);
+                        let address = '';
+                        if (domain.maxBuyer != '') {
+                            address = domain.maxBuyer.substring(0, 4) + '...' + domain.maxBuyer.substring(domain.maxBuyer.length - 4);
+                        }
                         let status = '';
                         switch (domain.auctionState) {
                             case '0401':
@@ -2703,9 +2708,9 @@ var WebBrowser;
                         let html = `
                         <tr>
                         <td> <a href="` + href + `" target="_self">` + domain.fulldomain + `</a></td>
-                        <td> <a href="` + hreftxid + `" target="_self">` + domain.lastTime.txid + `</a></td>
+                        <td> <a href="` + hreftxid + `" target="_self">` + txid + `</a></td>
                         <td>` + domain.maxPrice + ` SGas` + `</td>
-                        <td><a href="` + hrefaddr + `" target="_self">` + domain.maxBuyer + `</a></td>
+                        <td><a href="` + hrefaddr + `" target="_self">` + address + `</a></td>
                         <td>` + status + `</td>
                         </tr>`;
                         $("#domainBeingList").append(html);
@@ -2755,13 +2760,18 @@ var WebBrowser;
                         let href = WebBrowser.Url.href_nns(domain.fulldomain);
                         let hreftxid = WebBrowser.Url.href_transaction(domain.txid);
                         let hrefaddr = WebBrowser.Url.href_address(domain.maxBuyer);
+                        let txid = domain.lastTime.txid.substring(0, 4) + '...' + domain.lastTime.txid.substring(domain.lastTime.txid.length - 4);
+                        let address = '';
+                        if (domain.maxBuyer != '') {
+                            address = domain.maxBuyer.substring(0, 4) + '...' + domain.maxBuyer.substring(domain.maxBuyer.length - 4);
+                        }
                         let html = `
                         <tr>
                         <td>` + domain.range + `</td>
                         <td> <a href="` + href + `" target="_self">` + domain.fulldomain + `</a></td>
-                        <td> <a href="` + hreftxid + `" target="_self">` + domain.lastTime.txid + `</a></td>
+                        <td> <a href="` + hreftxid + `" target="_self">` + txid + `</a></td>
                         <td>` + domain.maxPrice + ` SGas` + `</td>
-                        <td><a href="` + hrefaddr + `" target="_self">` + domain.maxBuyer + `</a></td>
+                        <td><a href="` + hrefaddr + `" target="_self">` + address + `</a></td>
                         <td>` + endtime + `</td>
                         </tr>`;
                         $("#domainUseList").append(html);
@@ -2874,6 +2884,11 @@ var WebBrowser;
                 let href = WebBrowser.Url.href_nns(domain.fulldomain);
                 let hreftxid = WebBrowser.Url.href_transaction(domain.lastTime.txid);
                 let hrefaddr = WebBrowser.Url.href_address(domain.maxBuyer);
+                let txid = domain.lastTime.txid.substring(0, 4) + '...' + domain.lastTime.txid.substring(domain.lastTime.txid.length - 4);
+                let address = '';
+                if (domain.maxBuyer != '') {
+                    address = domain.maxBuyer.substring(0, 4) + '...' + domain.maxBuyer.substring(domain.maxBuyer.length - 4);
+                }
                 let state = '';
                 switch (domain.auctionState) {
                     case '0':
@@ -2898,9 +2913,9 @@ var WebBrowser;
                 let html = `
                         <tr>
                         <td> <a href="` + href + `" target="_self">` + domain.fulldomain + `</a></td>
-                        <td> <a href="` + hreftxid + `" target="_self">` + domain.lastTime.txid + `</a></td>
+                        <td> <a href="` + hreftxid + `" target="_self">` + txid + `</a></td>
                         <td>` + domain.maxPrice + ` SGas` + `</td>
-                        <td><a href="` + hrefaddr + `" target="_self">` + domain.maxBuyer + `</a></td>
+                        <td><a href="` + hrefaddr + `" target="_self">` + address + `</a></td>
                         <td>` + state + `</td>
                         </tr>`;
                 $('#domainBeingListPage').append(html);
@@ -3022,13 +3037,18 @@ var WebBrowser;
                 let href = WebBrowser.Url.href_nns(domain.fulldomain);
                 let hreftxid = WebBrowser.Url.href_transaction(domain.lastTime.txid);
                 let hrefaddr = WebBrowser.Url.href_address(domain.maxBuyer);
+                let txid = domain.lastTime.txid.substring(0, 4) + '...' + domain.lastTime.txid.substring(domain.lastTime.txid.length - 4);
+                let address = '';
+                if (domain.maxBuyer != '') {
+                    address = domain.maxBuyer.substring(0, 4) + '...' + domain.maxBuyer.substring(domain.maxBuyer.length - 4);
+                }
                 let html = `
                         <tr>
                         <td>` + domain.range + `</td>
                         <td> <a href="` + href + `" target="_self">` + domain.fulldomain + `</a></td>
-                        <td> <a href="` + hreftxid + `" target="_self">` + domain.lastTime.txid + `</a></td>
+                        <td> <a href="` + hreftxid + `" target="_self">` + txid + `</a></td>
                         <td>` + domain.maxPrice + ` SGas` + `</td>
-                        <td><a href="` + hrefaddr + `" target="_self">` + domain.maxBuyer + `</a></td>
+                        <td><a href="` + hrefaddr + `" target="_self">` + address + `</a></td>
                         <td>` + endtime + `</td>
                         </tr>`;
                 $('#domainUseListPage').append(html);
