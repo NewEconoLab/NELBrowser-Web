@@ -53,7 +53,7 @@
                 
             }
             if (arr[0] == "#testnet") {
-                res2 = await WWW.api_getnep5balanceofaddress("2761020e5e6dfcd8d37fdd50ff98fa0f93bccf54", "ALjSnMZidJqd18iQaoCgFun6iqWRm2cVtj");
+                res2 = await WWW.api_getnep5balanceofaddress("9121e89e8a0849857262d67c8408601b5e8e0524", "ALjSnMZidJqd18iQaoCgFun6iqWRm2cVtj");
             }
             if (res) {
                 //$("#coninpool").html(res[0].bonus + " CGas");
