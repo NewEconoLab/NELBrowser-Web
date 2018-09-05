@@ -18,13 +18,11 @@
                 let domainname: string = $("#inputDomain").val() as string;
                 if (e.keyCode == 13) {
                     self.seachDomainInfo(domainname);
-                }
-                $("#inputDomain").val("")
+                }                
             })
             $("#searchDomain").on("click", function () {
                 let domainname: string = $("#inputDomain").val() as string;
                 self.seachDomainInfo(domainname);
-                $("#inputDomain").val("")
             })
         }
 
@@ -171,7 +169,7 @@
                     }
                     html = `<div class="list-line"><div class="line-title"><span>` + strArr[0] + `</span></div> <div class="line-content line-href"><a href="` + href + `">` + domainInfo.fulldomain + `</a></div></div>
                             <div class="list-line"><div class="line-title"><span>`+ strArr[1] + `</span></div> <div class="line-content line-href"><a href="` + hreftxid + `">` + domainInfo.auctionId + `</a></div></div>
-                            <div class="list-line"><div class="line-title"><span>`+ strArr[5] + `</span></div> <div class="line-content"><span>` + domainInfo.maxPrice + `</span></div></div>
+                            <div class="list-line"><div class="line-title"><span>`+ strArr[5] + `</span></div> <div class="line-content"><span>` + domainInfo.maxPrice + ` CGas</span></div></div>
                             <div class="list-line"><div class="line-title"><span>`+ strArr[6] + `</span></div> <div class="line-content line-href"><a href="` + hrefaddr +`">` + domainInfo.maxBuyer + `</a></div></div>
                             <div class="list-line"><div class="line-title"><span>`+ strArr[7] + `</span></div> <div class="line-content"><span>` + status + `</span></div></div>`;
                 }
@@ -191,14 +189,14 @@
                     }
                     html = `<div class="list-line"><div class="line-title"><span>` + strArr[0] + `</span></div> <div class="line-content line-href"><a href="` + href + `">` + domainInfo.fulldomain + `</a></div></div>
                             <div class="list-line"><div class="line-title"><span>`+ strArr[1] + `</span></div> <div class="line-content line-href"><a href="` + hreftxid + `">` + domainInfo.auctionId + `</a></div></div>
-                            <div class="list-line"><div class="line-title"><span>`+ strArr[2] + `</span></div> <div class="line-content"><span>` + domainInfo.maxPrice + `</span></div></div>
+                            <div class="list-line"><div class="line-title"><span>`+ strArr[2] + `</span></div> <div class="line-content"><span>` + domainInfo.maxPrice + ` CGas</span></div></div>
                             <div class="list-line"><div class="line-title"><span>`+ strArr[3] + `</span></div> <div class="line-content line-href"><a href="` + hrefaddr +`">` + domainInfo.maxBuyer + `</a></div></div>
                             <div class="list-line"><div class="line-title"><span>`+ strArr[4] + `</span></div> <div class="line-content"><span>` + endtime + `</span></div></div>`;
                 }
             }
             $("#domainInfo").append(html);
             $("#searchBox").show();
-            
+            $("#inputDomain").val("")
         }
         //获取域名正在竞拍列表
         async getDomainList() {

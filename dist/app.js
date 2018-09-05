@@ -2464,12 +2464,10 @@ var WebBrowser;
                 if (e.keyCode == 13) {
                     self.seachDomainInfo(domainname);
                 }
-                $("#inputDomain").val("");
             });
             $("#searchDomain").on("click", function () {
                 let domainname = $("#inputDomain").val();
                 self.seachDomainInfo(domainname);
-                $("#inputDomain").val("");
             });
         }
         close() {
@@ -2618,7 +2616,7 @@ var WebBrowser;
                         }
                         html = `<div class="list-line"><div class="line-title"><span>` + strArr[0] + `</span></div> <div class="line-content line-href"><a href="` + href + `">` + domainInfo.fulldomain + `</a></div></div>
                             <div class="list-line"><div class="line-title"><span>` + strArr[1] + `</span></div> <div class="line-content line-href"><a href="` + hreftxid + `">` + domainInfo.auctionId + `</a></div></div>
-                            <div class="list-line"><div class="line-title"><span>` + strArr[5] + `</span></div> <div class="line-content"><span>` + domainInfo.maxPrice + `</span></div></div>
+                            <div class="list-line"><div class="line-title"><span>` + strArr[5] + `</span></div> <div class="line-content"><span>` + domainInfo.maxPrice + ` CGas</span></div></div>
                             <div class="list-line"><div class="line-title"><span>` + strArr[6] + `</span></div> <div class="line-content line-href"><a href="` + hrefaddr + `">` + domainInfo.maxBuyer + `</a></div></div>
                             <div class="list-line"><div class="line-title"><span>` + strArr[7] + `</span></div> <div class="line-content"><span>` + status + `</span></div></div>`;
                     }
@@ -2639,13 +2637,14 @@ var WebBrowser;
                         }
                         html = `<div class="list-line"><div class="line-title"><span>` + strArr[0] + `</span></div> <div class="line-content line-href"><a href="` + href + `">` + domainInfo.fulldomain + `</a></div></div>
                             <div class="list-line"><div class="line-title"><span>` + strArr[1] + `</span></div> <div class="line-content line-href"><a href="` + hreftxid + `">` + domainInfo.auctionId + `</a></div></div>
-                            <div class="list-line"><div class="line-title"><span>` + strArr[2] + `</span></div> <div class="line-content"><span>` + domainInfo.maxPrice + `</span></div></div>
+                            <div class="list-line"><div class="line-title"><span>` + strArr[2] + `</span></div> <div class="line-content"><span>` + domainInfo.maxPrice + ` CGas</span></div></div>
                             <div class="list-line"><div class="line-title"><span>` + strArr[3] + `</span></div> <div class="line-content line-href"><a href="` + hrefaddr + `">` + domainInfo.maxBuyer + `</a></div></div>
                             <div class="list-line"><div class="line-title"><span>` + strArr[4] + `</span></div> <div class="line-content"><span>` + endtime + `</span></div></div>`;
                     }
                 }
                 $("#domainInfo").append(html);
                 $("#searchBox").show();
+                $("#inputDomain").val("");
             });
         }
         //获取域名正在竞拍列表
@@ -3253,7 +3252,7 @@ var WebBrowser;
                         <div class="line"><div class="title-nel"><span>` + strArr[1] + `</span></div> <div class="content-nel"><span>` + this.domainDetail.auctionId + `</span></div></div>
                         <div class="line"><div class="title-nel"><span>` + strArr[2] + `</span></div> <div class="content-nel"><span>` + startTime + `</span></div></div>
                         <div class="line"><div class="title-nel"><span>` + strArr[3] + `</span></div><div class="content-nel"><span style="white-space: nowrap;">` + endTime + tips + `</span></div></div>
-                        <div class="line"><div class="title-nel"><span>` + strArr[4] + `</span></div><div class="content-nel"><span>` + this.domainDetail.maxPrice + `</span></div></div>
+                        <div class="line"><div class="title-nel"><span>` + strArr[4] + `</span></div><div class="content-nel"><span>` + this.domainDetail.maxPrice + ` CGas</span></div></div>
                         <div class="line"><div class="title-nel"><span>` + strArr[5] + `</span></div><div class="content-nel"><span><a href="` + hrefaddr + `">` + this.domainDetail.maxBuyer + `</a></span></div></div>
                         <div class="line"><div class="title-nel"><span>` + strArr[6] + `</span></div><div class="content-nel">` + status + `</div></div>
                         <div class="line"><div class="title-nel"><span style="font-size:14px;">` + strArr[7] + `</span></div><div class="content-nel"><span><a href="` + hrefblock + `">` + this.domainDetail.startTime.blockindex + `</a></span></div></div>`;
@@ -3263,7 +3262,7 @@ var WebBrowser;
                 <div class="line"><div class="title-nel"><span>` + strArr[1] + `</span></div> <div class="content-nel"><span>` + this.domainDetail.auctionId + `</span></div></div>
                 <div class="line"><div class="title-nel"><span>` + strArr[2] + `</span></div> <div class="content-nel"><span>` + startTime + `</span></div></div>
                 <div class="line"><div class="title-nel"><span>` + strArr[8] + `</span></div><div class="content-nel"><span>` + endTime + `</span></div></div>
-                <div class="line"><div class="title-nel"><span>` + strArr[9] + `</span></div><div class="content-nel"><span>` + this.domainDetail.maxPrice + `</span></div></div>
+                <div class="line"><div class="title-nel"><span>` + strArr[9] + `</span></div><div class="content-nel"><span>` + this.domainDetail.maxPrice + ` CGas</span></div></div>
                 <div class="line"><div class="title-nel"><span>` + strArr[10] + `</span></div><div class="content-nel"><span><a href="` + hrefaddr + `">` + this.domainDetail.maxBuyer + `</a></span></div></div>
                 <div class="line"><div class="title-nel"><span>` + strArr[11] + `</span></div><div class="content-nel"><span>` + expireTime + `</span></div></div>
                 <div class="line"><div class="title-nel"><span style="font-size:14px;">` + strArr[7] + `</span></div><div class="content-nel"><span><a href="` + hrefblock + `">` + this.domainDetail.startTime.blockindex + `</a></span></div></div>`;

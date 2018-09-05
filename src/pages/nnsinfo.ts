@@ -199,7 +199,7 @@
                         <div class="line"><div class="title-nel"><span>`+ strArr[1] + `</span></div> <div class="content-nel"><span>` + this.domainDetail.auctionId + `</span></div></div>
                         <div class="line"><div class="title-nel"><span>`+ strArr[2] + `</span></div> <div class="content-nel"><span>` + startTime + `</span></div></div>
                         <div class="line"><div class="title-nel"><span>`+ strArr[3] + `</span></div><div class="content-nel"><span style="white-space: nowrap;">` + endTime + tips + `</span></div></div>
-                        <div class="line"><div class="title-nel"><span>`+ strArr[4] + `</span></div><div class="content-nel"><span>` + this.domainDetail.maxPrice + `</span></div></div>
+                        <div class="line"><div class="title-nel"><span>`+ strArr[4] + `</span></div><div class="content-nel"><span>` + this.domainDetail.maxPrice + ` CGas</span></div></div>
                         <div class="line"><div class="title-nel"><span>`+ strArr[5] + `</span></div><div class="content-nel"><span><a href="` + hrefaddr + `">` + this.domainDetail.maxBuyer + `</a></span></div></div>
                         <div class="line"><div class="title-nel"><span>`+ strArr[6] + `</span></div><div class="content-nel">` + status + `</div></div>
                         <div class="line"><div class="title-nel"><span style="font-size:14px;">`+ strArr[7] + `</span></div><div class="content-nel"><span><a href="` + hrefblock + `">` + this.domainDetail.startTime.blockindex + `</a></span></div></div>`;
@@ -209,7 +209,7 @@
                 <div class="line"><div class="title-nel"><span>` + strArr[1] + `</span></div> <div class="content-nel"><span>` + this.domainDetail.auctionId +`</span></div></div>
                 <div class="line"><div class="title-nel"><span>` + strArr[2] + `</span></div> <div class="content-nel"><span>` + startTime + `</span></div></div>
                 <div class="line"><div class="title-nel"><span>` + strArr[8] + `</span></div><div class="content-nel"><span>` + endTime + `</span></div></div>
-                <div class="line"><div class="title-nel"><span>` + strArr[9] + `</span></div><div class="content-nel"><span>` + this.domainDetail.maxPrice + `</span></div></div>
+                <div class="line"><div class="title-nel"><span>` + strArr[9] + `</span></div><div class="content-nel"><span>` + this.domainDetail.maxPrice + ` CGas</span></div></div>
                 <div class="line"><div class="title-nel"><span>` + strArr[10] + `</span></div><div class="content-nel"><span><a href="` + hrefaddr + `">` + this.domainDetail.maxBuyer + `</a></span></div></div>
                 <div class="line"><div class="title-nel"><span>` + strArr[11] + `</span></div><div class="content-nel"><span>` + expireTime + `</span></div></div>
                 <div class="line"><div class="title-nel"><span style="font-size:14px;">` + strArr[7] + `</span></div><div class="content-nel"><span><a href="` + hrefblock + `">` + this.domainDetail.startTime.blockindex + `</a></span></div></div>`;
