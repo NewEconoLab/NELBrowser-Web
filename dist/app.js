@@ -2504,23 +2504,23 @@ var WebBrowser;
                     res2 = yield WebBrowser.WWW.api_getnep5balanceofaddress("9121e89e8a0849857262d67c8408601b5e8e0524", "ALjSnMZidJqd18iQaoCgFun6iqWRm2cVtj");
                 }
                 if (res) {
-                    //$("#coninpool").html(res[0].bonus + " CGas");
-                    $("#accumulated").html(res[0].profit + " CGas");
+                    //$("#coninpool").html(res[0].bonus + " CGAS");
+                    $("#accumulated").html(res[0].profit + " CGAS");
                     $("#useCount").html(res[0].usedDomainCount);
                     $("#beingCount").html(res[0].auctingDomainCount);
                 }
                 else {
-                    //$("#coninpool").html("0 CGas");
-                    $("#accumulated").html("0 CGas");
+                    //$("#coninpool").html("0 CGAS");
+                    $("#accumulated").html("0 CGAS");
                     $("#useCount").html("0");
                     $("#beingCount").html("0");
                 }
                 if (res2) {
                     let coninpool = res2[0].nep5balance;
-                    $("#coninpool").html(coninpool + " CGas");
+                    $("#coninpool").html(coninpool + " CGAS");
                 }
                 else {
-                    $("#coninpool").html("0 CGas");
+                    $("#coninpool").html("0 CGAS");
                 }
             });
         }
@@ -2616,7 +2616,7 @@ var WebBrowser;
                         }
                         html = `<div class="list-line"><div class="line-title"><span>` + strArr[0] + `</span></div> <div class="line-content line-href"><a href="` + href + `">` + domainInfo.fulldomain + `</a></div></div>
                             <div class="list-line"><div class="line-title"><span>` + strArr[1] + `</span></div> <div class="line-content line-href"><a href="` + hreftxid + `">` + domainInfo.auctionId + `</a></div></div>
-                            <div class="list-line"><div class="line-title"><span>` + strArr[5] + `</span></div> <div class="line-content"><span>` + domainInfo.maxPrice + ` CGas</span></div></div>
+                            <div class="list-line"><div class="line-title"><span>` + strArr[5] + `</span></div> <div class="line-content"><span>` + domainInfo.maxPrice + ` CGAS</span></div></div>
                             <div class="list-line"><div class="line-title"><span>` + strArr[6] + `</span></div> <div class="line-content line-href"><a href="` + hrefaddr + `">` + domainInfo.maxBuyer + `</a></div></div>
                             <div class="list-line"><div class="line-title"><span>` + strArr[7] + `</span></div> <div class="line-content"><span>` + status + `</span></div></div>`;
                     }
@@ -2637,7 +2637,7 @@ var WebBrowser;
                         }
                         html = `<div class="list-line"><div class="line-title"><span>` + strArr[0] + `</span></div> <div class="line-content line-href"><a href="` + href + `">` + domainInfo.fulldomain + `</a></div></div>
                             <div class="list-line"><div class="line-title"><span>` + strArr[1] + `</span></div> <div class="line-content line-href"><a href="` + hreftxid + `">` + domainInfo.auctionId + `</a></div></div>
-                            <div class="list-line"><div class="line-title"><span>` + strArr[2] + `</span></div> <div class="line-content"><span>` + domainInfo.maxPrice + ` CGas</span></div></div>
+                            <div class="list-line"><div class="line-title"><span>` + strArr[2] + `</span></div> <div class="line-content"><span>` + domainInfo.maxPrice + ` CGAS</span></div></div>
                             <div class="list-line"><div class="line-title"><span>` + strArr[3] + `</span></div> <div class="line-content line-href"><a href="` + hrefaddr + `">` + domainInfo.maxBuyer + `</a></div></div>
                             <div class="list-line"><div class="line-title"><span>` + strArr[4] + `</span></div> <div class="line-content"><span>` + endtime + `</span></div></div>`;
                     }
@@ -2708,7 +2708,7 @@ var WebBrowser;
                         <tr>
                         <td> <a href="` + href + `" target="_self">` + domain.fulldomain + `</a></td>
                         <td> <a href="` + hreftxid + `" target="_self">` + txid + `</a></td>
-                        <td>` + domain.maxPrice + ` CGas` + `</td>
+                        <td>` + domain.maxPrice + ` CGAS` + `</td>
                         <td><a href="` + hrefaddr + `" target="_self">` + address + `</a></td>
                         <td>` + status + `</td>
                         </tr>`;
@@ -2769,7 +2769,7 @@ var WebBrowser;
                         <td>` + domain.range + `</td>
                         <td> <a href="` + href + `" target="_self">` + domain.fulldomain + `</a></td>
                         <td> <a href="` + hreftxid + `" target="_self">` + txid + `</a></td>
-                        <td>` + domain.maxPrice + ` CGas` + `</td>
+                        <td>` + domain.maxPrice + ` CGAS` + `</td>
                         <td><a href="` + hrefaddr + `" target="_self">` + address + `</a></td>
                         <td>` + endtime + `</td>
                         </tr>`;
@@ -2913,7 +2913,7 @@ var WebBrowser;
                         <tr>
                         <td> <a href="` + href + `" target="_self">` + domain.fulldomain + `</a></td>
                         <td> <a href="` + hreftxid + `" target="_self">` + txid + `</a></td>
-                        <td>` + domain.maxPrice + ` CGas` + `</td>
+                        <td>` + domain.maxPrice + ` CGAS` + `</td>
                         <td><a href="` + hrefaddr + `" target="_self">` + address + `</a></td>
                         <td>` + state + `</td>
                         </tr>`;
@@ -3046,7 +3046,7 @@ var WebBrowser;
                         <td>` + domain.range + `</td>
                         <td> <a href="` + href + `" target="_self">` + domain.fulldomain + `</a></td>
                         <td> <a href="` + hreftxid + `" target="_self">` + txid + `</a></td>
-                        <td>` + domain.maxPrice + ` CGas` + `</td>
+                        <td>` + domain.maxPrice + ` CGAS` + `</td>
                         <td><a href="` + hrefaddr + `" target="_self">` + address + `</a></td>
                         <td>` + endtime + `</td>
                         </tr>`;
@@ -3252,7 +3252,7 @@ var WebBrowser;
                         <div class="line"><div class="title-nel"><span>` + strArr[1] + `</span></div> <div class="content-nel"><span>` + this.domainDetail.auctionId + `</span></div></div>
                         <div class="line"><div class="title-nel"><span>` + strArr[2] + `</span></div> <div class="content-nel"><span>` + startTime + `</span></div></div>
                         <div class="line"><div class="title-nel"><span>` + strArr[3] + `</span></div><div class="content-nel"><span style="white-space: nowrap;">` + endTime + tips + `</span></div></div>
-                        <div class="line"><div class="title-nel"><span>` + strArr[4] + `</span></div><div class="content-nel"><span>` + this.domainDetail.maxPrice + ` CGas</span></div></div>
+                        <div class="line"><div class="title-nel"><span>` + strArr[4] + `</span></div><div class="content-nel"><span>` + this.domainDetail.maxPrice + ` CGAS</span></div></div>
                         <div class="line"><div class="title-nel"><span>` + strArr[5] + `</span></div><div class="content-nel"><span><a href="` + hrefaddr + `">` + this.domainDetail.maxBuyer + `</a></span></div></div>
                         <div class="line"><div class="title-nel"><span>` + strArr[6] + `</span></div><div class="content-nel">` + status + `</div></div>
                         <div class="line"><div class="title-nel"><span style="font-size:14px;">` + strArr[7] + `</span></div><div class="content-nel"><span><a href="` + hrefblock + `">` + this.domainDetail.startTime.blockindex + `</a></span></div></div>`;
@@ -3262,7 +3262,7 @@ var WebBrowser;
                 <div class="line"><div class="title-nel"><span>` + strArr[1] + `</span></div> <div class="content-nel"><span>` + this.domainDetail.auctionId + `</span></div></div>
                 <div class="line"><div class="title-nel"><span>` + strArr[2] + `</span></div> <div class="content-nel"><span>` + startTime + `</span></div></div>
                 <div class="line"><div class="title-nel"><span>` + strArr[8] + `</span></div><div class="content-nel"><span>` + endTime + `</span></div></div>
-                <div class="line"><div class="title-nel"><span>` + strArr[9] + `</span></div><div class="content-nel"><span>` + this.domainDetail.maxPrice + ` CGas</span></div></div>
+                <div class="line"><div class="title-nel"><span>` + strArr[9] + `</span></div><div class="content-nel"><span>` + this.domainDetail.maxPrice + ` CGAS</span></div></div>
                 <div class="line"><div class="title-nel"><span>` + strArr[10] + `</span></div><div class="content-nel"><span><a href="` + hrefaddr + `">` + this.domainDetail.maxBuyer + `</a></span></div></div>
                 <div class="line"><div class="title-nel"><span>` + strArr[11] + `</span></div><div class="content-nel"><span>` + expireTime + `</span></div></div>
                 <div class="line"><div class="title-nel"><span style="font-size:14px;">` + strArr[7] + `</span></div><div class="content-nel"><span><a href="` + hrefblock + `">` + this.domainDetail.startTime.blockindex + `</a></span></div></div>`;
@@ -3429,9 +3429,9 @@ var WebBrowser;
                         }
                         break;
                     case '500304':
-                        type = "Recover CGas";
+                        type = "Recover CGAS";
                         if (location.pathname == '/zh/') {
-                            type = "领回CGas";
+                            type = "领回CGAS";
                         }
                         break;
                     case '500305':
@@ -3454,7 +3454,7 @@ var WebBrowser;
                         <td> <a href="` + hreftxid + `" target="_self">` + txid + `</a></td>
                         <td>` + type + `</td>
                         <td>` + addr + `</td>
-                        <td>` + domain.amount + ` CGas` + `</td>
+                        <td>` + domain.amount + ` CGAS` + `</td>
                         <td>` + bidTime + `</td>
                         </tr>`;
                 $('#auctionInfo').append(html);
@@ -3467,7 +3467,7 @@ var WebBrowser;
                 let html = `
                         <tr>
                         <td>` + domain.range + `</td>
-                        <td>` + domain.totalValue + ` CGas` + `</td>
+                        <td>` + domain.totalValue + ` CGAS` + `</td>
                         <td><a href="` + hrefaddr + `" target="_self">` + domain.address + `</a></td>
                         </tr>`;
                 $('#auctionRank').append(html);
