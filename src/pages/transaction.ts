@@ -119,7 +119,7 @@ namespace WebBrowser
             let nep5Name = await WWW.api_getnep5(asset);
             let html = `
                     <tr>
-                    <td> <a href="`+ href + `" target="_self">` + nep5Name[0].name + `</a></td>
+                    <td> <a href="`+ href + `" target="_self">` + nep5Name[0].symbol + `</a></td>
                     <td>` + from + `</td>
                     <td>` + to + `</td>
                     <td>` + value + `</td>
