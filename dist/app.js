@@ -3396,19 +3396,19 @@ var WebBrowser;
                 }
                 let type = '';
                 switch (domain.type) {
-                    case '500301':
+                    case '4001':
                         type = "Open Auction";
                         if (location.pathname == '/zh/') {
                             type = "开标";
                         }
                         break;
-                    case '500302':
+                    case '4002':
                         type = "Raise Bid";
                         if (location.pathname == '/zh/') {
                             type = "加价";
                         }
                         break;
-                    case '500303':
+                    case '4003':
                         let strTip = '<p>This bid triggered the closing of the domain auction and was not successful.</p>';
                         if (location.pathname == '/zh/') {
                             strTip = "<p>此次出价触发竞拍结束，出价失败。</p>";
@@ -3428,13 +3428,13 @@ var WebBrowser;
                             type = "竞拍结束" + imgIcon;
                         }
                         break;
-                    case '500304':
+                    case '4004':
                         type = "Recover CGAS";
                         if (location.pathname == '/zh/') {
                             type = "领回CGAS";
                         }
                         break;
-                    case '500305':
+                    case '4005':
                         type = "Get Domain";
                         if (location.pathname == '/zh/') {
                             type = "领取域名";
