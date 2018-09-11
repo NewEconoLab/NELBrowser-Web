@@ -113,7 +113,6 @@
                 return false;
             }
             this.domainDetail = res[0] as DomainInfo;
-            console.log(this.domainDetail)
             this.domainInfoInit(this.domainDetail.auctionId, true);
             this.getDomainRank(this.domainDetail.auctionId, true);
             let strArr = this.languageToggle();
@@ -323,7 +322,6 @@
         }
         //加载竞拍信息
         public loadDomainView(bidHistory) {
-            console.log(bidHistory)
             bidHistory.forEach((domain) => {
                 let bidTime = '';
                 if (domain.time != 0) {
