@@ -231,7 +231,7 @@
             if (domain && domain[0].list.length != 0) {
                 this.loadDomainRankView(domain[0].list);
 
-                if (domain[0].count < 10) {
+                if (domain[0].count < 11) {
                     $("#domainRank-page").hide();
                 } else {
                     $("#domainRank-next").addClass('disabled');
@@ -284,7 +284,7 @@
             if (domain && domain[0].list.length!=0) {
                 this.loadDomainView(domain[0].list);
 
-                if (domain[0].count <= 11) {
+                if (domain[0].count < 11) {
                     $("#domainHistory-page").hide();
                 } else {
                     $("#domainHistory-next").addClass('disabled');
