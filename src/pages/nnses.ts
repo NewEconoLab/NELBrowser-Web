@@ -83,13 +83,40 @@
 
             return arr;
         }
+        //检测输入域名是否合法
+        checkDomainname(domainname:string) {
+            console.log(/\.neo$/.test(domainname));
+            let domain = domainname;
+            if (/\.neo$/.test(domainname)) {
+                domain = domain.substring(0, domain.length - 4);
+            }
+            else if (/\.test$/.test(domainname)) {
+                domain = domain.substring(0, domain.length - 5);
+            }
+            else {
+                return false;
+            }
+            if (domain.length >= 6 && domain.length <= 32) {
+                return true;
+            } else {
+                return false;
+            }
+        }
         //查询域名
-        async seachDomainInfo(domainname:string) {
-            //let domainname = $("#searchDomain").val();
-            if (domainname.indexOf(".neo") == -1) {
-                domainname = domainname + ".neo";
-            } 
+        async seachDomainInfo(domainname: string) {
             $("#domainInfo").empty();
+            $("#domainMsg").empty();
+            let checkResult = this.checkDomainname(domainname);
+            if (!checkResult) {
+                let html = `<span style="font-size:16px">Domain names must be English characters or numbers, and can only be 6 to 32 characters in length.<br>Please don't forget to add ".neo"  suffix to the domain, e.g.“xxx.neo”</span>`;
+                if (location.pathname == '/zh/') {
+                    html = `<span style="font-size:16px">域名长度需要在6～32个字节之间，只能是字母和数字。请加上后缀，“例如：XXXXXX.neo”</span>`;
+                }
+                $("#domainMsg").append(html);
+                $("#searchBox").show();
+                return false;
+            }
+            
             let status = '';
             let html = '';            
             let strArr = this.languageToggle();
