@@ -45,32 +45,16 @@
         //获取统计
         async getStatistics() {
             let res = await WWW.apiaggr_getstatistics();
-            let res2: any = '';
-            var arr = location.hash.split('/');
-            
-            if (arr[0] == '#mainnet') {
-                res2 = await WWW.api_getnep5balanceofaddress("", "");
-                
-            }
-            if (arr[0] == "#testnet") {
-                res2 = await WWW.api_getnep5balanceofaddress("9121e89e8a0849857262d67c8408601b5e8e0524", "ALjSnMZidJqd18iQaoCgFun6iqWRm2cVtj");
-            }
             if (res) {
-                //$("#coninpool").html(res[0].bonus + " CGAS");
+                $("#coninpool").html(res[0].bonus + " CGAS");
                 $("#accumulated").html(res[0].profit + " CGAS");
                 $("#useCount").html(res[0].usedDomainCount);
                 $("#beingCount").html(res[0].auctingDomainCount);
             } else {
-                //$("#coninpool").html("0 CGAS");
+                $("#coninpool").html("0 CGAS");
                 $("#accumulated").html("0 CGAS");
                 $("#useCount").html("0");
                 $("#beingCount").html("0");
-            }
-            if (res2) {
-                let coninpool = res2[0].nep5balance;
-                $("#coninpool").html(coninpool + " CGAS");
-            } else {
-                $("#coninpool").html("0 CGAS");
             }
         }
         //语言切换
