@@ -2521,7 +2521,6 @@ var WebBrowser;
             arr[5] = "Highest bid";
             arr[6] = "Bidder";
             arr[7] = "Auction-starting block";
-            arr[8] = "Status";
             if (location.pathname == '/zh/') {
                 arr[0] = "域名";
                 arr[1] = "交易ID";
@@ -3111,7 +3110,7 @@ var WebBrowser;
             arr[4] = "Highest bid";
             arr[5] = "Bidder";
             arr[6] = "Status";
-            arr[7] = "Auction-starting block";
+            arr[7] = `<span style="font-size:14px;">Auction-starting block</span>`;
             arr[8] = "Auction end time";
             arr[9] = "Hammer price";
             arr[10] = "Owner";
@@ -3126,7 +3125,7 @@ var WebBrowser;
                 arr[4] = "当前最高价";
                 arr[5] = "竞标人";
                 arr[6] = "状态";
-                arr[7] = "开标所属区块";
+                arr[7] = "<span>开标所属区块</span>";
                 arr[8] = "竞拍结束时间";
                 arr[9] = "成交价";
                 arr[10] = "中标人";
@@ -3239,7 +3238,7 @@ var WebBrowser;
                         <div class="line"><div class="title-nel"><span>` + strArr[4] + `</span></div><div class="content-nel"><span>` + this.domainDetail.maxPrice + ` CGAS</span></div></div>
                         <div class="line"><div class="title-nel"><span>` + strArr[5] + `</span></div><div class="content-nel"><span><a href="` + hrefaddr + `">` + this.domainDetail.maxBuyer + `</a></span></div></div>
                         <div class="line"><div class="title-nel"><span>` + strArr[6] + `</span></div><div class="content-nel">` + status + `</div></div>
-                        <div class="line"><div class="title-nel"><span style="font-size:14px;">` + strArr[7] + `</span></div><div class="content-nel"><span><a href="` + hrefblock + `">` + this.domainDetail.startTime.blockindex + `</a></span></div></div>`;
+                        <div class="line"><div class="title-nel">` + strArr[7] + `</div><div class="content-nel"><span><a href="` + hrefblock + `">` + this.domainDetail.startTime.blockindex + `</a></span></div></div>`;
                 }
                 else {
                     html = `<div class="line"><div class="title-nel"><span>` + strArr[0] + `</span></div> <div class="content-nel"><span>` + this.domainDetail.fulldomain + `</span></div></div>
@@ -3249,7 +3248,7 @@ var WebBrowser;
                 <div class="line"><div class="title-nel"><span>` + strArr[9] + `</span></div><div class="content-nel"><span>` + this.domainDetail.maxPrice + ` CGAS</span></div></div>
                 <div class="line"><div class="title-nel"><span>` + strArr[10] + `</span></div><div class="content-nel"><span><a href="` + hrefaddr + `">` + this.domainDetail.maxBuyer + `</a></span></div></div>
                 <div class="line"><div class="title-nel"><span>` + strArr[11] + `</span></div><div class="content-nel"><span>` + expireTime + `</span></div></div>
-                <div class="line"><div class="title-nel"><span style="font-size:14px;">` + strArr[7] + `</span></div><div class="content-nel"><span><a href="` + hrefblock + `">` + this.domainDetail.startTime.blockindex + `</a></span></div></div>`;
+                <div class="line"><div class="title-nel">` + strArr[7] + `</div><div class="content-nel"><span><a href="` + hrefblock + `">` + this.domainDetail.startTime.blockindex + `</a></span></div></div>`;
                 }
                 $("#domaininfo-msg").append(html);
             });

@@ -69,7 +69,6 @@
             arr[5] = "Highest bid";
             arr[6] = "Bidder";
             arr[7] = "Auction-starting block";
-            arr[8] = "Status";
            
             if (location.pathname == '/zh/') {
                 arr[0] = "域名";
