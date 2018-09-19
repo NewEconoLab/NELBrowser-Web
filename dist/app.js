@@ -2899,24 +2899,18 @@ var WebBrowser;
                 if (domain.maxBuyer != '') {
                     address = domain.maxBuyer.substring(0, 4) + '...' + domain.maxBuyer.substring(domain.maxBuyer.length - 4);
                 }
-                let state = '';
+                let status = '';
                 switch (domain.auctionState) {
-                    case '0':
-                        state = 'End';
+                    case '0201':
+                        status = "Auction period";
                         if (location.pathname == '/zh/') {
-                            state = '已结束';
+                            status = '确定期';
                         }
                         break;
-                    case '1':
-                        state = "Auction period";
+                    case '0301':
+                        status = "Overtime bidding";
                         if (location.pathname == '/zh/') {
-                            state = '确定期';
-                        }
-                        break;
-                    case '2':
-                        state = "Overtime bidding";
-                        if (location.pathname == '/zh/') {
-                            state = '随机期';
+                            status = '随机期';
                         }
                         break;
                 }
@@ -2926,7 +2920,7 @@ var WebBrowser;
                         <td> <a href="` + hreftxid + `" target="_self">` + txid + `</a></td>
                         <td>` + domain.maxPrice + ` CGAS` + `</td>
                         <td><a href="` + hrefaddr + `" target="_self">` + address + `</a></td>
-                        <td>` + state + `</td>
+                        <td>` + status + `</td>
                         </tr>`;
                 $('#domainBeingListPage').append(html);
             });
