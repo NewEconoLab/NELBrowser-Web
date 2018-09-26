@@ -44,7 +44,10 @@
         }
         //获取统计
         async getStatistics() {
-            let res = await WWW.apiaggr_getstatistics();
+            let res = null
+            if (locationtool.getNetWork() == 'testnet') {
+                res = await WWW.apiaggr_getstatistics();
+            } 
             if (res) {
                 $("#coninpool").html(res[0].bonus + " CGAS");
                 $("#accumulated").html(res[0].profit + " CGAS");
@@ -120,7 +123,10 @@
             let status = '';
             let html = '';            
             let strArr = this.languageToggle();
-            let res = await WWW.apiaggr_getauctioninfo(domainname);
+            let res = null;
+            if (locationtool.getNetWork() == 'testnet') {
+                res = await WWW.apiaggr_getauctioninfo(domainname);
+            } 
             if (!res) {
                 let href = '';
                 if (locationtool.getNetWork() == 'testnet')
@@ -211,7 +217,10 @@
         //获取域名正在竞拍列表
         async getDomainList() {
             $("#domainBeingList").empty();
-            let domain: DomainBiding = await WWW.apiaggr_getauctingdomain(1, 10) as DomainBiding;
+            let domain: DomainBiding;
+            if (locationtool.getNetWork() == 'testnet') {
+                domain = await WWW.apiaggr_getauctingdomain(1, 10) as DomainBiding;
+            } 
             if (!domain || domain[0].count == 0) {
                 $("#domainBeing").hide();
                 let msg = "There is no data";
@@ -278,7 +287,10 @@
         //获取域名价值列表
         async getDomainRank() {
             $("#domainUseList").empty();
-            let rank: DomainBided = await WWW.apiaggr_getaucteddomain(1, 10) as DomainBided;
+            let rank: DomainBided;
+            if (locationtool.getNetWork() == 'testnet') {
+                rank = await WWW.apiaggr_getaucteddomain(1, 10) as DomainBided;
+            } 
             if (!rank || rank[0].count == 0) {
                 $("#domainUse").hide();
                 let msg = "There is no data";

@@ -101,11 +101,16 @@
         {
             $("#domaininfo-msg").empty();
             let html = '';
-            let res = await WWW.apiaggr_getauctioninfo(domainname);
+            let res = null;
+            if (locationtool.getNetWork() == 'testnet') {
+                res = await WWW.apiaggr_getauctioninfo(domainname);
+            } 
+            if (locationtool.getNetWork() == 'mainnet')
+                res = null;
             if (!res) {
-                html = `<div class="line" style="text-align: center;padding: 16px;font-size: 16px;color:#fff;"><span>There is no data </span></div>`;
+                html = `<div class="line" style="text-align: center;padding: 16px;font-size: 16px;"><span>There is no data </span></div>`;
                 if (location.pathname == '/zh/') {
-                    html = `<div class="line" style="text-align: center;padding: 16px;font-size: 16px;color:#fff;"><span>没有数据</span></div>`;
+                    html = `<div class="line" style="text-align: center;padding: 16px;font-size: 16px;"><span>没有数据</span></div>`;
                 }
                 $("#domaininfo-msg").append(html);
                 this.getDomainRank("", true);
@@ -220,9 +225,13 @@
             $("#auctionRank").empty();
             let domain: DomainPriceRank;
             if (!first) {  //判断是否为初始加载
-                domain = await WWW.apiaggr_getauctioninfoRank(domainid, this.rankpageUtil.currentPage, this.rankpageUtil.pageSize) as DomainPriceRank;
+                if (locationtool.getNetWork() == 'testnet') {
+                    domain = await WWW.apiaggr_getauctioninfoRank(domainid, this.rankpageUtil.currentPage, this.rankpageUtil.pageSize) as DomainPriceRank;
+                }
             } else {     //初始加载
-                domain = await WWW.apiaggr_getauctioninfoRank(domainid, 1, 10) as DomainPriceRank;
+                if (locationtool.getNetWork() == 'testnet') {
+                    domain = await WWW.apiaggr_getauctioninfoRank(domainid, 1, 10) as DomainPriceRank;
+                }
                 if (domain) {
                     this.rankpageUtil = new PageUtil(domain[0].count, 10);
                 }
@@ -273,9 +282,13 @@
             $("#auctionInfo").empty();
             let domain: DomainInfoHistory;
             if (!first) {  //判断是否为初始加载
-                domain = await WWW.apiaggr_getauctioninfoTx(id, this.pageUtil.currentPage, this.pageUtil.pageSize) as DomainInfoHistory;
+                if (locationtool.getNetWork() == 'testnet') {
+                    domain = await WWW.apiaggr_getauctioninfoTx(id, this.pageUtil.currentPage, this.pageUtil.pageSize) as DomainInfoHistory;
+                }
             } else {     //初始加载
-                domain = await WWW.apiaggr_getauctioninfoTx(id, 1, 10) as DomainInfoHistory;
+                if (locationtool.getNetWork() == 'testnet') {
+                    domain = await WWW.apiaggr_getauctioninfoTx(id, 1, 10) as DomainInfoHistory;
+                }
                 if (domain) {
                     this.pageUtil = new PageUtil(domain[0].count, 10);
                 }

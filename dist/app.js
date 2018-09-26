@@ -2494,7 +2494,10 @@ var WebBrowser;
         //获取统计
         getStatistics() {
             return __awaiter(this, void 0, void 0, function* () {
-                let res = yield WebBrowser.WWW.apiaggr_getstatistics();
+                let res = null;
+                if (WebBrowser.locationtool.getNetWork() == 'testnet') {
+                    res = yield WebBrowser.WWW.apiaggr_getstatistics();
+                }
                 if (res) {
                     $("#coninpool").html(res[0].bonus + " CGAS");
                     $("#accumulated").html(res[0].profit + " CGAS");
@@ -2571,7 +2574,10 @@ var WebBrowser;
                 let status = '';
                 let html = '';
                 let strArr = this.languageToggle();
-                let res = yield WebBrowser.WWW.apiaggr_getauctioninfo(domainname);
+                let res = null;
+                if (WebBrowser.locationtool.getNetWork() == 'testnet') {
+                    res = yield WebBrowser.WWW.apiaggr_getauctioninfo(domainname);
+                }
                 if (!res) {
                     let href = '';
                     if (WebBrowser.locationtool.getNetWork() == 'testnet')
@@ -2662,7 +2668,10 @@ var WebBrowser;
         getDomainList() {
             return __awaiter(this, void 0, void 0, function* () {
                 $("#domainBeingList").empty();
-                let domain = yield WebBrowser.WWW.apiaggr_getauctingdomain(1, 10);
+                let domain;
+                if (WebBrowser.locationtool.getNetWork() == 'testnet') {
+                    domain = (yield WebBrowser.WWW.apiaggr_getauctingdomain(1, 10));
+                }
                 if (!domain || domain[0].count == 0) {
                     $("#domainBeing").hide();
                     let msg = "There is no data";
@@ -2732,7 +2741,10 @@ var WebBrowser;
         getDomainRank() {
             return __awaiter(this, void 0, void 0, function* () {
                 $("#domainUseList").empty();
-                let rank = yield WebBrowser.WWW.apiaggr_getaucteddomain(1, 10);
+                let rank;
+                if (WebBrowser.locationtool.getNetWork() == 'testnet') {
+                    rank = (yield WebBrowser.WWW.apiaggr_getaucteddomain(1, 10));
+                }
                 if (!rank || rank[0].count == 0) {
                     $("#domainUse").hide();
                     let msg = "There is no data";
@@ -2811,11 +2823,15 @@ var WebBrowser;
             return __awaiter(this, void 0, void 0, function* () {
                 $("#domainBeingListPage").empty();
                 let domain;
-                if (!first) { //判断是否为初始加载
-                    domain = (yield WebBrowser.WWW.apiaggr_getauctingdomain(this.pageUtil.currentPage, this.pageUtil.pageSize));
+                if (!first) { //判断是否为初始加载                
+                    if (WebBrowser.locationtool.getNetWork() == 'testnet') {
+                        domain = (yield WebBrowser.WWW.apiaggr_getauctingdomain(this.pageUtil.currentPage, this.pageUtil.pageSize));
+                    }
                 }
                 else { //初始加载
-                    domain = (yield WebBrowser.WWW.apiaggr_getauctingdomain(1, 15));
+                    if (WebBrowser.locationtool.getNetWork() == 'testnet') {
+                        domain = (yield WebBrowser.WWW.apiaggr_getauctingdomain(1, 15));
+                    }
                     if (domain) {
                         this.pageUtil = new WebBrowser.PageUtil(domain[0].count, 15);
                     }
@@ -2948,10 +2964,14 @@ var WebBrowser;
                 $("#domainUseListPage").empty();
                 let domain;
                 if (!first) { //判断是否为初始加载
-                    domain = (yield WebBrowser.WWW.apiaggr_getaucteddomain(this.pageUtil.currentPage, this.pageUtil.pageSize));
+                    if (WebBrowser.locationtool.getNetWork() == 'testnet') {
+                        domain = (yield WebBrowser.WWW.apiaggr_getaucteddomain(this.pageUtil.currentPage, this.pageUtil.pageSize));
+                    }
                 }
-                else { //初始加载
-                    domain = (yield WebBrowser.WWW.apiaggr_getaucteddomain(1, 15));
+                else { //初始加载                
+                    if (WebBrowser.locationtool.getNetWork() == 'testnet') {
+                        domain = (yield WebBrowser.WWW.apiaggr_getaucteddomain(1, 15));
+                    }
                     if (domain) {
                         this.pageUtil = new WebBrowser.PageUtil(domain[0].count, 15);
                     }
@@ -3161,11 +3181,16 @@ var WebBrowser;
             return __awaiter(this, void 0, void 0, function* () {
                 $("#domaininfo-msg").empty();
                 let html = '';
-                let res = yield WebBrowser.WWW.apiaggr_getauctioninfo(domainname);
+                let res = null;
+                if (WebBrowser.locationtool.getNetWork() == 'testnet') {
+                    res = yield WebBrowser.WWW.apiaggr_getauctioninfo(domainname);
+                }
+                if (WebBrowser.locationtool.getNetWork() == 'mainnet')
+                    res = null;
                 if (!res) {
-                    html = `<div class="line" style="text-align: center;padding: 16px;font-size: 16px;color:#fff;"><span>There is no data </span></div>`;
+                    html = `<div class="line" style="text-align: center;padding: 16px;font-size: 16px;"><span>There is no data </span></div>`;
                     if (location.pathname == '/zh/') {
-                        html = `<div class="line" style="text-align: center;padding: 16px;font-size: 16px;color:#fff;"><span>没有数据</span></div>`;
+                        html = `<div class="line" style="text-align: center;padding: 16px;font-size: 16px;"><span>没有数据</span></div>`;
                     }
                     $("#domaininfo-msg").append(html);
                     this.getDomainRank("", true);
@@ -3280,10 +3305,14 @@ var WebBrowser;
                 $("#auctionRank").empty();
                 let domain;
                 if (!first) { //判断是否为初始加载
-                    domain = (yield WebBrowser.WWW.apiaggr_getauctioninfoRank(domainid, this.rankpageUtil.currentPage, this.rankpageUtil.pageSize));
+                    if (WebBrowser.locationtool.getNetWork() == 'testnet') {
+                        domain = (yield WebBrowser.WWW.apiaggr_getauctioninfoRank(domainid, this.rankpageUtil.currentPage, this.rankpageUtil.pageSize));
+                    }
                 }
                 else { //初始加载
-                    domain = (yield WebBrowser.WWW.apiaggr_getauctioninfoRank(domainid, 1, 10));
+                    if (WebBrowser.locationtool.getNetWork() == 'testnet') {
+                        domain = (yield WebBrowser.WWW.apiaggr_getauctioninfoRank(domainid, 1, 10));
+                    }
                     if (domain) {
                         this.rankpageUtil = new WebBrowser.PageUtil(domain[0].count, 10);
                     }
@@ -3335,10 +3364,14 @@ var WebBrowser;
                 $("#auctionInfo").empty();
                 let domain;
                 if (!first) { //判断是否为初始加载
-                    domain = (yield WebBrowser.WWW.apiaggr_getauctioninfoTx(id, this.pageUtil.currentPage, this.pageUtil.pageSize));
+                    if (WebBrowser.locationtool.getNetWork() == 'testnet') {
+                        domain = (yield WebBrowser.WWW.apiaggr_getauctioninfoTx(id, this.pageUtil.currentPage, this.pageUtil.pageSize));
+                    }
                 }
                 else { //初始加载
-                    domain = (yield WebBrowser.WWW.apiaggr_getauctioninfoTx(id, 1, 10));
+                    if (WebBrowser.locationtool.getNetWork() == 'testnet') {
+                        domain = (yield WebBrowser.WWW.apiaggr_getauctioninfoTx(id, 1, 10));
+                    }
                     if (domain) {
                         this.pageUtil = new WebBrowser.PageUtil(domain[0].count, 10);
                     }
