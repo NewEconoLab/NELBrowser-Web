@@ -24,6 +24,11 @@
                 let domainname: string = $("#inputDomain").val() as string;
                 self.seachDomainInfo(domainname);
             })
+
+            $("#sort-type").change(() => {
+                let type:string = $("#sort-type option:selected").val() as string;
+                this.getDomainList(type);
+            }) 
         }
 
         async start()
@@ -31,7 +36,7 @@
             $("#inputDomain").val();
             $("#searchBox").hide();
             this.getStatistics();
-            this.getDomainList();
+            this.getDomainList('Time');
             this.getDomainRank();
             this.gonnsBeing.href = Url.href_nnsbeing();
             this.gonnsRank.href = Url.href_nnsrank();
@@ -209,10 +214,16 @@
             $("#searchBox").show();
             $("#inputDomain").val("")
         }
-        //获取域名正在竞拍列表
-        async getDomainList() {
+        //获取域名正在竞拍列表 默认时间排序
+        async getDomainList(sorttype:string) {
             $("#domainBeingList").empty();
-            let domain: DomainBiding = await WWW.apiaggr_getauctingdomain(1, 10) as DomainBiding;
+            let domain: DomainBiding;
+            if (sorttype === 'Time') {
+                domain = await WWW.apiaggr_getauctingdomain(1, 10) as DomainBiding;
+            } else if (sorttype === 'Price') {
+                domain = await WWW.apiaggr_getauctingdomainbymaxprice(1, 10) as DomainBiding;
+            }
+            
             if (!domain || domain[0].count == 0) {
                 $("#domainBeing").hide();
                 let msg = "There is no data";

@@ -15,14 +15,22 @@
         /**
          * addrlistInit
          */
-        public async domainListInit(first: boolean)
+        public async domainListInit(first: boolean,sorttype:string)
         {
             $("#domainBeingListPage").empty();
             let domain: DomainBiding;
             if (!first) {     //判断是否为初始加载               
-                domain = await WWW.apiaggr_getauctingdomain(this.pageUtil.currentPage, this.pageUtil.pageSize) as DomainBiding;                
+                if (sorttype === 'Time') {
+                    domain = await WWW.apiaggr_getauctingdomain(this.pageUtil.currentPage, this.pageUtil.pageSize) as DomainBiding;
+                } else if (sorttype === 'Price') {
+                    domain = await WWW.apiaggr_getauctingdomainbymaxprice(this.pageUtil.currentPage, this.pageUtil.pageSize) as DomainBiding;
+                }                               
             } else {    //初始加载
-                domain = await WWW.apiaggr_getauctingdomain(1, 15) as DomainBiding;                  
+                if (sorttype === 'Time') {
+                    domain = await WWW.apiaggr_getauctingdomain(1, 15) as DomainBiding; 
+                } else if (sorttype === 'Price') {
+                    domain = await WWW.apiaggr_getauctingdomainbymaxprice(1, 15) as DomainBiding; 
+                }                  
                 if (domain) {
                     this.pageUtil = new PageUtil(domain[0].count, 15);
                 }
@@ -67,14 +75,15 @@
          */
         public async start()
         {
-            await this.domainListInit(true);
-
+            let type: string = $("#sortlist-type option:selected").val() as string;
+            await this.domainListInit(true, type);
+            
             $("#nnsbeing-page-next").off("click").click(() => {
                 if (this.pageUtil.currentPage == this.pageUtil.totalPage) {
                     this.pageUtil.currentPage = this.pageUtil.totalPage;
                 } else {
                     this.pageUtil.currentPage += 1;
-                    this.domainListInit(false);
+                    this.domainListInit(false,type);
                 }
             });
             $("#nnsbeing-page-previous").off("click").click(() => {
@@ -82,9 +91,13 @@
                     this.pageUtil.currentPage = 1;
                 } else {
                     this.pageUtil.currentPage -= 1;
-                    this.domainListInit(false);
+                    this.domainListInit(false,type);
                 }
             });
+            $("#sortlist-type").change(() => {  
+                type = $("#sortlist-type option:selected").val() as string;
+                this.domainListInit(true,type);
+            }) 
             this.div.hidden = false;
             this.footer.hidden = false;
         }

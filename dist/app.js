@@ -499,6 +499,16 @@ var WebBrowser;
                 return r;
             });
         }
+        //domain正在竞拍列表按金额排序
+        static apiaggr_getauctingdomainbymaxprice(page, pagesize) {
+            return __awaiter(this, void 0, void 0, function* () {
+                var str = WWW.makeUrl("getauctingdomainbymaxprice", WWW.apiaggr + WebBrowser.locationtool.getNetWork(), page, pagesize);
+                var result = yield fetch(str, { "method": "get" });
+                var json = yield result.json();
+                var r = json["result"];
+                return r;
+            });
+        }
         //domain竞拍价值排名列表
         static apiaggr_getaucteddomain(page, pagesize) {
             return __awaiter(this, void 0, void 0, function* () {
@@ -2469,6 +2479,10 @@ var WebBrowser;
                 let domainname = $("#inputDomain").val();
                 self.seachDomainInfo(domainname);
             });
+            $("#sort-type").change(() => {
+                let type = $("#sort-type option:selected").val();
+                this.getDomainList(type);
+            });
         }
         close() {
             this.div.hidden = true;
@@ -2479,7 +2493,7 @@ var WebBrowser;
                 $("#inputDomain").val();
                 $("#searchBox").hide();
                 this.getStatistics();
-                this.getDomainList();
+                this.getDomainList('Time');
                 this.getDomainRank();
                 this.gonnsBeing.href = WebBrowser.Url.href_nnsbeing();
                 this.gonnsRank.href = WebBrowser.Url.href_nnsrank();
@@ -2658,11 +2672,17 @@ var WebBrowser;
                 $("#inputDomain").val("");
             });
         }
-        //获取域名正在竞拍列表
-        getDomainList() {
+        //获取域名正在竞拍列表 默认时间排序
+        getDomainList(sorttype) {
             return __awaiter(this, void 0, void 0, function* () {
                 $("#domainBeingList").empty();
-                let domain = yield WebBrowser.WWW.apiaggr_getauctingdomain(1, 10);
+                let domain;
+                if (sorttype === 'Time') {
+                    domain = (yield WebBrowser.WWW.apiaggr_getauctingdomain(1, 10));
+                }
+                else if (sorttype === 'Price') {
+                    domain = (yield WebBrowser.WWW.apiaggr_getauctingdomainbymaxprice(1, 10));
+                }
                 if (!domain || domain[0].count == 0) {
                     $("#domainBeing").hide();
                     let msg = "There is no data";
@@ -2807,15 +2827,25 @@ var WebBrowser;
         /**
          * addrlistInit
          */
-        domainListInit(first) {
+        domainListInit(first, sorttype) {
             return __awaiter(this, void 0, void 0, function* () {
                 $("#domainBeingListPage").empty();
                 let domain;
                 if (!first) { //判断是否为初始加载               
-                    domain = (yield WebBrowser.WWW.apiaggr_getauctingdomain(this.pageUtil.currentPage, this.pageUtil.pageSize));
+                    if (sorttype === 'Time') {
+                        domain = (yield WebBrowser.WWW.apiaggr_getauctingdomain(this.pageUtil.currentPage, this.pageUtil.pageSize));
+                    }
+                    else if (sorttype === 'Price') {
+                        domain = (yield WebBrowser.WWW.apiaggr_getauctingdomainbymaxprice(this.pageUtil.currentPage, this.pageUtil.pageSize));
+                    }
                 }
                 else { //初始加载
-                    domain = (yield WebBrowser.WWW.apiaggr_getauctingdomain(1, 15));
+                    if (sorttype === 'Time') {
+                        domain = (yield WebBrowser.WWW.apiaggr_getauctingdomain(1, 15));
+                    }
+                    else if (sorttype === 'Price') {
+                        domain = (yield WebBrowser.WWW.apiaggr_getauctingdomainbymaxprice(1, 15));
+                    }
                     if (domain) {
                         this.pageUtil = new WebBrowser.PageUtil(domain[0].count, 15);
                     }
@@ -2863,14 +2893,15 @@ var WebBrowser;
          */
         start() {
             return __awaiter(this, void 0, void 0, function* () {
-                yield this.domainListInit(true);
+                let type = $("#sortlist-type option:selected").val();
+                yield this.domainListInit(true, type);
                 $("#nnsbeing-page-next").off("click").click(() => {
                     if (this.pageUtil.currentPage == this.pageUtil.totalPage) {
                         this.pageUtil.currentPage = this.pageUtil.totalPage;
                     }
                     else {
                         this.pageUtil.currentPage += 1;
-                        this.domainListInit(false);
+                        this.domainListInit(false, type);
                     }
                 });
                 $("#nnsbeing-page-previous").off("click").click(() => {
@@ -2879,8 +2910,12 @@ var WebBrowser;
                     }
                     else {
                         this.pageUtil.currentPage -= 1;
-                        this.domainListInit(false);
+                        this.domainListInit(false, type);
                     }
+                });
+                $("#sortlist-type").change(() => {
+                    type = $("#sortlist-type option:selected").val();
+                    this.domainListInit(true, type);
                 });
                 this.div.hidden = false;
                 this.footer.hidden = false;

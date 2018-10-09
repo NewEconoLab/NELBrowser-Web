@@ -414,8 +414,19 @@
                     <div class="domain-info" id="domainInfo"></div>
                 </div>
             </div>
-            <div class="title">
-                <span>正在竞拍的域名</span>
+            <div class="row">
+                <div class="col-md-2">
+                    <div class="title">
+                        <span>正在竞拍的域名</span>
+                    </div>
+                </div>
+                <div class="col-md-3 rank-class">
+                    <label>排序</label>
+                    <select id="sort-type" class="form-control">
+                        <option value="Time">开标时间</option>
+                        <option value="Price">最高竞价</option>
+                    </select>
+                </div>
             </div>
             <table class="table table-nel cool">
                 <thead>
@@ -454,8 +465,19 @@
         </div>
         <!--域名正在竞拍页面-->
         <div id="nnsbeing-page" class="container-nel" hidden style="min-height:619px;">
-            <div class="title">
-                <span>正在竞拍的域名</span>
+            <div class="row">
+                <div class="col-md-2">
+                    <div class="title">
+                        <span>正在竞拍的域名</span>
+                    </div>
+                </div>
+                <div class="col-md-3 rank-class">
+                    <label>排序</label>
+                    <select id="sortlist-type" class="form-control">
+                        <option value="Time">开标时间</option>
+                        <option value="Price">最高竞价</option>
+                    </select>
+                </div>
             </div>
             <table class="table table-nel cool">
                 <thead>

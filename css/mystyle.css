@@ -495,6 +495,17 @@ a{
 .line-href {
     color: #2DDE4F;
 }
+.rank-class{
+    padding-top:75px;
+    display:flex;
+}
+.rank-class label{
+    margin-right:10px;
+    line-height:34px;
+}
+.rank-class select{
+    width:auto;
+}
 #domainBeingList tr td a,
 #domainUseList tr td a,
 #domainBeingListPage tr td a,

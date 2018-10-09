@@ -261,6 +261,14 @@ namespace WebBrowser
             var r = json["result"];
             return r;
         }
+        //domain正在竞拍列表按金额排序
+        static async apiaggr_getauctingdomainbymaxprice(page: number, pagesize: number) {
+            var str = WWW.makeUrl("getauctingdomainbymaxprice", WWW.apiaggr + locationtool.getNetWork(), page, pagesize);
+            var result = await fetch(str, { "method": "get" });
+            var json = await result.json();
+            var r = json["result"];
+            return r;
+        }
         //domain竞拍价值排名列表
         static async apiaggr_getaucteddomain( page: number, pagesize: number) {
             var str = WWW.makeUrl("getaucteddomain", WWW.apiaggr + locationtool.getNetWork(), page, pagesize);

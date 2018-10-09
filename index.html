@@ -403,7 +403,7 @@
             </div>
             <div class="search-wrap">
                 <div class="search-input">
-                    <input type="text" name="name" value="" placeholder="Search for domain name" id="inputDomain" autocomplete="off"/>
+                    <input type="text" name="name" value="" placeholder="Search for domain name" id="inputDomain" autocomplete="off" />
                     <span id="searchDomain" class="search-icon">
                         <img src="../fonts/search.svg" width="24" height="24" id="searchPng" />
                         <img src="../img/search-main.png" width="24" height="24" hidden />
@@ -414,8 +414,19 @@
                     <div class="domain-info" id="domainInfo"></div>
                 </div>
             </div>
-            <div class="title">
-                <span>Live auctions</span>
+            <div class="row">
+                <div class="col-md-2">
+                    <div class="title">
+                        <span>Live auctions</span>
+                    </div>
+                </div>
+                <div class="col-md-3 rank-class" >
+                    <label>Ordered by</label>
+                    <select id="sort-type" class="form-control">
+                        <option value="Time">Auction-starting time</option>
+                        <option value="Price">Highest bid prices</option>
+                    </select>
+                </div>
             </div>
             <table class="table table-nel cool">
                 <thead>
@@ -454,8 +465,19 @@
         </div>
         <!--域名正在竞拍页面-->
         <div id="nnsbeing-page" class="container-nel" hidden style="min-height:619px;">
-            <div class="title">
-                <span>Live auctions</span>
+            <div class="row">
+                <div class="col-md-2">
+                    <div class="title">
+                        <span>Live auctions</span>
+                    </div>
+                </div>
+                <div class="col-md-3 rank-class">
+                    <label>Ordered by</label>
+                    <select id="sortlist-type" class="form-control">
+                        <option value="Time">Auction-starting time</option>
+                        <option value="Price">Highest bid prices</option>
+                    </select>
+                </div>
             </div>
             <table class="table table-nel cool">
                 <thead>
