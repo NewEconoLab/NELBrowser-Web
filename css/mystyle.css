@@ -506,6 +506,12 @@ a{
 .rank-class select{
     width:auto;
 }
+@media (max-width: 992px){
+    .rank-class {
+        padding-top: 0;
+        padding-bottom:20px;
+    }
+}
 #domainBeingList tr td a,
 #domainUseList tr td a,
 #domainBeingListPage tr td a,
