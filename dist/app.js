@@ -2546,7 +2546,7 @@ var WebBrowser;
             else {
                 return false;
             }
-            if (domain.length >= 6 && domain.length <= 32) {
+            if (domain.length >= 2 && domain.length <= 32) {
                 return true;
             }
             else {
@@ -2560,9 +2560,9 @@ var WebBrowser;
                 $("#domainMsg").empty();
                 let checkResult = this.checkDomainname(domainname);
                 if (!checkResult) {
-                    let html = `<span style="font-size:16px">Domain names must be English characters or numbers, and can only be 6 to 32 characters in length.<br>Please don't forget to add ".neo"  suffix to the domain, e.g.“xxx.neo”</span>`;
+                    let html = `<span style="font-size:16px">Domain names must be English characters or numbers, and can only be 2 to 32 characters in length.<br>Please don't forget to add ".neo"  suffix to the domain, e.g.“xxx.neo”</span>`;
                     if (location.pathname == '/zh/') {
-                        html = `<span style="font-size:16px">域名长度需要在6～32个字节之间，只能是字母和数字。请加上后缀，“例如：XXXXXX.neo”</span>`;
+                        html = `<span style="font-size:16px">域名长度需要在2～32个字节之间，只能是字母和数字。请加上后缀，“例如：XXXXXX.neo”</span>`;
                     }
                     $("#domainMsg").append(html);
                     $("#searchBox").show();
