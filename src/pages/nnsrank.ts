@@ -21,7 +21,7 @@
             let domain: DomainBided;
             if (!first) {  //判断是否为初始加载
                 domain = await WWW.apiaggr_getaucteddomain(this.pageUtil.currentPage, this.pageUtil.pageSize) as DomainBided;
-            } else {     //初始加载
+            } else {     //初始加载                
                 domain = await WWW.apiaggr_getaucteddomain(1, 15) as DomainBided;
                 if (domain) {
                     this.pageUtil = new PageUtil(domain[0].count, 15);

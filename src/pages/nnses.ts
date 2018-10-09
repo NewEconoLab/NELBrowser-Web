@@ -121,6 +121,7 @@
             let html = '';            
             let strArr = this.languageToggle();
             let res = await WWW.apiaggr_getauctioninfo(domainname);
+           
             if (!res) {
                 let href = '';
                 if (locationtool.getNetWork() == 'testnet')

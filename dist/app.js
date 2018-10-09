@@ -2811,7 +2811,7 @@ var WebBrowser;
             return __awaiter(this, void 0, void 0, function* () {
                 $("#domainBeingListPage").empty();
                 let domain;
-                if (!first) { //判断是否为初始加载
+                if (!first) { //判断是否为初始加载               
                     domain = (yield WebBrowser.WWW.apiaggr_getauctingdomain(this.pageUtil.currentPage, this.pageUtil.pageSize));
                 }
                 else { //初始加载
@@ -2950,7 +2950,7 @@ var WebBrowser;
                 if (!first) { //判断是否为初始加载
                     domain = (yield WebBrowser.WWW.apiaggr_getaucteddomain(this.pageUtil.currentPage, this.pageUtil.pageSize));
                 }
-                else { //初始加载
+                else { //初始加载                
                     domain = (yield WebBrowser.WWW.apiaggr_getaucteddomain(1, 15));
                     if (domain) {
                         this.pageUtil = new WebBrowser.PageUtil(domain[0].count, 15);

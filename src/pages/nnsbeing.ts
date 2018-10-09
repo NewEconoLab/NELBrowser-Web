@@ -19,10 +19,10 @@
         {
             $("#domainBeingListPage").empty();
             let domain: DomainBiding;
-            if (!first) {     //判断是否为初始加载
-                domain = await WWW.apiaggr_getauctingdomain(this.pageUtil.currentPage, this.pageUtil.pageSize) as DomainBiding;
+            if (!first) {     //判断是否为初始加载               
+                domain = await WWW.apiaggr_getauctingdomain(this.pageUtil.currentPage, this.pageUtil.pageSize) as DomainBiding;                
             } else {    //初始加载
-                domain = await WWW.apiaggr_getauctingdomain(1, 15) as DomainBiding;
+                domain = await WWW.apiaggr_getauctingdomain(1, 15) as DomainBiding;                  
                 if (domain) {
                     this.pageUtil = new PageUtil(domain[0].count, 15);
                 }
