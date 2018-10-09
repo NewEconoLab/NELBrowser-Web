@@ -3163,9 +3163,9 @@ var WebBrowser;
                 let html = '';
                 let res = yield WebBrowser.WWW.apiaggr_getauctioninfo(domainname);
                 if (!res) {
-                    html = `<div class="line" style="text-align: center;padding: 16px;font-size: 16px;color:#fff;"><span>There is no data </span></div>`;
+                    html = `<div class="line" style="text-align: center;padding: 16px;font-size: 16px;"><span>There is no data </span></div>`;
                     if (location.pathname == '/zh/') {
-                        html = `<div class="line" style="text-align: center;padding: 16px;font-size: 16px;color:#fff;"><span>没有数据</span></div>`;
+                        html = `<div class="line" style="text-align: center;padding: 16px;font-size: 16px;"><span>没有数据</span></div>`;
                     }
                     $("#domaininfo-msg").append(html);
                     this.getDomainRank("", true);

@@ -416,6 +416,7 @@ a:hover, a:focus {
 .search-wrap {
     background: #fff;
     box-shadow: none;
+    
 }
 .search-input {
     border-bottom: 1px solid #eee;
@@ -426,6 +427,22 @@ a:hover, a:focus {
 .search-input input::placeholder {
     color: #B2B2B2;
 }
+.search-list {
+    color: #333;
+}
+.domain-name {
+    color: #333;
+}
+.domain-info {
+    color: #333;
+}
+.domain-info .list-line:nth-of-type(odd) {
+    background: #F5F5F5;
+}
+.domain-info .list-line:nth-of-type(even) {
+    background: #fff;
+}
+
 .t-foot tr th {
     color: #333;
     background: #F5F5F5;
