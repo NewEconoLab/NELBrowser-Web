@@ -11,7 +11,13 @@
             this.footer.hidden = true;
         }
         private pageUtil: PageUtil;
-
+        private sorttype: string;
+        constructor() {
+            $("#sortlist-type").change(() => {
+                this.sorttype = $("#sortlist-type option:selected").val() as string;
+                this.domainListInit(true, this.sorttype);
+            }) 
+        }
         /**
          * addrlistInit
          */
@@ -75,15 +81,15 @@
          */
         public async start()
         {
-            let type: string = $("#sortlist-type option:selected").val() as string;
-            await this.domainListInit(true, type);
+            this.sorttype = $("#sortlist-type option:selected").val() as string;
+            await this.domainListInit(true, this.sorttype);
             
             $("#nnsbeing-page-next").off("click").click(() => {
                 if (this.pageUtil.currentPage == this.pageUtil.totalPage) {
                     this.pageUtil.currentPage = this.pageUtil.totalPage;
                 } else {
                     this.pageUtil.currentPage += 1;
-                    this.domainListInit(false,type);
+                    this.domainListInit(false, this.sorttype);
                 }
             });
             $("#nnsbeing-page-previous").off("click").click(() => {
@@ -91,13 +97,9 @@
                     this.pageUtil.currentPage = 1;
                 } else {
                     this.pageUtil.currentPage -= 1;
-                    this.domainListInit(false,type);
+                    this.domainListInit(false, this.sorttype);
                 }
             });
-            $("#sortlist-type").change(() => {  
-                type = $("#sortlist-type option:selected").val() as string;
-                this.domainListInit(true,type);
-            }) 
             this.div.hidden = false;
             this.footer.hidden = false;
         }

@@ -2819,6 +2819,10 @@ var WebBrowser;
         constructor() {
             this.div = document.getElementById('nnsbeing-page');
             this.footer = document.getElementById('footer-box');
+            $("#sortlist-type").change(() => {
+                this.sorttype = $("#sortlist-type option:selected").val();
+                this.domainListInit(true, this.sorttype);
+            });
         }
         close() {
             this.div.hidden = true;
@@ -2893,15 +2897,15 @@ var WebBrowser;
          */
         start() {
             return __awaiter(this, void 0, void 0, function* () {
-                let type = $("#sortlist-type option:selected").val();
-                yield this.domainListInit(true, type);
+                this.sorttype = $("#sortlist-type option:selected").val();
+                yield this.domainListInit(true, this.sorttype);
                 $("#nnsbeing-page-next").off("click").click(() => {
                     if (this.pageUtil.currentPage == this.pageUtil.totalPage) {
                         this.pageUtil.currentPage = this.pageUtil.totalPage;
                     }
                     else {
                         this.pageUtil.currentPage += 1;
-                        this.domainListInit(false, type);
+                        this.domainListInit(false, this.sorttype);
                     }
                 });
                 $("#nnsbeing-page-previous").off("click").click(() => {
@@ -2910,12 +2914,8 @@ var WebBrowser;
                     }
                     else {
                         this.pageUtil.currentPage -= 1;
-                        this.domainListInit(false, type);
+                        this.domainListInit(false, this.sorttype);
                     }
-                });
-                $("#sortlist-type").change(() => {
-                    type = $("#sortlist-type option:selected").val();
-                    this.domainListInit(true, type);
                 });
                 this.div.hidden = false;
                 this.footer.hidden = false;
