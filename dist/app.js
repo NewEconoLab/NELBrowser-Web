@@ -203,7 +203,7 @@ var WebBrowser;
                     let html = `
                 <tr>
                 <td><a href="` + WebBrowser.Url.href_block(item.index) + `" target="_self">` + item.index + `</a></td>
-                <td>` + item.size + ` bytes</td><td>` + time + `</td>
+                <td>` + item.size + ` bytes</td><td>` + time + `</td><td>` + item.tx.length + `</td>
                 </tr>`;
                     $("#blocks-page").find("tbody").append(html);
                 });
