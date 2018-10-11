@@ -2480,8 +2480,8 @@ var WebBrowser;
                 self.seachDomainInfo(domainname);
             });
             $("#sort-type").change(() => {
-                let type = $("#sort-type option:selected").val();
-                this.getDomainList(type);
+                this.sorttype = $("#sort-type option:selected").val();
+                this.getDomainList(this.sorttype);
             });
         }
         close() {
@@ -2493,7 +2493,9 @@ var WebBrowser;
                 $("#inputDomain").val();
                 $("#searchBox").hide();
                 this.getStatistics();
-                this.getDomainList('Time');
+                this.sorttype = $("#sortlist-type option:selected").val();
+                $("#sort-type").val(this.sorttype);
+                this.getDomainList(this.sorttype);
                 this.getDomainRank();
                 this.gonnsBeing.href = WebBrowser.Url.href_nnsbeing();
                 this.gonnsRank.href = WebBrowser.Url.href_nnsrank();
@@ -2549,7 +2551,6 @@ var WebBrowser;
         }
         //检测输入域名是否合法
         checkDomainname(domainname) {
-            console.log(/\.neo$/.test(domainname));
             let domain = domainname;
             if (/\.neo$/.test(domainname)) {
                 domain = domain.substring(0, domain.length - 4);
@@ -2897,7 +2898,8 @@ var WebBrowser;
          */
         start() {
             return __awaiter(this, void 0, void 0, function* () {
-                this.sorttype = $("#sortlist-type option:selected").val();
+                this.sorttype = $("#sort-type option:selected").val();
+                $("#sortlist-type").val(this.sorttype);
                 yield this.domainListInit(true, this.sorttype);
                 $("#nnsbeing-page-next").off("click").click(() => {
                     if (this.pageUtil.currentPage == this.pageUtil.totalPage) {

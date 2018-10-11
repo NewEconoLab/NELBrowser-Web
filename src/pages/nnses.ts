@@ -7,6 +7,7 @@
         footer: HTMLDivElement = document.getElementById('footer-box') as HTMLDivElement;
         gonnsBeing: HTMLAnchorElement = document.getElementById("gonnsBeing") as HTMLAnchorElement;
         gonnsRank: HTMLAnchorElement = document.getElementById("gonnsRank") as HTMLAnchorElement;
+        sorttype: string;
         close(): void
         {
             this.div.hidden = true;
@@ -26,9 +27,9 @@
             })
 
             $("#sort-type").change(() => {
-                let type:string = $("#sort-type option:selected").val() as string;
-                this.getDomainList(type);
-            }) 
+                this.sorttype = $("#sort-type option:selected").val() as string;
+                this.getDomainList(this.sorttype);
+            })
         }
 
         async start()
@@ -36,7 +37,9 @@
             $("#inputDomain").val();
             $("#searchBox").hide();
             this.getStatistics();
-            this.getDomainList('Time');
+            this.sorttype = $("#sortlist-type option:selected").val() as string;
+            $("#sort-type").val(this.sorttype);
+            this.getDomainList(this.sorttype);
             this.getDomainRank();
             this.gonnsBeing.href = Url.href_nnsbeing();
             this.gonnsRank.href = Url.href_nnsrank();
@@ -90,7 +93,6 @@
         }
         //检测输入域名是否合法
         checkDomainname(domainname:string) {
-            console.log(/\.neo$/.test(domainname));
             let domain = domainname;
             if (/\.neo$/.test(domainname)) {
                 domain = domain.substring(0, domain.length - 4);
