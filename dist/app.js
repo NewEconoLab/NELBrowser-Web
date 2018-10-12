@@ -2495,6 +2495,7 @@ var WebBrowser;
                 this.getStatistics();
                 this.sorttype = $("#sortlist-type option:selected").val();
                 $("#sort-type").val(this.sorttype);
+                $("#sortlist-type").val(this.sorttype);
                 this.getDomainList(this.sorttype);
                 this.getDomainRank();
                 this.gonnsBeing.href = WebBrowser.Url.href_nnsbeing();
@@ -2899,6 +2900,7 @@ var WebBrowser;
         start() {
             return __awaiter(this, void 0, void 0, function* () {
                 this.sorttype = $("#sort-type option:selected").val();
+                $("#sort-type").val(this.sorttype);
                 $("#sortlist-type").val(this.sorttype);
                 yield this.domainListInit(true, this.sorttype);
                 $("#nnsbeing-page-next").off("click").click(() => {

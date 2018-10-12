@@ -39,6 +39,7 @@
             this.getStatistics();
             this.sorttype = $("#sortlist-type option:selected").val() as string;
             $("#sort-type").val(this.sorttype);
+            $("#sortlist-type").val(this.sorttype);
             this.getDomainList(this.sorttype);
             this.getDomainRank();
             this.gonnsBeing.href = Url.href_nnsbeing();

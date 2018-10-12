@@ -83,7 +83,8 @@
         {
 
             this.sorttype = $("#sort-type option:selected").val() as string;
-            $("#sortlist-type").val(this.sorttype)
+            $("#sort-type").val(this.sorttype);
+            $("#sortlist-type").val(this.sorttype);
             await this.domainListInit(true, this.sorttype);
             
             $("#nnsbeing-page-next").off("click").click(() => {
