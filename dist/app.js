@@ -3283,7 +3283,7 @@ var WebBrowser;
                             </div>`;
                             status = `<span style="color:#2DDE4F">Overtime bidding</span>${imgIcon}`;
                             if (location.pathname == '/zh/') {
-                                status = `<span style="color:#2DDE4F">随机期</span>${imgIcon}`;
+                                status = `<span style="color:#EF9336">随机期</span>${imgIcon}`;
                             }
                             break;
                     }
