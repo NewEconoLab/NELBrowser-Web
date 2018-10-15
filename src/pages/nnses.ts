@@ -114,7 +114,7 @@
         async seachDomainInfo(domainname: string) {
             $("#domainInfo").empty();
             $("#domainMsg").empty();
-            let checkResult = this.checkDomainname(domainname);
+            let checkResult = this.checkDomainname(domainname.toLocaleLowerCase());
             if (!checkResult) {
                 let html = `<span style="font-size:16px">Domain names must be English characters or numbers, and can only be 2 to 32 characters in length.<br>Please don't forget to add ".neo"  suffix to the domain, e.g.“xxx.neo”</span>`;
                 if (location.pathname == '/zh/') {
@@ -128,7 +128,7 @@
             let status = '';
             let html = '';            
             let strArr = this.languageToggle();
-            let res = await WWW.apiaggr_getauctioninfo(domainname);
+            let res = await WWW.apiaggr_getauctioninfo(domainname.toLocaleLowerCase());
            
             if (!res) {
                 let href = '';

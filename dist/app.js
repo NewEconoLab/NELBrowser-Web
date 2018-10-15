@@ -2574,7 +2574,7 @@ var WebBrowser;
             return __awaiter(this, void 0, void 0, function* () {
                 $("#domainInfo").empty();
                 $("#domainMsg").empty();
-                let checkResult = this.checkDomainname(domainname);
+                let checkResult = this.checkDomainname(domainname.toLocaleLowerCase());
                 if (!checkResult) {
                     let html = `<span style="font-size:16px">Domain names must be English characters or numbers, and can only be 2 to 32 characters in length.<br>Please don't forget to add ".neo"  suffix to the domain, e.g.“xxx.neo”</span>`;
                     if (location.pathname == '/zh/') {
@@ -2587,7 +2587,7 @@ var WebBrowser;
                 let status = '';
                 let html = '';
                 let strArr = this.languageToggle();
-                let res = yield WebBrowser.WWW.apiaggr_getauctioninfo(domainname);
+                let res = yield WebBrowser.WWW.apiaggr_getauctioninfo(domainname.toLocaleLowerCase());
                 if (!res) {
                     let href = '';
                     if (WebBrowser.locationtool.getNetWork() == 'testnet')
