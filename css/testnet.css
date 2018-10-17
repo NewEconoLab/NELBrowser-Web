@@ -472,3 +472,7 @@ table>tbody>tr {
     background: #505F79;
 }
 /*footer end*/
+/*分页样式*/
+.gopage-btn {
+    background: #454F60;
+}

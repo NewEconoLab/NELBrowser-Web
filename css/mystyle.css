@@ -145,7 +145,7 @@ a{
     text-align: center;
 }
 .page {
-    width: 101px;
+    width: auto;
     height: 38px;
     margin: 0 auto;
     /* Firefox */
@@ -691,3 +691,33 @@ a{
 }
 
 /*footer end*/
+/*分页样式*/
+.gopage{
+    display:inline-block;
+}
+.gopage-number {
+    display: inline-block;
+    width: 50px;
+    height: 38px;
+    border-radius: 5px;
+    border: none;
+    margin: 0 10px;
+    outline: none;
+}
+.gopage-number::-webkit-outer-spin-button,
+.gopage-number::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+}
+.gopage-number[type="number"] {
+    -moz-appearance: textfield;
+}
+.gopage-btn {
+    display: inline-block;
+    height: 38px;
+    width: 50px;    
+    border-radius: 5px;
+    vertical-align: middle;
+    text-align: center;
+    color: #fff;
+    border: none;
+}

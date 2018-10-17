@@ -45,8 +45,37 @@ var WebBrowser;
                     this.updateBlockTrans(this.pageUtil);
                 }
             });
+            $("#block-input").val('');
+            $("#block-input").off("input").on('input', () => {
+                this.doGoPage(false);
+            });
+            $("#block-input").off("keydown").keydown((e) => {
+                if (e.keyCode == 13) {
+                    this.doGoPage(true);
+                }
+            });
+            $("#block-gopage").off("click").click(() => {
+                this.doGoPage(true);
+            });
             this.div.hidden = false;
             this.footer.hidden = false;
+        }
+        //跳转页面
+        doGoPage(gopage) {
+            let page = $("#block-input").val();
+            if (page && page > this.pageUtil.totalPage) {
+                page = this.pageUtil.totalPage;
+                $("#block-input").val(this.pageUtil.totalPage);
+            }
+            else if (page < 0) {
+                page = 1;
+                $("#block-input").val(1);
+            }
+            if (gopage) {
+                this.pageUtil.currentPage = page;
+                this.updateBlockTrans(this.pageUtil);
+                $("#block-input").val('');
+            }
         }
         queryBlock(index) {
             return __awaiter(this, void 0, void 0, function* () {
@@ -99,7 +128,11 @@ var WebBrowser;
                 id = id.substring(0, 6) + '...' + id.substring(id.length - 6);
                 this.loadBlockTransView(tx.txid, id, tx.type, tx.size, tx.version);
             });
-            let pageMsg = "Transactions " + (minNum + 1) + " to " + maxNum + " of " + pageUtil.totalCount;
+            //let pageMsg = "Transactions " + (minNum + 1) + " to " + maxNum + " of " + pageUtil.totalCount;
+            let pageMsg = "Page " + this.pageUtil.currentPage + " , " + this.pageUtil.totalPage + " pages in total";
+            if (location.pathname == '/zh/') {
+                pageMsg = "第 " + this.pageUtil.currentPage + " 页，共 " + this.pageUtil.totalPage + " 页";
+            }
             $("#block-tran-msg").html(pageMsg);
             if (pageUtil.totalPage - this.pageUtil.currentPage) {
                 $("#block-tran-next").removeClass('disabled');
@@ -136,6 +169,8 @@ var WebBrowser;
             this.div = document.getElementById('blocks-page');
             this.footer = document.getElementById('footer-box');
         }
+        //constructor() {
+        //}
         start() {
             return __awaiter(this, void 0, void 0, function* () {
                 var count = yield WebBrowser.WWW.api_getHeight();
@@ -161,7 +196,36 @@ var WebBrowser;
                         this.updateBlocks(this.pageUtil);
                     }
                 });
+                $("#blocks-input").val('');
+                $("#blocks-input").off("input").on('input', () => {
+                    this.doGoPage(false);
+                });
+                $("#blocks-input").off("keydown").keydown((e) => {
+                    if (e.keyCode == 13) {
+                        this.doGoPage(true);
+                    }
+                });
+                $("#blocks-gopage").off("click").click(() => {
+                    this.doGoPage(true);
+                });
             });
+        }
+        //跳转页面
+        doGoPage(gopage) {
+            let page = $("#blocks-input").val();
+            if (page && page > this.pageUtil.totalPage) {
+                page = this.pageUtil.totalPage;
+                $("#blocks-input").val(this.pageUtil.totalPage);
+            }
+            else if (page < 0) {
+                page = 1;
+                $("#blocks-input").val(1);
+            }
+            if (gopage) {
+                this.pageUtil.currentPage = page;
+                this.updateBlocks(this.pageUtil);
+                $("#blocks-input").val('');
+            }
         }
         close() {
             this.div.hidden = true;
@@ -183,13 +247,17 @@ var WebBrowser;
                 else {
                     $("#blocks-page-previous").addClass('disabled');
                 }
-                let minNum = pageUtil.currentPage * pageUtil.pageSize - pageUtil.pageSize;
-                let maxNum = pageUtil.totalCount;
-                let diffNum = maxNum - minNum;
-                if (diffNum > 15) {
-                    maxNum = pageUtil.currentPage * pageUtil.pageSize;
+                //let minNum = pageUtil.currentPage * pageUtil.pageSize - pageUtil.pageSize;
+                //let maxNum = pageUtil.totalCount;
+                //let diffNum = maxNum - minNum;
+                //if (diffNum > 15) {
+                //    maxNum = pageUtil.currentPage * pageUtil.pageSize;
+                //}
+                //let pageMsg = "Blocks " + (minNum + 1) + " to " + maxNum + " of " + pageUtil.totalCount + " <br/> page " + this.pageUtil.currentPage + " , " + this.pageUtil.totalPage +" pages in total";
+                let pageMsg = "Page " + this.pageUtil.currentPage + " , " + this.pageUtil.totalPage + " pages in total";
+                if (location.pathname == '/zh/') {
+                    pageMsg = "第 " + this.pageUtil.currentPage + " 页，共 " + this.pageUtil.totalPage + " 页";
                 }
-                let pageMsg = "Blocks " + (minNum + 1) + " to " + maxNum + " of " + pageUtil.totalCount;
                 $("#blocks-page-msg").html(pageMsg);
                 //let newDate = new Date();
                 blocks.forEach((item, index, input) => {
@@ -197,13 +265,13 @@ var WebBrowser;
                     let time = WebBrowser.DateTool.getTime(item.time);
                     //if (location.pathname == '/zh/') {
                     //    let newDate = new Date();
-                    //    newDate.setTime(item.time * 1000);
+                    //    newDate.setTime(item.time * 1000);  
                     //    time = newDate.toLocaleString();
                     //} 
                     let html = `
                 <tr>
                 <td><a href="` + WebBrowser.Url.href_block(item.index) + `" target="_self">` + item.index + `</a></td>
-                <td>` + item.size + ` bytes</td><td>` + time + `</td><td>` + item.tx.length + `</td>
+                <td>` + item.size + ` bytes</td><td>` + time + `</td><td>` + item.txcount + `</td>
                 </tr>`;
                     $("#blocks-page").find("tbody").append(html);
                 });
@@ -717,6 +785,8 @@ var WebBrowser;
                     this.updateAddrTrasctions(address, this.pageUtil);
                 }
                 else {
+                    $("#trans-page-msg").hide();
+                    $("#addr-trans-page").hide();
                     $("#address").text("-");
                     $("#created").text("-");
                     $("#totalTran").text("-");
@@ -733,6 +803,8 @@ var WebBrowser;
                     this.updateAddrUTXO(address, this.pageUtilUtxo);
                 }
                 else {
+                    $("#utxo-page-msg").hide();
+                    $("#addr-utxo-page").hide();
                     let html = `<tr><td colspan="3" >There is no data</td></tr>`;
                     if (location.pathname == '/zh/') {
                         html = `<tr><td colspan="3" >没有数据</td></tr>`;
@@ -740,9 +812,67 @@ var WebBrowser;
                     $("#add-utxos").append(html);
                 }
                 //this.loadUTXOView(utxos);
+                $("#trans-input").val('');
+                $("#trans-input").off("input").on('input', () => {
+                    this.doTranGoPage(address, false);
+                });
+                $("#trans-input").off("keydown").keydown((e) => {
+                    if (e.keyCode == 13) {
+                        this.doTranGoPage(address, true);
+                    }
+                });
+                $("#trans-gopage").off("click").click(() => {
+                    this.doTranGoPage(address, true);
+                });
+                $("#utxo-input").val('');
+                $("#utxo-input").off("input").on('input', () => {
+                    this.doUtxoGoPage(address, false);
+                });
+                $("#utxo-input").off("keydown").keydown((e) => {
+                    if (e.keyCode == 13) {
+                        this.doUtxoGoPage(address, true);
+                    }
+                });
+                $("#utxo-gopage").off("click").click(() => {
+                    this.doUtxoGoPage(address, true);
+                });
                 this.div.hidden = false;
                 this.footer.hidden = false;
             });
+        }
+        //跳转页面
+        doTranGoPage(address, gopage) {
+            let page = $("#trans-input").val();
+            if (page && page > this.pageUtil.totalPage) {
+                page = this.pageUtil.totalPage;
+                $("#trans-input").val(this.pageUtil.totalPage);
+            }
+            else if (page < 0) {
+                page = 1;
+                $("#trans-input").val(1);
+            }
+            if (gopage) {
+                this.pageUtil.currentPage = page;
+                this.updateAddrTrasctions(address, this.pageUtil);
+                $("#trans-input").val('');
+            }
+        }
+        //跳转页面
+        doUtxoGoPage(address, gopage) {
+            let page = $("#utxo-input").val();
+            if (page && page > this.pageUtilUtxo.totalPage) {
+                page = this.pageUtilUtxo.totalPage;
+                $("#utxo-input").val(this.pageUtilUtxo.totalPage);
+            }
+            else if (page < 0) {
+                page = 1;
+                $("#utxo-input").val(1);
+            }
+            if (gopage) {
+                this.pageUtilUtxo.currentPage = page;
+                this.updateAddrUTXO(address, this.pageUtilUtxo);
+                $("#utxo-input").val('');
+            }
         }
         //AddressInfo视图
         loadAddressInfo(address, addrMsg) {
@@ -891,13 +1021,17 @@ var WebBrowser;
                     }
                     $("#addr-trans").append(html);
                 }
-                let minNum = pageUtil.currentPage * pageUtil.pageSize - pageUtil.pageSize;
-                let maxNum = pageUtil.totalCount;
-                let diffNum = maxNum - minNum;
-                if (diffNum > 10) {
-                    maxNum = pageUtil.currentPage * pageUtil.pageSize;
+                //let minNum = pageUtil.currentPage * pageUtil.pageSize - pageUtil.pageSize;
+                //let maxNum = pageUtil.totalCount;
+                //let diffNum = maxNum - minNum;
+                //if (diffNum > 10) {
+                //    maxNum = pageUtil.currentPage * pageUtil.pageSize;
+                //}
+                //let pageMsg = "Transactions " + (minNum + 1) + " to " + maxNum + " of " + pageUtil.totalCount;
+                let pageMsg = "Page " + pageUtil.currentPage + " , " + pageUtil.totalPage + " pages in total";
+                if (location.pathname == '/zh/') {
+                    pageMsg = "第 " + pageUtil.currentPage + " 页，共 " + pageUtil.totalPage + " 页";
                 }
-                let pageMsg = "Transactions " + (minNum + 1) + " to " + maxNum + " of " + pageUtil.totalCount;
                 $("#trans-page-msg").html(pageMsg);
                 if (pageUtil.totalPage - pageUtil.currentPage) {
                     $("#trans-next").removeClass('disabled');
@@ -929,13 +1063,17 @@ var WebBrowser;
                     }
                     this.loadUTXOView(utxolist);
                 }
-                let minNum = pageUtil.currentPage * pageUtil.pageSize - pageUtil.pageSize;
-                let maxNum = pageUtil.totalCount;
-                let diffNum = maxNum - minNum;
-                if (diffNum > 10) {
-                    maxNum = pageUtil.currentPage * pageUtil.pageSize;
+                //let minNum = pageUtil.currentPage * pageUtil.pageSize - pageUtil.pageSize;
+                //let maxNum = pageUtil.totalCount;
+                //let diffNum = maxNum - minNum;
+                //if (diffNum > 10) {
+                //    maxNum = pageUtil.currentPage * pageUtil.pageSize;
+                //}
+                //let pageMsg = "UTXO " + (minNum + 1) + " to " + maxNum + " of " + pageUtil.totalCount;
+                let pageMsg = "Page " + pageUtil.currentPage + " , " + pageUtil.totalPage + " pages in total";
+                if (location.pathname == '/zh/') {
+                    pageMsg = "第 " + pageUtil.currentPage + " 页，共 " + pageUtil.totalPage + " 页";
                 }
-                let pageMsg = "UTXO " + (minNum + 1) + " to " + maxNum + " of " + pageUtil.totalCount;
                 $("#utxo-page-msg").html(pageMsg);
                 if (pageUtil.totalPage - pageUtil.currentPage) {
                     $("#utxo-next").removeClass('disabled');
@@ -1061,13 +1199,17 @@ var WebBrowser;
                     item.lastDate = lastTime;
                 });
                 this.loadView(addrlist);
-                let minNum = this.pageUtil.currentPage * this.pageUtil.pageSize - this.pageUtil.pageSize;
-                let maxNum = this.pageUtil.totalCount;
-                let diffNum = maxNum - minNum;
-                if (diffNum > 15) {
-                    maxNum = this.pageUtil.currentPage * this.pageUtil.pageSize;
+                //let minNum = this.pageUtil.currentPage * this.pageUtil.pageSize - this.pageUtil.pageSize;
+                //let maxNum = this.pageUtil.totalCount;
+                //let diffNum = maxNum - minNum;
+                //if (diffNum > 15) {
+                //    maxNum = this.pageUtil.currentPage * this.pageUtil.pageSize;
+                //}
+                //let pageMsg = "Addresses " + (minNum + 1) + " to " + maxNum + " of " + this.pageUtil.totalCount;
+                let pageMsg = "Page " + this.pageUtil.currentPage + " , " + this.pageUtil.totalPage + " pages in total";
+                if (location.pathname == '/zh/') {
+                    pageMsg = "第 " + this.pageUtil.currentPage + " 页，共 " + this.pageUtil.totalPage + " 页";
                 }
-                let pageMsg = "Addresses " + (minNum + 1) + " to " + maxNum + " of " + this.pageUtil.totalCount;
                 $("#addrs-page").find("#addrs-page-msg").html(pageMsg);
                 if (this.pageUtil.totalPage - this.pageUtil.currentPage) {
                     $("#addrs-page-next").removeClass('disabled');
@@ -1111,8 +1253,37 @@ var WebBrowser;
                         this.addrlistInit();
                     }
                 });
+                $("#addrs-input").val('');
+                $("#addrs-input").off("input").on('input', () => {
+                    this.doGoPage(false);
+                });
+                $("#addrs-input").off("keydown").keydown((e) => {
+                    if (e.keyCode == 13) {
+                        this.doGoPage(true);
+                    }
+                });
+                $("#addrs-gopage").off("click").click(() => {
+                    this.doGoPage(true);
+                });
                 this.footer.hidden = false;
             });
+        }
+        //跳转页面
+        doGoPage(gopage) {
+            let page = $("#addrs-input").val();
+            if (page && page > this.pageUtil.totalPage) {
+                page = this.pageUtil.totalPage;
+                $("#addrs-input").val(this.pageUtil.totalPage);
+            }
+            else if (page < 0) {
+                page = 1;
+                $("#addrs-input").val(1);
+            }
+            if (gopage) {
+                this.pageUtil.currentPage = page;
+                this.addrlistInit();
+                $("#addrs-input").val('');
+            }
         }
         /**
          * loadView
@@ -1183,9 +1354,38 @@ var WebBrowser;
                         this.updateAssetBalanceView(assetid, this.rankPageUtil);
                     }
                 });
+                $("#assets-input").val('');
+                $("#assets-input").off("input").on('input', () => {
+                    this.doGoPage(assetid, false);
+                });
+                $("#assets-input").off("keydown").keydown((e) => {
+                    if (e.keyCode == 13) {
+                        this.doGoPage(assetid, true);
+                    }
+                });
+                $("#assets-gopage").off("click").click(() => {
+                    this.doGoPage(assetid, true);
+                });
                 this.div.hidden = false;
                 this.footer.hidden = false;
             });
+        }
+        //跳转页面
+        doGoPage(assetid, gopage) {
+            let page = $("#assets-input").val();
+            if (page && page > this.rankPageUtil.totalPage) {
+                page = this.rankPageUtil.totalPage;
+                $("#assets-input").val(this.rankPageUtil.totalPage);
+            }
+            else if (page < 0) {
+                page = 1;
+                $("#assets-input").val(1);
+            }
+            if (gopage) {
+                this.rankPageUtil.currentPage = page;
+                this.updateAssetBalanceView(assetid, this.rankPageUtil);
+                $("#assets-input").val('');
+            }
         }
         close() {
             this.div.hidden = true;
@@ -1243,13 +1443,17 @@ var WebBrowser;
                     else {
                         $("#assets-balance-previous").addClass('disabled');
                     }
-                    let minNum = pageUtil.currentPage * pageUtil.pageSize - pageUtil.pageSize;
-                    let maxNum = pageUtil.totalCount;
-                    let diffNum = maxNum - minNum;
-                    if (diffNum > 10) {
-                        maxNum = pageUtil.currentPage * pageUtil.pageSize;
+                    //let minNum = pageUtil.currentPage * pageUtil.pageSize - pageUtil.pageSize;
+                    //let maxNum = pageUtil.totalCount;
+                    //let diffNum = maxNum - minNum;
+                    //if (diffNum > 10) {
+                    //    maxNum = pageUtil.currentPage * pageUtil.pageSize;
+                    //}
+                    //let pageMsg = "Banlance Rank " + (minNum + 1) + " to " + maxNum + " of " + pageUtil.totalCount;
+                    let pageMsg = "Page " + pageUtil.currentPage + " , " + pageUtil.totalPage + " pages in total";
+                    if (location.pathname == '/zh/') {
+                        pageMsg = "第 " + pageUtil.currentPage + " 页，共 " + pageUtil.totalPage + " 页";
                     }
-                    let pageMsg = "Banlance Rank " + (minNum + 1) + " to " + maxNum + " of " + pageUtil.totalCount;
                     $("#assets-balance-msg").html(pageMsg);
                     $(".asset-balance-page").show();
                 }
@@ -1293,7 +1497,11 @@ var WebBrowser;
                     }
                     else {
                         this.loadAssetView(this.assets);
-                        let pageMsg = "Assets 1 to " + this.pageUtil.totalCount + " of " + this.pageUtil.totalCount;
+                        //let pageMsg = "Assets 1 to " + this.pageUtil.totalCount + " of " + this.pageUtil.totalCount;
+                        let pageMsg = "Page " + this.pageUtil.currentPage + " , " + this.pageUtil.totalPage + " pages in total";
+                        if (location.pathname == '/zh/') {
+                            pageMsg = "第 " + this.pageUtil.currentPage + " 页，共 " + this.pageUtil.totalPage + " 页";
+                        }
                         $("#asset-page").find("#asset-page-msg").html(pageMsg);
                         this.assetlist.find(".page").hide();
                     }
@@ -1307,7 +1515,11 @@ var WebBrowser;
                     }
                     else {
                         this.loadNep5View(this.nep5s);
-                        let pageMsg = "Assets 1 to " + this.pageUtil.totalCount + " of " + this.pageUtil.totalCount;
+                        //let pageMsg = "Assets 1 to " + this.pageUtil.totalCount + " of " + this.pageUtil.totalCount;
+                        let pageMsg = "Page " + this.pageUtil.currentPage + " , " + this.pageUtil.totalPage + " pages in total";
+                        if (location.pathname == '/zh/') {
+                            pageMsg = "第 " + this.pageUtil.currentPage + " 页，共 " + this.pageUtil.totalPage + " 页";
+                        }
                         $("#asset-page").find("#asset-page-msg").html(pageMsg);
                         this.assetlist.find(".page").hide();
                     }
@@ -1341,10 +1553,44 @@ var WebBrowser;
                     }
                 }
             });
+            $("#asset-input").val('');
+            $("#asset-input").off("input").on('input', () => {
+                this.doGoPage(false);
+            });
+            $("#asset-input").off("keydown").keydown((e) => {
+                if (e.keyCode == 13) {
+                    this.doGoPage(true);
+                }
+            });
+            $("#asset-gopage").off("click").click(() => {
+                this.doGoPage(true);
+            });
         }
         close() {
             this.div.hidden = true;
             this.footer.hidden = true;
+        }
+        //跳转页面
+        doGoPage(gopage) {
+            let page = $("#asset-input").val();
+            if (page && page > this.pageUtil.totalPage) {
+                page = this.pageUtil.totalPage;
+                $("#asset-input").val(this.pageUtil.totalPage);
+            }
+            else if (page < 0) {
+                page = 1;
+                $("#asset-input").val(1);
+            }
+            if (gopage) {
+                this.pageUtil.currentPage = page;
+                if (this.assetType == "Assets") {
+                    this.updateAssets(this.pageUtil);
+                }
+                else if (this.assetType == "Nep5") {
+                    this.updateNep5s(this.pageUtil);
+                }
+                $("#asset-input").val('');
+            }
         }
         //更新asset表格
         updateAssets(pageUtil) {
@@ -1361,7 +1607,11 @@ var WebBrowser;
                     arrAsset.push(this.assets[i]);
                 }
                 this.loadAssetView(arrAsset);
-                let pageMsg = "Assets " + (minNum + 1) + " to " + maxNum + " of " + pageUtil.totalCount;
+                //let pageMsg = "Assets " + (minNum + 1) + " to " + maxNum + " of " + pageUtil.totalCount;
+                let pageMsg = "Page " + this.pageUtil.currentPage + " , " + this.pageUtil.totalPage + " pages in total";
+                if (location.pathname == '/zh/') {
+                    pageMsg = "第 " + this.pageUtil.currentPage + " 页，共 " + this.pageUtil.totalPage + " 页";
+                }
                 $("#asset-page").find("#asset-page-msg").html(pageMsg);
             });
         }
@@ -1383,7 +1633,11 @@ var WebBrowser;
                     arrNep5s.push(this.nep5s[i]);
                 }
                 this.loadNep5View(arrNep5s);
-                let pageMsg = "Assets " + (minNum + 1) + " to " + maxNum + " of " + pageUtil.totalCount;
+                //let pageMsg = "Assets " + (minNum + 1) + " to " + maxNum + " of " + pageUtil.totalCount;
+                let pageMsg = "Page " + this.pageUtil.currentPage + " , " + this.pageUtil.totalPage + " pages in total";
+                if (location.pathname == '/zh/') {
+                    pageMsg = "第 " + this.pageUtil.currentPage + " 页，共 " + this.pageUtil.totalPage + " 页";
+                }
                 $("#asset-page").find("#asset-page-msg").html(pageMsg);
                 if (this.pageUtil.totalPage - this.pageUtil.currentPage) {
                     $("#asset-page-next").removeClass('disabled');
@@ -1411,7 +1665,11 @@ var WebBrowser;
                 }
                 else {
                     this.loadAssetView(this.assets);
-                    let pageMsg = "Assets 1 to " + this.pageUtil.totalCount + " of " + this.pageUtil.totalCount;
+                    //let pageMsg = "Assets 1 to " + this.pageUtil.totalCount + " of " + this.pageUtil.totalCount;
+                    let pageMsg = "Page " + this.pageUtil.currentPage + " , " + this.pageUtil.totalPage + " pages in total";
+                    if (location.pathname == '/zh/') {
+                        pageMsg = "第 " + this.pageUtil.currentPage + " 页，共 " + this.pageUtil.totalPage + " 页";
+                    }
                     $("#asset-page").find("#asset-page-msg").html(pageMsg);
                     this.assetlist.find(".page").hide();
                 }
@@ -1860,7 +2118,7 @@ var WebBrowser;
                 ` + item.index + `</a></td>
                 <td>` + item.size + ` bytes</td>
                 <td>` + time + `</td>
-                <td>` + item.tx.length + `</td></tr>`;
+                <td>` + item.txcount + `</td></tr>`;
                 });
                 txs.forEach((tx) => {
                     let txid = tx.txid;
@@ -2058,10 +2316,39 @@ var WebBrowser;
                     this.updateTransactions(this.pageUtil, $("#TxType").val());
                 }
             });
+            $("#txlist-input").val('');
+            $("#txlist-input").off("input").on('input', () => {
+                this.doGoPage(false);
+            });
+            $("#txlist-input").off("keydown").keydown((e) => {
+                if (e.keyCode == 13) {
+                    this.doGoPage(true);
+                }
+            });
+            $("#txlist-gopage").off("click").click(() => {
+                this.doGoPage(true);
+            });
         }
         close() {
             this.div.hidden = true;
             this.footer.hidden = true;
+        }
+        //跳转页面
+        doGoPage(gopage) {
+            let page = $("#txlist-input").val();
+            if (page && page > this.pageUtil.totalPage) {
+                page = this.pageUtil.totalPage;
+                $("#txlist-input").val(this.pageUtil.totalPage);
+            }
+            else if (page < 0) {
+                page = 1;
+                $("#txlist-input").val(1);
+            }
+            if (gopage) {
+                this.pageUtil.currentPage = page;
+                this.updateTransactions(this.pageUtil, $("#TxType").val());
+                $("#txlist-input").val('');
+            }
         }
         //更新交易记录
         updateTransactions(pageUtil, txType) {
@@ -2072,7 +2359,7 @@ var WebBrowser;
                 let txCount = yield WebBrowser.WWW.gettxcount(txType);
                 pageUtil.totalCount = txCount;
                 let listLength = 0;
-                if (txs.length < 15) {
+                if (pageUtil.totalCount < 15) {
                     this.txlist.find(".page").hide();
                     listLength = txs.length;
                 }
@@ -2085,13 +2372,17 @@ var WebBrowser;
                     let html = yield this.getTxLine(txid, txs[n].type, txs[n].size.toString(), txs[n].blockindex.toString(), txs[n].vin, txs[n].vout);
                     this.txlist.find("#txlist-page-transactions").append(html);
                 }
-                let minNum = pageUtil.currentPage * pageUtil.pageSize - pageUtil.pageSize;
-                let maxNum = pageUtil.totalCount;
-                let diffNum = maxNum - minNum;
-                if (diffNum > 15) {
-                    maxNum = pageUtil.currentPage * pageUtil.pageSize;
+                //let minNum = pageUtil.currentPage * pageUtil.pageSize - pageUtil.pageSize;
+                //let maxNum = pageUtil.totalCount;
+                //let diffNum = maxNum - minNum;
+                //if (diffNum > 15) {
+                //    maxNum = pageUtil.currentPage * pageUtil.pageSize;
+                //}
+                //let pageMsg = "Transactions " + (minNum + 1) + " to " + maxNum + " of " + pageUtil.totalCount;
+                let pageMsg = "Page " + pageUtil.currentPage + " , " + pageUtil.totalPage + " pages in total";
+                if (location.pathname == '/zh/') {
+                    pageMsg = "第 " + pageUtil.currentPage + " 页，共 " + pageUtil.totalPage + " 页";
                 }
-                let pageMsg = "Transactions " + (minNum + 1) + " to " + maxNum + " of " + pageUtil.totalCount;
                 $("#txlist-page").find("#txlist-page-msg").html(pageMsg);
                 if (pageUtil.totalPage - pageUtil.currentPage) {
                     $("#txlist-page-next").removeClass('disabled');
@@ -2302,9 +2593,69 @@ var WebBrowser;
                         this.updateNep5TransView(nep5id, this.pageUtil);
                     }
                 });
+                //排行页面跳转
+                $("#assets-input").val('');
+                $("#assets-input").off("input").on('input', () => {
+                    this.doAssetBalanceGoPage(nep5id, false);
+                });
+                $("#assets-input").off("keydown").keydown((e) => {
+                    if (e.keyCode == 13) {
+                        this.doAssetBalanceGoPage(nep5id, true);
+                    }
+                });
+                $("#assets-gopage").off("click").click(() => {
+                    this.doAssetBalanceGoPage(nep5id, true);
+                });
+                //交易页面跳转
+                $("#assets-tran-input").val('');
+                $("#assets-tran-input").off("input").on('input', () => {
+                    this.doNep5TransGoPage(nep5id, false);
+                });
+                $("#assets-tran-input").off("keydown").keydown((e) => {
+                    if (e.keyCode == 13) {
+                        this.doNep5TransGoPage(nep5id, true);
+                    }
+                });
+                $("#assets-tran-gopage").off("click").click(() => {
+                    this.doNep5TransGoPage(nep5id, true);
+                });
                 this.div.hidden = false;
                 this.footer.hidden = false;
             });
+        }
+        //交易跳转页面
+        doNep5TransGoPage(nep5id, gopage) {
+            let page = $("#assets-tran-input").val();
+            if (page && page > this.pageUtil.totalPage) {
+                page = this.pageUtil.totalPage;
+                $("#assets-tran-input").val(this.pageUtil.totalPage);
+            }
+            else if (page < 0) {
+                page = 1;
+                $("#assets-tran-input").val(1);
+            }
+            if (gopage) {
+                this.pageUtil.currentPage = page;
+                this.updateNep5TransView(nep5id, this.pageUtil);
+                $("#assets-tran-input").val('');
+            }
+        }
+        //排行跳转页面
+        doAssetBalanceGoPage(nep5id, gopage) {
+            let page = $("#assets-input").val();
+            if (page && page > this.rankPageUtil.totalPage) {
+                page = this.rankPageUtil.totalPage;
+                $("#assets-input").val(this.rankPageUtil.totalPage);
+            }
+            else if (page < 0) {
+                page = 1;
+                $("#assets-input").val(1);
+            }
+            if (gopage) {
+                this.rankPageUtil.currentPage = page;
+                this.updateAssetBalanceView(nep5id, this.rankPageUtil);
+                $("#assets-input").val('');
+            }
         }
         close() {
             this.div.hidden = true;
@@ -2361,13 +2712,17 @@ var WebBrowser;
                     else {
                         $("#assets-balance-previous").addClass('disabled');
                     }
-                    let minNum = pageUtil.currentPage * pageUtil.pageSize - pageUtil.pageSize;
-                    let maxNum = pageUtil.totalCount;
-                    let diffNum = maxNum - minNum;
-                    if (diffNum > 10) {
-                        maxNum = pageUtil.currentPage * pageUtil.pageSize;
+                    //let minNum = pageUtil.currentPage * pageUtil.pageSize - pageUtil.pageSize;
+                    //let maxNum = pageUtil.totalCount;
+                    //let diffNum = maxNum - minNum;
+                    //if (diffNum > 10) {
+                    //    maxNum = pageUtil.currentPage * pageUtil.pageSize;
+                    //}
+                    //let pageMsg = "Banlance Rank " + (minNum + 1) + " to " + maxNum + " of " + pageUtil.totalCount;
+                    let pageMsg = "Page " + pageUtil.currentPage + " , " + pageUtil.totalPage + " pages in total";
+                    if (location.pathname == '/zh/') {
+                        pageMsg = "第 " + pageUtil.currentPage + " 页，共 " + pageUtil.totalPage + " 页";
                     }
-                    let pageMsg = "Banlance Rank " + (minNum + 1) + " to " + maxNum + " of " + pageUtil.totalCount;
                     $("#assets-balance-msg").html(pageMsg);
                     $(".asset-balance-page").show();
                 }
@@ -2417,13 +2772,17 @@ var WebBrowser;
                     else {
                         $("#assets-tran-previous").addClass('disabled');
                     }
-                    let minNum = pageUtil.currentPage * pageUtil.pageSize - pageUtil.pageSize;
-                    let maxNum = pageUtil.totalCount;
-                    let diffNum = maxNum - minNum;
-                    if (diffNum > 10) {
-                        maxNum = pageUtil.currentPage * pageUtil.pageSize;
+                    //let minNum = pageUtil.currentPage * pageUtil.pageSize - pageUtil.pageSize;
+                    //let maxNum = pageUtil.totalCount;
+                    //let diffNum = maxNum - minNum;
+                    //if (diffNum > 10) {
+                    //    maxNum = pageUtil.currentPage * pageUtil.pageSize;
+                    //}
+                    //let pageMsg = "Transactions " + (minNum + 1) + " to " + maxNum + " of " + pageUtil.totalCount;
+                    let pageMsg = "Page " + pageUtil.currentPage + " , " + pageUtil.totalPage + " pages in total";
+                    if (location.pathname == '/zh/') {
+                        pageMsg = "第 " + pageUtil.currentPage + " 页，共 " + pageUtil.totalPage + " 页";
                     }
-                    let pageMsg = "Transactions " + (minNum + 1) + " to " + maxNum + " of " + pageUtil.totalCount;
                     $("#assets-tran-msg").html(pageMsg);
                     $(".asset-tran-page").show();
                 }
@@ -2859,13 +3218,17 @@ var WebBrowser;
                 if (domain) {
                     this.loadView(domain[0].list);
                     $("#nnsbeing-wrap").show();
-                    let minNum = this.pageUtil.currentPage * this.pageUtil.pageSize - this.pageUtil.pageSize;
-                    let maxNum = this.pageUtil.totalCount;
-                    let diffNum = maxNum - minNum;
-                    if (diffNum > 15) {
-                        maxNum = this.pageUtil.currentPage * this.pageUtil.pageSize;
+                    //let minNum = this.pageUtil.currentPage * this.pageUtil.pageSize - this.pageUtil.pageSize;
+                    //let maxNum = this.pageUtil.totalCount;
+                    //let diffNum = maxNum - minNum;
+                    //if (diffNum > 15) {
+                    //    maxNum = this.pageUtil.currentPage * this.pageUtil.pageSize;
+                    //}
+                    //let pageMsg = "Live auctions " + (minNum + 1) + " to " + maxNum + " of " + this.pageUtil.totalCount;
+                    let pageMsg = "Page " + this.pageUtil.currentPage + " , " + this.pageUtil.totalPage + " pages in total";
+                    if (location.pathname == '/zh/') {
+                        pageMsg = "第 " + this.pageUtil.currentPage + " 页，共 " + this.pageUtil.totalPage + " 页";
                     }
-                    let pageMsg = "Live auctions " + (minNum + 1) + " to " + maxNum + " of " + this.pageUtil.totalCount;
                     $("#nnsbeing-page").find("#nnsbeing-page-msg").html(pageMsg);
                     if (this.pageUtil.totalPage - this.pageUtil.currentPage) {
                         $("#nnsbeing-page-next").removeClass('disabled');
@@ -2921,9 +3284,38 @@ var WebBrowser;
                         this.domainListInit(false, this.sorttype);
                     }
                 });
+                $("#nnsbeing-input").val('');
+                $("#nnsbeing-input").off("input").on('input', () => {
+                    this.doGoPage(false);
+                });
+                $("#nnsbeing-input").off("keydown").keydown((e) => {
+                    if (e.keyCode == 13) {
+                        this.doGoPage(true);
+                    }
+                });
+                $("#nnsbeing-gopage").off("click").click(() => {
+                    this.doGoPage(true);
+                });
                 this.div.hidden = false;
                 this.footer.hidden = false;
             });
+        }
+        //跳转页面
+        doGoPage(gopage) {
+            let page = $("#nnsbeing-input").val();
+            if (page && page > this.pageUtil.totalPage) {
+                page = this.pageUtil.totalPage;
+                $("#nnsbeing-input").val(this.pageUtil.totalPage);
+            }
+            else if (page < 0) {
+                page = 1;
+                $("#nnsbeing-input").val(1);
+            }
+            if (gopage) {
+                this.pageUtil.currentPage = page;
+                this.domainListInit(false, this.sorttype);
+                $("#nnsbeing-input").val('');
+            }
         }
         /**
          * loadView
@@ -2998,13 +3390,17 @@ var WebBrowser;
                 if (domain) {
                     this.loadView(domain[0].list);
                     $("#nnsrank-wrap").show();
-                    let minNum = this.pageUtil.currentPage * this.pageUtil.pageSize - this.pageUtil.pageSize;
-                    let maxNum = this.pageUtil.totalCount;
-                    let diffNum = maxNum - minNum;
-                    if (diffNum > 15) {
-                        maxNum = this.pageUtil.currentPage * this.pageUtil.pageSize;
+                    //let minNum = this.pageUtil.currentPage * this.pageUtil.pageSize - this.pageUtil.pageSize;
+                    //let maxNum = this.pageUtil.totalCount;
+                    //let diffNum = maxNum - minNum;
+                    //if (diffNum > 15) {
+                    //    maxNum = this.pageUtil.currentPage * this.pageUtil.pageSize;
+                    //}
+                    //let pageMsg = "Live auctions " + (minNum + 1) + " to " + maxNum + " of " + this.pageUtil.totalCount;
+                    let pageMsg = "Page " + this.pageUtil.currentPage + " , " + this.pageUtil.totalPage + " pages in total";
+                    if (location.pathname == '/zh/') {
+                        pageMsg = "第 " + this.pageUtil.currentPage + " 页，共 " + this.pageUtil.totalPage + " 页";
                     }
-                    let pageMsg = "Live auctions " + (minNum + 1) + " to " + maxNum + " of " + this.pageUtil.totalCount;
                     $("#nnsrank-page").find("#nnsrank-page-msg").html(pageMsg);
                     if (this.pageUtil.totalPage - this.pageUtil.currentPage) {
                         $("#nnsrank-page-next").removeClass('disabled');
@@ -3057,9 +3453,38 @@ var WebBrowser;
                         this.domainRankListInit(false);
                     }
                 });
+                $("#nnsrank-input").val('');
+                $("#nnsrank-input").off("input").on('input', () => {
+                    this.doGoPage(false);
+                });
+                $("#nnsrank-input").off("keydown").keydown((e) => {
+                    if (e.keyCode == 13) {
+                        this.doGoPage(true);
+                    }
+                });
+                $("#nnsrank-gopage").off("click").click(() => {
+                    this.doGoPage(true);
+                });
                 this.div.hidden = false;
                 this.footer.hidden = false;
             });
+        }
+        //跳转页面
+        doGoPage(gopage) {
+            let page = $("#nnsrank-input").val();
+            if (page && page > this.pageUtil.totalPage) {
+                page = this.pageUtil.totalPage;
+                $("#nnsrank-input").val(this.pageUtil.totalPage);
+            }
+            else if (page < 0) {
+                page = 1;
+                $("#nnsrank-input").val(1);
+            }
+            if (gopage) {
+                this.pageUtil.currentPage = page;
+                this.domainRankListInit(false);
+                $("#nnsrank-input").val('');
+            }
         }
         /**
          * loadView
@@ -3156,8 +3581,68 @@ var WebBrowser;
                     this.getDomainRank(this.domainDetail.auctionId, false);
                 }
             });
+            //出价排行跳转页面
+            $("#domainRank-input").val('');
+            $("#domainRank-input").off("input").on('input', () => {
+                this.doRankGoPage(false);
+            });
+            $("#domainRank-input").off("keydown").keydown((e) => {
+                if (e.keyCode == 13) {
+                    this.doRankGoPage(true);
+                }
+            });
+            $("#domainRank-gopage").off("click").click(() => {
+                this.doRankGoPage(true);
+            });
+            //详情跳转页面
+            $("#domainHistory-input").val('');
+            $("#domainHistory-input").off("input").on('input', () => {
+                this.doGoPage(false);
+            });
+            $("#domainHistory-input").off("keydown").keydown((e) => {
+                if (e.keyCode == 13) {
+                    this.doGoPage(true);
+                }
+            });
+            $("#domainHistory-gopage").off("click").click(() => {
+                this.doGoPage(true);
+            });
             this.div.hidden = false;
             this.footer.hidden = false;
+        }
+        //出价排行跳转页面
+        doRankGoPage(gopage) {
+            let page = $("#domainRank-input").val();
+            if (page && page > this.rankpageUtil.totalPage) {
+                page = this.rankpageUtil.totalPage;
+                $("#domainRank-input").val(this.rankpageUtil.totalPage);
+            }
+            else if (page < 0) {
+                page = 1;
+                $("#domainRank-input").val(1);
+            }
+            if (gopage) {
+                this.rankpageUtil.currentPage = page;
+                this.getDomainRank(this.domainDetail.auctionId, false);
+                $("#domainRank-input").val('');
+            }
+        }
+        //详情跳转页面
+        doGoPage(gopage) {
+            let page = $("#domainHistory-input").val();
+            if (page && page > this.pageUtil.totalPage) {
+                page = this.pageUtil.totalPage;
+                $("#domainHistory-input").val(this.pageUtil.totalPage);
+            }
+            else if (page < 0) {
+                page = 1;
+                $("#domainHistory-input").val(1);
+            }
+            if (gopage) {
+                this.pageUtil.currentPage = page;
+                this.domainInfoInit(this.domainDetail.auctionId, false);
+                $("#domainHistory-input").val('');
+            }
         }
         //语言切换
         languageToggle() {
@@ -3346,13 +3831,17 @@ var WebBrowser;
                     $("#auctionRank").append(html);
                     return;
                 }
-                let minNum = this.rankpageUtil.currentPage * this.rankpageUtil.pageSize - this.rankpageUtil.pageSize;
-                let maxNum = this.rankpageUtil.totalCount;
-                let diffNum = maxNum - minNum;
-                if (diffNum > 10) {
-                    maxNum = this.rankpageUtil.currentPage * this.rankpageUtil.pageSize;
+                //let minNum = this.rankpageUtil.currentPage * this.rankpageUtil.pageSize - this.rankpageUtil.pageSize;
+                //let maxNum = this.rankpageUtil.totalCount;
+                //let diffNum = maxNum - minNum;
+                //if (diffNum > 10) {
+                //    maxNum = this.rankpageUtil.currentPage * this.rankpageUtil.pageSize;
+                //}
+                //let pageMsg = "Bid rank " + (minNum + 1) + " to " + maxNum + " of " + this.rankpageUtil.totalCount;
+                let pageMsg = "Page " + this.rankpageUtil.currentPage + " , " + this.rankpageUtil.totalPage + " pages in total";
+                if (location.pathname == '/zh/') {
+                    pageMsg = "第 " + this.rankpageUtil.currentPage + " 页，共 " + this.rankpageUtil.totalPage + " 页";
                 }
-                let pageMsg = "Bid rank " + (minNum + 1) + " to " + maxNum + " of " + this.rankpageUtil.totalCount;
                 $("#domainRank-page").find("#domainRank-msg").html(pageMsg);
                 if (this.rankpageUtil.totalPage - this.rankpageUtil.currentPage) {
                     $("#domainRank-next").removeClass('disabled');
@@ -3401,13 +3890,17 @@ var WebBrowser;
                     $("#auctionInfo").append(html);
                     return;
                 }
-                let minNum = this.pageUtil.currentPage * this.pageUtil.pageSize - this.pageUtil.pageSize;
-                let maxNum = this.pageUtil.totalCount;
-                let diffNum = maxNum - minNum;
-                if (diffNum > 10) {
-                    maxNum = this.pageUtil.currentPage * this.pageUtil.pageSize;
+                //let minNum = this.pageUtil.currentPage * this.pageUtil.pageSize - this.pageUtil.pageSize;
+                //let maxNum = this.pageUtil.totalCount;
+                //let diffNum = maxNum - minNum;
+                //if (diffNum > 10) {
+                //    maxNum = this.pageUtil.currentPage * this.pageUtil.pageSize;
+                //}
+                //let pageMsg = "Auction information " + (minNum + 1) + " to " + maxNum + " of " + this.pageUtil.totalCount;
+                let pageMsg = "Page " + this.pageUtil.currentPage + " , " + this.pageUtil.totalPage + " pages in total";
+                if (location.pathname == '/zh/') {
+                    pageMsg = "第 " + this.pageUtil.currentPage + " 页，共 " + this.pageUtil.totalPage + " 页";
                 }
-                let pageMsg = "Auction information " + (minNum + 1) + " to " + maxNum + " of " + this.pageUtil.totalCount;
                 $("#domainHistory-page").find("#domainHistory-msg").html(pageMsg);
                 if (this.pageUtil.totalPage - this.pageUtil.currentPage) {
                     $("#domainHistory-next").removeClass('disabled');

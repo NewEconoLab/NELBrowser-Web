@@ -464,3 +464,7 @@ a:hover, a:focus {
     background: #198CEE;
 }
 /*footer end*/
+/*分页样式*/
+.gopage-btn {
+    background: #198CEE;
+}

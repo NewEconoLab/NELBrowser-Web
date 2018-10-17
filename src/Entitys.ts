@@ -174,6 +174,12 @@ namespace WebBrowser
         };
         tx: Tx[];
     }
+    export interface BlockList {
+        index: number;
+        size: number;
+        time: number;
+        txcount: number;
+    }
 
     export interface Utxo
     {

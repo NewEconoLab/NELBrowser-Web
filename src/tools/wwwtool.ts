@@ -76,7 +76,7 @@ namespace WebBrowser
             var result = await fetch( str, { "method": "get" } );
             var json = await result.json();
             var r = json["result"];
-            return r as Block[];
+            return r as BlockList[];
         }
         //查询交易列表
         static async getrawtransactions( size: number, page: number, txtype: string )

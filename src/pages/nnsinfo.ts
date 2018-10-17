@@ -55,8 +55,66 @@
                     this.getDomainRank(this.domainDetail.auctionId, false);
                 }
             });
+            //出价排行跳转页面
+            $("#domainRank-input").val('');
+            $("#domainRank-input").off("input").on('input', () => {
+                this.doRankGoPage(false)
+            });
+            $("#domainRank-input").off("keydown").keydown((e) => {
+                if (e.keyCode == 13) {
+                    this.doRankGoPage(true);
+                }
+            });
+            $("#domainRank-gopage").off("click").click(() => {
+                this.doRankGoPage(true)
+            });
+            //详情跳转页面
+            $("#domainHistory-input").val('');
+            $("#domainHistory-input").off("input").on('input', () => {
+                this.doGoPage(false)
+            });
+            $("#domainHistory-input").off("keydown").keydown((e) => {
+                if (e.keyCode == 13) {
+                    this.doGoPage(true);
+                }
+            });
+            $("#domainHistory-gopage").off("click").click(() => {
+                this.doGoPage(true)
+            });
             this.div.hidden = false;
             this.footer.hidden = false;
+        }
+        //出价排行跳转页面
+        public doRankGoPage(gopage: boolean) {
+            let page: number = $("#domainRank-input").val() as number;
+            if (page && page > this.rankpageUtil.totalPage) {
+                page = this.rankpageUtil.totalPage;
+                $("#domainRank-input").val(this.rankpageUtil.totalPage);
+            } else if (page < 0) {
+                page = 1;
+                $("#domainRank-input").val(1);
+            }
+            if (gopage) {
+                this.rankpageUtil.currentPage = page;
+                this.getDomainRank(this.domainDetail.auctionId, false);
+                $("#domainRank-input").val('');
+            }
+        }
+        //详情跳转页面
+        public doGoPage(gopage: boolean) {
+            let page: number = $("#domainHistory-input").val() as number;
+            if (page && page > this.pageUtil.totalPage) {
+                page = this.pageUtil.totalPage;
+                $("#domainHistory-input").val(this.pageUtil.totalPage);
+            } else if (page < 0) {
+                page = 1;
+                $("#domainHistory-input").val(1);
+            }
+            if (gopage) {
+                this.pageUtil.currentPage = page;
+                this.domainInfoInit(this.domainDetail.auctionId, false);
+                $("#domainHistory-input").val('');
+            }
         }
         //语言切换
         languageToggle() {
@@ -249,13 +307,17 @@
                 return
             }
 
-            let minNum = this.rankpageUtil.currentPage * this.rankpageUtil.pageSize - this.rankpageUtil.pageSize;
-            let maxNum = this.rankpageUtil.totalCount;
-            let diffNum = maxNum - minNum;
-            if (diffNum > 10) {
-                maxNum = this.rankpageUtil.currentPage * this.rankpageUtil.pageSize;
+            //let minNum = this.rankpageUtil.currentPage * this.rankpageUtil.pageSize - this.rankpageUtil.pageSize;
+            //let maxNum = this.rankpageUtil.totalCount;
+            //let diffNum = maxNum - minNum;
+            //if (diffNum > 10) {
+            //    maxNum = this.rankpageUtil.currentPage * this.rankpageUtil.pageSize;
+            //}
+            //let pageMsg = "Bid rank " + (minNum + 1) + " to " + maxNum + " of " + this.rankpageUtil.totalCount;
+            let pageMsg = "Page " + this.rankpageUtil.currentPage + " , " + this.rankpageUtil.totalPage + " pages in total";
+            if (location.pathname == '/zh/') {
+                pageMsg = "第 " + this.rankpageUtil.currentPage + " 页，共 " + this.rankpageUtil.totalPage + " 页"
             }
-            let pageMsg = "Bid rank " + (minNum + 1) + " to " + maxNum + " of " + this.rankpageUtil.totalCount;
             $("#domainRank-page").find("#domainRank-msg").html(pageMsg);
             if (this.rankpageUtil.totalPage - this.rankpageUtil.currentPage) {
                 $("#domainRank-next").removeClass('disabled');
@@ -302,13 +364,17 @@
                 return
             }
 
-            let minNum = this.pageUtil.currentPage * this.pageUtil.pageSize - this.pageUtil.pageSize;
-            let maxNum = this.pageUtil.totalCount;
-            let diffNum = maxNum - minNum;
-            if (diffNum > 10) {
-                maxNum = this.pageUtil.currentPage * this.pageUtil.pageSize;
+            //let minNum = this.pageUtil.currentPage * this.pageUtil.pageSize - this.pageUtil.pageSize;
+            //let maxNum = this.pageUtil.totalCount;
+            //let diffNum = maxNum - minNum;
+            //if (diffNum > 10) {
+            //    maxNum = this.pageUtil.currentPage * this.pageUtil.pageSize;
+            //}
+            //let pageMsg = "Auction information " + (minNum + 1) + " to " + maxNum + " of " + this.pageUtil.totalCount;
+            let pageMsg = "Page " + this.pageUtil.currentPage + " , " + this.pageUtil.totalPage + " pages in total";
+            if (location.pathname == '/zh/') {
+                pageMsg = "第 " + this.pageUtil.currentPage + " 页，共 " + this.pageUtil.totalPage + " 页"
             }
-            let pageMsg = "Auction information " + (minNum + 1) + " to " + maxNum + " of " + this.pageUtil.totalCount;
             $("#domainHistory-page").find("#domainHistory-msg").html(pageMsg);
             if (this.pageUtil.totalPage - this.pageUtil.currentPage) {
                 $("#domainHistory-next").removeClass('disabled');

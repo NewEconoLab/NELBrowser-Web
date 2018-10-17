@@ -40,7 +40,7 @@ namespace WebBrowser
             //查询地址总数
             let addrCount: number = await WWW.getaddrcount();
             //分页查询区块数据
-            let blocks: Block[] = await WWW.getblocks( 10, 1 );
+            let blocks: BlockList[] = await WWW.getblocks( 10, 1 );
             //分页查询交易记录
             let txs: Tx[] = await WWW.getrawtransactions( 10, 1,'');
 
@@ -72,7 +72,7 @@ namespace WebBrowser
                 `+ item.index + `</a></td>
                 <td>` + item.size + ` bytes</td>
                 <td>` + time + `</td>
-                <td>` + item.tx.length + `</td></tr>`;
+                <td>` + item.txcount + `</td></tr>`;
             } );
 
             txs.forEach( ( tx ) =>

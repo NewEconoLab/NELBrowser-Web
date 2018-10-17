@@ -77,9 +77,67 @@ namespace WebBrowser
                     this.updateNep5TransView(nep5id, this.pageUtil);
                 }
             });
+            //排行页面跳转
+            $("#assets-input").val('');
+            $("#assets-input").off("input").on('input', () => {
+                this.doAssetBalanceGoPage(nep5id, false)
+            });
+            $("#assets-input").off("keydown").keydown((e) => {
+                if (e.keyCode == 13) {
+                    this.doAssetBalanceGoPage(nep5id, true);
+                }
+            });
+            $("#assets-gopage").off("click").click(() => {
+                this.doAssetBalanceGoPage(nep5id, true)
+            });
+            //交易页面跳转
+            $("#assets-tran-input").val('');
+            $("#assets-tran-input").off("input").on('input', () => {
+                this.doNep5TransGoPage(nep5id, false)
+            });
+            $("#assets-tran-input").off("keydown").keydown((e) => {
+                if (e.keyCode == 13) {
+                    this.doNep5TransGoPage(nep5id, true);
+                }
+            });
+            $("#assets-tran-gopage").off("click").click(() => {
+                this.doNep5TransGoPage(nep5id, true)
+            });
 
             this.div.hidden = false;
             this.footer.hidden = false;
+        }
+        //交易跳转页面
+        public doNep5TransGoPage(nep5id:string,gopage: boolean) {
+            let page: number = $("#assets-tran-input").val() as number;
+            if (page && page > this.pageUtil.totalPage) {
+                page = this.pageUtil.totalPage;
+                $("#assets-tran-input").val(this.pageUtil.totalPage);
+            } else if (page < 0) {
+                page = 1;
+                $("#assets-tran-input").val(1);
+            }
+            if (gopage) {
+                this.pageUtil.currentPage = page;
+                this.updateNep5TransView(nep5id, this.pageUtil);
+                $("#assets-tran-input").val('');
+            }
+        }
+        //排行跳转页面
+        public doAssetBalanceGoPage(nep5id: string,gopage: boolean) {
+            let page: number = $("#assets-input").val() as number;
+            if (page && page > this.rankPageUtil.totalPage) {
+                page = this.rankPageUtil.totalPage;
+                $("#assets-input").val(this.rankPageUtil.totalPage);
+            } else if (page < 0) {
+                page = 1;
+                $("#assets-input").val(1);
+            }
+            if (gopage) {
+                this.rankPageUtil.currentPage = page;
+                this.updateAssetBalanceView(nep5id, this.rankPageUtil);
+                $("#assets-input").val('');
+            }
         }
         close(): void
         {
@@ -140,13 +198,17 @@ namespace WebBrowser
                 } else {
                     $("#assets-balance-previous").addClass('disabled');
                 }
-                let minNum = pageUtil.currentPage * pageUtil.pageSize - pageUtil.pageSize;
-                let maxNum = pageUtil.totalCount;
-                let diffNum = maxNum - minNum;
-                if (diffNum > 10) {
-                    maxNum = pageUtil.currentPage * pageUtil.pageSize;
+                //let minNum = pageUtil.currentPage * pageUtil.pageSize - pageUtil.pageSize;
+                //let maxNum = pageUtil.totalCount;
+                //let diffNum = maxNum - minNum;
+                //if (diffNum > 10) {
+                //    maxNum = pageUtil.currentPage * pageUtil.pageSize;
+                //}
+                //let pageMsg = "Banlance Rank " + (minNum + 1) + " to " + maxNum + " of " + pageUtil.totalCount;
+                let pageMsg = "Page " + pageUtil.currentPage + " , " + pageUtil.totalPage + " pages in total";
+                if (location.pathname == '/zh/') {
+                    pageMsg = "第 " + pageUtil.currentPage + " 页，共 " + pageUtil.totalPage + " 页"
                 }
-                let pageMsg = "Banlance Rank " + (minNum + 1) + " to " + maxNum + " of " + pageUtil.totalCount;
                 $("#assets-balance-msg").html(pageMsg);
                 $(".asset-balance-page").show();
             }
@@ -193,13 +255,17 @@ namespace WebBrowser
                 } else {
                     $("#assets-tran-previous").addClass('disabled');
                 }
-                let minNum = pageUtil.currentPage * pageUtil.pageSize - pageUtil.pageSize;
-                let maxNum = pageUtil.totalCount;
-                let diffNum = maxNum - minNum;
-                if (diffNum > 10) {
-                    maxNum = pageUtil.currentPage * pageUtil.pageSize;
+                //let minNum = pageUtil.currentPage * pageUtil.pageSize - pageUtil.pageSize;
+                //let maxNum = pageUtil.totalCount;
+                //let diffNum = maxNum - minNum;
+                //if (diffNum > 10) {
+                //    maxNum = pageUtil.currentPage * pageUtil.pageSize;
+                //}
+                //let pageMsg = "Transactions " + (minNum + 1) + " to " + maxNum + " of " + pageUtil.totalCount;
+                let pageMsg = "Page " + pageUtil.currentPage + " , " + pageUtil.totalPage + " pages in total";
+                if (location.pathname == '/zh/') {
+                    pageMsg = "第 " + pageUtil.currentPage + " 页，共 " + pageUtil.totalPage + " 页"
                 }
-                let pageMsg = "Transactions " + (minNum + 1) + " to " + maxNum + " of " + pageUtil.totalCount;
                 $("#assets-tran-msg").html(pageMsg);
                 $(".asset-tran-page").show();
             } else {

@@ -45,13 +45,17 @@
             if (domain) {
                 this.loadView(domain[0].list);
                 $("#nnsbeing-wrap").show();
-                let minNum = this.pageUtil.currentPage * this.pageUtil.pageSize - this.pageUtil.pageSize;
-                let maxNum = this.pageUtil.totalCount;
-                let diffNum = maxNum - minNum;
-                if (diffNum > 15) {
-                    maxNum = this.pageUtil.currentPage * this.pageUtil.pageSize;
+                //let minNum = this.pageUtil.currentPage * this.pageUtil.pageSize - this.pageUtil.pageSize;
+                //let maxNum = this.pageUtil.totalCount;
+                //let diffNum = maxNum - minNum;
+                //if (diffNum > 15) {
+                //    maxNum = this.pageUtil.currentPage * this.pageUtil.pageSize;
+                //}
+                //let pageMsg = "Live auctions " + (minNum + 1) + " to " + maxNum + " of " + this.pageUtil.totalCount;
+                let pageMsg = "Page " + this.pageUtil.currentPage + " , " + this.pageUtil.totalPage + " pages in total";
+                if (location.pathname == '/zh/') {
+                    pageMsg = "第 " + this.pageUtil.currentPage + " 页，共 " + this.pageUtil.totalPage + " 页"
                 }
-                let pageMsg = "Live auctions " + (minNum + 1) + " to " + maxNum + " of " + this.pageUtil.totalCount;
                 $("#nnsbeing-page").find("#nnsbeing-page-msg").html(pageMsg);
                 if (this.pageUtil.totalPage - this.pageUtil.currentPage) {
                     $("#nnsbeing-page-next").removeClass('disabled');
@@ -103,8 +107,36 @@
                     this.domainListInit(false, this.sorttype);
                 }
             });
+            $("#nnsbeing-input").val('');
+            $("#nnsbeing-input").off("input").on('input', () => {
+                this.doGoPage(false)
+            });
+            $("#nnsbeing-input").off("keydown").keydown((e) => {
+                if (e.keyCode == 13) {
+                    this.doGoPage(true);
+                }
+            });
+            $("#nnsbeing-gopage").off("click").click(() => {
+                this.doGoPage(true)
+            });
             this.div.hidden = false;
             this.footer.hidden = false;
+        }
+        //跳转页面
+        public doGoPage(gopage: boolean) {
+            let page: number = $("#nnsbeing-input").val() as number;
+            if (page && page > this.pageUtil.totalPage) {
+                page = this.pageUtil.totalPage;
+                $("#nnsbeing-input").val(this.pageUtil.totalPage);
+            } else if (page < 0) {
+                page = 1;
+                $("#nnsbeing-input").val(1);
+            }
+            if (gopage) {
+                this.pageUtil.currentPage = page;
+                this.domainListInit(false, this.sorttype);
+                $("#nnsbeing-input").val('');
+            }
         }
         /**
          * loadView

@@ -36,6 +36,8 @@ namespace WebBrowser
                 this.initTranPage(addrMsg[0].txcount, address);
                 this.updateAddrTrasctions(address, this.pageUtil);
             } else {
+                $("#trans-page-msg").hide();
+                $("#addr-trans-page").hide();
                 $("#address").text("-");
                 $("#created").text("-");
                 $("#totalTran").text("-");
@@ -51,8 +53,10 @@ namespace WebBrowser
             if (utxos) {
                 this.pageUtilUtxo = new PageUtil(utxos.length, 10);
                 this.initUTXOPage(utxos.length, address);
-                this.updateAddrUTXO(address, this.pageUtilUtxo)
+                this.updateAddrUTXO(address, this.pageUtilUtxo);
             } else {
+                $("#utxo-page-msg").hide();
+                $("#addr-utxo-page").hide();
                 let html = `<tr><td colspan="3" >There is no data</td></tr>`;
                 if (location.pathname == '/zh/') {
                     html = `<tr><td colspan="3" >没有数据</td></tr>`;
@@ -61,11 +65,66 @@ namespace WebBrowser
             }
             //this.loadUTXOView(utxos);
              
+            $("#trans-input").val('');
+            $("#trans-input").off("input").on('input', () => {
+                this.doTranGoPage(address,false)
+            });
+            $("#trans-input").off("keydown").keydown((e) => {
+                if (e.keyCode == 13) {
+                    this.doTranGoPage(address,true);
+                }
+            });
+            $("#trans-gopage").off("click").click(() => {
+                this.doTranGoPage(address,true)
+            });
 
+            $("#utxo-input").val('');
+            $("#utxo-input").off("input").on('input', () => {
+                this.doUtxoGoPage(address,false)
+            });
+            $("#utxo-input").off("keydown").keydown((e) => {
+                if (e.keyCode == 13) {
+                    this.doUtxoGoPage(address,true);
+                }
+            });
+            $("#utxo-gopage").off("click").click(() => {
+                this.doUtxoGoPage(address,true)
+            });
             this.div.hidden = false;
             this.footer.hidden = false;
         }
-        
+        //跳转页面
+        public doTranGoPage(address:string,gopage: boolean) {
+            let page: number = $("#trans-input").val() as number;
+            if (page && page > this.pageUtil.totalPage) {
+                page = this.pageUtil.totalPage;
+                $("#trans-input").val(this.pageUtil.totalPage);
+            } else if (page < 0) {
+                page = 1;
+                $("#trans-input").val(1);
+            }
+            if (gopage) {
+                this.pageUtil.currentPage = page;
+                this.updateAddrTrasctions(address, this.pageUtil);
+                $("#trans-input").val('');
+            }
+        }
+        //跳转页面
+        public doUtxoGoPage(address:string,gopage: boolean) {
+            let page: number = $("#utxo-input").val() as number;
+            if (page && page > this.pageUtilUtxo.totalPage) {
+                page = this.pageUtilUtxo.totalPage;
+                $("#utxo-input").val(this.pageUtilUtxo.totalPage);
+            } else if (page < 0) {
+                page = 1;
+                $("#utxo-input").val(1);
+            }
+            if (gopage) {
+                this.pageUtilUtxo.currentPage = page;
+                this.updateAddrUTXO(address, this.pageUtilUtxo)
+                $("#utxo-input").val('');
+            }
+        }
         //AddressInfo视图
         loadAddressInfo(address: string, addrMsg: AddressMsg[])
         {
@@ -217,13 +276,17 @@ namespace WebBrowser
                 $("#addr-trans").append(html);
             }
 
-            let minNum = pageUtil.currentPage * pageUtil.pageSize - pageUtil.pageSize;
-            let maxNum = pageUtil.totalCount;
-            let diffNum = maxNum - minNum;
-            if (diffNum > 10) {
-                maxNum = pageUtil.currentPage * pageUtil.pageSize;
+            //let minNum = pageUtil.currentPage * pageUtil.pageSize - pageUtil.pageSize;
+            //let maxNum = pageUtil.totalCount;
+            //let diffNum = maxNum - minNum;
+            //if (diffNum > 10) {
+            //    maxNum = pageUtil.currentPage * pageUtil.pageSize;
+            //}
+            //let pageMsg = "Transactions " + (minNum + 1) + " to " + maxNum + " of " + pageUtil.totalCount;
+            let pageMsg = "Page " + pageUtil.currentPage + " , " + pageUtil.totalPage + " pages in total";
+            if (location.pathname == '/zh/') {
+                pageMsg = "第 " + pageUtil.currentPage + " 页，共 " + pageUtil.totalPage + " 页"
             }
-            let pageMsg = "Transactions " + (minNum + 1) + " to " + maxNum + " of " + pageUtil.totalCount;
             $("#trans-page-msg").html(pageMsg);
             if (pageUtil.totalPage - pageUtil.currentPage) {
                 $("#trans-next").removeClass('disabled');
@@ -252,13 +315,17 @@ namespace WebBrowser
                 this.loadUTXOView(utxolist);
             }
 
-            let minNum = pageUtil.currentPage * pageUtil.pageSize - pageUtil.pageSize;
-            let maxNum = pageUtil.totalCount;
-            let diffNum = maxNum - minNum;
-            if (diffNum > 10) {
-                maxNum = pageUtil.currentPage * pageUtil.pageSize;
+            //let minNum = pageUtil.currentPage * pageUtil.pageSize - pageUtil.pageSize;
+            //let maxNum = pageUtil.totalCount;
+            //let diffNum = maxNum - minNum;
+            //if (diffNum > 10) {
+            //    maxNum = pageUtil.currentPage * pageUtil.pageSize;
+            //}
+            //let pageMsg = "UTXO " + (minNum + 1) + " to " + maxNum + " of " + pageUtil.totalCount;
+            let pageMsg = "Page " + pageUtil.currentPage + " , " + pageUtil.totalPage + " pages in total";
+            if (location.pathname == '/zh/') {
+                pageMsg = "第 " + pageUtil.currentPage + " 页，共 " + pageUtil.totalPage + " 页"
             }
-            let pageMsg = "UTXO " + (minNum + 1) + " to " + maxNum + " of " + pageUtil.totalCount;
             $("#utxo-page-msg").html(pageMsg);
             if (pageUtil.totalPage - pageUtil.currentPage) {
                 $("#utxo-next").removeClass('disabled');

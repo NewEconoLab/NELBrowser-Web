@@ -38,13 +38,17 @@
             } );
             this.loadView( addrlist );
 
-            let minNum = this.pageUtil.currentPage * this.pageUtil.pageSize - this.pageUtil.pageSize;
-            let maxNum = this.pageUtil.totalCount;
-            let diffNum = maxNum - minNum;
-            if (diffNum > 15) {
-                maxNum = this.pageUtil.currentPage * this.pageUtil.pageSize;
+            //let minNum = this.pageUtil.currentPage * this.pageUtil.pageSize - this.pageUtil.pageSize;
+            //let maxNum = this.pageUtil.totalCount;
+            //let diffNum = maxNum - minNum;
+            //if (diffNum > 15) {
+            //    maxNum = this.pageUtil.currentPage * this.pageUtil.pageSize;
+            //}
+            //let pageMsg = "Addresses " + (minNum + 1) + " to " + maxNum + " of " + this.pageUtil.totalCount;
+            let pageMsg = "Page " + this.pageUtil.currentPage + " , " + this.pageUtil.totalPage + " pages in total";
+            if (location.pathname == '/zh/') {
+                pageMsg = "第 " + this.pageUtil.currentPage + " 页，共 " + this.pageUtil.totalPage + " 页"
             }
-            let pageMsg = "Addresses " + (minNum + 1) + " to " + maxNum + " of " + this.pageUtil.totalCount;
             $("#addrs-page").find("#addrs-page-msg").html(pageMsg);
             if (this.pageUtil.totalPage - this.pageUtil.currentPage) {
                 $("#addrs-page-next").removeClass('disabled');
@@ -85,7 +89,35 @@
                     this.addrlistInit();
                 }
             });
+            $("#addrs-input").val('');
+            $("#addrs-input").off("input").on('input', () => {
+                this.doGoPage(false)
+            });
+            $("#addrs-input").off("keydown").keydown((e) => {
+                if (e.keyCode == 13) {
+                    this.doGoPage(true);
+                }
+            });
+            $("#addrs-gopage").off("click").click(() => {
+                this.doGoPage(true)
+            });
             this.footer.hidden = false;
+        }
+        //跳转页面
+        public doGoPage(gopage: boolean) {
+            let page: number = $("#addrs-input").val() as number;
+            if (page && page > this.pageUtil.totalPage) {
+                page = this.pageUtil.totalPage;
+                $("#addrs-input").val(this.pageUtil.totalPage);
+            } else if (page < 0) {
+                page = 1;
+                $("#addrs-input").val(1);
+            }
+            if (gopage) {
+                this.pageUtil.currentPage = page;
+                this.addrlistInit();
+                $("#addrs-input").val('');
+            }
         }
         /**
          * loadView

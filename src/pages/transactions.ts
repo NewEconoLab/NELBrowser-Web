@@ -48,8 +48,37 @@ namespace WebBrowser
                     this.pageUtil.currentPage -= 1;
                     this.updateTransactions( this.pageUtil, <string>$( "#TxType" ).val() );
                 }
-            } );
+            });
+            $("#txlist-input").val('');
+            $("#txlist-input").off("input").on('input', () => {
+                this.doGoPage(false)
+            });
+            $("#txlist-input").off("keydown").keydown((e) => {
+                if (e.keyCode == 13) {
+                    this.doGoPage(true);
+                }
+            });
+            $("#txlist-gopage").off("click").click(() => {
+                this.doGoPage(true)
+            });
 
+        }
+
+        //跳转页面
+        public doGoPage(gopage: boolean) {
+            let page: number = $("#txlist-input").val() as number;
+            if (page && page > this.pageUtil.totalPage) {
+                page = this.pageUtil.totalPage;
+                $("#txlist-input").val(this.pageUtil.totalPage);
+            } else if (page < 0) {
+                page = 1;
+                $("#txlist-input").val(1);
+            }
+            if (gopage) {
+                this.pageUtil.currentPage = page;
+                this.updateTransactions(this.pageUtil, <string>$("#TxType").val());
+                $("#txlist-input").val('');
+            }
         }
 
         //更新交易记录
@@ -62,7 +91,7 @@ namespace WebBrowser
             pageUtil.totalCount = txCount;
 
             let listLength = 0;
-            if (txs.length < 15) {
+            if (pageUtil.totalCount < 15) {
                 this.txlist.find(".page").hide();
                 listLength = txs.length;
             } else {
@@ -76,13 +105,17 @@ namespace WebBrowser
                 this.txlist.find( "#txlist-page-transactions" ).append( html );
             }
 
-            let minNum = pageUtil.currentPage * pageUtil.pageSize - pageUtil.pageSize;
-            let maxNum = pageUtil.totalCount;
-            let diffNum = maxNum - minNum;
-            if (diffNum > 15) {
-                maxNum = pageUtil.currentPage * pageUtil.pageSize;
+            //let minNum = pageUtil.currentPage * pageUtil.pageSize - pageUtil.pageSize;
+            //let maxNum = pageUtil.totalCount;
+            //let diffNum = maxNum - minNum;
+            //if (diffNum > 15) {
+            //    maxNum = pageUtil.currentPage * pageUtil.pageSize;
+            //}
+            //let pageMsg = "Transactions " + (minNum + 1) + " to " + maxNum + " of " + pageUtil.totalCount;
+            let pageMsg = "Page " + pageUtil.currentPage + " , " + pageUtil.totalPage + " pages in total";
+            if (location.pathname == '/zh/') {
+                pageMsg = "第 " + pageUtil.currentPage + " 页，共 " + pageUtil.totalPage + " 页"
             }
-            let pageMsg = "Transactions " + (minNum + 1) + " to " + maxNum + " of " + pageUtil.totalCount;
             $("#txlist-page").find("#txlist-page-msg").html(pageMsg);
             if (pageUtil.totalPage - pageUtil.currentPage) {
                 $("#txlist-page-next").removeClass('disabled');

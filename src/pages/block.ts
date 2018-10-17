@@ -40,8 +40,36 @@
                     this.updateBlockTrans(this.pageUtil);  
                 }
             });
+            $("#block-input").val('');
+            $("#block-input").off("input").on('input', () => {
+                this.doGoPage(false)
+            });
+            $("#block-input").off("keydown").keydown((e) => {
+                if (e.keyCode == 13) {
+                    this.doGoPage(true);
+                }
+            });
+            $("#block-gopage").off("click").click(() => {
+                this.doGoPage(true)
+            });
             this.div.hidden = false;
             this.footer.hidden = false;
+        }
+        //跳转页面
+        public doGoPage(gopage: boolean) {
+            let page: number = $("#block-input").val() as number;
+            if (page && page > this.pageUtil.totalPage) {
+                page = this.pageUtil.totalPage;
+                $("#block-input").val(this.pageUtil.totalPage);
+            } else if (page < 0) {
+                page = 1;
+                $("#block-input").val(1);
+            }
+            if (gopage) {
+                this.pageUtil.currentPage = page;
+                this.updateBlockTrans(this.pageUtil); 
+                $("#block-input").val('');
+            }
         }
 
         public async queryBlock( index: number )
@@ -94,7 +122,11 @@
                 this.loadBlockTransView(tx.txid, id, tx.type, tx.size, tx.version);
             });
 
-            let pageMsg = "Transactions " + (minNum + 1) + " to " + maxNum + " of " + pageUtil.totalCount;
+            //let pageMsg = "Transactions " + (minNum + 1) + " to " + maxNum + " of " + pageUtil.totalCount;
+            let pageMsg = "Page " + this.pageUtil.currentPage + " , " + this.pageUtil.totalPage + " pages in total";
+            if (location.pathname == '/zh/') {
+                pageMsg = "第 " + this.pageUtil.currentPage + " 页，共 " + this.pageUtil.totalPage + " 页"
+            }
             $("#block-tran-msg").html(pageMsg);
             if (pageUtil.totalPage - this.pageUtil.currentPage) {
                 $("#block-tran-next").removeClass('disabled');

@@ -30,7 +30,11 @@
                         this.assetlist.find(".page").show();
                     } else {
                         this.loadAssetView(this.assets);
-                        let pageMsg = "Assets 1 to " + this.pageUtil.totalCount + " of " + this.pageUtil.totalCount;
+                        //let pageMsg = "Assets 1 to " + this.pageUtil.totalCount + " of " + this.pageUtil.totalCount;
+                        let pageMsg = "Page " + this.pageUtil.currentPage + " , " + this.pageUtil.totalPage + " pages in total";
+                        if (location.pathname == '/zh/') {
+                            pageMsg = "第 " + this.pageUtil.currentPage + " 页，共 " + this.pageUtil.totalPage + " 页"
+                        }
                         $("#asset-page").find("#asset-page-msg").html(pageMsg);
                         this.assetlist.find(".page").hide();
                     }
@@ -42,7 +46,11 @@
                         this.assetlist.find(".page").show();
                     } else {
                         this.loadNep5View(this.nep5s);
-                        let pageMsg = "Assets 1 to " + this.pageUtil.totalCount + " of " + this.pageUtil.totalCount;
+                        //let pageMsg = "Assets 1 to " + this.pageUtil.totalCount + " of " + this.pageUtil.totalCount;
+                        let pageMsg = "Page " + this.pageUtil.currentPage + " , " + this.pageUtil.totalPage + " pages in total";
+                        if (location.pathname == '/zh/') {
+                            pageMsg = "第 " + this.pageUtil.currentPage + " 页，共 " + this.pageUtil.totalPage + " 页"
+                        }
                         $("#asset-page").find("#asset-page-msg").html(pageMsg);
                         this.assetlist.find(".page").hide();
                     }
@@ -73,7 +81,39 @@
                     }
                 }
             });
+            $("#asset-input").val('');
+            $("#asset-input").off("input").on('input', () => {
+                this.doGoPage(false)
+            });
+            $("#asset-input").off("keydown").keydown((e) => {
+                if (e.keyCode == 13) {
+                    this.doGoPage(true);
+                }
+            });
+            $("#asset-gopage").off("click").click(() => {
+                this.doGoPage(true)
+            });
 
+        }
+        //跳转页面
+        public doGoPage(gopage: boolean) {
+            let page: number = $("#asset-input").val() as number;
+            if (page && page > this.pageUtil.totalPage) {
+                page = this.pageUtil.totalPage;
+                $("#asset-input").val(this.pageUtil.totalPage);
+            } else if (page < 0) {
+                page = 1;
+                $("#asset-input").val(1);
+            }
+            if (gopage) {
+                this.pageUtil.currentPage = page;
+                if (this.assetType == "Assets") {
+                    this.updateAssets(this.pageUtil);
+                } else if (this.assetType == "Nep5") {
+                    this.updateNep5s(this.pageUtil);
+                }
+                $("#asset-input").val('');
+            }
         }
         //更新asset表格
         public async updateAssets(pageUtil: PageUtil) {
@@ -90,7 +130,11 @@
             }
             this.loadAssetView(arrAsset);
 
-            let pageMsg = "Assets " + (minNum + 1) + " to " + maxNum + " of " + pageUtil.totalCount;
+            //let pageMsg = "Assets " + (minNum + 1) + " to " + maxNum + " of " + pageUtil.totalCount;
+            let pageMsg = "Page " + this.pageUtil.currentPage + " , " + this.pageUtil.totalPage + " pages in total";
+            if (location.pathname == '/zh/') {
+                pageMsg = "第 " + this.pageUtil.currentPage + " 页，共 " + this.pageUtil.totalPage + " 页"
+            }
             $("#asset-page").find("#asset-page-msg").html(pageMsg);
         }
 
@@ -111,7 +155,11 @@
             }
             this.loadNep5View(arrNep5s);
 
-            let pageMsg = "Assets " + (minNum + 1) + " to " + maxNum + " of " + pageUtil.totalCount;
+            //let pageMsg = "Assets " + (minNum + 1) + " to " + maxNum + " of " + pageUtil.totalCount;
+            let pageMsg = "Page " + this.pageUtil.currentPage + " , " + this.pageUtil.totalPage + " pages in total";
+            if (location.pathname == '/zh/') {
+                pageMsg = "第 " + this.pageUtil.currentPage + " 页，共 " + this.pageUtil.totalPage + " 页"
+            }
             $("#asset-page").find("#asset-page-msg").html(pageMsg);
             if (this.pageUtil.totalPage - this.pageUtil.currentPage) {
                 $("#asset-page-next").removeClass('disabled');
@@ -136,7 +184,11 @@
                 this.assetlist.find(".page").show();
             } else {
                 this.loadAssetView(this.assets);
-                let pageMsg = "Assets 1 to " + this.pageUtil.totalCount + " of " + this.pageUtil.totalCount;
+                //let pageMsg = "Assets 1 to " + this.pageUtil.totalCount + " of " + this.pageUtil.totalCount;
+                let pageMsg = "Page " + this.pageUtil.currentPage + " , " + this.pageUtil.totalPage + " pages in total";
+                if (location.pathname == '/zh/') {
+                    pageMsg = "第 " + this.pageUtil.currentPage + " 页，共 " + this.pageUtil.totalPage + " 页"
+                }
                 $("#asset-page").find("#asset-page-msg").html(pageMsg);
                 this.assetlist.find(".page").hide();
             }
@@ -145,7 +197,7 @@
 
             this.div.hidden = false;
             this.footer.hidden = false;
-        }
+        }        
         
         /**
          * loadView 页面展现
