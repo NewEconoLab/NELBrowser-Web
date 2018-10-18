@@ -430,6 +430,9 @@ a:hover, a:focus {
 .search-list {
     color: #333;
 }
+.rank-class label {
+    color: #333;
+}
 .domain-name {
     color: #333;
 }

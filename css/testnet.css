@@ -451,6 +451,9 @@ table>tbody>tr {
 .search-input input {
     color: #fff;
 }
+.rank-class label {
+    color:#fff;
+}
 .t-foot tr th {
     color: #fff;
     background: #505F79;
