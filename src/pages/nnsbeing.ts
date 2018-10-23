@@ -124,7 +124,7 @@
         }
         //跳转页面
         public doGoPage(gopage: boolean) {
-            let page: number = $("#nnsbeing-input").val() as number;
+            let page: number = parseInt($("#nnsbeing-input").val() as string);
             if (page && page > this.pageUtil.totalPage) {
                 page = this.pageUtil.totalPage;
                 $("#nnsbeing-input").val(this.pageUtil.totalPage);

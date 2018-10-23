@@ -86,7 +86,7 @@
         }
         //出价排行跳转页面
         public doRankGoPage(gopage: boolean) {
-            let page: number = $("#domainRank-input").val() as number;
+            let page: number = parseInt($("#domainRank-input").val() as string);
             if (page && page > this.rankpageUtil.totalPage) {
                 page = this.rankpageUtil.totalPage;
                 $("#domainRank-input").val(this.rankpageUtil.totalPage);
@@ -102,7 +102,7 @@
         }
         //详情跳转页面
         public doGoPage(gopage: boolean) {
-            let page: number = $("#domainHistory-input").val() as number;
+            let page: number = parseInt($("#domainHistory-input").val() as string);
             if (page && page > this.pageUtil.totalPage) {
                 page = this.pageUtil.totalPage;
                 $("#domainHistory-input").val(this.pageUtil.totalPage);

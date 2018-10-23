@@ -97,7 +97,7 @@
         }
         //跳转页面
         public doGoPage(gopage: boolean) {
-            let page: number = $("#asset-input").val() as number;
+            let page: number = parseInt($("#asset-input").val() as string);
             if (page && page > this.pageUtil.totalPage) {
                 page = this.pageUtil.totalPage;
                 $("#asset-input").val(this.pageUtil.totalPage);

@@ -48,7 +48,7 @@ namespace WebBrowser
         }
         //跳转页面
         public doGoPage(gopage: boolean) {
-            let page: number = $("#blocks-input").val() as number;
+            let page: number = parseInt( $("#blocks-input").val() as string);
             if (page && page > this.pageUtil.totalPage) {
                 page = this.pageUtil.totalPage;
                 $("#blocks-input").val(this.pageUtil.totalPage);

@@ -66,7 +66,7 @@ namespace WebBrowser
 
         //跳转页面
         public doGoPage(gopage: boolean) {
-            let page: number = $("#txlist-input").val() as number;
+            let page: number = parseInt($("#txlist-input").val() as string);
             if (page && page > this.pageUtil.totalPage) {
                 page = this.pageUtil.totalPage;
                 $("#txlist-input").val(this.pageUtil.totalPage);

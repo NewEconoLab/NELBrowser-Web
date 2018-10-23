@@ -95,7 +95,7 @@ namespace WebBrowser
         }
         //跳转页面
         public doTranGoPage(address:string,gopage: boolean) {
-            let page: number = $("#trans-input").val() as number;
+            let page: number = parseInt($("#trans-input").val() as string);
             if (page && page > this.pageUtil.totalPage) {
                 page = this.pageUtil.totalPage;
                 $("#trans-input").val(this.pageUtil.totalPage);
@@ -111,7 +111,7 @@ namespace WebBrowser
         }
         //跳转页面
         public doUtxoGoPage(address:string,gopage: boolean) {
-            let page: number = $("#utxo-input").val() as number;
+            let page: number = parseInt( $("#utxo-input").val() as string);
             if (page && page > this.pageUtilUtxo.totalPage) {
                 page = this.pageUtilUtxo.totalPage;
                 $("#utxo-input").val(this.pageUtilUtxo.totalPage);

@@ -62,7 +62,7 @@ var WebBrowser;
         }
         //跳转页面
         doGoPage(gopage) {
-            let page = $("#block-input").val();
+            let page = parseInt($("#block-input").val());
             if (page && page > this.pageUtil.totalPage) {
                 page = this.pageUtil.totalPage;
                 $("#block-input").val(this.pageUtil.totalPage);
@@ -212,7 +212,7 @@ var WebBrowser;
         }
         //跳转页面
         doGoPage(gopage) {
-            let page = $("#blocks-input").val();
+            let page = parseInt($("#blocks-input").val());
             if (page && page > this.pageUtil.totalPage) {
                 page = this.pageUtil.totalPage;
                 $("#blocks-input").val(this.pageUtil.totalPage);
@@ -842,7 +842,7 @@ var WebBrowser;
         }
         //跳转页面
         doTranGoPage(address, gopage) {
-            let page = $("#trans-input").val();
+            let page = parseInt($("#trans-input").val());
             if (page && page > this.pageUtil.totalPage) {
                 page = this.pageUtil.totalPage;
                 $("#trans-input").val(this.pageUtil.totalPage);
@@ -859,7 +859,7 @@ var WebBrowser;
         }
         //跳转页面
         doUtxoGoPage(address, gopage) {
-            let page = $("#utxo-input").val();
+            let page = parseInt($("#utxo-input").val());
             if (page && page > this.pageUtilUtxo.totalPage) {
                 page = this.pageUtilUtxo.totalPage;
                 $("#utxo-input").val(this.pageUtilUtxo.totalPage);
@@ -1270,7 +1270,7 @@ var WebBrowser;
         }
         //跳转页面
         doGoPage(gopage) {
-            let page = $("#addrs-input").val();
+            let page = parseInt($("#addrs-input").val());
             if (page && page > this.pageUtil.totalPage) {
                 page = this.pageUtil.totalPage;
                 $("#addrs-input").val(this.pageUtil.totalPage);
@@ -1372,7 +1372,7 @@ var WebBrowser;
         }
         //跳转页面
         doGoPage(assetid, gopage) {
-            let page = $("#assets-input").val();
+            let page = parseInt($("#assets-input").val());
             if (page && page > this.rankPageUtil.totalPage) {
                 page = this.rankPageUtil.totalPage;
                 $("#assets-input").val(this.rankPageUtil.totalPage);
@@ -1572,7 +1572,7 @@ var WebBrowser;
         }
         //跳转页面
         doGoPage(gopage) {
-            let page = $("#asset-input").val();
+            let page = parseInt($("#asset-input").val());
             if (page && page > this.pageUtil.totalPage) {
                 page = this.pageUtil.totalPage;
                 $("#asset-input").val(this.pageUtil.totalPage);
@@ -2335,7 +2335,7 @@ var WebBrowser;
         }
         //跳转页面
         doGoPage(gopage) {
-            let page = $("#txlist-input").val();
+            let page = parseInt($("#txlist-input").val());
             if (page && page > this.pageUtil.totalPage) {
                 page = this.pageUtil.totalPage;
                 $("#txlist-input").val(this.pageUtil.totalPage);
@@ -2625,7 +2625,7 @@ var WebBrowser;
         }
         //交易跳转页面
         doNep5TransGoPage(nep5id, gopage) {
-            let page = $("#assets-tran-input").val();
+            let page = parseInt($("#assets-tran-input").val());
             if (page && page > this.pageUtil.totalPage) {
                 page = this.pageUtil.totalPage;
                 $("#assets-tran-input").val(this.pageUtil.totalPage);
@@ -2642,7 +2642,7 @@ var WebBrowser;
         }
         //排行跳转页面
         doAssetBalanceGoPage(nep5id, gopage) {
-            let page = $("#assets-input").val();
+            let page = parseInt($("#assets-input").val());
             if (page && page > this.rankPageUtil.totalPage) {
                 page = this.rankPageUtil.totalPage;
                 $("#assets-input").val(this.rankPageUtil.totalPage);
@@ -3302,7 +3302,7 @@ var WebBrowser;
         }
         //跳转页面
         doGoPage(gopage) {
-            let page = $("#nnsbeing-input").val();
+            let page = parseInt($("#nnsbeing-input").val());
             if (page && page > this.pageUtil.totalPage) {
                 page = this.pageUtil.totalPage;
                 $("#nnsbeing-input").val(this.pageUtil.totalPage);
@@ -3471,7 +3471,7 @@ var WebBrowser;
         }
         //跳转页面
         doGoPage(gopage) {
-            let page = $("#nnsrank-input").val();
+            let page = parseInt($("#nnsrank-input").val());
             if (page && page > this.pageUtil.totalPage) {
                 page = this.pageUtil.totalPage;
                 $("#nnsrank-input").val(this.pageUtil.totalPage);
@@ -3612,7 +3612,7 @@ var WebBrowser;
         }
         //出价排行跳转页面
         doRankGoPage(gopage) {
-            let page = $("#domainRank-input").val();
+            let page = parseInt($("#domainRank-input").val());
             if (page && page > this.rankpageUtil.totalPage) {
                 page = this.rankpageUtil.totalPage;
                 $("#domainRank-input").val(this.rankpageUtil.totalPage);
@@ -3629,7 +3629,7 @@ var WebBrowser;
         }
         //详情跳转页面
         doGoPage(gopage) {
-            let page = $("#domainHistory-input").val();
+            let page = parseInt($("#domainHistory-input").val());
             if (page && page > this.pageUtil.totalPage) {
                 page = this.pageUtil.totalPage;
                 $("#domainHistory-input").val(this.pageUtil.totalPage);

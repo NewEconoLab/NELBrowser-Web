@@ -109,7 +109,7 @@ namespace WebBrowser
         }
         //交易跳转页面
         public doNep5TransGoPage(nep5id:string,gopage: boolean) {
-            let page: number = $("#assets-tran-input").val() as number;
+            let page: number = parseInt($("#assets-tran-input").val() as string);
             if (page && page > this.pageUtil.totalPage) {
                 page = this.pageUtil.totalPage;
                 $("#assets-tran-input").val(this.pageUtil.totalPage);
@@ -125,7 +125,7 @@ namespace WebBrowser
         }
         //排行跳转页面
         public doAssetBalanceGoPage(nep5id: string,gopage: boolean) {
-            let page: number = $("#assets-input").val() as number;
+            let page: number = parseInt($("#assets-input").val() as string);
             if (page && page > this.rankPageUtil.totalPage) {
                 page = this.rankPageUtil.totalPage;
                 $("#assets-input").val(this.rankPageUtil.totalPage);
