@@ -597,6 +597,16 @@ var WebBrowser;
                 return r;
             });
         }
+        //domain竞拍详情
+        static apiaggr_getauctionres(domain) {
+            return __awaiter(this, void 0, void 0, function* () {
+                var str = WWW.makeUrl("getauctionres", WWW.apiaggr + WebBrowser.locationtool.getNetWork(), domain);
+                var result = yield fetch(str, { "method": "get" });
+                var json = yield result.json();
+                var r = json["result"];
+                return r;
+            });
+        }
         //domain加价排行
         static apiaggr_getauctioninfoRank(id, page, pagesize) {
             return __awaiter(this, void 0, void 0, function* () {
@@ -3685,7 +3695,7 @@ var WebBrowser;
             return __awaiter(this, void 0, void 0, function* () {
                 $("#domaininfo-msg").empty();
                 let html = '';
-                let res = yield WebBrowser.WWW.apiaggr_getauctioninfo(domainname);
+                let res = yield WebBrowser.WWW.apiaggr_getauctionres(domainname);
                 if (!res) {
                     html = `<div class="line" style="text-align: center;padding: 16px;font-size: 16px;"><span>There is no data </span></div>`;
                     if (location.pathname == '/zh/') {

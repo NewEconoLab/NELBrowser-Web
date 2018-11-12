@@ -159,7 +159,7 @@
         {
             $("#domaininfo-msg").empty();
             let html = '';
-            let res = await WWW.apiaggr_getauctioninfo(domainname);
+            let res = await WWW.apiaggr_getauctionres(domainname);
             
             if (!res) {
                 html = `<div class="line" style="text-align: center;padding: 16px;font-size: 16px;"><span>There is no data </span></div>`;

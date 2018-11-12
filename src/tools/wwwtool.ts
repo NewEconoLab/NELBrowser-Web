@@ -285,6 +285,14 @@ namespace WebBrowser
             var r = json["result"];
             return r;
         }
+        //domain竞拍详情
+        static async apiaggr_getauctionres(domain: string) {
+            var str = WWW.makeUrl("getauctionres", WWW.apiaggr + locationtool.getNetWork(), domain);
+            var result = await fetch(str, { "method": "get" });
+            var json = await result.json();
+            var r = json["result"];
+            return r;
+        }
         //domain加价排行
         static async apiaggr_getauctioninfoRank(id: string, page: number, pagesize: number) {
             var str = WWW.makeUrl("getauctioninfoRank", WWW.apiaggr + locationtool.getNetWork(), id, page, pagesize);
