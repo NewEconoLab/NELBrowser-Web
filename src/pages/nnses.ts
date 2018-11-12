@@ -73,7 +73,7 @@
             arr[0] = "Domain name";
             arr[1] = "Txid";
             arr[2] = "Hammer price";
-            arr[3] = "Owner";
+            arr[3] = "Current owner";
             arr[4] = "Expiration date";
             arr[5] = "Highest bid";
             arr[6] = "Bidder";
@@ -83,7 +83,7 @@
                 arr[0] = "域名";
                 arr[1] = "交易ID";
                 arr[2] = "成交价";
-                arr[3] = "中标人";
+                arr[3] = "当前拥有者";
                 arr[4] = "域名过期时间";
                 arr[5] = "当前最高价";
                 arr[6] = "竞标人";
@@ -128,7 +128,7 @@
             let status = '';
             let html = '';            
             let strArr = this.languageToggle();
-            let res = await WWW.apiaggr_getauctioninfo(domainname.toLocaleLowerCase());
+            let res = await WWW.apiaggr_searchbydomain(domainname.toLocaleLowerCase());
            
             if (!res) {
                 let href = '';
@@ -147,7 +147,7 @@
                 $("#searchBox").show();
                 return false;
             }
-            let domainInfo: DomainInfo = res[0] as DomainInfo;
+            let domainInfo = res[0];
 
             if (domainInfo.auctionState == "0501" || domainInfo.auctionState == "0601") {//可开拍
                 let href = '';
@@ -198,18 +198,18 @@
                         $("#domainMsg").html(domainInfo.fulldomain + " 已经成交了。");
                     }
                     let endtime = '';
-                    if (domainInfo.ttl != 0) {
-                        endtime = DateTool.getTime(domainInfo.ttl);
+                    if (domainInfo["ttl"] != 0) {
+                        endtime = DateTool.getTime(domainInfo["ttl"]);
                     } else {
                         endtime = 'Unknown';
                         if (location.pathname == '/zh/') {
                             endtime = '未知';
                         }
                     }
-                    html = `<div class="list-line"><div class="line-title"><span>` + strArr[0] + `</span></div> <div class="line-content line-href"><a href="` + href + `">` + domainInfo.fulldomain + `</a></div></div>
-                            <div class="list-line"><div class="line-title"><span>`+ strArr[1] + `</span></div> <div class="line-content line-href"><a href="` + hreftxid + `">` + domainInfo.auctionId + `</a></div></div>
-                            <div class="list-line"><div class="line-title"><span>`+ strArr[2] + `</span></div> <div class="line-content"><span>` + domainInfo.maxPrice + ` CGAS</span></div></div>
-                            <div class="list-line"><div class="line-title"><span>`+ strArr[3] + `</span></div> <div class="line-content line-href"><a href="` + hrefaddr +`">` + domainInfo.maxBuyer + `</a></div></div>
+                    html = `<div class="list-line"><div class="line-title"><span>` + strArr[0] + `</span></div> <div class="line-content line-href"><a href="` + href + `">` + domainInfo["fulldomain"] + `</a></div></div>
+                            <div class="list-line"><div class="line-title"><span>`+ strArr[1] + `</span></div> <div class="line-content line-href"><a href="` + hreftxid + `">` + domainInfo["auctionId"] + `</a></div></div>
+                            
+                            <div class="list-line"><div class="line-title"><span>`+ strArr[3] + `</span></div> <div class="line-content line-href"><a href="` + hrefaddr +`">` + domainInfo["owner"] + `</a></div></div>
                             <div class="list-line"><div class="line-title"><span>`+ strArr[4] + `</span></div> <div class="line-content"><span>` + endtime + `</span></div></div>`;
                 }
             }

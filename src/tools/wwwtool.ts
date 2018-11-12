@@ -278,7 +278,7 @@ namespace WebBrowser
             return r;
         }
         //domain竞拍详情||查询domain竞拍情况
-        static async apiaggr_getauctioninfo(domain: string) {
+        static async apiaggr_searchbydomain(domain: string) {
             var str = WWW.makeUrl("searchbydomain", WWW.apiaggr + locationtool.getNetWork(), domain);
             var result = await fetch(str, { "method": "get" });
             var json = await result.json();

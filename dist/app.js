@@ -588,7 +588,7 @@ var WebBrowser;
             });
         }
         //domain竞拍详情||查询domain竞拍情况
-        static apiaggr_getauctioninfo(domain) {
+        static apiaggr_searchbydomain(domain) {
             return __awaiter(this, void 0, void 0, function* () {
                 var str = WWW.makeUrl("searchbydomain", WWW.apiaggr + WebBrowser.locationtool.getNetWork(), domain);
                 var result = yield fetch(str, { "method": "get" });
@@ -2902,7 +2902,7 @@ var WebBrowser;
             arr[0] = "Domain name";
             arr[1] = "Txid";
             arr[2] = "Hammer price";
-            arr[3] = "Owner";
+            arr[3] = "Current owner";
             arr[4] = "Expiration date";
             arr[5] = "Highest bid";
             arr[6] = "Bidder";
@@ -2911,7 +2911,7 @@ var WebBrowser;
                 arr[0] = "域名";
                 arr[1] = "交易ID";
                 arr[2] = "成交价";
-                arr[3] = "中标人";
+                arr[3] = "当前拥有者";
                 arr[4] = "域名过期时间";
                 arr[5] = "当前最高价";
                 arr[6] = "竞标人";
@@ -2956,7 +2956,7 @@ var WebBrowser;
                 let status = '';
                 let html = '';
                 let strArr = this.languageToggle();
-                let res = yield WebBrowser.WWW.apiaggr_getauctioninfo(domainname.toLocaleLowerCase());
+                let res = yield WebBrowser.WWW.apiaggr_searchbydomain(domainname.toLocaleLowerCase());
                 if (!res) {
                     let href = '';
                     if (WebBrowser.locationtool.getNetWork() == 'testnet')
@@ -3022,8 +3022,8 @@ var WebBrowser;
                             $("#domainMsg").html(domainInfo.fulldomain + " 已经成交了。");
                         }
                         let endtime = '';
-                        if (domainInfo.ttl != 0) {
-                            endtime = WebBrowser.DateTool.getTime(domainInfo.ttl);
+                        if (domainInfo["ttl"] != 0) {
+                            endtime = WebBrowser.DateTool.getTime(domainInfo["ttl"]);
                         }
                         else {
                             endtime = 'Unknown';
@@ -3031,10 +3031,10 @@ var WebBrowser;
                                 endtime = '未知';
                             }
                         }
-                        html = `<div class="list-line"><div class="line-title"><span>` + strArr[0] + `</span></div> <div class="line-content line-href"><a href="` + href + `">` + domainInfo.fulldomain + `</a></div></div>
-                            <div class="list-line"><div class="line-title"><span>` + strArr[1] + `</span></div> <div class="line-content line-href"><a href="` + hreftxid + `">` + domainInfo.auctionId + `</a></div></div>
-                            <div class="list-line"><div class="line-title"><span>` + strArr[2] + `</span></div> <div class="line-content"><span>` + domainInfo.maxPrice + ` CGAS</span></div></div>
-                            <div class="list-line"><div class="line-title"><span>` + strArr[3] + `</span></div> <div class="line-content line-href"><a href="` + hrefaddr + `">` + domainInfo.maxBuyer + `</a></div></div>
+                        html = `<div class="list-line"><div class="line-title"><span>` + strArr[0] + `</span></div> <div class="line-content line-href"><a href="` + href + `">` + domainInfo["fulldomain"] + `</a></div></div>
+                            <div class="list-line"><div class="line-title"><span>` + strArr[1] + `</span></div> <div class="line-content line-href"><a href="` + hreftxid + `">` + domainInfo["auctionId"] + `</a></div></div>
+                            
+                            <div class="list-line"><div class="line-title"><span>` + strArr[3] + `</span></div> <div class="line-content line-href"><a href="` + hrefaddr + `">` + domainInfo["owner"] + `</a></div></div>
                             <div class="list-line"><div class="line-title"><span>` + strArr[4] + `</span></div> <div class="line-content"><span>` + endtime + `</span></div></div>`;
                     }
                 }
